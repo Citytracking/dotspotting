@@ -58,3 +58,7 @@ p.error {
 p.message {
 	background-color: #9f9;
 }
+
+label {
+    font-style: italic;
+}

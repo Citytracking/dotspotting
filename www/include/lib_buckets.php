@@ -36,16 +36,41 @@
 			return null;
 		}
 
-		$bucket['public_id'] = buckets_get_public_id_for_bucket($bucket);
+		buckets_load_extras($bucket);
 
 		return $bucket;
 	}
 
 	#################################################################
 
-	function buckets_get_public_id_for_bucket(&$bucket){
+	# Note the pass-by-ref
+
+	function buckets_load_extras(&$bucket){
+
+		$bucket['public_id'] = buckets_get_public_id($bucket);
+		$bucket['url'] = buckets_get_url($bucket);
+	}
+
+	#################################################################
+
+	function buckets_get_public_id(&$bucket){
 
 		return $bucket['user_id'] . "-" . $bucket['id'];
+	}
+
+	#################################################################
+
+	function buckets_get_url(&$bucket){
+
+		$user = users_get_by_id($bucket['user_id']);
+
+		return implode("/", array(
+			$GLOBALS['cfg']['abs_root_url'],
+			'dots',
+			$user['id'],
+			'buckets',
+			$bucket['id'],
+		));
 	}
 
 	#################################################################
@@ -85,12 +110,8 @@
 			$sql .= " AND perms=0";
 		}
 
-		dumper($sql);
-
 		$rsp = db_fetch_users($user['cluster_id'], $sql);
 		$dots = array();
-
-		dumper($rsp);
 
 		foreach ($rsp['rows'] as $dot){
 
@@ -175,4 +196,6 @@
 
 	#################################################################
 
+
+	#################################################################
 ?>
