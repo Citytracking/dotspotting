@@ -5,7 +5,6 @@
 	#
 
 	include("include/init.php");
-
 	loadlib("buckets");
 
 	#################################################################
@@ -33,4 +32,3 @@
 	$smarty->display('page_user.txt');
 	exit();
 ?>
-

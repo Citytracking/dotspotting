@@ -16,7 +16,7 @@
 
 {else}
 
-<p>You have uploaded <a href="{$user|@urls_dots_for_user}">{$user.counts.count_dots|escape} dots</a> (in to <a href="{$user|@urls_buckets_for_user}">{$user.counts.count_buckets|escape} bucket</a>) so far.</p>
+<p>You have uploaded <a href="{$user|@urls_dots_for_user}">{$user.counts.count_dots|escape} dots</a> (in to <a href="{$user|@urls_buckets_for_user}">{$user.counts.count_buckets|escape} buckets</a>) so far.</p>
 
 {/if}
 

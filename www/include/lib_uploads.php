@@ -6,8 +6,6 @@
 
 	#################################################################
 
-	loadlib("buckets");
-	loadlib("dots");
 	loadlib("csv");
 
 	#################################################################
@@ -44,8 +42,6 @@
 
 	function uploads_process_data(&$user, &$data, $more=array()){
 
-		# TODO: check for $more['bucket_id'] here
-
 		$bucket = bucket_create_bucket($user, $more);
 
 		if (! $bucket){
@@ -63,7 +59,7 @@
 		$rsp['update_bucket_count'] = $rsp2['ok'];
 
 		if ($more['return_dots']){
-			$rsp['dots'] = buckets_get_dots_for_bucket($rsp['bucket'], $bucket['user_id']);
+			$rsp['dots'] = dots_get_dots_for_bucket($rsp['bucket'], $bucket['user_id']);
 		}
 		
 		return $rsp;

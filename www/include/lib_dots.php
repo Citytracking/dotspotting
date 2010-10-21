@@ -220,6 +220,65 @@
 
 	#################################################################
 
+	function dots_get_dots_for_bucket(&$bucket, $viewer_id=0){
+
+		$user = users_get_by_id($bucket['user_id']);
+
+		$enc_id = AddSlashes($bucket['id']);
+
+		$sql = "SELECT * FROM Dots WHERE bucket_id='{$enc_id}'";
+
+		if ($viewer_id !== $bucket['user_id']){
+
+			$sql = _dots_where_public_sql($sql);
+
+			$sql .= " AND perms=0";
+			$sql .= " AND (latitude IS NOT NULL AND longitude IS NOT NULL)";
+		}
+
+		$rsp = db_fetch_users($user['cluster_id'], $sql);
+		$dots = array();
+
+		foreach ($rsp['rows'] as $dot){
+
+			dots_load_extra($dot);
+			$dots[] = $dot;
+		}
+
+		return $dots;
+	}
+
+	#################################################################
+
+	function dots_count_dots_for_bucket(&$bucket){
+
+		$user = users_get_by_id($bucket['user_id']);
+		$enc_id = AddSlashes($bucket['id']);
+
+		$sql = "SELECT COUNT(id) AS count_total FROM Dots WHERE bucket_id='{$enc_id}'";
+
+		$rsp = db_fetch_users($user['cluster_id'], $sql);
+		$row = db_single($rsp);
+
+		$count_total = $row['count_total'];
+
+		$sql = "SELECT COUNT(id) AS count_public FROM Dots WHERE bucket_id='{$enc_id}'";
+
+		$sql = _dots_where_public_sql($sql);
+
+		$rsp = db_fetch_users($user['cluster_id'], $sql);
+		$row = db_single($rsp);
+
+		$count_public = $row['count_public'];
+
+		return array(
+			'total' => $count_total,
+			'public' => $count_public,
+		);
+	}
+
+	#################################################################
+
 	# Note the pass-by-ref
 
 	function dots_load_extra(&$dot){
@@ -251,6 +310,20 @@
 		}
 
 		return array( 'ok' => 1 );
+	}
+
+	#################################################################
+
+	# Do not include any dots that may in the queue
+	# waiting to be geocoded, etc.
+
+	function _dots_where_public_sql($sql, $has_where=1){
+
+		$where .= ($has_where) ? "AND" : "WHERE";
+
+		$sql .= " {$where} perms=0 AND (latitude IS NOT NULL AND longitude IS NOT NULL)";
+
+		return $sql;
 	}
 
 	#################################################################

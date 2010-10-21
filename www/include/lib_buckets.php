@@ -84,38 +84,6 @@
 
 	#################################################################
 
-	function buckets_get_dots_for_bucket(&$bucket, $viewer_id=0){
-
-		$user = users_get_by_id($bucket['user_id']);
-
-		$enc_id = AddSlashes($bucket['id']);
-
-		$sql = "SELECT * FROM Dots WHERE bucket_id='{$enc_id}'";
-
-		if ($viewer_id !== $bucket['user_id']){
-
-			$sql .= " AND perms=0";
-
-			# Do not include any dots that may in the queue
-			# waiting to be geocoded, etc.
-
-			$sql .= " AND (latitude IS NOT NULL AND longitude IS NOT NULL)";
-		}
-
-		$rsp = db_fetch_users($user['cluster_id'], $sql);
-		$dots = array();
-
-		foreach ($rsp['rows'] as $dot){
-
-			dots_load_extra($dot);
-			$dots[] = $dot;
-		}
-
-		return $dots;
-	}
-
-	#################################################################
-
 	function buckets_update_bucket(&$bucket, $update){
 
 		$user = users_get_by_id($bucket['user_id']);
@@ -159,28 +127,13 @@
 
 	#################################################################
 
-	function buckets_count_dots_for_bucket(&$bucket){
-
-		$user = users_get_by_id($bucket['user_id']);
-
-		$enc_id = AddSlashes($bucket['id']);
-
-		$sql = "SELECT COUNT(id) AS count_dots FROM Dots WHERE id='{$enc_id}'";
-
-		$rsp = db_fetch_users($user['cluster_id'], $sql);
-		$row = db_single($rsp);
-
-		return $row['count_dots'];
-	}
-
-	#################################################################
-
 	function buckets_update_dot_count_for_bucket(&$bucket){
 
-		$count = buckets_count_dots_for_bucket($bucket);
+		$counts = dots_count_dots_for_bucket($bucket);
 
 		$update = array(
-			'count_dots' => $count,
+			'count_dots' => $counts['total'],
+			'count_dots_public' => $counts['public'],
 		);
 
 		return buckets_update_bucket($bucket, $update);
@@ -196,8 +149,12 @@
 
 		$enc_id = AddSlashes($user['id']);
 
-		$sql = "SELECT COUNT(id) AS count_buckets, SUM(count_dots) AS count_dots FROM Buckets WHERE user_id='{$enc_id}'";
+		if ($viewer_id == $user['id']){
+			$sql = "SELECT COUNT(id) AS count_buckets, SUM(count_dots) AS count_dots FROM Buckets WHERE user_id='{$enc_id}'";
+			return db_single(db_fetch_users($user['cluster_id'], $sql));
+		}
 
+		$sql = "SELECT COUNT(id) AS count_buckets, SUM(count_dots_public) AS count_dots FROM Buckets WHERE user_id='{$enc_id}' AND count_dots_public > 0";
 		return db_single(db_fetch_users($user['cluster_id'], $sql));
 	}
 
