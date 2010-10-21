@@ -9,6 +9,7 @@ Installation Instructions
 3. `git submodule update`
 4. In the `secrets` directory, copy `dotspotting.php.example` to `dotspotting.php` and adjust the values to suit your configuration.
 5. Ensure that the `www/templates_c` directory can be written to by your web server.
+6. Enable mod_rewrite in your local Apache.
 
 Known Knowns
 --
