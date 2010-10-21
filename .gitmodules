@@ -1,0 +1,3 @@
+[submodule "ext/flamework"]
+	path = ext/flamework
+	url = git@github.com:Citytracking/flamework.git
