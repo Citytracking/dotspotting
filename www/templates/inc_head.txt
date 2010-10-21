@@ -16,7 +16,9 @@
 		</div>
 		<div id="login" style="float: right;">
 {if $cfg.user.id}
-			Hello {$cfg.user.username|escape}.
+			Hello {$cfg.user.username|escape}!
+			<a href="/upload/">Upload</a>
+			|
 			<a href="/account/">Account</a>
 			|
 			<a href="/signout/">Logout</a>
