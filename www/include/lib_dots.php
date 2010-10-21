@@ -57,8 +57,6 @@
 
 	function dots_create_dot(&$user, &$bucket, &$data){
 
-		dumper($data);
-
 		$id = dbtickets_create(64);
 
 		if (! $id){
@@ -194,6 +192,13 @@
 
 	#################################################################
 
+	function dots_get_url(&$dot){
+
+		return '';
+	}
+
+	#################################################################
+
 	function dots_get_public_id(&$dot){
 
 		return $dot['user_id'] . "-" . $dot['id'];
@@ -220,8 +225,7 @@
 	function dots_load_extra(&$dot){
 
 		$dot['public_id'] = dots_get_public_id($dot);
-
-		# fetch from DotsExtras here
+		$dot['url'] = dots_get_url($dot);
 
 		$dot['extras'] = dots_extras_get_extras($dot);
 	}

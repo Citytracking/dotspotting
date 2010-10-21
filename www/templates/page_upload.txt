@@ -10,26 +10,40 @@ CRUMB.
 INVISIBLE ERROR CAT HISSES AT YOU.
 {/if}
 </p>
+{/if}
 
-{else}
 {if $upload_complete}
 
-<p>Your file has been uploaded!</p>
-
-{$rsp|@dumper}
-
+{if $rsp.bucket.label}
+<p>Your dots ({$rsp.dots_processed|escape} of them) have been uploaded in to a bucket labeled <a href="{$rsp.bucket.url}">{$rsp.bucket.label|escape}</a>.</p>
 {else}
+<p>Your dots ({$rsp.dots_processed|escape} of them) have been uploaded in to a new <a href="{$rsp.bucket.url}">bucket</a>.</p>
+{/if}
+
+{if $rsp.dots_received != $rsp.dots_processed}
+
+<p><strong>But!</strong> Not all of the dots you uploaded could be processed. Of the {$rsp.dots_received|escape} dots you uploaded only {$rsp.dots_processed|escape} were able to imported in to dotspotting.</p> 
+
+{/if}
+
+<p>Would you like to upload another set of dots?</p>
+
+{/if}
 
 <form method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
 	{$crumb_key|crumb_input}
-	<input type="text" size="40" name="label" /><label for="label">Label your upload</label>
-	<br />
-	<input type="file" name="upload" /><label for="upload">Upload a file</label>
-	<br />
-	<input type="SUBMIT" value="UPLOAD" />
-</form>
 
-{/if}
-{/if}
+	<input type="file" size="40" name="upload" />
+	<br />
+	<label for="upload">Choose a file to upload</label>
+	<br /><br />
+
+	<input type="text" size="40" name="label" />
+	<br />
+	<label for="label">Give your upload a name (optional)</label>
+	<br /><br />
+
+	<input type="SUBMIT" value="UPLOAD YOUR DOTS!" />
+</form>
 
 {include file="inc_foot.txt"}
