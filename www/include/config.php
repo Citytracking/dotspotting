@@ -38,5 +38,7 @@
 
 	$GLOBALS['cfg']['crypto_cookie_secret'] = 'READ-FROM-SECRETS';
 	$GLOBALS['cfg']['crypto_password_secret'] = 'READ-FROM-SECRETS';
+	
+	$GLOBALS['cfg']['geocode']['service'] = 'yahoo';
 
 ?>
