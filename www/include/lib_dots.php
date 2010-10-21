@@ -6,6 +6,8 @@
 
 	#################################################################
 
+	loadlib("dots_extras");
+
 	loadlib("geo_utils");
 	loadlib("geo_geohash");
 
@@ -54,6 +56,8 @@
 	#################################################################
 
 	function dots_create_dot(&$user, &$bucket, &$data){
+
+		dumper($data);
 
 		$id = dbtickets_create(64);
 
@@ -109,6 +113,32 @@
 		if (! $rsp['ok']){
 			return null;
 		}
+
+		# extras
+
+		$extras_ignore = array(
+			'latitude',
+			'longitude',
+			'created',
+			'perms',
+		);
+
+		foreach (array_keys($data) as $label){
+
+			if (in_array($label, $extras_ignore)){
+				continue;
+			}
+
+			if (! trim($data[$label])){
+				continue;
+			}
+
+			if (! dots_extras_create_extra($dot, $label, $data[$label])){
+				# do something...
+			}
+		}
+
+		#
 
 		$dot['public_id'] = dots_get_public_id($dot);
 		return $dot;
@@ -192,6 +222,8 @@
 		$dot['public_id'] = dots_get_public_id($dot);
 
 		# fetch from DotsExtras here
+
+		$dot['extras'] = dots_extras_get_extras($dot);
 	}
 
 	#################################################################
