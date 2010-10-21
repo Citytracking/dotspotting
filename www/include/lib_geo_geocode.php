@@ -12,12 +12,12 @@
 	
 	
 	function geo_geocode_string($string) {
-		$service = $GLOBALS['cfg']['geocode']['service'];
+		$service = $GLOBALS['cfg']['geo_geocode']['service'];
 		return call_user_func('geo_geocode_'.$service, $string);
 	}
 	
 	function geo_geocode_yahoo($string) {
-		$api_key = $GLOBALS['cfg']['geocode']['yahoo_key'];
+		$api_key = $GLOBALS['cfg']['geo_geocode']['yahoo_key'];
 		$url = 'http://where.yahooapis.com/geocode?q='.urlencode($string).'&flags=j&appid='.$api_key;
 		
 		$http_rsp = http_get($url);
