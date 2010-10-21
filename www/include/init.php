@@ -10,7 +10,7 @@
 	
 	define('DOTSPOTTING_WWW_DIR', dirname(dirname(__FILE__)));
 	define('DOTSPOTTING_SECRETS_DIR', dirname(DOTSPOTTING_WWW_DIR) . '/secrets');
-	define('DOTSPOTTING_FLAMEWORK_DIR', dirname(dirname(DOTSPOTTING_WWW_DIR)) . '/flamework');
+	define('DOTSPOTTING_FLAMEWORK_DIR', dirname(DOTSPOTTING_WWW_DIR) . '/ext/flamework');
 	#
 	# See what's going on here? There are three separate config
 	# files and the order they're loaded is important:
