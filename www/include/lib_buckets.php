@@ -48,7 +48,6 @@
 	function buckets_load_extras(&$bucket){
 
 		$bucket['public_id'] = buckets_get_public_id($bucket);
-		$bucket['url'] = buckets_get_url($bucket);
 	}
 
 	#################################################################
@@ -60,27 +59,14 @@
 
 	#################################################################
 
-	function buckets_get_url(&$bucket){
-
-		$user = users_get_by_id($bucket['user_id']);
-
-		return implode("/", array(
-			$GLOBALS['cfg']['abs_root_url'],
-			'dots',
-			$user['id'],
-			'buckets',
-			$bucket['id'],
-		));
-	}
-
-	#################################################################
-
 	function buckets_explode_public_id($public_id){
 
 		return explode("-", $public_id, 2);
 	}
 
 	#################################################################
+
+	# Should this count public dots?
 
 	function buckets_get_bucket($public_id){
 
@@ -107,7 +93,13 @@
 		$sql = "SELECT * FROM Dots WHERE bucket_id='{$enc_id}'";
 
 		if ($viewer_id !== $bucket['user_id']){
+
 			$sql .= " AND perms=0";
+
+			# Do not include any dots that may in the queue
+			# waiting to be geocoded, etc.
+
+			$sql .= " AND (latitude IS NOT NULL AND longitude IS NOT NULL)";
 		}
 
 		$rsp = db_fetch_users($user['cluster_id'], $sql);
@@ -196,6 +188,18 @@
 
 	#################################################################
 
+	# this is unfinished and needs to do factor in 
+	# public/private counts (that might mean a totally
+	# different function too...)
+
+	function buckets_counts_for_user(&$user, $viewer_id=0){
+
+		$enc_id = AddSlashes($user['id']);
+
+		$sql = "SELECT COUNT(id) AS count_buckets, SUM(count_dots) AS count_dots FROM Buckets WHERE user_id='{$enc_id}'";
+
+		return db_single(db_fetch_users($user['cluster_id'], $sql));
+	}
 
 	#################################################################
 ?>
