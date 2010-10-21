@@ -23,8 +23,8 @@ DROP TABLE IF EXISTS `Dots`;
 CREATE TABLE `Dots` (
   `bucket_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
-  `latitude` decimal(9,6) NOT NULL,
-  `longitude` decimal(9,6) NOT NULL,
+  `latitude` decimal(9,6) DEFAULT NULL,
+  `longitude` decimal(9,6) DEFAULT NULL,
   `geohash` char(12) CHARACTER SET latin1 DEFAULT NULL,
   `created` int(10) unsigned NOT NULL,
   `last_modified` int(10) unsigned NOT NULL,
