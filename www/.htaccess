@@ -1,0 +1,64 @@
+#
+# Hey! Everything in here is better suited to httpd.conf, since
+# we get a performance boost if we can turn off AllowOverride and
+# not have to stat the webroot for every request. On the other
+# hand, this measn we never have to touch apache once it's up.
+# Flexibility over performance.
+#
+# In an ideal world, you'd stick it in here on dev and your build
+# system would bundle the changes into (a file incldued in) httpd.conf
+# for your production deployment. Yeah. Do that.
+#
+
+# Order Allow,Deny
+# Allow from none
+# Deny from all
+
+# AuthType Basic
+# AuthName "dotspotting"
+# AuthUserFile /ebs/secrets/htusers
+# AuthGroupFile /ebs/secrets/htgroups
+# Require group dotspotting
+
+FileETag none
+
+php_value include_path "./include:../flamework/include:."
+php_flag display_errors on
+
+# See Cal's awesome comments in flamework/.htaccess
+php_value magic_quotes_gpc 0
+php_value register_globals 0
+php_value magic_quotes_runtime 0
+php_value track_errors 1
+php_value last_modified off
+php_value short_tags on
+php_value error_reporting 2147483639
+
+DirectoryIndex index.php
+
+ErrorDocument 404 /404.php
+ErrorDocument 403 /403.php
+
+RewriteEngine on
+
+# Login stuff
+
+RewriteRule  ^signup/?$			/signup.php?%{QUERY_STRING} [P,L]
+RewriteRule  ^signin/?$			/signin.php?%{QUERY_STRING} [P,L]
+RewriteRule  ^signout/?$		/signout.php?%{QUERY_STRING} [P,L]
+RewriteRule  ^checkcookie/?$		/checkcookie.php?%{QUERY_STRING} [P,L]
+
+# Password retrieval stuff
+
+RewriteRule ^password/forgot/?$				/forgot.php?%{QUERY_STRING} [P,L]
+RewriteRule ^password/reset/([a-zA-Z0-9]+)/?$		/reset.php?reset=$1&%{QUERY_STRING} [P,L]
+
+# Account stuff
+
+RewriteRule  ^account/?$			/account.php?%{QUERY_STRING} [P,L]
+RewriteRule  ^account/password/?$		/account_password.php?%{QUERY_STRING} [P,L]
+RewriteRule  ^account/delete/?$			/account_delete.php?%{QUERY_STRING} [P,L]
+
+# Uploads
+
+RewriteRule ^upload/?$				/upload.php?%{QUERY_STRING} [P,L]

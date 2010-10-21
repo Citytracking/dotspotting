@@ -1,0 +1,7 @@
+{include file='inc_head.txt'}
+
+<p>Hello World</p>
+
+{if $cfg.user_ok}<p>logged in</p>{/if}
+
+{include file='inc_foot.txt'}

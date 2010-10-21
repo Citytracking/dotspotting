@@ -1,0 +1,35 @@
+{assign var="page_title" value="Upload a file"}
+{include file="inc_head.txt"}
+
+{if $error|@count}
+
+<p class="error">
+{if $error.badcrumb}
+CRUMB.
+{else}
+INVISIBLE ERROR CAT HISSES AT YOU.
+{/if}
+</p>
+
+{else}
+{if $upload_complete}
+
+<p>Your file has been uploaded!</p>
+
+{$rsp|@dumper}
+
+{else}
+
+<form method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
+	{$crumb_key|crumb_input}
+	<input type="text" size="40" name="label" /><label for="label">Label your upload</label>
+	<br />
+	<input type="file" name="upload" /><label for="upload">Upload a file</label>
+	<br />
+	<input type="SUBMIT" value="UPLOAD" />
+</form>
+
+{/if}
+{/if}
+
+{include file="inc_foot.txt"}

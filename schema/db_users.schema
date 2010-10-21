@@ -1,0 +1,35 @@
+--
+-- Table structure for table `Buckets`
+--
+
+DROP TABLE IF EXISTS `Buckets`;
+
+CREATE TABLE `Buckets` (
+  `user_id` int(11) unsigned NOT NULL,
+  `created` int(10) unsigned NOT NULL,
+  `last_modified` int(10) unsigned NOT NULL,
+  `count_dots` int(11) unsigned NOT NULL,
+  `id` int(20) unsigned NOT NULL,
+  `label` varchar(255) DEFAULT NULL,
+  UNIQUE KEY `by_id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `Dots`
+--
+
+DROP TABLE IF EXISTS `Dots`;
+
+CREATE TABLE `Dots` (
+  `bucket_id` int(11) unsigned NOT NULL,
+  `user_id` int(11) unsigned NOT NULL,
+  `latitude` decimal(9,6) NOT NULL,
+  `longitude` decimal(9,6) NOT NULL,
+  `geohash` char(12) CHARACTER SET latin1 DEFAULT NULL,
+  `created` int(10) unsigned NOT NULL,
+  `last_modified` int(10) unsigned NOT NULL,
+  `imported` int(10) unsigned NOT NULL,
+  `perms` tinyint(3) unsigned NOT NULL,
+  `id` int(20) unsigned NOT NULL,
+  UNIQUE KEY `by_id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

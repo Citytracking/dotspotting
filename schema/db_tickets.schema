@@ -1,0 +1,26 @@
+--
+-- Table structure for table `Tickets32`
+--
+
+DROP TABLE IF EXISTS `Tickets32`;
+
+CREATE TABLE `Tickets32` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `stub` char(1) CHARACTER SET latin1 NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `stub` (`stub`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `Tickets64`
+--
+
+DROP TABLE IF EXISTS `Tickets64`;
+
+CREATE TABLE `Tickets64` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `stub` char(1) CHARACTER SET latin1 NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `stub` (`stub`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

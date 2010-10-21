@@ -1,0 +1,30 @@
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+
+	DocumentRoot /ebs/citytracking/dotspotting/www
+
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+
+	<Directory /ebs/citytracking/dotspotting/www>
+		Options Indexes FollowSymLinks
+		AllowOverride All
+		Order allow,deny
+		allow from all
+
+	</Directory>
+
+	ErrorLog /var/log/apache2/error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog /var/log/apache2/access.log combined
+
+	RewriteLogLevel 0
+	RewriteLog      /var/log/apache2/rewrite.log 
+
+</VirtualHost>
