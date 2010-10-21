@@ -38,4 +38,8 @@
 	# Go, flamework! Go!!
 
 	include_once(DOTSPOTTING_FLAMEWORK_DIR . '/include/init.php');
+
+	#################################################################
+
+	loadlib("urls");
 ?>
