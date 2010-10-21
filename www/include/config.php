@@ -10,16 +10,14 @@
 	# Database stuff
 
 	$GLOBALS['cfg']['db_main'] = array(
-		'host'	=> 'localhost',
-		'user'	=> 'dotspotting_rw',
+		'host'	=> 'READ-FROM-SECRETS',
+		'user'	=> 'READ-FROM-SECRETS',
 		'pass'	=> 'READ-FROM-SECRETS',
 		'name'	=> 'dotspotting',
 		'auto_connect' => 1,
 	);
 
 	$GLOBALS['cfg']['db_enable_poormans_slaves'] = 1;
-	$GLOBALS['cfg']['db_poormans_slaves_user'] = 'dotspotting_r';
-	$GLOBALS['cfg']['db_poormans_slaves_pass'] = 'READ-FROM-SECRETS';
 
 	$GLOBALS['cfg']['db_enable_poormans_ticketing'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_federation'] = 1;
@@ -32,7 +30,7 @@
 
 	# App specific stuff
 
-	$GLOBALS['cfg']['abs_root_url']		= 'http://dotspotting.stamen.com';
+	$GLOBALS['cfg']['abs_root_url']		= 'READ-FROM-SECRETS';
 	$GLOBALS['cfg']['safe_abs_root_url']	= $GLOBALS['cfg']['abs_root_url'];
 
 	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);

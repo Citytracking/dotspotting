@@ -1,4 +1,7 @@
-* copy secrets/dotspotting.php.example to secrets/dotspotting.php and adjust the values to suit your configuration.
+Installation Instructions
+=========================
+
+1. In the `secrets` directory, copy `dotspotting.php.example` to `dotspotting.php` and adjust the values to suit your configuration.
 
 Known Knowns
 ============
