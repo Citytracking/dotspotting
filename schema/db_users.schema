@@ -9,6 +9,7 @@ CREATE TABLE `Buckets` (
   `created` int(10) unsigned NOT NULL,
   `last_modified` int(10) unsigned NOT NULL,
   `count_dots` int(11) unsigned NOT NULL,
+  `count_dots_public` int(11) unsigned NOT NULL,
   `id` int(20) unsigned NOT NULL,
   `label` varchar(255) DEFAULT NULL,
   UNIQUE KEY `by_id` (`id`)
