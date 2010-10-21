@@ -1,0 +1,60 @@
+
+body {
+	text-align: center;
+	background-color: #eee;
+	margin: 0;
+	padding: 0;
+}
+
+#main {
+	margin: 0 auto;
+	width: 800px;
+	text-align: left;
+	background-color: #fff;
+	padding: 0;
+}
+
+#nav {
+	background-color: #ddd;
+	padding: 0.5em 1em;
+}
+
+#footer {
+	background-color: #ddd;
+	padding: 0.5em 1em;
+	text-align: center;
+	color: #999;
+}
+
+#content {
+	padding: 2em;
+}
+
+h1 {
+	margin-top: 0;
+}
+
+.admin-section {
+	background-image: url("/images/stripes_bg.gif");
+	border-top: 1px solid #BECCCC;
+	border-bottom: 1px solid #BECCCC;
+	padding: 40px;
+	position: relative;
+	text-align: left;
+}
+
+pre.admin-debug {
+	background: none repeat scroll 0 0 #000000;
+	color: #00FF00;
+	font-size: 14px;
+	margin: 0;
+	padding: 1em;
+}
+
+p.error {
+	background-color: #f99;
+}
+
+p.message {
+	background-color: #9f9;
+}

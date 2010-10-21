@@ -32,4 +32,16 @@ CREATE TABLE `Dots` (
   `perms` tinyint(3) unsigned NOT NULL,
   `id` int(20) unsigned NOT NULL,
   UNIQUE KEY `by_id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;-- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (i486)
+
+--
+-- Table structure for table `DotsExtras`
+--
+
+DROP TABLE IF EXISTS `DotsExtras`;
+
+CREATE TABLE `DotsExtras` (
+  `dot_id` bigint(20) unsigned NOT NULL,
+  `label` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `value` varchar(255) CHARACTER SET latin1 DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

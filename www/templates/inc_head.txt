@@ -1,16 +1,35 @@
-{utf8_headers}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml">
+{utf8_headers}<!DOCTYPE html> 
+<html>
 <head>
-	<title>{if $page_title}{$page_title|escape}{else}Page Title{/if}</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<link rel="stylesheet" type="text/css" href="/css/dotspotting.css" />
+	<title>{$page_title|default:'Page Title'}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+	{$extra_head}
 </head>
 <body>
-<div id="navi_head">
-{if $cfg.user_ok}
-<a href="/account">your account</a> | <a href="/signout">sign out</a>
+
+<div id="main">
+
+	<div id="nav">
+		<div id="login" style="float: left;">
+			<a href="/">Home</a>
+		</div>
+		<div id="login" style="float: right;">
+{if $cfg.user.id}
+			Hello {$cfg.user.username|escape}!
+			<a href="/upload/">Upload</a>
+			|
+			<a href="/account/">Account</a>
+			|
+			<a href="/signout/">Logout</a>
 {else}
-<a href="/signin">sign in</a> | <a href="/signup">signup</a>
+			<a href="/signup/">Create New Account</a>
+			|
+			<a href="/signin/">Sign In</a>
 {/if}
-</div>
+		</div>
+		&nbsp;
+	</div>
+
+	<div id="content">
+
