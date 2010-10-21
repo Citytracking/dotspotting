@@ -6,23 +6,23 @@
 
 	#################################################################
 
-	function urls_user(&$user){
+	function urls_url_for_user(&$user){
 
-		return 	$GLOBALS['cfg']['abs_root_url'] . "/u/{$user['id']}/";
+		return 	$GLOBALS['cfg']['abs_root_url'] . "u/{$user['id']}/";
 	}
 
 	#################################################################
 
 	function urls_dots_for_user(&$user){
 
-		return urls_user($user) . "dots";
+		return urls_url_for_user($user) . "dots";
 	}
 
 	#################################################################
 
 	function urls_buckets_for_user(&$user){
 
-		return urls_user($user) . "buckets";
+		return urls_url_for_user($user) . "buckets";
 	}
 
 	#################################################################
