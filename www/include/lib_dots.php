@@ -10,6 +10,7 @@
 
 	loadlib("geo_utils");
 	loadlib("geo_geohash");
+	loadlib("geo_geocode");
 
 	#################################################################
 
@@ -66,11 +67,25 @@
 		# basic geo bits
 
 		$collapse = 0;	# do not int-ify the coords
+		
+		# if we have an address field, and no latitude/longitude, do the geocode thing
+		if (	array_key_exists('address', $data) && 
+			(empty($data['latitude']) || empty($data['longitude']))) {
+			$geocode_rsp = geo_geocode_string($data['address']);
+			
+			if ($geocode_rsp['ok']) {
+				$lat = $geocode_rsp['latitude'];
+				$lon = $geocode_rsp['longitude'];
+			} else {
+				# geocoding failed - we should do something here
+			}
+			
+		} else {
+			$lat = geo_utils_prepare_coordinate($data['latitude'], $collapse);
+			$lon = geo_utils_prepare_coordinate($data['longitude'], $collapse);
+		}
 
-		$lat = geo_utils_prepare_coordinate($data['latitude'], $collapse);
-		$lon = geo_utils_prepare_coordinate($data['longitude'], $collapse);
-
-		$geohash = geo_geohash_encode($data['latitude'], $data['longitude']);
+		$geohash = geo_geohash_encode($lat, $lon);
 
 		# creation date for the point (different from import date)
 
