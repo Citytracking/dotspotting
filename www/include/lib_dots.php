@@ -122,6 +122,9 @@
 			'id' => $id,
 		);
 		
+		# AddSlashes turns null into empty strings.
+		# We don't automatically add latitude/longitude to the array 
+		# because otherwise mysql will interpret the empty strings as 0s.
 		if (isset($lat) && isset($lon)) {
 			$dot['latitude'] = AddSlashes($lat);
 			$dot['longitude'] = AddSlashes($lon);
