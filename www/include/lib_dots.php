@@ -97,6 +97,10 @@
 
 		if ($alt_created = intval($data['created'])){
 			$created = $alt_created;
+
+			if (! is_int($created)){
+				$created = strtotime($created);
+			}
 		}
 
 		# permissions
