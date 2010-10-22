@@ -1,0 +1,9 @@
+<p>Page {$pagination.page} of {$pagination.page_count}</p>
+
+{if $pagination.page < $pagination.page_count}
+	<p>Next page</p>
+{/if}
+
+{if $pagination.page > 1}
+	<p>Previous page</p>
+{/if}

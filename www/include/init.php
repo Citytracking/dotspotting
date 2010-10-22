@@ -44,5 +44,8 @@
 	loadlib("buckets");
 	loadlib("dots");
 	loadlib("urls");
-
+	
+	function smarty_function_pagination() {
+		echo($GLOBALS['smarty']->fetch('inc_pagination.txt'));
+	}
 ?>

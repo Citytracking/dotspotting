@@ -287,7 +287,7 @@
 			$sql .= " AND (latitude IS NOT NULL AND longitude IS NOT NULL)";
 		}
 		
-		$rsp = db_fetch_users($user['cluster_id'], $sql);
+		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
 		$dots = array();
 
 		foreach ($rsp['rows'] as $dot){
