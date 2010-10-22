@@ -123,8 +123,8 @@
 		);
 		
 		# AddSlashes turns null into empty strings.
-		# We don't automatically add latitude/longitude to the array 
-		# because otherwise mysql will interpret the empty strings as 0s.
+		# We don't add latitude/longitude to the $dot array unless they're present
+		# because otherwise mysql will interpret the empty string as a zero.
 		if (isset($lat) && isset($lon)) {
 			$dot['latitude'] = AddSlashes($lat);
 			$dot['longitude'] = AddSlashes($lon);
