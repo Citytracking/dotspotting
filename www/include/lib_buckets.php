@@ -127,6 +127,22 @@
 
 	#################################################################
 
+	function buckets_buckets_for_user($user, $viewer_id=0, $args=array()){
+
+		$enc_id = AddSlashes($user['id']);
+
+		$sql = "SELECT * FROM Buckets WHERE user_id='{$enc_id}'";
+
+		if ($user['id'] != $viewer_id){
+
+			$sql .= " AND count_dots_public > 0";
+		}
+
+		return db_fetch_paginated_users($user['cluster_id'], $sql, $args);
+	}
+
+	#################################################################
+
 	function buckets_update_dot_count_for_bucket(&$bucket){
 
 		$counts = dots_count_dots_for_bucket($bucket);
