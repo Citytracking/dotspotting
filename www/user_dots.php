@@ -18,7 +18,7 @@
 	}
 	
 	$args = array(
-		'page' => 1,
+		'page' => get_int64('page'),
 		'per_page' => 20,
 		'spill' => 2
 	);

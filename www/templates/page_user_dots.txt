@@ -19,4 +19,6 @@
 	</tbody>
 </table>
 
+{pagination}
+
 {include file='inc_foot.txt'}

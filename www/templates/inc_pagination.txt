@@ -1,9 +1,15 @@
 <p>Page {$pagination.page} of {$pagination.page_count}</p>
 
-{if $pagination.page < $pagination.page_count}
-	<p>Next page</p>
-{/if}
+{if $pagination.page_count > 1}
+	<p>
+	
+	{if $pagination.page > 1}
+		<a href="?page={$pagination.page-1}">Previous page</a>
+	{/if}
+	
+	{if $pagination.page < $pagination.page_count}
+		<a href="?page={$pagination.page+1}">Next page</a>
+	{/if}
 
-{if $pagination.page > 1}
-	<p>Previous page</p>
+	</p>
 {/if}
