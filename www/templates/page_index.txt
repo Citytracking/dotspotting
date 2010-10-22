@@ -2,6 +2,6 @@
 
 <p>Hello World</p>
 
-{if $cfg.user_ok}<p>logged in</p>{/if}
+{if $cfg.user.id}<p>logged in</p>{/if}
 
 {include file='inc_foot.txt'}
