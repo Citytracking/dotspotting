@@ -114,8 +114,6 @@
 		$dot = array(
 			'user_id' => AddSlashes($user['id']),
 			'bucket_id' => AddSlashes($bucket['id']),
-			'latitude' => AddSlashes($lat),
-			'longitude' => AddSlashes($lon),
 			'geohash' => AddSlashes($geohash),
 			'imported' => $now,
 			'created' => $created,
@@ -123,6 +121,11 @@
 			'perms' => $perms,
 			'id' => $id,
 		);
+		
+		if (isset($lat) && isset($lon)) {
+			$dot['latitude'] = AddSlashes($lat);
+			$dot['longitude'] = AddSlashes($lon);
+		}
 
 		$rsp = db_insert_users($user['cluster_id'], 'Dots', $dot);
 
