@@ -1,0 +1,21 @@
+{capture assign='page_title'}{$user.username|escape}'s buckets{/capture}
+{include file='inc_head.txt'}
+
+{if $buckets|@count == 0}
+
+{if $user.id != $cfg.user.id}
+<p>{$user.username|escape} hasn't uploaded any dots yet.</p>
+{else}
+<p>You haven't uploaded any dots yet.</p>
+{/if}
+
+{else}
+
+{foreach from=$buckets item='row'}
+
+{$row.id}<br />
+{/foreach}
+
+{/if}
+
+{include file='inc_foot.txt'}
