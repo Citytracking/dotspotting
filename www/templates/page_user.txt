@@ -1,3 +1,4 @@
+{capture assign='page_title'}{$user.username|escape}'s dots and buckets{/capture}
 {include file='inc_head.txt'}
 
 {if $cfg.user.id == $user.id}
