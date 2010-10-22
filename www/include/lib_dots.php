@@ -85,7 +85,10 @@
 			$lon = geo_utils_prepare_coordinate($data['longitude'], $collapse);
 		}
 
-		$geohash = geo_geohash_encode($lat, $lon);
+		// we might not have a lat/lon
+		if (isset($lat) && isset($lon)) {
+			$geohash = geo_geohash_encode($lat, $lon);
+		}
 
 		# creation date for the point (different from import date)
 
