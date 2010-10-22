@@ -260,6 +260,29 @@
 			$sql .= " AND (latitude IS NOT NULL AND longitude IS NOT NULL)";
 		}
 
+		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
+		$dots = array();
+
+		foreach ($rsp['rows'] as $dot){
+
+			dots_load_extra($dot);
+			$dots[] = $dot;
+		}
+
+		return $dots;
+	}
+	
+	function dots_get_dots_for_user(&$user, $viewer_id=0, $args=array()) {
+		$sql = "SELECT * FROM Dots";
+
+		if ($viewer_id !== $user['id']){
+
+			$sql = _dots_where_public_sql($sql, 0);
+
+			$sql .= " AND perms=0";
+			$sql .= " AND (latitude IS NOT NULL AND longitude IS NOT NULL)";
+		}
+		
 		$rsp = db_fetch_users($user['cluster_id'], $sql);
 		$dots = array();
 

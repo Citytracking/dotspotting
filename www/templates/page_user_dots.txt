@@ -1,0 +1,22 @@
+{include file='inc_head.txt'}
+
+<h2>Dots</h2>
+
+<table>
+	<thead>
+		<tr>
+			<th>Latitude</th>
+			<th>Longitude</th>
+		</tr>
+	</thead>
+	<tbody>
+		{foreach from=$dots item=dot}
+			<tr>
+				<td>{$dot.latitude}</td>
+				<td>{$dot.longitude}</td>
+			</tr>
+		{/foreach}
+	</tbody>
+</table>
+
+{include file='inc_foot.txt'}
