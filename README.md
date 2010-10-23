@@ -1,6 +1,13 @@
 DotSpotting
 ==
 
+Dependencies
+--
+
+* Apache (with mod_rewrite enabled)
+* MySQL
+* PHP 5 (with mycrypt support)
+
 Installation Instructions
 --
 
