@@ -41,4 +41,5 @@
 	
 	$GLOBALS['cfg']['geo_geocode']['service'] = 'yahoo';
 
+	$GLOBALS['cfg']['upload_max_records'] = 1000;
 ?>
