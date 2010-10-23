@@ -39,8 +39,7 @@
 			$data[] = $tmp;
 			$ln ++;
 
-			if ((isset($GLOBALS['cfg']['uploads_max_records'])) && ($GLOBALS['cfg']['uploads_max_records'] >= $ln)){
-				# log something here?
+			if (uploads_exceeds_max_records($ln)){
 				break;
 			}
 		}

@@ -42,4 +42,10 @@
 	$GLOBALS['cfg']['geo_geocode']['service'] = 'yahoo';
 
 	$GLOBALS['cfg']['upload_max_records'] = 1000;
+
+	# Feature flags
+
+	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
+	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
+
 ?>

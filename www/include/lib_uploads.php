@@ -66,4 +66,15 @@
 	}
 
 	#################################################################
+
+	function uploads_exceeds_max_records($num){
+
+		if (! $GLOBALS['cfg']['uploads_max_records']){
+			return 0;
+		}
+
+		return ($GLOBALS['cfg']['uploads_max_records'] >= $num) ? 1 : 0;
+	}
+
+	#################################################################
 ?>

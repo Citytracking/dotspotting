@@ -18,8 +18,6 @@
 			return null;
 		}
 
-		$label = ($more['label']) ? $more['label'] : '';
-
 		$now = time();
 
 		$bucket = array(
@@ -27,8 +25,19 @@
 			'created' => $now,
 			'last_modified' => $now,
 			'id' => $bucket_id,
-			'label' => AddSlashes($label),
 		);
+
+		$optional = array(
+			'label',
+			'mime_type',
+		);
+
+		foreach ($optional as $o){
+
+			if (isset($more[$o])){
+				$bucket[$o] = AddSlashes($more[$o]);
+			}
+		}
 
 		$rsp = db_insert_users($user['cluster_id'], 'Buckets', $bucket);
 

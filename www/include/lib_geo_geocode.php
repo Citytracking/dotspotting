@@ -9,14 +9,39 @@
 	loadlib("http");
 	
 	#################################################################
-	
-	
-	function geo_geocode_string($string) {
-		$service = $GLOBALS['cfg']['geo_geocode']['service'];
-		return call_user_func('geo_geocode_'.$service, $string);
+
+	function geo_geocode_service_map($string_keys=0){
+
+		# 0 means 'not geocoded'
+
+		$map = array(
+			1 => 'yahoo',
+		);
+
+		if ($string_keys){
+			$map = array_flip($map);
+		}
+
+		return $map;
 	}
 	
-	function geo_geocode_yahoo($string) {
+	#################################################################
+	
+	function geo_geocode_string($string){
+
+		$service = $GLOBALS['cfg']['geo_geocode']['service'];
+		$rsp = call_user_func('geo_geocode_'.$service, $string);
+
+		$map = geo_geocode_service_map('string keys');
+		$rsp['service_id'] = $map[ $service ];
+
+		return $rsp;
+	}
+
+	#################################################################
+	
+	function geo_geocode_yahoo($string){
+
 		$api_key = $GLOBALS['cfg']['geo_geocode']['yahoo_key'];
 		$url = 'http://where.yahooapis.com/geocode?q='.urlencode($string).'&flags=j&appid='.$api_key;
 		

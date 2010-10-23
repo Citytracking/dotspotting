@@ -16,6 +16,7 @@
 		$user = users_get_by_id($dot['user_id']);
 
 		$extra = array(
+			'user_id' => AddSlashes($user['id']),
 			'dot_id' => AddSlashes($dot['id']),
 			'label' => AddSlashes($label),
 			'value' => AddSlashes($value),

@@ -35,19 +35,29 @@
 		$received = 0;
 		$processed = 0;
 
+		$errors = array();
+
 		foreach ($dots as $dot){
 
 			$received ++;
 
-			if (dots_create_dot($user, $bucket, $dot)){
-				$processed ++;
+			$rsp = dots_create_dot($user, $bucket, $dot);
+
+			if (! $rsp['ok']){
+				$rsp['record'] = $received;
+				$errors[] = $rsp;
+
+				continue;
 			}
+
+			$processed ++;
 		}
 
 		$ok = ($processed) ? 1 : 0;
 
 		return array(
 			'ok' => $ok,
+			'errors' => $errors,
 			'dots_received' => $received,
 			'dots_processed' => $processed,
 		);
@@ -58,10 +68,26 @@
 
 	function dots_create_dot(&$user, &$bucket, &$data){
 
+		# Do the dot validation here mostly so that we
+		# don't have to remember to always do it in the
+		# various import libraries and/or loop over every
+		# record twice in lib_uploads
+
+		$rsp = dots_ensure_valid_data($data);
+
+		if (! $rsp['ok']){
+			return $rsp;
+		}
+
+		#
+
 		$id = dbtickets_create(64);
 
 		if (! $id){
-			return null;
+			return array(
+				'ok' => 0,
+				'error' => 'Ticket server failed',
+			);
 		}
 
 		# basic geo bits
@@ -69,25 +95,32 @@
 		$collapse = 0;	# do not int-ify the coords
 		
 		# if we have an address field, and no latitude/longitude, do the geocode thing
-		if (	array_key_exists('address', $data) && 
-			(empty($data['latitude']) || empty($data['longitude']))) {
+
+		if (isset($data['address']) && (empty($data['latitude']) || empty($data['longitude']))){
+
 			$geocode_rsp = geo_geocode_string($data['address']);
-			
-			if ($geocode_rsp['ok']) {
-				$lat = $geocode_rsp['latitude'];
-				$lon = $geocode_rsp['longitude'];
-			} else {
-				# geocoding failed - we should do something here
+
+			# Like with geocoding being disabled, it's not clear
+			# that returning an error is necessarily the best thing
+			# to do. (20101023/straup)
+		
+			if (! $geocode_rsp['ok']){
+
+				return array(
+					'ok' => 0,
+					'error' => 'Geocoder failed',
+				);
 			}
-			
-		} else {
-			$lat = geo_utils_prepare_coordinate($data['latitude'], $collapse);
-			$lon = geo_utils_prepare_coordinate($data['longitude'], $collapse);
+
+			$lat = $geocode_rsp['latitude'];
+			$lon = $geocode_rsp['longitude'];
+			$geocoded_by = $geocode_rsp['service_id'];
 		}
 
-		// we might not have a lat/lon
-		if (isset($lat) && isset($lon)) {
-			$geohash = geo_geohash_encode($lat, $lon);
+		else {
+
+			$lat = $data['latitude'];
+			$lon = $data['longitude'];
 		}
 
 		# creation date for the point (different from import date)
@@ -95,12 +128,8 @@
 		$now = time();
 		$created = $now;
 
-		if ($alt_created = intval($data['created'])){
-			$created = $alt_created;
-
-			if (! is_int($created)){
-				$created = strtotime($created);
-			}
+		if ($alt_created = $data['created']){
+			$created = (is_int($alt_created)) ? $alt_created : strtotime($alt_created);
 		}
 
 		# permissions
@@ -116,28 +145,39 @@
 		# go!
 
 		$dot = array(
+			'id' => $id,
 			'user_id' => AddSlashes($user['id']),
 			'bucket_id' => AddSlashes($bucket['id']),
-			'geohash' => AddSlashes($geohash),
 			'imported' => $now,
 			'created' => $created,
 			'last_modified' => $now,
 			'perms' => $perms,
-			'id' => $id,
 		);
 		
 		# AddSlashes turns null into empty strings.
 		# We don't add latitude/longitude to the $dot array unless they're present
 		# because otherwise mysql will interpret the empty string as a zero.
+
 		if (isset($lat) && isset($lon)) {
+
+			$lat = geo_utils_prepare_coordinate($lat, $collapse);
+			$lon = geo_utils_prepare_coordinate($lon, $collapse);
+
+			$geohash = geo_geohash_encode($lat, $lon);
+
 			$dot['latitude'] = AddSlashes($lat);
 			$dot['longitude'] = AddSlashes($lon);
+			$dot['geohash'] = AddSlashes($geohash);
+		}
+
+		if (isset($geocoded_by)){
+			$dot['geocoded_by'] = AddSlashes($geocoded_by);
 		}
 
 		$rsp = db_insert_users($user['cluster_id'], 'Dots', $dot);
 
 		if (! $rsp['ok']){
-			return null;
+			return $rsp;
 		}
 
 		# extras
@@ -167,7 +207,9 @@
 		#
 
 		$dot['public_id'] = dots_get_public_id($dot);
-		return $dot;
+
+		$rsp['dot'] = $dot;
+		return $rsp;
 	}
 
 	#################################################################
@@ -259,9 +301,6 @@
 		if ($viewer_id !== $bucket['user_id']){
 
 			$sql = _dots_where_public_sql($sql);
-
-			$sql .= " AND perms=0";
-			$sql .= " AND (latitude IS NOT NULL AND longitude IS NOT NULL)";
 		}
 
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
@@ -282,9 +321,6 @@
 		if ($viewer_id !== $user['id']){
 
 			$sql = _dots_where_public_sql($sql, 0);
-
-			$sql .= " AND perms=0";
-			$sql .= " AND (latitude IS NOT NULL AND longitude IS NOT NULL)";
 		}
 		
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
@@ -344,20 +380,40 @@
 
 	function dots_ensure_valid_data(&$data){
 
-		if (! isset($data['latitude'])){
-			return array( 'ok' => 0, 'error' => 'missing latitude' );
+		if (isset($data['address']) && (empty($data['latitude']) || empty($data['longitude']))){
+
+			# It is unclear whether this should really return an
+			# error - perhaps it should simply add the dot with
+			# NULL lat/lon values and rely on a separate cron job
+			# to clean things up with geocoding is re-enabled.
+			# (20101023/straup)
+
+			if (! $GLOBALS['cfg']['enable_feature_geocoding']){
+				return array( 'ok' => 0, 'error' => 'Geocoding is disabled.' );
+			}
+
+			if (strlen(trim($data['address'])) == 0){
+				return array( 'ok' => 0, 'error' => 'Address is empty.' );
+			}
 		}
 
-		if (! isset($data['longitude'])){
-			return array( 'ok' => 0, 'error' => 'missing longitude' );
-		}
+		else {
 
-		if (! geo_utils_is_valid_longitude($data['latitude'])){
-			return array( 'ok' => 0, 'error' => 'invalid latitude' );
-		}
+			if (! isset($data['latitude'])){
+				return array( 'ok' => 0, 'error' => 'missing latitude' );
+			}
 
-		if (! geo_utils_is_valid_longitude($data['longitude'])){
-			return array( 'ok' => 0, 'error' => 'invalid longitude' );
+			if (! isset($data['longitude'])){
+				return array( 'ok' => 0, 'error' => 'missing longitude' );
+			}
+
+			if (! geo_utils_is_valid_longitude($data['latitude'])){
+				return array( 'ok' => 0, 'error' => 'invalid latitude' );
+			}
+
+			if (! geo_utils_is_valid_longitude($data['longitude'])){
+				return array( 'ok' => 0, 'error' => 'invalid longitude' );
+			}
 		}
 
 		return array( 'ok' => 1 );
