@@ -10,12 +10,16 @@
 	# properties like title, etc. for now.
 	# (20101015/asc)
 
-	function bucket_create_bucket(&$user, $more=array()){
+	function buckets_create_bucket(&$user, $more=array()){
 
 		$bucket_id = dbtickets_create(32);
 
 		if (! $bucket_id){
-			return null;
+
+			return array(
+				'ok' => 0,
+				'error' => 'Ticket server failed',
+			);
 		}
 
 		$now = time();
@@ -47,7 +51,8 @@
 
 		buckets_load_extras($bucket);
 
-		return $bucket;
+		$rsp['bucket'] = $bucket;
+		return $rsp;
 	}
 
 	#################################################################

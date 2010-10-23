@@ -42,27 +42,27 @@
 
 	function uploads_process_data(&$user, &$data, $more=array()){
 
-		$bucket = bucket_create_bucket($user, $more);
+		$bucket_rsp = buckets_create_bucket($user, $more);
 
-		if (! $bucket){
-			return array(
-				'ok' => 0,
-				'error' => 'failed to create bucket'
-			);
+		if (! $bucket_rsp['ok']){
+			return $bucket_rsp;
 		}
 
-		$rsp = dots_import_dots($user, $bucket, $data);
+		# mostly just because it's boring to type...
+		$bucket = $bucket_rsp['bucket'];		
 
-		$rsp['bucket'] = $bucket;
+		$dots_rsp = dots_import_dots($user, $bucket_rsp['bucket'], $data);
 
-		$rsp2 = buckets_update_dot_count_for_bucket($bucket);
-		$rsp['update_bucket_count'] = $rsp2['ok'];
+		$dots_rsp['bucket'] = $bucket;
+
+		$count_rsp = buckets_update_dot_count_for_bucket($bucket);
+		$dots_rsp['update_bucket_count'] = $count_rsp['ok'];
 
 		if ($more['return_dots']){
-			$rsp['dots'] = dots_get_dots_for_bucket($rsp['bucket'], $bucket['user_id']);
+			$dots_rsp['dots'] = dots_get_dots_for_bucket($bucket, $bucket['user_id']);
 		}
 		
-		return $rsp;
+		return $dots_rsp;
 	}
 
 	#################################################################
