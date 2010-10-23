@@ -12,6 +12,7 @@ CREATE TABLE `Buckets` (
   `count_dots_public` int(11) unsigned NOT NULL,
   `id` int(20) unsigned NOT NULL,
   `label` varchar(255) DEFAULT NULL,
+  `mime_type` varchar(24) DEFAULT NULL,
   UNIQUE KEY `by_id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
