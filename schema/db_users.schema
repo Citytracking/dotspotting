@@ -35,7 +35,7 @@ CREATE TABLE `Dots` (
   `perms` tinyint(3) unsigned NOT NULL,
   `geocoded_by` tinyint(3) unsigned NOT NULL,
   UNIQUE KEY `by_id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;-- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (i486)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `DotsExtras`
