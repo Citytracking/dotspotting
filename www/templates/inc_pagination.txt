@@ -4,11 +4,11 @@
 	<p>
 	
 	{if $pagination.page > 1}
-		<a href="?page={$pagination.page-1}">Previous page</a>
+		<a href="{$pagination_url}page{$pagination.page-1}">Previous page</a>
 	{/if}
 	
 	{if $pagination.page < $pagination.page_count}
-		<a href="?page={$pagination.page+1}">Next page</a>
+		<a href="{$pagination_url}page{$pagination.page+1}">Next page</a>
 	{/if}
 
 	</p>

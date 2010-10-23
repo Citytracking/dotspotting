@@ -19,14 +19,16 @@
 	
 	$args = array(
 		'page' => get_int64('page'),
-		'per_page' => 20,
-		'spill' => 2
 	);
 
 	$dots = dots_get_dots_for_user($user, $GLOBALS['cfg']['user_id'], $args);
 	
 	$smarty->assign_by_ref('user', $user);
 	$smarty->assign_by_ref('dots', $dots);
+
+	$smarty->assign("pagination_url", urls_dots_for_user($user));
+
 	$smarty->display('page_user_dots.txt');
 	exit();
+
 ?>

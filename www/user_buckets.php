@@ -35,7 +35,8 @@
 	$rsp = buckets_buckets_for_user($user, $GLOBALS['cfg']['user']['id'], $args);
 
 	$smarty->assign_by_ref('buckets', $rsp['rows']);
-	$smarty->assign_by_ref('pagination', $rsp['pagination']);
+
+	$smarty->assign("pagination_url", urls_buckets_for_user($user));
 
 	$smarty->display('page_user_buckets.txt');
 	exit();

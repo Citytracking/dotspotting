@@ -30,6 +30,9 @@
 
 	# App specific stuff
 
+	$GLOBALS['cfg']['pagination_per_page'] = 40;
+	$GLOBALS['cfg']['pagination_spill'] = 5;
+
 	$GLOBALS['cfg']['abs_root_url']		= 'READ-FROM-SECRETS';
 	$GLOBALS['cfg']['safe_abs_root_url']	= $GLOBALS['cfg']['abs_root_url'];
 
@@ -47,5 +50,7 @@
 
 	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
+
+	$GLOBALS['cfg']['enable_feature_password_retrieval'] = 0;	# this should be moved into flamework at some point
 
 ?>
