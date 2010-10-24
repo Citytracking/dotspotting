@@ -5,6 +5,7 @@
 	#
 
 	include("include/init.php");
+	loadlib("geo_geocode");
 
 	$user = ensure_valid_user('get');
 
@@ -36,6 +37,11 @@
 
 	$smarty->assign_by_ref("user", $user);
 	$smarty->assign_by_ref("bucket", $bucket);
+
+	if ($is_own){
+		$smarty->assign("permissions_map", dots_permissions_map());
+		$smarty->assign("geocoder_map", geo_geocode_service_map());
+	}
 
 	$smarty->display("page_bucket.txt");
 	exit;
