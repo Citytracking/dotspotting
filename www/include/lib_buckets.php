@@ -88,7 +88,7 @@
 
 	# Should this count public dots?
 
-	function buckets_get_bucket($public_id){
+	function buckets_get_bucket($public_id, $viewer_id=0){
 
 		list($user_id, $bucket_id) = buckets_explode_public_id($public_id);
 
@@ -106,6 +106,8 @@
 		$bucket = db_single($rsp);
 
 		if ($bucket){
+
+			buckets_load_extras($bucket, $viewer_id=0);
 			$GLOBALS['buckets_local_cache'][$bucket_id] = $bucket;
 		}
 

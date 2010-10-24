@@ -316,6 +316,61 @@
 
 	#################################################################
 
+	function dots_get_dot($public_id, $viewer_id=0){
+
+		list($user_id, $dot_id) = dots_explode_public_id($public_id);
+
+		if (isset($GLOBALS['dots_local_cache'][$dot_id])){
+			return $GLOBALS['dots_local_cache'][$sot_id];
+		}
+
+		$user = users_get_by_id($user_id);
+
+		$enc_id = AddSlashes($dot_id);
+
+		$sql = "SELECT * FROM Dots WHERE id='{$enc_id}'";
+
+		if ($viewer_id !== $user['id']){
+			# $sql = _dots_where_public_sql($sql);
+		}
+
+		$rsp = db_fetch_users($user['cluster_id'], $sql);
+		$dot = db_single($rsp);
+
+		if ($rsp['ok']){
+
+			if ($dot){
+				dots_load_extras($dot, $viewer_id);
+			}
+
+			$GLOBALS['dots_local_cache'][$dot_id] = $dot;
+		}
+
+		return $dot;
+	}
+
+	#################################################################
+
+	function dots_can_view_dot(&$dot, $viewer_id){
+
+		if ($dot['user_id'] == $viewer_id){
+			return 1;
+		}
+
+		$perms_map = dots_permissions_map();
+
+		return ($perms_map[$dot['perms']] == 'public') ? 1 : 0;		
+	}
+
+	#################################################################
+
+	function dot_explode_public_id($public_id){
+
+		return explode("-", $public_id, 2);
+	}
+
+	#################################################################
+
 	function dots_get_dots_for_bucket(&$bucket, $viewer_id=0){
 
 		$user = users_get_by_id($bucket['user_id']);
