@@ -63,9 +63,11 @@
 
 	# Note the pass-by-ref
 
-	function buckets_load_extras(&$bucket){
+	function buckets_load_extras(&$bucket, $viewer_id=0){
 
 		$bucket['public_id'] = buckets_get_public_id($bucket);
+
+		$bucket['extent'] = dots_get_extent_for_bucket($bucket, $viewer_id);
 	}
 
 	#################################################################
@@ -176,7 +178,15 @@
 			$sql .= " AND count_dots_public > 0";
 		}
 
-		return db_fetch_paginated_users($user['cluster_id'], $sql, $args);
+		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
+		$buckets = array();
+
+		foreach ($rsp['rows'] as $row){
+			buckets_load_extras($row, $viewer_id);
+			$buckets[] = $row;
+		}
+
+		return $buckets;
 	}
 
 	#################################################################

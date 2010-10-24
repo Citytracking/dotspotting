@@ -9,6 +9,7 @@
 			<th>Bucket</th>
 			<th>Latitude</th>
 			<th>Longitude</th>
+			<th>Geohash</th>
 			<th>Created</th>
 			{if $is_own}
 			<th>Imported</th>
@@ -25,6 +26,7 @@
 				<td><a href="{$dot.bucket|@urls_url_for_bucket}">{if $dot.bucket.label}{$dot.bucket.label|escape}{else}{$dot.bucket_id|escape}{/if}</a></td>
 				<td>{$dot.latitude|escape}</td>
 				<td>{$dot.longitude|escape}</td>
+				<td>{$dot.geohash|escape}</td>
 				<td>{if $dot.created}{$dot.created|date_format:"%Y-%m-%d %H:%M"|escape}{else}&#8212;{/if}</td>
 				{if $is_own}
 				<td>{$dot.imported|date_format:"%Y-%m-%d %H:%M"|escape}</td>

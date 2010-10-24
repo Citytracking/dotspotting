@@ -298,6 +298,24 @@
 
 	#################################################################
 
+	function dots_get_extent_for_bucket(&$bucket, $viewer_id=0){
+
+		$user = users_get_by_id($bucket['user_id']);
+
+		$enc_id = AddSlashes($bucket['id']);
+
+		$sql = "SELECT MIN(latitude) AS swlat, MIN(longitude) AS swlon, MAX(latitude) AS nelat, MAX(longitude) AS nelon FROM Dots WHERE bucket_id='{$enc_id}'";
+
+		if ($viewer_id !== $bucket['user_id']){
+
+			$sql = _dots_where_public_sql($sql);
+		}
+
+		return db_single(db_fetch_users($user['cluster_id'], $sql));
+	}
+
+	#################################################################
+
 	function dots_get_dots_for_bucket(&$bucket, $viewer_id=0){
 
 		$user = users_get_by_id($bucket['user_id']);
@@ -316,7 +334,7 @@
 
 		foreach ($rsp['rows'] as $dot){
 
-			dots_load_extra($dot);
+			dots_load_extras($dot, $viewer_id);
 			$dots[] = $dot;
 		}
 
@@ -345,7 +363,7 @@
 
 		foreach ($rsp['rows'] as $dot){
 
-			dots_load_extra($dot, $more);
+			dots_load_extras($dot, $viewer_id, $more);
 			$dots[] = $dot;
 		}
 
@@ -385,7 +403,7 @@
 
 	# Note the pass-by-ref
 
-	function dots_load_extra(&$dot, $more=array()){
+	function dots_load_extras(&$dot, $viewer_id, $more=array()){
 
 		$dot['public_id'] = dots_get_public_id($dot);
 		$dot['url'] = dots_get_url($dot);

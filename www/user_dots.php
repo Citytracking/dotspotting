@@ -1,7 +1,6 @@
 <?php
 
 	include("include/init.php");
-	loadlib("dots");
 
 	$user_id = get_int64('user_id');
 
