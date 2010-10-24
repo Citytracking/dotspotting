@@ -373,7 +373,7 @@
 
 	#################################################################
 
-	function dots_get_dots_for_bucket(&$bucket, $viewer_id=0){
+	function dots_get_dots_for_bucket(&$bucket, $viewer_id=0, $more=array()){
 
 		$user = users_get_by_id($bucket['user_id']);
 
@@ -386,7 +386,7 @@
 			$sql = _dots_where_public_sql($sql);
 		}
 
-		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
+		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);
 		$dots = array();
 
 		foreach ($rsp['rows'] as $dot){

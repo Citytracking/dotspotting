@@ -1,0 +1,65 @@
+{include file="inc_head.txt"}
+
+{if $dot.bucket.label}
+<p>This dot is part of a bucket named <a href="{$dot.bucket|@urls_url_for_bucket}">{$dot.bucket.label|escape}</a>, created {$dot.bucket.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
+{else}
+<p>This dot is part of an <a href="{$dot.bucket|@urls_url_for_bucket}">unnamed bucket</a>, created {$dot.bucket.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
+{/if}
+
+<table>
+
+	<tr>
+		<th>owner</th>
+		<td><a href="{$user|@urls_url_for_user}">{$user.username|escape}</a></td>
+	</tr>
+
+	<tr>
+		<th>latitude</th>
+		<td>{$dot.latitude|escape}</td>
+	</tr>
+	<tr>
+		<th>longitude</th>
+		<td>{$dot.longitude|escape}</td>
+	</tr>
+
+	{foreach from=$dot.extras item="stuff" key="label"}
+	<tr>
+		<th>{$label|escape}</th>
+		<td>{$stuff|@join:", "|escape}</td>
+	</tr>
+	{/foreach}
+
+	{if $is_own}
+		{assign var="perms" value=$dot.perms}
+		{assign var="geocoded_by" value=$dot.geocoded_by}
+
+	<tr>
+		<th>permissions</th>
+		<td>{$permissions_map.$perms|escape}</td>
+	</tr>
+
+	{if $geocoded_by}
+	<tr>
+		<th>geocoded by</th>
+		<td>{$geocoder_map.$geocoded_by|escape}</td>
+	</tr>
+	{/if}
+
+	{/if}
+
+	<tr>
+		<th>created</th>
+		<td>{$dot.created|date_format:"%Y-%m-%d %H:%M"|escape}</td>
+	</tr>
+	<tr>
+		<th>last modified</th>
+		<td>{$dot.last_modified|date_format:"%Y-%m-%d %H:%M"|escape}</td>
+	</tr>
+	<tr>
+		<th>imported</th>
+		<td>{$dot.imported|date_format:"%Y-%m-%d %H:%M"|escape}</td>
+	</tr>
+
+</table>
+
+{include file="inc_foot.txt"}

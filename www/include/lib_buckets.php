@@ -53,7 +53,7 @@
 			return null;
 		}
 
-		buckets_load_extras($bucket);
+		buckets_load_extras($bucket, $user['id']);
 
 		$rsp['bucket'] = $bucket;
 		return $rsp;
@@ -63,11 +63,14 @@
 
 	# Note the pass-by-ref
 
-	function buckets_load_extras(&$bucket, $viewer_id=0){
+	function buckets_load_extras(&$bucket, $viewer_id=0, $more=array()){
 
 		$bucket['public_id'] = buckets_get_public_id($bucket);
-
 		$bucket['extent'] = dots_get_extent_for_bucket($bucket, $viewer_id);
+
+		if ($more['load_dots']){
+			$bucket['dots'] = dots_get_dots_for_bucket($bucket, $viewer_id);
+		}
 	}
 
 	#################################################################
@@ -88,7 +91,7 @@
 
 	# Should this count public dots?
 
-	function buckets_get_bucket($public_id, $viewer_id=0){
+	function buckets_get_bucket($public_id, $viewer_id=0, $more=array()){
 
 		list($user_id, $bucket_id) = buckets_explode_public_id($public_id);
 
@@ -99,19 +102,35 @@
 		$user = users_get_by_id($user_id);
 
 		$enc_id = AddSlashes($bucket_id);
+		$enc_user = AddSlashes($user['id']);
 
-		$sql = "SELECT * FROM Buckets WHERE id='{$enc_id}'";
+		$sql = "SELECT * FROM Buckets WHERE id='{$enc_id}' AND user_id='{$enc_user}'";
 
 		$rsp = db_fetch_users($user['cluster_id'], $sql);
 		$bucket = db_single($rsp);
 
 		if ($bucket){
 
-			buckets_load_extras($bucket, $viewer_id=0);
+			buckets_load_extras($bucket, $viewer_id, $more);
 			$GLOBALS['buckets_local_cache'][$bucket_id] = $bucket;
 		}
 
 		return $bucket;
+	}
+
+	#################################################################
+
+	function buckets_can_view_bucket(&$bucket, $viewer_id=0){
+
+		if ($bucket['user_id'] == $viewer_id){
+			return 1;
+		}
+
+		if ($bucket['count_dots_public'] >= 1){
+			return 1;
+		}
+
+		return 0;
 	}
 
 	#################################################################
