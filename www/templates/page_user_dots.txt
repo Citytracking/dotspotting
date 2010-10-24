@@ -2,6 +2,16 @@
 
 <h2>Dots</h2>
 
+{if $dots|@count == 0}
+
+{if $user.id != $cfg.user.id}
+<p>{$user.username|escape} hasn't uploaded any dots yet.</p>
+{else}
+<p>You haven't uploaded any dots yet.</p>
+{/if}
+
+{else}
+
 <table>
 	<thead>
 		<tr>
@@ -42,5 +52,7 @@
 </table>
 
 {pagination}
+
+{/if}
 
 {include file='inc_foot.txt'}

@@ -35,7 +35,7 @@
 
 {foreach from=$buckets item='bucket'}
 
-		<tr>
+		<tr{if $bucket.count_dots_public==0} class="bucket_private"{/if}>
 			<td><a href="{$bucket|@urls_url_for_bucket}">{$bucket.id|escape}</a></td>
 			<td>{if $bucket.label}<a href="{$bucket|@urls_url_for_bucket}">{$bucket.label|escape}</a>{else}&#160;{/if}</td>
 			{if $is_own}
