@@ -1,6 +1,15 @@
 <?php
 
+	#
+	# $Id$
+	#
+
+	#################################################################
+
 	include("include/init.php");
+	loadlib("geo_geocode");
+
+	#################################################################
 
 	$user_id = get_int64('user_id');
 
@@ -30,7 +39,11 @@
 
 	$smarty->assign("pagination_url", urls_dots_for_user($user));
 
-	$smarty->assign("permissions_map", dots_permissions_map());
+	if ($is_own){
+		$smarty->assign("permissions_map", dots_permissions_map());
+		$smarty->assign("geocoder_map", geo_geocode_service_map());
+	}
+
 	$smarty->display('page_user_dots.txt');
 	exit();
 

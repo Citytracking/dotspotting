@@ -14,6 +14,7 @@
 			{if $is_own}
 			<th>Imported</th>
 			<th>Permissions</th>
+			<th>Geocoded By</th>
 			{/if}
 			<th>Extras</th>
 		</tr>
@@ -21,6 +22,7 @@
 	<tbody>
 		{foreach from=$dots item=dot}
 		{assign var="perms" value=$dot.perms}
+		{assign var="geocoded_by" value=$dot.geocoded_by}
 			<tr class="dot_{$permissions_map.$perms|escape}">
 				<td><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></td>
 				<td><a href="{$dot.bucket|@urls_url_for_bucket}">{if $dot.bucket.label}{$dot.bucket.label|escape}{else}{$dot.bucket_id|escape}{/if}</a></td>
@@ -31,6 +33,7 @@
 				{if $is_own}
 				<td>{$dot.imported|date_format:"%Y-%m-%d %H:%M"|escape}</td>
 				<td>{$permissions_map.$perms|escape}</td>
+				<td>{if $geocoded_by}{$geocoder_map.$geocoded_by|escape}{else}&#160;{/if}</td>
 				{/if}
 				<td>{$dot.extras|@array_keys|@join:", "|escape}</td>
 			</tr>
