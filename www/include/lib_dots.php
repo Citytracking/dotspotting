@@ -14,6 +14,10 @@
 
 	#################################################################
 
+	$GLOBALS['dots_local_cache'] = array();
+
+	#################################################################
+
 	function dots_permissions_map($string_keys=0){
 
 		$map = array(
@@ -229,11 +233,11 @@
 
 		$rsp = db_update_users($user['cluster_id'], 'Dots', $update, $where);
 
-		if (! $rsp['ok']){
-			return null;
+		if ($rsp['ok']){
+			unset($GLOBALS['dots_local_cache'][$dot['id']]);
 		}
 
-		return 1;
+		return $rsp;
 	}
 
 	#################################################################
@@ -255,6 +259,10 @@
 
 			$rsp2 = buckets_update_dot_count_for_bucket($bucket);
 			$rsp['update_bucket_count'] = $rsp2['ok'];
+		}
+
+		if ($rsp['ok']){
+			unset($GLOBALS['dots_local_cache'][$dot['id']]);
 		}
 
 		return $rsp;
@@ -316,19 +324,28 @@
 	}
 	
 	function dots_get_dots_for_user(&$user, $viewer_id=0, $args=array()) {
-		$sql = "SELECT * FROM Dots";
+
+		$enc_id = AddSlashes($user['id']);
+
+		$sql = "SELECT * FROM Dots WHERE user_id='{$enc_id}'";
 
 		if ($viewer_id !== $user['id']){
 
-			$sql = _dots_where_public_sql($sql, 0);
+			$sql = _dots_where_public_sql($sql, 1);
 		}
-		
+
+		$sql .= " ORDER BY imported DESC";
+
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
 		$dots = array();
 
+		$more = array(
+		      'load_bucket' => 1,
+		);
+
 		foreach ($rsp['rows'] as $dot){
 
-			dots_load_extra($dot);
+			dots_load_extra($dot, $more);
 			$dots[] = $dot;
 		}
 
@@ -368,12 +385,18 @@
 
 	# Note the pass-by-ref
 
-	function dots_load_extra(&$dot){
+	function dots_load_extra(&$dot, $more=array()){
 
 		$dot['public_id'] = dots_get_public_id($dot);
 		$dot['url'] = dots_get_url($dot);
 
 		$dot['extras'] = dots_extras_get_extras($dot);
+
+		if ($more['load_bucket']){
+			$bid = dots_get_public_id_for_bucket($dot);
+	 		$dot['bucket'] = buckets_get_bucket($bid);
+		}
+
 	}
 
 	#################################################################

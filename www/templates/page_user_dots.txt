@@ -5,15 +5,26 @@
 <table>
 	<thead>
 		<tr>
+			<th>ID</th>
+			<th>Bucket</th>
 			<th>Latitude</th>
 			<th>Longitude</th>
+			<th>Created</th>
+			<th>Imported</th>
+			<th>Permissions</th>
 		</tr>
 	</thead>
 	<tbody>
 		{foreach from=$dots item=dot}
-			<tr>
-				<td>{$dot.latitude}</td>
-				<td>{$dot.longitude}</td>
+		{assign var="perms" value=$dot.perms}
+			<tr class="dot_{$permissions_map.$perms|escape}">
+				<td><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></td>
+				<td><a href="{$dot.bucket|@urls_url_for_bucket}">{if $dot.bucket.label}{$dot.bucket.label|escape}{else}{$dot.bucket_id|escape}{/if}</a></td>
+				<td>{$dot.latitude|escape}</td>
+				<td>{$dot.longitude|escape}</td>
+				<td>{if $dot.created}{$dot.created|date_format:"%Y-%m-%d %H:%M"|escape}{else}&#8212;{/if}</td>
+				<td>{$dot.imported|date_format:"%Y-%m-%d %H:%M"|escape}</td>
+				<td>{$permissions_map.$perms|escape}</td>
 			</tr>
 		{/foreach}
 	</tbody>

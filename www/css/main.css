@@ -62,3 +62,20 @@ p.message {
 label {
     font-style: italic;
 }
+
+table {
+    border:0;
+    font-size: small;
+}
+
+td {
+    padding: 6px;
+}
+
+.dot_private {
+	background-color: pink;
+}
+
+.public {
+	
+}

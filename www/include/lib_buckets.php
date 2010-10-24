@@ -6,6 +6,10 @@
 
 	#################################################################
 
+	$GLOBALS['buckets_local_cache'] = array();
+
+	#################################################################
+
 	# Hey look! We're deliberately punting any user-defined
 	# properties like title, etc. for now.
 	# (20101015/asc)
@@ -86,14 +90,24 @@
 
 		list($user_id, $bucket_id) = buckets_explode_public_id($public_id);
 
-		$user = users_get_by_id($bucket['user_id']);
+		if (isset($GLOBALS['buckets_local_cache'][$bucket_id])){
+			return $GLOBALS['buckets_local_cache'][$bucket_id];
+		}
+
+		$user = users_get_by_id($user_id);
 
 		$enc_id = AddSlashes($bucket_id);
 
 		$sql = "SELECT * FROM Buckets WHERE id='{$enc_id}'";
 
 		$rsp = db_fetch_users($user['cluster_id'], $sql);
-		return db_single($rsp);
+		$bucket = db_single($rsp);
+
+		if ($bucket){
+			$GLOBALS['buckets_local_cache'][$bucket_id] = $bucket;
+		}
+
+		return $bucket;
 	}
 
 	#################################################################
@@ -111,7 +125,13 @@
 
 		$update['last_modified'] = time();
 
-		return db_update_users($user['cluster_id'], 'Buckets', $update, $where);
+		$rsp = db_update_users($user['cluster_id'], 'Buckets', $update, $where);
+
+		if ($rsp['ok']){
+			unset($GLOBALS['buckets_local_cache'][$bucket['id']]);
+		}
+
+		return $rsp;
 	}
 
 	#################################################################
@@ -135,6 +155,10 @@
 
 		$sql = "DELETE FROM Dots WHERE bucket_id='{$enc_bucket_id}'";
 		$rsp = db_write_users($user['cluster_id'], $sql);
+
+		if ($rsp['ok']){
+			unset($GLOBALS['buckets_local_cache'][$bucket['id']]);
+		}
 
 		return $rsp;
 	}
