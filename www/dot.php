@@ -5,6 +5,7 @@
 	#
 
 	include("include/init.php");
+	loadlib("geo_geocode");
 
 	$user = ensure_valid_user('get');
 
@@ -29,6 +30,17 @@
 		error_403();
 	}
 
-	echo "DOT!";
+	$is_own = ($user['id'] == $GLOBALS['cfg']['user']['id']) ? 1 : 0;
+	$smarty->assign("is_own", $is_own);
+
+	$smarty->assign_by_ref("user", $user);
+	$smarty->assign_by_ref("dot", $dot);
+
+	if ($is_own){
+		$smarty->assign("permissions_map", dots_permissions_map());
+		$smarty->assign("geocoder_map", geo_geocode_service_map());
+	}
+
+	$smarty->display("page_dot.txt");
 	exit;
 ?>

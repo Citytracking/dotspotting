@@ -327,8 +327,9 @@
 		$user = users_get_by_id($user_id);
 
 		$enc_id = AddSlashes($dot_id);
+		$enc_user = AddSlashes($user['id']);
 
-		$sql = "SELECT * FROM Dots WHERE id='{$enc_id}'";
+		$sql = "SELECT * FROM Dots WHERE id='{$enc_id}' AND user_id='{$enc_user}'";
 
 		if ($viewer_id !== $user['id']){
 			# $sql = _dots_where_public_sql($sql);
@@ -340,7 +341,8 @@
 		if ($rsp['ok']){
 
 			if ($dot){
-				dots_load_extras($dot, $viewer_id);
+				$more = array( 'load_bucket' => 1);
+				dots_load_extras($dot, $viewer_id, $more);
 			}
 
 			$GLOBALS['dots_local_cache'][$dot_id] = $dot;
