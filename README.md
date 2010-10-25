@@ -7,6 +7,12 @@ Dependencies
 * Apache (with mod_rewrite enabled)
 * MySQL
 * PHP 5 (with mycrypt support)
+* flamework
+
+Flamework (?!)
+--
+
+Dotspotting does not so much piggyback on a traditional framework as it does hold hands with an anti-framework. 
 
 Installation Instructions
 --

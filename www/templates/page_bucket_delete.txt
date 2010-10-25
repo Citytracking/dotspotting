@@ -1,0 +1,30 @@
+{include file="inc_head.txt"}
+
+{if $deleted}
+
+{if $deleted.ok}
+<p>Okay! Your bucket has been deleted.</p>
+{else}
+<p class="error">Ack! There was a problem deleting your bucket.</p>
+{/if}
+
+{else}
+
+{if $bucket.label}
+<p>Are you sure you want to delete this bucket?</p>
+{else}
+<p>Are you sure you want to delete the bucket named {$bucket.label|escape}?</p>
+{/if}
+
+<p>It has {$bucket.count_dots|escape} dots associated with it. They will <strong>all be deleted</strong> along with the bucket. There is no undo!</p>
+
+<form method="POST">
+	{$crumb_key|crumb_input}
+	<input type="hidden" name="delete" value="1" />
+	<input type="hidden" name="confirm" value="1" />
+	<input type="submit" value="YES DELETE THIS BUCKET" />
+</form>
+
+{/if}
+
+{include file="inc_foot.txt"}

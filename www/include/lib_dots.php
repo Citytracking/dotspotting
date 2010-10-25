@@ -259,8 +259,14 @@
 
 		$enc_id = AddSlashes($dot['id']);
 
-		$sql = "DELETE FROM Dots WHERE id='{$enc_id}'";
+		$sql = "DELETE FROM DotsExtras WHERE dot_id='{$enc_id}'";
+		$rsp = db_write_users($user['cluster_id'], $sql);
 
+		if (! $rsp['ok']){
+			return $rsp;
+		}
+
+		$sql = "DELETE FROM Dots WHERE id='{$enc_id}'";
 		$rsp = db_write_users($user['cluster_id'], $sql);
 
 		if (($rsp['ok']) && (! isset($more['skip_bucket_update']))){

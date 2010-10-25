@@ -30,13 +30,37 @@
 		error_403();
 	}
 
-	$bucket['dots'] = dots_get_dots_for_bucket($bucket, $GLOBALS['cfg']['user']['id']);
+	#
 
 	$is_own = ($user['id'] == $GLOBALS['cfg']['user']['id']) ? 1 : 0;
 	$smarty->assign("is_own", $is_own);
 
 	$smarty->assign_by_ref("user", $user);
 	$smarty->assign_by_ref("bucket", $bucket);
+
+	# delete this bucket?
+
+	if ($is_own){
+
+		$crumb_key = 'delete-bucket';
+		$smarty->assign("crumb_key", $crumb_key);
+
+		if ((post_str('delete')) && (crumb_check($crumb_key))){
+
+			if (post_str('confirm')){
+
+				$rsp = buckets_delete_bucket($bucket);
+				$smarty->assign('deleted', $rsp);
+			}
+
+			$smarty->display('page_bucket_delete.txt');
+			exit();
+		}
+	}
+
+	#
+
+	$bucket['dots'] = dots_get_dots_for_bucket($bucket, $GLOBALS['cfg']['user']['id']);
 
 	if ($is_own){
 		$smarty->assign("permissions_map", dots_permissions_map());

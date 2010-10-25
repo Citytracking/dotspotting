@@ -2,6 +2,15 @@
 
 <p>[BUCKET INFO HERE]</p>
 
+{if $is_own}
+<form method="POST">
+	{$crumb_key|crumb_input}
+	<input type="hidden" name="delete" value="1" />
+	<input type="submit" value="DELETE THIS BUCKET" />
+</form>
+
+{/if}
+
 {include file="inc_user_dots.txt" dots=$bucket.dots}
 
 {include file="inc_foot.txt"}

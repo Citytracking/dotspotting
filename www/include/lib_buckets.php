@@ -61,6 +61,62 @@
 
 	#################################################################
 
+	function buckets_delete_bucket(&$bucket){
+
+		$user = users_get_by_id($bucket['user_id']);
+
+		$enc_id = AddSlashes($bucket['id']);
+		$sql = "SELECT * FROM Dots WHERE bucket_id='{$enc_id}'";
+
+		$more = array(
+			'page' => 1,
+			'per_page' => 1000,
+		);
+
+		$page_count = null;
+		$total_count = null;
+		$dots_deleted = 0;
+
+		while((! isset($page_count)) || ($page_count >= $more['page'])){
+
+			$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);		
+
+			if (! $rsp['ok']){
+				$rsp['dots_deleted'] = $dots_deleted;
+				$rsp['dots_count'] = $total_count;
+				return $rsp;
+			}
+
+			if (! isset($page_count)){
+				$page_count = $rsp['pagination']['page_count'];
+				$total_count = $rsp['pagination']['total_count'];
+			}
+
+			foreach ($rsp['rows'] as $dot){
+
+				$dot_more = array(
+					'skip_bucket_update' => 1
+				);
+
+				if (dots_delete_dot($dot, $dot_more)){
+					$dots_deleted ++;
+				}
+			}
+
+			$more['page'] ++;
+		}
+
+		$sql = "DELETE FROM Buckets WHERE id='{$enc_id}'";
+		$rsp = db_write_users($user['cluster_id'], $sql);
+
+		$rsp['dots_deleted'] = $dots_deleted;
+		$rsp['dots_count'] = $total_count;
+
+		return $rsp;
+	}
+
+	#################################################################
+
 	# Note the pass-by-ref
 
 	function buckets_load_extras(&$bucket, $viewer_id=0, $more=array()){
@@ -149,35 +205,6 @@
 		$update['last_modified'] = time();
 
 		$rsp = db_update_users($user['cluster_id'], 'Buckets', $update, $where);
-
-		if ($rsp['ok']){
-			unset($GLOBALS['buckets_local_cache'][$bucket['id']]);
-		}
-
-		return $rsp;
-	}
-
-	#################################################################
-
-	function buckets_delete_bucket(&$bucket){
-
-		$user = users_get_by_id($bucket['user_id']);
-
-		$enc_bucket_id = AddSlashes($bucket['id']);
-
-		# delete the bucket first on the grounds that
-		# it is "easier" to replace that all the dots
-		# (20101015/asc)
-
-		$sql = "DELETE FROM Buckets WHERE id='{$enc_bucket_id}'";
-		$rsp = db_write_users($user['cluster_id'], $sql);
-
-		if (! $rsp['ok']){
-			return $rsp;
-		}
-
-		$sql = "DELETE FROM Dots WHERE bucket_id='{$enc_bucket_id}'";
-		$rsp = db_write_users($user['cluster_id'], $sql);
 
 		if ($rsp['ok']){
 			unset($GLOBALS['buckets_local_cache'][$bucket['id']]);
