@@ -7,7 +7,7 @@
 
 	if (! $GLOBALS['cfg']['enable_feature_signup']){
 		$GLOBALS['error']['signup_disabled'] = 1;
-		$smarty->assign('page_signup.txt');
+		$smarty->display('page_signup.txt');
 		exit();
 	}
 
