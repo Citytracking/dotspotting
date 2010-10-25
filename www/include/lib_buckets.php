@@ -29,7 +29,7 @@
 		$now = time();
 
 		$bucket = array(
-			'user_id' => AddSlashes($user['id']),
+			'user_id' => $user['id'],
 			'created' => $now,
 			'last_modified' => $now,
 			'id' => $bucket_id,
@@ -43,11 +43,17 @@
 		foreach ($optional as $o){
 
 			if (isset($more[$o])){
-				$bucket[$o] = AddSlashes($more[$o]);
+				$bucket[$o] = $more[$o];
 			}
 		}
 
-		$rsp = db_insert_users($user['cluster_id'], 'Buckets', $bucket);
+		$hash = array();
+
+		foreach ($bucket as $k => $v){
+			$hash[$k] = AddSlashes($v);
+		}
+
+		$rsp = db_insert_users($user['cluster_id'], 'Buckets', $hash);
 
 		if (! $rsp['ok']){
 			return null;
