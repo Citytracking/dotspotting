@@ -18,6 +18,21 @@ Installation Instructions
 5. Ensure that the `www/templates_c` directory can be written to by your web server.
 6. Enable mod_rewrite in your local Apache.
 
+Making Changes to Flamework
+--
+
+Dotspotting builds on top of Flamework. We use our own fork of Flamework, but pull and push changes to the main repository as appropriate.
+
+Our fork of Flamework sits in /ext/flamework as a submodule (hence the submodule lines in the installation instructions). Sometimes you might have to make some changes to Flamework. Making changes to git submodules can be a bit strange, so let's explain:
+
+1. Change into the `/ext/flamework` directory.
+2. Submodules aren't attached to any branch - they just point to a specific revision - so we need to change onto a branch to stage our commits. `git checkout -b master`
+3. Commit your changes.
+4. Push them up to Github - make sure you're doing this from the /ext/flamework directory.
+5. Now we need to point the Dotspotting to the new revision of the Flamework submodule that we just committed. Change back into the root Dotspotting directory and commit the change to /ext/flamework that you see.
+6. Push that up to master.
+7. Now everyone is happy and no-one has any detached heads.
+
 Known Knowns
 --
 
