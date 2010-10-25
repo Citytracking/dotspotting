@@ -20,22 +20,22 @@
 		{assign var="perms" value=$dot.perms}
 		{assign var="geocoded_by" value=$dot.geocoded_by}
 			<tr class="dot_{$permissions_map.$perms|escape}">
-				<td><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></td>
-				{if $bucket}
+				<td><strong><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></strong></td>
+			{if $bucket}
 				<td><a href="{$bucket|@urls_url_for_bucket}">{if $bucket.label}{$bucket.label|escape}{else}ID {$bucket_id|escape}{/if}</a></td>
-				{else}
+			{else}
 				<td><a href="{$dot.bucket|@urls_url_for_bucket}">{if $dot.bucket.label}{$dot.bucket.label|escape}{else}{$dot.bucket_id|escape}{/if}</a></td>
-				{/if}
+			{/if}
 				<td>{$dot.latitude|escape}</td>
 				<td>{$dot.longitude|escape}</td>
 				<td>{$dot.geohash|escape}</td>
 				<td>{if $dot.created}{$dot.created|date_format:"%Y-%m-%d %H:%M"|escape}{else}&#8212;{/if}</td>
-				{if $is_own}
+			{if $is_own}
 				<td>{$dot.imported|date_format:"%Y-%m-%d %H:%M"|escape}</td>
 				<td>{$permissions_map.$perms|escape}</td>
-				<td>{if $geocoded_by}{$geocoder_map.$geocoded_by|escape}{else}&#160;{/if}</td>
-				{/if}
-				<td>{$dot.extras|@array_keys|@join:", "|escape}</td>
+				<td>{if $geocoded_by}{$geocoder_map.$geocoded_by|escape}{else}&#8212;{/if}</td>
+			{/if}
+				<td>{if $dot.extras|@count}{$dot.extras|@array_keys|@join:", "|escape}{else}&#8212;{/if}</td>
 			</tr>
 		{/foreach}
 	</tbody>

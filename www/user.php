@@ -8,25 +8,12 @@
 
 	#################################################################
 
-	$user_id = get_int64('user_id');
-
-	if (! $user_id){
-
-		error_404();
-	}
-
-	$user = users_get_by_id($user_id);
-
-	if ((! $user) || ($user['deleted'])){
-
-		error_404();
-	}
-
-	$smarty->assign_by_ref('user', $user);
+	$owner = ensure_valid_user_from_url();
+	$smarty->assign_by_ref('owner', $owner);
 
 	#################################################################
 
-	$user['counts'] = buckets_counts_for_user($user, $GLOBALS['cfg']['user']['id']);
+	$owner['counts'] = buckets_counts_for_user($owner, $GLOBALS['cfg']['user']['id']);
 
 	$smarty->display('page_user.txt');
 	exit();

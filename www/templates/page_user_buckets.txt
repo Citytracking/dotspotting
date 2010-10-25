@@ -1,12 +1,12 @@
-{capture assign='page_title'}{$user.username|escape}'s buckets{/capture}
+{capture assign='page_title'}{$owner.username|escape}'s buckets{/capture}
 {include file='inc_head.txt'}
 
 <h2>Buckets</h2>
 
 {if $buckets|@count == 0}
 
-{if $user.id != $cfg.user.id}
-<p>{$user.username|escape} hasn't uploaded any dots yet.</p>
+{if $owner.id != $cfg.user.id}
+<p>{$owner.username|escape} hasn't uploaded any dots yet.</p>
 {else}
 <p>You haven't uploaded any dots yet.</p>
 {/if}
@@ -37,7 +37,7 @@
 
 		<tr{if $bucket.count_dots_public==0} class="bucket_private"{/if}>
 			<td><a href="{$bucket|@urls_url_for_bucket}">{$bucket.id|escape}</a></td>
-			<td>{if $bucket.label}<a href="{$bucket|@urls_url_for_bucket}">{$bucket.label|escape}</a>{else}&#160;{/if}</td>
+			<td>{if $bucket.label}<a href="{$bucket|@urls_url_for_bucket}">{$bucket.label|escape}</a>{else}&#8212;{/if}</td>
 			{if $is_own}
 			<td>{$bucket.count_dots|escape}</td>
 			<td>{$bucket.count_dots_public|escape}</td>

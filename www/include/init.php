@@ -54,7 +54,7 @@
 	# Move this in to flamework ?
 	# (20101024/straup)
 
-	function ensure_valid_user($method='get'){
+	function ensure_valid_user_from_url($method='get'){
 
 		$user_id = get_int64('user_id');
 

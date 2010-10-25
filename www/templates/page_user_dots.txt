@@ -4,8 +4,8 @@
 
 {if $dots|@count == 0}
 
-{if $user.id != $cfg.user.id}
-<p>{$user.username|escape} hasn't uploaded any dots yet.</p>
+{if $owner.id != $cfg.user.id}
+<p>{$owner.username|escape} hasn't uploaded any dots yet.</p>
 {else}
 <p>You haven't uploaded any dots yet.</p>
 {/if}

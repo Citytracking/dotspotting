@@ -1,15 +1,39 @@
 {include file="inc_head.txt"}
 
-<p>[BUCKET INFO HERE]</p>
+{if $bucket.label}
+<h2>{$bucket.label|escape}</h2>
+{else}
+<h2>Bucket ID #{$bucket.id|escape}</h2>
+{/if}
 
 {if $is_own}
-<form method="POST">
+<form method="POST" style="float:right;">
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="delete" value="1" />
 	<input type="submit" value="DELETE THIS BUCKET" />
 </form>
-
 {/if}
+
+<table>
+	<tr>
+		<th>Owner</th>
+		<td><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a></td>
+	</tr>
+	<tr>
+		<th>Created</th>
+		<td>{$bucket.created|date_format:"%Y-%m-%d %H %M"|escape}</td>
+	</tr>
+	<tr>
+		<th>Last Modified</th>
+		<td>{$bucket.created|date_format:"%Y-%m-%d %H %M"|escape}</td>
+	</tr>
+	<tr>
+		<th>Bounding Box</th>
+		<td>{$bucket.extent.swlat|escape} {$bucket.extent.swlon|escape} {$bucket.extent.nelat|escape} {$bucket.extent.nelon|escape}</td>
+	</tr>
+</table>
+
+<h3>Dots</h3>
 
 {include file="inc_user_dots.txt" dots=$bucket.dots}
 

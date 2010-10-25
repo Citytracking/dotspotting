@@ -10,7 +10,7 @@
 
 	<tr>
 		<th>owner</th>
-		<td><a href="{$user|@urls_url_for_user}">{$user.username|escape}</a></td>
+		<td><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a></td>
 	</tr>
 
 	<tr>
