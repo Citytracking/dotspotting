@@ -104,7 +104,9 @@
 					'skip_bucket_update' => 1
 				);
 
-				if (dots_delete_dot($dot, $dot_more)){
+				$dot_rsp = dots_delete_dot($dot, $dot_more);
+
+				if ($dot_rsp['ok']){
 					$dots_deleted ++;
 				}
 			}
@@ -117,6 +119,71 @@
 
 		$rsp['dots_deleted'] = $dots_deleted;
 		$rsp['dots_count'] = $total_count;
+
+		return $rsp;
+	}
+
+	#################################################################
+
+	function buckets_delete_buckets_for_user(&$user){
+
+		$enc_id = AddSlashes($user['id']);
+		$sql = "SELECT * FROM Buckets WHERE user_id='{$enc_id}'";
+
+		$more = array(
+			'page' => 1,
+			'per_page' => 100,
+		);
+
+		$page_count = null;
+
+		$buckets_count = 0;
+		$buckets_deleted = 0;
+
+		$dots_count = 0;
+		$dots_deleted = 0;
+
+		while((! isset($page_count)) || ($page_count >= $more['page'])){
+
+			$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);		
+
+			if (! $rsp['ok']){
+				$rsp['buckets_deleted'] = $buckets_deleted;
+				$rsp['buckets_count'] = $buckets_count;
+				$rsp['dots_deleted'] = $dots_deleted;
+				$rsp['dots_count'] = $dots_count;
+
+				return $rsp;
+			}
+
+			if (! isset($page_count)){
+				$page_count = $rsp['pagination']['page_count'];
+				$buckets_count = $rsp['pagination']['total_count'];
+			}
+
+			foreach ($rsp['rows'] as $bucket){
+
+				$bucket_rsp = buckets_delete_bucket($bucket);
+
+				if ($bucket_rsp['ok']){
+
+					$dots_count += $bucket_rsp['dots_count'];
+					$dots_deleted += $bucket_rsp['dots_deleted'];
+
+					$buckets_deleted ++;
+				}
+			}
+
+			$more['page'] ++;
+		}
+
+		$rsp = array(
+			'ok' => 1,
+			'buckets_deleted' => $buckets_deleted,
+			'buckets_count' => $buckets_count,
+			'dots_deleted' => $dots_deleted,
+			'dots_count' => $dots_count,
+		);
 
 		return $rsp;
 	}
