@@ -32,10 +32,14 @@
 		'page' => $page,
 	);
 
-	$rsp = buckets_buckets_for_user($user, $GLOBALS['cfg']['user']['id'], $args);
+	$buckets = buckets_buckets_for_user($user, $GLOBALS['cfg']['user']['id'], $args);
 
-	$smarty->assign_by_ref('buckets', $rsp['rows']);
-	$smarty->assign_by_ref('pagination', $rsp['pagination']);
+	$is_own = ($user['id'] == $GLOBALS['cfg']['user']['id']) ? 1 : 0;
+
+	$smarty->assign("is_own", $is_own);
+	$smarty->assign_by_ref('buckets', $buckets);
+
+	$smarty->assign("pagination_url", urls_buckets_for_user($user));
 
 	$smarty->display('page_user_buckets.txt');
 	exit();

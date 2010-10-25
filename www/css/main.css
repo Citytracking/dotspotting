@@ -8,7 +8,7 @@ body {
 
 #main {
 	margin: 0 auto;
-	width: 800px;
+	width: 90%;
 	text-align: left;
 	background-color: #fff;
 	padding: 0;
@@ -61,4 +61,21 @@ p.message {
 
 label {
     font-style: italic;
+}
+
+table {
+    border:0;
+    font-size: small;
+}
+
+td {
+    padding: 6px;
+}
+
+.dot_private {
+	background-color: pink;
+}
+
+.bucket_private {
+	background-color: pink;
 }

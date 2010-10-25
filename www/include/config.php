@@ -30,6 +30,9 @@
 
 	# App specific stuff
 
+	$GLOBALS['cfg']['pagination_per_page'] = 25;
+	$GLOBALS['cfg']['pagination_spill'] = 5;
+
 	$GLOBALS['cfg']['abs_root_url']		= 'READ-FROM-SECRETS';
 	$GLOBALS['cfg']['safe_abs_root_url']	= $GLOBALS['cfg']['abs_root_url'];
 
@@ -42,4 +45,12 @@
 	$GLOBALS['cfg']['geo_geocode']['service'] = 'yahoo';
 
 	$GLOBALS['cfg']['upload_max_records'] = 1000;
+
+	# Feature flags
+
+	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
+	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
+
+	$GLOBALS['cfg']['enable_feature_password_retrieval'] = 0;
+
 ?>

@@ -1,0 +1,7 @@
+{include file="inc_head.txt"}
+
+<p>[BUCKET INFO HERE]</p>
+
+{include file="inc_user_dots.txt" dots=$bucket.dots}
+
+{include file="inc_foot.txt"}

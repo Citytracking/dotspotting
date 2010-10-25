@@ -45,7 +45,31 @@
 	loadlib("dots");
 	loadlib("urls");
 	
+	#################################################################
+
 	function smarty_function_pagination() {
 		echo($GLOBALS['smarty']->fetch('inc_pagination.txt'));
 	}
+
+	# Move this in to flamework ?
+	# (20101024/straup)
+
+	function ensure_valid_user($method='get'){
+
+		$user_id = get_int64('user_id');
+
+		if (! $user_id){
+			error_404();
+		}
+
+		$user = users_get_by_id($user_id);
+
+		if ((! $user) || ($user['deleted'])){
+			error_404();
+		}
+
+		return $user;
+	}
+
+	#################################################################
 ?>

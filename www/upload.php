@@ -6,13 +6,20 @@
 
 	include("include/init.php");
 
-	#################################################################
-
 	loadlib("uploads");
 
 	#################################################################
 
 	login_ensure_loggedin("/upload");
+
+	if (! $GLOBALS['cfg']['enable_feature_uploads']){
+
+		$GLOBALS['error']['uploads_disabled'] = 1;
+		$smarty->display("page_upload.txt");
+		exit();
+	}
+
+	#################################################################
 
 	$crumb_key = 'upload';
 	$smarty->assign("crumb_key", $crumb_key);
@@ -42,8 +49,9 @@
 		$label = post_str('label');
 		
 		$more = array(
-			'return_dots' => 1,
+			'return_dots' => 0,
 			'label' => $label,
+			'mime_type' => $_FILES['upload']['type'],
 		);
 
 		$rsp = uploads_process_data($GLOBALS['cfg']['user'], $rsp['data'], $more);

@@ -2,23 +2,20 @@
 
 <h2>Dots</h2>
 
-<table>
-	<thead>
-		<tr>
-			<th>Latitude</th>
-			<th>Longitude</th>
-		</tr>
-	</thead>
-	<tbody>
-		{foreach from=$dots item=dot}
-			<tr>
-				<td>{$dot.latitude}</td>
-				<td>{$dot.longitude}</td>
-			</tr>
-		{/foreach}
-	</tbody>
-</table>
+{if $dots|@count == 0}
+
+{if $user.id != $cfg.user.id}
+<p>{$user.username|escape} hasn't uploaded any dots yet.</p>
+{else}
+<p>You haven't uploaded any dots yet.</p>
+{/if}
+
+{else}
+
+{include file="inc_user_dots.txt" dots=$dots}
 
 {pagination}
+
+{/if}
 
 {include file='inc_foot.txt'}

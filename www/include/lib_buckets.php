@@ -6,19 +6,25 @@
 
 	#################################################################
 
+	$GLOBALS['buckets_local_cache'] = array();
+
+	#################################################################
+
 	# Hey look! We're deliberately punting any user-defined
 	# properties like title, etc. for now.
 	# (20101015/asc)
 
-	function bucket_create_bucket(&$user, $more=array()){
+	function buckets_create_bucket(&$user, $more=array()){
 
 		$bucket_id = dbtickets_create(32);
 
 		if (! $bucket_id){
-			return null;
-		}
 
-		$label = ($more['label']) ? $more['label'] : '';
+			return array(
+				'ok' => 0,
+				'error' => 'Ticket server failed',
+			);
+		}
 
 		$now = time();
 
@@ -27,8 +33,19 @@
 			'created' => $now,
 			'last_modified' => $now,
 			'id' => $bucket_id,
-			'label' => AddSlashes($label),
 		);
+
+		$optional = array(
+			'label',
+			'mime_type',
+		);
+
+		foreach ($optional as $o){
+
+			if (isset($more[$o])){
+				$bucket[$o] = AddSlashes($more[$o]);
+			}
+		}
 
 		$rsp = db_insert_users($user['cluster_id'], 'Buckets', $bucket);
 
@@ -36,18 +53,24 @@
 			return null;
 		}
 
-		buckets_load_extras($bucket);
+		buckets_load_extras($bucket, $user['id']);
 
-		return $bucket;
+		$rsp['bucket'] = $bucket;
+		return $rsp;
 	}
 
 	#################################################################
 
 	# Note the pass-by-ref
 
-	function buckets_load_extras(&$bucket){
+	function buckets_load_extras(&$bucket, $viewer_id=0, $more=array()){
 
 		$bucket['public_id'] = buckets_get_public_id($bucket);
+		$bucket['extent'] = dots_get_extent_for_bucket($bucket, $viewer_id);
+
+		if ($more['load_dots']){
+			$bucket['dots'] = dots_get_dots_for_bucket($bucket, $viewer_id);
+		}
 	}
 
 	#################################################################
@@ -68,18 +91,46 @@
 
 	# Should this count public dots?
 
-	function buckets_get_bucket($public_id){
+	function buckets_get_bucket($public_id, $viewer_id=0, $more=array()){
 
 		list($user_id, $bucket_id) = buckets_explode_public_id($public_id);
 
-		$user = users_get_by_id($bucket['user_id']);
+		if (isset($GLOBALS['buckets_local_cache'][$bucket_id])){
+			return $GLOBALS['buckets_local_cache'][$bucket_id];
+		}
+
+		$user = users_get_by_id($user_id);
 
 		$enc_id = AddSlashes($bucket_id);
+		$enc_user = AddSlashes($user['id']);
 
-		$sql = "SELECT * FROM Buckets WHERE id='{$enc_id}'";
+		$sql = "SELECT * FROM Buckets WHERE id='{$enc_id}' AND user_id='{$enc_user}'";
 
 		$rsp = db_fetch_users($user['cluster_id'], $sql);
-		return db_single($rsp);
+		$bucket = db_single($rsp);
+
+		if ($bucket){
+
+			buckets_load_extras($bucket, $viewer_id, $more);
+			$GLOBALS['buckets_local_cache'][$bucket_id] = $bucket;
+		}
+
+		return $bucket;
+	}
+
+	#################################################################
+
+	function buckets_can_view_bucket(&$bucket, $viewer_id=0){
+
+		if ($bucket['user_id'] == $viewer_id){
+			return 1;
+		}
+
+		if ($bucket['count_dots_public'] >= 1){
+			return 1;
+		}
+
+		return 0;
 	}
 
 	#################################################################
@@ -97,7 +148,13 @@
 
 		$update['last_modified'] = time();
 
-		return db_update_users($user['cluster_id'], 'Buckets', $update, $where);
+		$rsp = db_update_users($user['cluster_id'], 'Buckets', $update, $where);
+
+		if ($rsp['ok']){
+			unset($GLOBALS['buckets_local_cache'][$bucket['id']]);
+		}
+
+		return $rsp;
 	}
 
 	#################################################################
@@ -122,6 +179,10 @@
 		$sql = "DELETE FROM Dots WHERE bucket_id='{$enc_bucket_id}'";
 		$rsp = db_write_users($user['cluster_id'], $sql);
 
+		if ($rsp['ok']){
+			unset($GLOBALS['buckets_local_cache'][$bucket['id']]);
+		}
+
 		return $rsp;
 	}
 
@@ -138,7 +199,15 @@
 			$sql .= " AND count_dots_public > 0";
 		}
 
-		return db_fetch_paginated_users($user['cluster_id'], $sql, $args);
+		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
+		$buckets = array();
+
+		foreach ($rsp['rows'] as $row){
+			buckets_load_extras($row, $viewer_id);
+			$buckets[] = $row;
+		}
+
+		return $buckets;
 	}
 
 	#################################################################
