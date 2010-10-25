@@ -5,8 +5,13 @@
 
 	include("include/init.php");
 
-	login_ensure_loggedout();
+	if (! $GLOBALS['cfg']['enable_feature_signin']){
+		$GLOBALS['error']['signin_disabled'] = 1;
+		$smarty->display('page_signin.txt');
+		exit();
+	}
 
+	login_ensure_loggedout();
 
 	#
 	# pass through
