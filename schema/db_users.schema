@@ -46,6 +46,7 @@ DROP TABLE IF EXISTS `DotsExtras`;
 CREATE TABLE `DotsExtras` (
   `dot_id` bigint(20) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
+  `namespace` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `label` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `value` varchar(255) CHARACTER SET latin1 DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

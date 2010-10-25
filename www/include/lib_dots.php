@@ -100,6 +100,10 @@
 		
 		# if we have an address field, and no latitude/longitude, do the geocode thing
 
+		# TODO: move all of this in to a separate function that
+		# can schedule offline/out-of-band tasks.
+		# (20101025/straup)
+
 		if (isset($data['address']) && (empty($data['latitude']) || empty($data['longitude']))){
 
 			$geocode_rsp = geo_geocode_string($data['address']);
@@ -119,6 +123,13 @@
 			$lat = $geocode_rsp['latitude'];
 			$lon = $geocode_rsp['longitude'];
 			$geocoded_by = $geocode_rsp['service_id'];
+
+			$map = geo_geocode_service_map();
+			$geocoder = $map[$geocoded_by];
+
+			foreach ($geocode_rsp['extras'] as $k => $v){
+				$data["{$geocoder}:{$k}"] = $v;
+			}
 		}
 
 		else {
@@ -478,7 +489,11 @@
 
 	function dots_ensure_valid_data(&$data){
 
+		$skip_required_latlon = 0;
+
 		if (isset($data['address']) && (empty($data['latitude']) || empty($data['longitude']))){
+
+			$skip_required_latlon = 1;
 
 			# It is unclear whether this should really return an
 			# error - perhaps it should simply add the dot with

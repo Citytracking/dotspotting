@@ -15,9 +15,14 @@
 
 		$user = users_get_by_id($dot['user_id']);
 
+		if (strpos($label, ":")){
+			list($ns, $label) = explode(":", $label, 2);
+		}
+
 		$extra = array(
 			'user_id' => AddSlashes($user['id']),
 			'dot_id' => AddSlashes($dot['id']),
+			'namespace' => AddSlashes($ns),
 			'label' => AddSlashes($label),
 			'value' => AddSlashes($value),
 		);
@@ -46,31 +51,20 @@
 
 		foreach ($rsp['rows'] as $row){
 
-			if (strpos($row['label'], ":")){
-
-				list($ns, $label) = explode(":", $row['label'], 2);
-
-				if (! is_array($extras[$ns])){
-					$extras[$ns] = array();
-				}
-
-				if (! is_array($extras[$ns][$label])){
-					$extras[$ns][$label] = array();
-				}
-
-				$extras[$ns][$label][] = $value;				
+			if ($ns = $row['namespace']){
+				$row['label'] = implode(":", array(
+					$row['namespace'],
+					$row['label']
+				));
 			}
 
-			else {
+			$label = $row['label'];
 
-				$label = $row['label'];
-
-				if (! is_array($extras[$label])){
-					$extras[$label] = array();
-				}
-
-				$extras[$label][] = $row['value'];
+			if (! is_array($extras[$label])){
+				$extras[$label] = array();
 			}
+
+			$extras[$label][] = $row['value'];
 		}
 
 		return $extras;
