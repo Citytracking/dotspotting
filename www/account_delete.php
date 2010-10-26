@@ -24,9 +24,9 @@
 
 		if (post_str('confirm')){
 
-			$ok = users_delete_user($GLOBALS['cfg']['user']);
+			$rsp = users_delete_user($GLOBALS['cfg']['user']);
 
-			if ($ok){
+			if ($rsp['ok']){
 				login_do_logout();
 
 				$smarty->display('page_account_delete_done.txt');

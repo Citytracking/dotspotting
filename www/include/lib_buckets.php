@@ -10,10 +10,6 @@
 
 	#################################################################
 
-	# Hey look! We're deliberately punting any user-defined
-	# properties like title, etc. for now.
-	# (20101015/asc)
-
 	function buckets_create_bucket(&$user, $more=array()){
 
 		$bucket_id = dbtickets_create(32);
@@ -177,15 +173,13 @@
 			$more['page'] ++;
 		}
 
-		$rsp = array(
+		return array(
 			'ok' => 1,
 			'buckets_deleted' => $buckets_deleted,
 			'buckets_count' => $buckets_count,
 			'dots_deleted' => $dots_deleted,
 			'dots_count' => $dots_count,
 		);
-
-		return $rsp;
 	}
 
 	#################################################################
@@ -325,10 +319,6 @@
 	}
 
 	#################################################################
-
-	# this is unfinished and needs to do factor in 
-	# public/private counts (that might mean a totally
-	# different function too...)
 
 	function buckets_counts_for_user(&$user, $viewer_id=0){
 

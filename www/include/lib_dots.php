@@ -214,7 +214,9 @@
 				continue;
 			}
 
-			if (! dots_extras_create_extra($dot, $label, $data[$label])){
+			$extra_rsp = dots_extras_create_extra($dot, $label, $data[$label]);
+
+			if (! $extra_rsp['ok']){
 				# do something...
 			}
 		}

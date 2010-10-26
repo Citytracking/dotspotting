@@ -20,20 +20,26 @@
 		}
 
 		$extra = array(
-			'user_id' => AddSlashes($user['id']),
-			'dot_id' => AddSlashes($dot['id']),
-			'namespace' => AddSlashes($ns),
-			'label' => AddSlashes($label),
-			'value' => AddSlashes($value),
+			'user_id' => $user['id'],
+			'dot_id' => $dot['id'],
+			'namespace' => $ns,
+			'label' => $label,
+			'value' => $value,
 		);
 
-		$rsp = db_insert_users($user['cluster_id'], 'DotsExtras', $extra);
+		$hash = array();
 
-		if (! $rsp['ok']){
-			return null;
+		foreach ($extra as $k => $v){
+			$hash[$k] = AddSlashes($v);
 		}
 
-		return 1;
+		$rsp = db_insert_users($user['cluster_id'], 'DotsExtras', $hash);
+
+		if ($rsp['ok']){
+			$rsp['extra'] = $extra;
+		}
+
+		return $rsp;
 	}
 
 	#################################################################
