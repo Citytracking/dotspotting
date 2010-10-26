@@ -54,9 +54,15 @@
 	# Move this in to flamework ?
 	# (20101024/straup)
 
-	function ensure_valid_user_from_url($method='get'){
+	function ensure_valid_user_from_url($method=''){
 
-		$user_id = get_int64('user_id');
+		if (strtolower($method) == 'post'){
+			$user_id = post_int64('user_id');
+		}
+
+		else {
+			$user_id = get_int64('user_id');
+		}
 
 		if (! $user_id){
 			error_404();
