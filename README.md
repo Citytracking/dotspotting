@@ -12,7 +12,9 @@ Dependencies
 Flamework (?!)
 --
 
-Dotspotting does not so much piggyback on a traditional framework as it does hold hands with an anti-framework. 
+Dotspotting does not so much piggyback on a traditional framework as it does hold hands with an anti-framework called "flamework". 
+
+("the crumbly edge of future-proofing" -- Heather Champ)
 
 Installation Instructions
 --
