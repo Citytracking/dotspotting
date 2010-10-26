@@ -18,11 +18,8 @@
 
 		$counts = buckets_counts_for_user($GLOBALS['cfg']['user'], $GLOBALS['cfg']['user']['id']);
 		$GLOBALS['cfg']['user']['counts'] = $counts;
-
-		# Upload crumb
-
-		$smarty->assign("crumb_key", 'upload');
 	}
+
 
 	#################################################################
 

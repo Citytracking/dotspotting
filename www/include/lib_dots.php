@@ -14,6 +14,7 @@
 
 	#################################################################
 
+	$GLOBALS['dots_lookup_local_cache'] = array();
 	$GLOBALS['dots_local_cache'] = array();
 
 	#################################################################
@@ -222,8 +223,26 @@
 		}
 
 		#
+		# Update the DotsLookup table
+		#
 
-		$dot['public_id'] = dots_get_public_id($dot);
+		$lookup = array(
+			'dot_id' => AddSlashes($id),
+			'bucket_id' => AddSlashes($bucket['id']),
+			'user_id' => AddSlashes($user['id']),
+			'imported' => AddSlashes($now),
+			'perms' => AddSlashes($perms),
+		);
+
+		$lookup_rsp = db_insert('DotsLookup', $lookup);
+
+		if (! $lookup_rsp['ok']){
+			# What? 
+		}
+
+		#
+		# Happy happy
+		#
 
 		$rsp['dot'] = $dot;
 		return $rsp;
@@ -250,6 +269,24 @@
 			unset($GLOBALS['dots_local_cache'][$dot['id']]);
 		}
 
+		#
+		# Update perms in the lookup table?
+		#
+
+		if (isset($update['perms'])){
+
+			$lookup_update = array( 'perms' => $update['perms'] );
+			$lookup_where = "dot_id='{$enc_id}'";
+
+			$lookup_rsp = db_update('DotsLookup', $lookup_update, $lookup_where);
+
+			if (! $lookup_rsp['ok']){
+				# What?
+			}
+		}
+
+		# Happy!		
+
 		return $rsp;
 	}
 
@@ -273,46 +310,32 @@
 
 		if (($rsp['ok']) && (! isset($more['skip_bucket_update']))){
 
-			$bid = dots_get_public_id_for_bucket($dot);
-			$bucket = buckets_get_bucket($bid);
+			$bucket = buckets_get_bucket($dot['bucket_id']);
 
 			$rsp2 = buckets_update_dot_count_for_bucket($bucket);
 			$rsp['update_bucket_count'] = $rsp2['ok'];
 		}
+
+		#
+		# Update the lookup table
+		#
+
+		$lookup_update = array( 'deleted' => time() );
+		$lookup_where = "dot_id='{$enc_id}'";
+
+		$lookup_rsp = db_update('DotsLookup', $lookup_update, $lookup_where);
+
+		if (! $lookup_rsp['ok']){
+			# What?
+		}
+
+		#
 
 		if ($rsp['ok']){
 			unset($GLOBALS['dots_local_cache'][$dot['id']]);
 		}
 
 		return $rsp;
-	}
-
-	#################################################################
-
-	function dots_get_url(&$dot){
-
-		return '';
-	}
-
-	#################################################################
-
-	function dots_get_public_id(&$dot){
-
-		return $dot['user_id'] . "-" . $dot['id'];
-	}
-
-	#################################################################
-
-	function dots_get_public_id_for_bucket(&$dot){
-
-		return $dot['user_id'] . "-" . $dot['bucket_id'];
-	}
-
-	#################################################################
-
-	function dots_explode_public_id($public_id){
-
-		return explode("-", $public_id, 2);
 	}
 
 	#################################################################
@@ -335,20 +358,52 @@
 
 	#################################################################
 
-	function dots_get_dot($public_id, $viewer_id=0){
+	#
+	# Grab the bucket from db_main
+	#
 
-		list($user_id, $dot_id) = dots_explode_public_id($public_id);
+	function dots_lookup_dot($dot_id){
+
+		if (isset($GLOBALS['dots_lookup_local_cache'][$dot_id])){
+			return $GLOBALS['dots_lookup_local_cache'][$dot_id];
+		}
+
+		$enc_id = AddSlashes($dot_id);
+
+		$sql = "SELECT * FROM DotsLookup WHERE dot_id='{$enc_id}'";
+		$rsp = db_fetch($sql);
+
+		if ($rsp['ok']){
+			$GLOBALS['dots_lookup_local_cache'][$dot_id] = $rsp;
+		}
+
+		return db_single($rsp);
+	}
+
+	#################################################################
+
+	#
+	# Fetch the dot from the shards
+	#	
+
+	function dots_get_dot($dot_id, $viewer_id=0){
 
 		if (isset($GLOBALS['dots_local_cache'][$dot_id])){
 			return $GLOBALS['dots_local_cache'][$sot_id];
 		}
 
-		$user = users_get_by_id($user_id);
+		$lookup = dots_lookup_dot($dot_id);
+
+		if ((! $lookup) || ($lookup['deleted'])){
+			return;
+		}
+
+		$user = users_get_by_id($lookup['user_id']);
 
 		$enc_id = AddSlashes($dot_id);
 		$enc_user = AddSlashes($user['id']);
 
-		$sql = "SELECT * FROM Dots WHERE id='{$enc_id}' AND user_id='{$enc_user}'";
+		$sql = "SELECT * FROM Dots WHERE id='{$enc_id}'";
 
 		if ($viewer_id !== $user['id']){
 			# $sql = _dots_where_public_sql($sql);
@@ -385,10 +440,10 @@
 
 	#################################################################
 
-	function dot_explode_public_id($public_id){
+	function dots_get_dots_recent_imported($viewer_id=0){
 
-		return explode("-", $public_id, 2);
-	}
+		# ... guh... need to denormalize into db_main
+	}	
 
 	#################################################################
 
@@ -417,6 +472,8 @@
 		return $dots;
 	}
 	
+	#################################################################
+
 	function dots_get_dots_for_user(&$user, $viewer_id=0, $args=array()) {
 
 		$enc_id = AddSlashes($user['id']);
@@ -481,14 +538,10 @@
 
 	function dots_load_extras(&$dot, $viewer_id, $more=array()){
 
-		$dot['public_id'] = dots_get_public_id($dot);
-		$dot['url'] = dots_get_url($dot);
-
 		$dot['extras'] = dots_extras_get_extras($dot);
 
 		if ($more['load_bucket']){
-			$bid = dots_get_public_id_for_bucket($dot);
-	 		$dot['bucket'] = buckets_get_bucket($bid);
+	 		$dot['bucket'] = buckets_get_bucket($dot['bucket_id']);
 		}
 
 	}
@@ -542,8 +595,10 @@
 
 	#################################################################
 
+	#
 	# Do not include any dots that may in the queue
 	# waiting to be geocoded, etc.
+	#
 
 	function _dots_where_public_sql($sql, $has_where=1){
 

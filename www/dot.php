@@ -15,12 +15,7 @@
 		error_404();
 	}
 
-	# THIS IS WRONG AND DIRTY AND STILL NOT WORKED OUT
-	# (20101024/straup)
-
-	$public_id = implode("-", array($owner['id'], $dot_id));
-
-	$dot = dots_get_dot($public_id, $GLOBALS['cfg']['user']['id']);
+	$dot = dots_get_dot($dot_id, $GLOBALS['cfg']['user']['id']);
 
 	if (! $dot){
 		error_404();

@@ -6,13 +6,14 @@
 
 	#################################################################
 
+	$GLOBALS['buckets_lookup_local_cache'] = array();
 	$GLOBALS['buckets_local_cache'] = array();
 
 	#################################################################
 
 	function buckets_create_bucket(&$user, $more=array()){
 
-		$bucket_id = dbtickets_create(32);
+		$bucket_id = dbtickets_create(64);
 
 		if (! $bucket_id){
 
@@ -55,6 +56,26 @@
 			return null;
 		}
 
+		#
+		# Store in the lookup table
+		#
+
+		$lookup = array(
+			'bucket_id' => AddSlashes($bucket_id),
+			'user_id' => AddSlashes($user['id']),
+			'created' => AddSlashes($now),
+		);
+
+		$lookup_rsp = db_insert('BucketsLookup', $lookup);
+
+		if (! $lookup_rsp['ok']){
+			# What ?
+		}
+
+		#
+		# Okay!
+		#
+
 		buckets_load_extras($bucket, $user['id']);
 
 		$rsp['bucket'] = $bucket;
@@ -62,6 +83,13 @@
 	}
 
 	#################################################################
+
+	#
+	# Whatever else happens in this function, it should be
+	# done in a way that allows it to be run out of band (as
+	# in: some kind of offline task) should that ever become
+	# necessary.
+	#
 
 	function buckets_delete_bucket(&$bucket){
 
@@ -113,6 +141,26 @@
 		$sql = "DELETE FROM Buckets WHERE id='{$enc_id}'";
 		$rsp = db_write_users($user['cluster_id'], $sql);
 
+		#
+		# Update the lookup table
+		#
+
+		$update = array(
+			'deleted' => time(),
+		);
+
+		$where = "bucket_id='{$enc_id}'";
+
+		$lookup_rsp = db_update('BucketsLookup', $update, $where);
+
+		if (! $lookup_rsp['ok']){
+			# what?
+		}
+
+		#
+		# Happy happy!
+		#
+
 		$rsp['dots_deleted'] = $dots_deleted;
 		$rsp['dots_count'] = $total_count;
 
@@ -120,6 +168,13 @@
 	}
 
 	#################################################################
+
+	#
+	# Whatever else happens in this function, it should be
+	# done in a way that allows it to be run out of band (as
+	# in: some kind of offline task) should that ever become
+	# necessary.
+	#
 
 	function buckets_delete_buckets_for_user(&$user){
 
@@ -184,11 +239,12 @@
 
 	#################################################################
 
+	#
 	# Note the pass-by-ref
+	#
 
 	function buckets_load_extras(&$bucket, $viewer_id=0, $more=array()){
 
-		$bucket['public_id'] = buckets_get_public_id($bucket);
 		$bucket['extent'] = dots_get_extent_for_bucket($bucket, $viewer_id);
 
 		if ($more['load_dots']){
@@ -198,31 +254,47 @@
 
 	#################################################################
 
-	function buckets_get_public_id(&$bucket){
+	#
+	# Grab the bucket from db_main
+	#
 
-		return $bucket['user_id'] . "-" . $bucket['id'];
+	function buckets_lookup_bucket($bucket_id){
+
+		if (isset($GLOBALS['buckets_lookup_local_cache'][$bucket_id])){
+			return $GLOBALS['buckets_lookup_local_cache'][$bucket_id];
+		}
+
+		$enc_id = AddSlashes($bucket_id);
+
+		$sql = "SELECT * FROM BucketsLookup WHERE bucket_id='{$enc_id}'";
+		$rsp = db_fetch($sql);
+
+		if ($rsp['ok']){
+			$GLOBALS['buckets_lookup_local_cache'][$bucket_id] = $rsp;
+		}
+
+		return db_single($rsp);
 	}
 
 	#################################################################
 
-	function buckets_explode_public_id($public_id){
+	#
+	# Grab the bucket from the shards
+	#
 
-		return explode("-", $public_id, 2);
-	}
-
-	#################################################################
-
-	# Should this count public dots?
-
-	function buckets_get_bucket($public_id, $viewer_id=0, $more=array()){
-
-		list($user_id, $bucket_id) = buckets_explode_public_id($public_id);
+	function buckets_get_bucket($bucket_id, $viewer_id=0, $more=array()){
 
 		if (isset($GLOBALS['buckets_local_cache'][$bucket_id])){
 			return $GLOBALS['buckets_local_cache'][$bucket_id];
 		}
 
-		$user = users_get_by_id($user_id);
+		$lookup = buckets_lookup_bucket($bucket_id);
+
+		if ((! $lookup) || ($lookup['deleted'])){
+			return;
+		}
+
+		$user = users_get_by_id($lookup['user_id']);
 
 		$enc_id = AddSlashes($bucket_id);
 		$enc_user = AddSlashes($user['id']);

@@ -9,18 +9,13 @@
 
 	$owner = ensure_valid_user_from_url();
 
-	# THIS IS WRONG AND DIRTY AND STILL NOT WORKED OUT
-	# (20101024/straup)
-
 	$bucket_id = get_int64('bucket_id');
 
 	if (! $bucket_id){
 		error_404();
 	}
 
-	$public_id = implode("-", array($owner['id'], $bucket_id));
-
-	$bucket = buckets_get_bucket($public_id, $GLOBALS['cfg']['user']['id']);
+	$bucket = buckets_get_bucket($bucket_id, $GLOBALS['cfg']['user']['id']);
 
 	if (! $bucket){
 		error_404();

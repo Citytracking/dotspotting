@@ -36,8 +36,6 @@ INVISIBLE ERROR CAT HISSES AT YOU.
 
 {/if}
 
-<p>Would you like to upload another set of dots?</p>
-
 {/if}
 
 {include file="inc_upload_file.txt"}
