@@ -7,6 +7,7 @@
 	{if $cfg.javascript_use_polymaps}
 	{else}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.min.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.tilestache.js"></script>
 	{/if}
 	{$extra_head}
 </head>

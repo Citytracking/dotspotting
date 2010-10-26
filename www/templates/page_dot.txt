@@ -20,6 +20,7 @@ A dot by {$cfg.user.username|escape}
 <p>This dot is part of an <a href="{$dot.bucket|@urls_url_for_bucket}">unnamed bucket</a>, created {$dot.bucket.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
 {/if}
 
+<div id="map"></div>
 <table>
 
 	<tr>
@@ -75,5 +76,29 @@ A dot by {$cfg.user.username|escape}
 	</tr>
 
 </table>
+
+{* TO DO: markers *}
+{* TO DO: move all this JS in to a separate JS file(s) and check for 'use polymaps' flag *}
+<script type="text/javascript">
+
+	var lat = {$dot.latitude|escape};
+	var lon = {$dot.longitude|escape};
+	var zoom = 10;
+
+{literal}
+	var mm = com.modestmaps;
+
+	var template = 'http://s3.amazonaws.com/info.aaronland.tiles.shapetiles/{Z}/{X}/{Y}.png';
+	var provider = new mm.TileStacheStaticMapProvider(template);
+	provider.setZoomRange(1, 10);
+
+	var dims = undefined;
+	var handlers = undefined;
+
+	var map = new mm.Map('map', provider, dims, handlers);
+	var loc = new mm.Location(lat, lon);
+    	map.setCenterZoom(loc, zoom);
+{/literal}
+</script>
 
 {include file="inc_foot.txt"}

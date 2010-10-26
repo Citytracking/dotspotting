@@ -14,6 +14,13 @@ body {
 	padding: 0;
 }
 
+#map{
+    width:100%;
+    height:400px;
+    margin-bottom:50px;
+    border: 1px solid #ccc; 
+}
+
 #nav {
 	background-color: #ddd;
 	padding: 0.5em 1em;

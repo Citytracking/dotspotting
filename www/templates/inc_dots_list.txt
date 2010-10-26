@@ -1,3 +1,4 @@
+<div id="map"></div>
 <table>
 	<thead>
 		<tr>
@@ -40,3 +41,27 @@
 		{/foreach}
 	</tbody>
 </table>
+{* TO DO: calculate the extent for dots (above) and assign the map extent accordingly *}
+{* TO DO: move all this JS in to a separate JS file(s) and check for 'use polymaps' flag *}
+<script type="text/javascript">
+
+	var lat = 37.764857;
+	var lon = -122.419363;
+	var zoom = 2;
+
+
+{literal}
+	var mm = com.modestmaps;
+
+	var template = 'http://s3.amazonaws.com/info.aaronland.tiles.shapetiles/{Z}/{X}/{Y}.png';
+	var provider = new mm.TileStacheStaticMapProvider(template);
+	provider.setZoomRange(1, 10);
+
+	var dims = undefined;
+	var handlers = undefined;
+
+	var map = new mm.Map('map', provider, dims, handlers);
+	var loc = new mm.Location(lat, lon);
+    	map.setCenterZoom(loc, zoom);
+{/literal}
+</script>
