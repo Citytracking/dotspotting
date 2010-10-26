@@ -1,7 +1,3 @@
---
--- Table structure for table `Users`
---
-
 DROP TABLE IF EXISTS `Users`;
 
 CREATE TABLE `Users` (
@@ -15,13 +11,9 @@ CREATE TABLE `Users` (
   `cluster_id` tinyint(3) unsigned NOT NULL,
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `by_email` (`email`),
+  UNIQUE KEY `by_email` (`email`,`deleted`),
   UNIQUE KEY `by_username` (`username`,`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `UsersPasswordReset`
---
 
 DROP TABLE IF EXISTS `UsersPasswordReset`;
 
@@ -33,3 +25,25 @@ CREATE TABLE `UsersPasswordReset` (
   KEY `by_user` (`user_id`),
   KEY `by_timestamp` (`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `DotsLookup`;
+
+CREATE TABLE `DotsLookup` (
+  `dot_id` bigint(20) unsigned NOT NULL,
+  `user_id` int(11) unsigned NOT NULL,
+  `perms` tinyint(3) unsigned NOT NULL,
+  `imported` int(10) unsigned NOT NULL,
+  `deleted` int(10) unsigned NOT NULL,
+  `bucket_id` bigint(20) unsigned NOT NULL,
+  `geohash` varchar(12) CHARACTER SET latin1 DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `BucketsLookup`;
+
+CREATE TABLE `BucketsLookup` (
+  `bucket_id` bigint(20) unsigned NOT NULL,
+  `user_id` int(11) unsigned NOT NULL,
+  `created` int(10) unsigned NOT NULL,
+  `deleted` int(10) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

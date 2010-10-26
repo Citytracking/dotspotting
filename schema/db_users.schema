@@ -1,7 +1,3 @@
---
--- Table structure for table `Buckets`
---
-
 DROP TABLE IF EXISTS `Buckets`;
 
 CREATE TABLE `Buckets` (
@@ -15,10 +11,6 @@ CREATE TABLE `Buckets` (
   `mime_type` varchar(24) DEFAULT NULL,
   UNIQUE KEY `by_id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `Dots`
---
 
 DROP TABLE IF EXISTS `Dots`;
 
@@ -36,10 +28,6 @@ CREATE TABLE `Dots` (
   `geocoded_by` tinyint(3) unsigned NOT NULL,
   UNIQUE KEY `by_id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `DotsExtras`
---
 
 DROP TABLE IF EXISTS `DotsExtras`;
 
