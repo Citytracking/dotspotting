@@ -79,3 +79,7 @@ td {
 .bucket_private {
 	background-color: pink;
 }
+
+.untitled {
+	font-style:italic;
+}

@@ -145,7 +145,7 @@
 		$created = $now;
 
 		if ($alt_created = $data['created']){
-			$created = (is_int($alt_created)) ? $alt_created : strtotime($alt_created);
+			$created = (intval($alt_created)) ? $alt_created : strtotime($alt_created);
 		}
 
 		# permissions
@@ -170,6 +170,8 @@
 			'perms' => $perms,
 		);
 		
+dumper($dot);
+
 		# AddSlashes turns null into empty strings.
 		# We don't add latitude/longitude to the $dot array unless they're present
 		# because otherwise mysql will interpret the empty string as a zero.
@@ -232,6 +234,7 @@
 			'user_id' => AddSlashes($user['id']),
 			'imported' => AddSlashes($now),
 			'perms' => AddSlashes($perms),
+			'geohash' => AddSlashes($geohash),
 		);
 
 		$lookup_rsp = db_insert('DotsLookup', $lookup);
@@ -275,7 +278,13 @@
 
 		if (isset($update['perms'])){
 
-			$lookup_update = array( 'perms' => $update['perms'] );
+			$bucket = buckets_get_bucket($dot['bucket_id']);
+			$count_rsp = buckets_update_dot_count_for_bucket($bucket);
+
+			$lookup_update = array(
+				'perms' => $update['perms']
+			);
+
 			$lookup_where = "dot_id='{$enc_id}'";
 
 			$lookup_rsp = db_update('DotsLookup', $lookup_update, $lookup_where);
@@ -320,7 +329,13 @@
 		# Update the lookup table
 		#
 
-		$lookup_update = array( 'deleted' => time() );
+		$new_geohash = substr($dot['geohash'], 0, 3);
+
+		$lookup_update = array(
+			'deleted' => time(),
+			'geohash' => AddSlashes($new_geohash),
+		);
+
 		$lookup_where = "dot_id='{$enc_id}'";
 
 		$lookup_rsp = db_update('DotsLookup', $lookup_update, $lookup_where);
@@ -440,9 +455,82 @@
 
 	#################################################################
 
-	function dots_get_dots_recent_imported($viewer_id=0){
+	#
+	# I am not (even a little bit) convinced this is a particularly
+	# awesome way to do this. But it's a start. For now.
+	# (20101026/straup)
+	#
+	
+	function dots_get_dots_recently_imported($to_fetch=20){
 
-		# ... guh... need to denormalize into db_main
+		$recent = array();
+
+		$bucket_sql = "SELECT * FROM BucketsLookup WHERE deleted=0 ORDER BY created DESC";
+		$bucket_args = array( 'page' => 1 );
+
+		$page_count = null;
+		$total_count = null;
+
+		$iters = 0;
+		$max_iters = 15;
+
+		while((! isset($page_count)) || ($page_count >= $bucket_args['page'])){
+
+			$bucket_rsp = db_fetch_paginated($bucket_sql, $bucket_args);
+
+			if (! $bucket_rsp['ok']){
+				break;
+			}
+
+			if (! isset($page_count)){
+				$page_count = $bucket_rsp['pagination']['page_count'];
+				$total_count = $bucket_rsp['pagination']['total_count'];
+			}
+
+			foreach ($bucket_rsp['rows'] as $bucket){
+
+				$enc_bucket = AddSlashes($bucket['bucket_id']);
+
+				$dot_sql = "SELECT * FROM DotsLookup WHERE bucket_id='{$enc_bucket}' AND deleted=0 AND perms=0 ORDER BY imported DESC";
+				$dot_args = array( 'per_page' => 15 );
+
+				$dot_rsp = db_fetch_paginated($dot_sql, $dot_args);
+
+				if (! $dot_rsp['ok']){
+					break;
+				}
+
+				$limit = min(3, count($dot_rsp['rows']));
+
+				if ($limit){
+
+					shuffle($dot_rsp['rows']);
+
+					foreach (array_slice($dot_rsp['rows'], 0, $limit) as $row){
+
+						$recent[] = dots_get_dot($row['dot_id']);
+					}
+
+					if (count($recent) == $to_fetch){
+						break;
+					}
+				}
+			}
+
+			if (count($recent) == $to_fetch){
+				break;
+			}
+
+			$bucket_args['page'] ++;
+			$iters ++;
+
+			if ($iters == $max_iters){
+				break;
+			}
+		}
+
+		shuffle($recent);
+		return $recent;
 	}	
 
 	#################################################################

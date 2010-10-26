@@ -8,10 +8,16 @@
 	{* it would be nice to include inc_upload_file here but the crumb code always expects the same SCRIPT_NAME - TBD... *}
 {else}
 	<h2>Welcome to dotspotting</h2>
-{/if}
 
 	{if $cfg.enable_feature_uploads}
-<a href="/upload">Upload some dots</a>
+<a href="/upload">Get stated and upload some dots!</a>
 	{/if}
+
+{/if}
+
+{if $recent_dots|@count}
+	<h3>Recent Dots added to Dotspotting</h3>
+	{include file="inc_user_dots.txt" dots=$recent_dots}
+{/if}
 
 {include file='inc_foot.txt'}

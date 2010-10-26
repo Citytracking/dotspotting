@@ -22,5 +22,7 @@
 <p><a href="/password/forgot">Forgotten your password?</a></p>
 {/if}
 
+<p>Or <a href="/signup?redir={$redir|escape}">Create a new account</a></p>
+
 {/if}
 {include file='inc_foot.txt'}
