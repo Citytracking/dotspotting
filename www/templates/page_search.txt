@@ -1,0 +1,13 @@
+{assign var="page_title" value="Search"}
+{include file="inc_head.txt"}
+
+{if $error.search_disabled}
+<p class="error">Search is currently disabled.</p>
+{else}
+
+{* search goes HERE *}
+
+{/if}
+
+{include file="inc_foot.txt"}
+

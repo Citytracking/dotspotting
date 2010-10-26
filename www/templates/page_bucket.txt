@@ -50,6 +50,6 @@ An unnamed bucket of dots by {$cfg.user.username|escape}
 
 <h3>Dots</h3>
 
-{include file="inc_user_dots.txt" dots=$bucket.dots}
+{include file="inc_dots_list.txt" dots=$bucket.dots}
 
 {include file="inc_foot.txt"}

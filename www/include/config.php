@@ -49,6 +49,7 @@
 	$GLOBALS['cfg']['javascript_use_polymaps'] = 0;	# this get checked/re-assigned in init.php
 
 	# Feature flags
+	# See also: http://code.flickr.com/blog/2009/12/02/flipping-out/
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;
 	$GLOBALS['cfg']['enable_feature_signin'] = 1;
@@ -58,4 +59,5 @@
 	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
 
+	$GLOBALS['cfg']['enable_feature_search'] = 1;
 ?>

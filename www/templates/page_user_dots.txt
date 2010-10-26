@@ -13,7 +13,7 @@
 
 {else}
 
-{include file="inc_user_dots.txt" dots=$dots}
+{include file="inc_dots_list.txt" dots=$dots}
 
 {pagination}
 

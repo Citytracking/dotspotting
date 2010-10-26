@@ -28,7 +28,7 @@
 			{/if}
 				<td>{$dot.latitude|escape}</td>
 				<td>{$dot.longitude|escape}</td>
-				<td>{$dot.geohash|escape}</td>
+				<td><a href="/search.php?gh={$dot.geohash|escape}">{$dot.geohash|escape}</a></td>
 				<td>{if $dot.created}{$dot.created|date_format:"%Y-%m-%d %H:%M"|escape}{else}&#8212;{/if}</td>
 			{if $is_own}
 				<td>{$dot.imported|date_format:"%Y-%m-%d %H:%M"|escape}</td>

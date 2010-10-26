@@ -1,0 +1,9 @@
+{* Just a place-holder because generating a 'title' for search results is a bit of work *}
+{capture assign="page_title"}Search results{/capture}
+{include file="inc_head.txt"}
+
+<h2>Search Results</h2>
+
+{include file="inc_dots_list.txt"}
+
+{include file="inc_foot.txt"}
