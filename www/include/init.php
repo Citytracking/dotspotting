@@ -51,6 +51,14 @@
 		echo($GLOBALS['smarty']->fetch('inc_pagination.txt'));
 	}
 
+	#################################################################
+
+	function users_delete_user_callback(&$user){
+		return buckets_delete_buckets_for_user($user);
+	}
+
+	#################################################################
+
 	# Move this in to flamework ?
 	# (20101024/straup)
 
