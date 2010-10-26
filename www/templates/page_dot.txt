@@ -1,5 +1,19 @@
+{capture assign="page_title"}
+{if $is_own}
+	{if $dot.extras.title}
+A dot titled "{$dot.extras.title.0|escape}", by you!
+	{else}
+A dot by you!
+	{/if}
+{else}
+	{if $dot.extras.title}
+A dot titled "{$dot.extras.title.0|escape}", by {$owner.username|escape}!
+	{else}
+A dot by {$cfg.user.username|escape}
+	{/if}
+{/if}
+{/capture}
 {include file="inc_head.txt"}
-
 {if $dot.bucket.label}
 <p>This dot is part of a bucket named <a href="{$dot.bucket|@urls_url_for_bucket}">{$dot.bucket.label|escape}</a>, created {$dot.bucket.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
 {else}

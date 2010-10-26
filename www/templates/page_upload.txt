@@ -1,4 +1,4 @@
-{assign var="page_title" value="Upload a file"}
+{assign var="page_title" value="Upload some dots!"}
 {include file="inc_head.txt"}
 
 {if $error.uploads_disabled}
@@ -40,21 +40,7 @@ INVISIBLE ERROR CAT HISSES AT YOU.
 
 {/if}
 
-<form method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
-	{$crumb_key|crumb_input}
-
-	<input type="file" size="40" name="upload" />
-	<br />
-	<label for="upload">Choose a file to upload</label>
-	<br /><br />
-
-	<input type="text" size="40" name="label" />
-	<br />
-	<label for="label">Give your upload a name (optional)</label>
-	<br /><br />
-
-	<input type="SUBMIT" value="UPLOAD YOUR DOTS!" />
-</form>
+{include file="inc_upload_file.txt"}
 
 {/if}
 

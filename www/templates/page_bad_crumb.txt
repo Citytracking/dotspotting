@@ -1,3 +1,4 @@
+{assign var="page_title" value="Houston, we have a problem."}
 {include file="inc_head.txt"}
 
 <p>Invalid or expired crumb!</p>

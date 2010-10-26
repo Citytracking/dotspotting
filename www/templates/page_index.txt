@@ -1,7 +1,17 @@
+{capture assign="page_title}{if $cfg.user.id}Welcome back!{else}Welcome!{/if}{/capture}
 {include file='inc_head.txt'}
 
-<p>Hello World</p>
+{if $cfg.user.id}
+	<h2>Hi {$cfg.user.username|escape}!</h2>
 
-{if $cfg.user.id}<p>logged in</p>{/if}
+	{include file="inc_user_dashboard.txt" owner=$cfg.user}
+	{* it would be nice to include inc_upload_file here but the crumb code always expects the same SCRIPT_NAME - TBD... *}
+{else}
+	<h2>Welcome to dotspotting</h2>
+{/if}
+
+	{if $cfg.enable_feature_uploads}
+<a href="/upload">Upload some dots</a>
+	{/if}
 
 {include file='inc_foot.txt'}

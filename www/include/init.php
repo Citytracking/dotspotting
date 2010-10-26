@@ -47,9 +47,30 @@
 	
 	#################################################################
 
+	# Hey look! Running code goes here!
+
+	#
+	# TODO:
+	# test whether browser is capable of running polymaps here
+	# assign $GLOBALS['cfg']['javascript_use_polymaps'] accordingly
+	#
+
+	#################################################################
+
 	function smarty_function_pagination() {
 		echo($GLOBALS['smarty']->fetch('inc_pagination.txt'));
 	}
+
+	#################################################################
+
+	function smarty_modifier_possess($str){
+
+		$ending = (preg_match("/s$/", $str)) ? "'" : "'s";
+
+		return $str . $ending;
+	}
+
+	$GLOBALS['smarty']->register_modifier('possess', 'smarty_modifier_possess');
 
 	#################################################################
 

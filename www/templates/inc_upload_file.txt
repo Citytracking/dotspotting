@@ -1,0 +1,22 @@
+{if !$cfg.enable_feature_uploads}
+	{* display something here? *}
+{else}
+
+<h3>Upload some dots</h3>
+
+<form action="/upload" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
+	{$crumb_key|crumb_input}
+
+	<input type="file" size="40" name="upload" />
+	<br />
+	<label for="upload">Choose a file to upload</label>
+	<br /><br />
+
+	<input type="text" size="40" name="label" />
+	<br />
+	<label for="label">Give your upload a name (optional)</label>
+	<br /><br />
+
+	<input type="SUBMIT" value="UPLOAD YOUR DOTS!" />
+</form>
+{/if}

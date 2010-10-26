@@ -44,6 +44,10 @@
 
 	$GLOBALS['cfg']['upload_max_records'] = 1000;
 
+	# App / browser flags
+
+	$GLOBALS['cfg']['javascript_use_polymaps'] = 0;	# this get checked/re-assigned in init.php
+
 	# Feature flags
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;

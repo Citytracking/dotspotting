@@ -1,9 +1,13 @@
 {utf8_headers}<!DOCTYPE html> 
 <html>
 <head>
-	<title>{$page_title|default:'Page Title'}</title>
+	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+	{if $cfg.javascript_use_polymaps}
+	{else}
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.min.js"></script>
+	{/if}
 	{$extra_head}
 </head>
 <body>

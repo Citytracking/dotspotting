@@ -1,3 +1,4 @@
+{capture assign="page_title"}{if $bucket.label}Delete your bucket named "{$bucket.label|escape}" ?{else}Delete one of your buckets (ID #{$bucket.id|escape}){/if}{/capture}
 {include file="inc_head.txt"}
 
 {if $deleted}

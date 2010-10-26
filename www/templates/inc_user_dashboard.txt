@@ -1,0 +1,40 @@
+{if $cfg.user.id == $owner.id}
+
+{if $owner.counts.count_buckets == 0}
+
+<p>You haven't uploaded any dots yet.</p>
+
+{elseif $owner.counts.count_buckets == 1}
+
+	{if $owner.counts.count_dots == 1}
+	<p>You have uploaded <a href="{$owner|@urls_dots_for_user}">1 dot</a> (in to a <a href="{$owner|@urls_buckets_for_user}">single bucket</a>) so far.</p>
+	{else}
+	<p>You have uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to a <a href="{$owner|@urls_buckets_for_user}">single bucket</a>) so far.</p>
+	{/if}
+
+{else}
+
+<p>You have uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to <a href="{$owner|@urls_buckets_for_user}">{$owner.counts.count_buckets|escape} buckets</a>) so far.</p>
+
+{/if}
+
+{else}
+
+{if $owner.counts.count_buckets == 0}
+
+<p>{$owner.username|escape} hasn't uploaded any dots yet.</p>
+
+{elseif $owner.counts.count_buckets == 1}
+
+	{if $owner.counts.count_dots == 1}
+	<p>{$owner.username|escape} has uploaded <a href="{$owner|@urls_dots_for_user}">1 dot</a> (in to a <a href="{$owner|@urls_buckets_for_user}">single bucket</a>) so far.</p>
+	{else}
+	<p>{$owner.username|escape} has uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to a <a href="{$owner|@urls_buckets_for_user}">single bucket</a>) so far.</p>
+	{/if}
+
+{else}
+
+<p>{$owner.username|escape} has uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to <a href="{$owner|@urls_buckets_for_user}">{$owner.counts.count_buckets|escape} buckets</a>) so far.</p>
+
+{/if}
+{/if}

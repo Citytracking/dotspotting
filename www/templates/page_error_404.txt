@@ -4,8 +4,10 @@
 
 <p>We can't find the page you requested. Sorry :(</p>
 
+{if $cfg.enable_feature_admin_debug}
 <div class="admin-section">
 	<pre class="admin-debug">{$debug_block}</pre>
 </div>
+{/if}
 
 {include file='inc_foot.txt'}

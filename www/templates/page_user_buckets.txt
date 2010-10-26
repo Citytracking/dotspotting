@@ -1,4 +1,4 @@
-{capture assign='page_title'}{$owner.username|escape}'s buckets{/capture}
+{capture assign='page_title'}{$owner.username|possess|escape} buckets{/capture}
 {include file='inc_head.txt'}
 
 <h2>Buckets</h2>
