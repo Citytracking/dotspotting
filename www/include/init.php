@@ -55,6 +55,8 @@
 	# assign $GLOBALS['cfg']['javascript_use_polymaps'] accordingly
 	#
 
+	$GLOBALS['cfg']['javascript_use_polymaps'] = 1;
+
 	#################################################################
 
 	function smarty_function_pagination() {

@@ -1,5 +1,5 @@
-<div id="map"></div>
-<table>
+<div id="dots_map"></div>
+<table id="user_dots">
 	<thead>
 		<tr>
 			<th>ID</th>
@@ -20,7 +20,7 @@
 		{foreach from=$dots item=dot}
 		{assign var="perms" value=$dot.perms}
 		{assign var="geocoded_by" value=$dot.geocoded_by}
-			<tr class="dot_{$permissions_map.$perms|escape}">
+			<tr class="dot dot_{$permissions_map.$perms|escape}">
 				<td><strong><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></strong></td>
 			{if $bucket}
 				<td><a href="{$bucket|@urls_url_for_bucket}">{if $bucket.label}{$bucket.label|escape}{else}ID {$bucket_id|escape}{/if}</a></td>
@@ -41,27 +41,4 @@
 		{/foreach}
 	</tbody>
 </table>
-{* TO DO: calculate the extent for dots (above) and assign the map extent accordingly *}
-{* TO DO: move all this JS in to a separate JS file(s) and check for 'use polymaps' flag *}
-<script type="text/javascript">
-
-	var lat = 37.764857;
-	var lon = -122.419363;
-	var zoom = 2;
-
-
-{literal}
-	var mm = com.modestmaps;
-
-	var template = 'http://s3.amazonaws.com/info.aaronland.tiles.shapetiles/{Z}/{X}/{Y}.png';
-	var provider = new mm.TileStacheStaticMapProvider(template);
-	provider.setZoomRange(1, 10);
-
-	var dims = undefined;
-	var handlers = undefined;
-
-	var map = new mm.Map('map', provider, dims, handlers);
-	var loc = new mm.Location(lat, lon);
-    	map.setCenterZoom(loc, zoom);
-{/literal}
-</script>
+{include file="inc_dots_map_js.txt"}
