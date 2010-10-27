@@ -27,14 +27,26 @@ function collect_dots(){
 		if (!isNaN(loc.lat) && !isNaN(loc.lon)) {
 			locations.push(loc);
 		}
+
+		return {
+			geometry: {
+				type: "Point",
+				coordinates: [loc.lon, loc.lat]
+			},
+			properties: {
+				created: values[5],
+				imported: values[6],
+				permissions: values[7]
+			}
+		};
 	});
 
-	return locations;
+	return { 'locations': locations, 'features': features };
 }
 
-function calculate_extents(locations){
+function calculate_extents(dots){
 
-	if (locations.length == 0){
+	if (dots['locations'].length == 0){
 		return;
 	}
 
@@ -47,8 +59,8 @@ function calculate_extents(locations){
 	var nelat = null;
 	var nelon = null;
 
-	for (var i = 0; i < locations.length; i++) {
-		var loc = locations[i];
+	for (var i = 0; i < dots['locations'].length; i++) {
+		var loc = dots['locations'][i];
 		center.lat += loc.lat;
 		center.lon += loc.lon;
 
@@ -63,15 +75,15 @@ function calculate_extents(locations){
 		{ lat: nelat, lon: nelon },
 	];
 
-	center.lat /= locations.length;
-	center.lon /= locations.length;
+	center.lat /= dots['locations'].length;
+	center.lon /= dots['locations'].length;
 
 	return { 'bbox': bbox, 'center': center };
 }
 
-function draw_map_modestmaps(locations){
+function draw_map_modestmaps(dots){
 
-	var extents = calculate_extents(locations);
+	var extents = calculate_extents(dots);
 
 	if (! extents){
 		return;
@@ -87,7 +99,7 @@ function draw_map_modestmaps(locations){
 
 	var map = new mm.Map('dots_map', provider, dims, handlers);
 
-	if (locations.length == 1){
+	if (dots['locations'].length == 1){
 
 		var center = extents['center'];
 		var zoom = 14;
@@ -106,24 +118,28 @@ function draw_map_modestmaps(locations){
 	];
 
 	map.setExtent(extent);
+
+	// draw dots['features'] here
+
 	return;
 }
 
-function draw_map_polymaps(locations){
+function draw_map_polymaps(dots){
 
-	var extents = calculate_extents(locations);
+	var extents = calculate_extents(dots);
 
 	if (! extents){
 		return;
 	}
 
 	var po = org.polymaps;
+	var svg = po.svg("svg");
 
 	var div = document.getElementById("dots_map");
-	div.appendChild(po.svg("svg"))
+	div.appendChild(svg);
 
 	var map = po.map();
-	map.container(div);
+	map.container(svg);
 
 	map.add(po.interact());
 
@@ -135,7 +151,7 @@ function draw_map_polymaps(locations){
 
 	map.add(tileset);
 
-	if (locations.length == 1){
+	if (dots['locations'].length == 1){
 		map.center(extents['center']);
 	}
 
@@ -143,11 +159,15 @@ function draw_map_polymaps(locations){
 		map.extent(extents['bbox']);
 	}
 
-	var dots = po.geoJson();
-	dots.features(features);
-	dots.on("load", po.stylist().attr("r", 5));
+	// TO DO:
+	// colour the dots based on privacy
+	// make the dots click-able
 
-	map.add(dots);
+	var points = po.geoJson();
+	points.features(dots['features']);
+	points.on("load", po.stylist().attr("r", 5));
+
+	map.add(points);
 }
 
 function draw_map(){
@@ -155,12 +175,12 @@ function draw_map(){
 	try {	 
 		var dots = collect_dots();
 
-		draw_map_modestmaps(dots);
-		// draw_map_polymaps(dots);
+		//draw_map_modestmaps(dots);
+		draw_map_polymaps(dots);
 	}
 
 	catch (e){
-		console.log('failed to drwa map: ' + e);
+		console.log('failed to draw map: ' + e);
 	}
 }
 	

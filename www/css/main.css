@@ -90,3 +90,9 @@ td {
 .untitled {
 	font-style:italic;
 }
+
+circle {
+    fill: red;
+    stroke: yellow;
+    opacity: .5;
+}
