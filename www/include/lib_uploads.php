@@ -35,6 +35,13 @@
 			$rsp = csv_parse_file($file['tmp_name']);
 		}
 
+		# TO DO: check $GLOBALS['cfg'] to see whether we should
+		# store a permanent copy of $file['tmp_name'] somewhere
+		# on disk. It would be nice to store it with the bucket
+		# ID the data has been associated which we don't have
+		# yet so maybe this isn't the best place to do the storing...
+		# (2010107/straup) 
+
 		return $rsp;
 	}
 
