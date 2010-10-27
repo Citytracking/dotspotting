@@ -1,0 +1,170 @@
+{literal}
+<script type="text/javascript">
+
+function collect_dots(){
+
+	// read the table looking for dots
+
+	var selector = "#user_dots tbody tr";
+	var locations = [];
+
+	var features = $(selector).map(function(i, row) {
+		var values = {};
+
+		// this is pretty brittle and should be updated
+		// to check for class names instead of offsets
+		// (20101027/straup)
+
+		$(row).find("td").each(function(col, td) {
+			values[col] = $(td).text();
+		});
+
+		var loc = {
+			lat: parseFloat(values[2]),
+			lon: parseFloat(values[3])
+		};
+
+		if (!isNaN(loc.lat) && !isNaN(loc.lon)) {
+			locations.push(loc);
+		}
+	});
+
+	return locations;
+}
+
+function calculate_extents(locations){
+
+	if (locations.length == 0){
+		return;
+	}
+
+	// figure out the extent and center point
+
+	var center = {lat: 0, lon: 0};
+
+	var swlat = null;
+	var swlon = null;
+	var nelat = null;
+	var nelon = null;
+
+	for (var i = 0; i < locations.length; i++) {
+		var loc = locations[i];
+		center.lat += loc.lat;
+		center.lon += loc.lon;
+
+		swlat = (swlat) ? Math.min(swlat, loc.lat) : loc.lat;
+		swlon = (swlon) ? Math.min(swlon, loc.lon) : loc.lon;
+		nelat = (nelat) ? Math.max(nelat, loc.lat) : loc.lat;
+		nelon = (nelon) ? Math.max(nelon, loc.lon) : loc.lon;
+	}
+
+	var bbox = [
+		{ lat: swlat, lon: swlon },
+		{ lat: nelat, lon: nelon },
+	];
+
+	center.lat /= locations.length;
+	center.lon /= locations.length;
+
+	return { 'bbox': bbox, 'center': center };
+}
+
+function draw_map_modestmaps(locations){
+
+	var extents = calculate_extents(locations);
+
+	if (! extents){
+		return;
+	}
+
+	var mm = com.modestmaps;
+
+	var template = 'http://a.tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png';
+	var provider = new mm.TemplatedMapProvider(template);
+
+	var dims = undefined;
+	var handlers = undefined;
+
+	var map = new mm.Map('dots_map', provider, dims, handlers);
+
+	if (locations.length == 1){
+
+		var center = extents['center'];
+		var zoom = 14;
+
+		var loc = new mm.Location(center['lat'], center['lon']);
+    		map.setCenterZoom(loc, zoom);
+
+		return;
+	}
+
+	var bbox = extents['bbox'];
+
+	var extent = [
+		new mm.Location(bbox[0]['lat'], bbox[0]['lon']),
+		new mm.Location(bbox[1]['lat'], bbox[1]['lon']),
+	];
+
+	map.setExtent(extent);
+	return;
+}
+
+function draw_map_polymaps(locations){
+
+	var extents = calculate_extents(locations);
+
+	if (! extents){
+		return;
+	}
+
+	var po = org.polymaps;
+
+	var div = document.getElementById("dots_map");
+	div.appendChild(po.svg("svg"))
+
+	var map = po.map();
+	map.container(div);
+
+	map.add(po.interact());
+
+	var url = po.url("http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png");
+	url.hosts(["a.", "b.", "c.", ""]);
+
+	var tileset = po.image();
+	tileset.url(url);
+
+	map.add(tileset);
+
+	if (locations.length == 1){
+		map.center(extents['center']);
+	}
+
+	else {
+		map.extent(extents['bbox']);
+	}
+
+	var dots = po.geoJson();
+	dots.features(features);
+	dots.on("load", po.stylist().attr("r", 5));
+
+	map.add(dots);
+}
+
+function draw_map(){
+
+	try {	 
+		var dots = collect_dots();
+
+		draw_map_modestmaps(dots);
+		// draw_map_polymaps(dots);
+	}
+
+	catch (e){
+		console.log('failed to drwa map: ' + e);
+	}
+}
+	
+draw_map();
+  
+</script>
+{/literal}
