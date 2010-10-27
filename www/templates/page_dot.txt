@@ -14,13 +14,15 @@ A dot by {$cfg.user.username|escape}
 {/if}
 {/capture}
 {include file="inc_head.txt"}
+
+<div id="map"></div>
+
 {if $dot.bucket.label}
 <p>This dot is part of a bucket named <a href="{$dot.bucket|@urls_url_for_bucket}">{$dot.bucket.label|escape}</a>, created {$dot.bucket.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
 {else}
 <p>This dot is part of an <a href="{$dot.bucket|@urls_url_for_bucket}">unnamed bucket</a>, created {$dot.bucket.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
 {/if}
 
-<div id="map"></div>
 <table>
 
 	<tr>

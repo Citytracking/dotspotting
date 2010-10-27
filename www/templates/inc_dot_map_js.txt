@@ -1,0 +1,76 @@
+<script type="text/javascript">
+{literal}
+
+function draw_map_polymaps(lat, lon){
+
+	var po = org.polymaps;
+	var svg = po.svg("svg");
+
+	var div = document.getElementById("map");
+	div.appendChild(svg);
+
+	var map = po.map();
+	map.container(svg);
+
+	map.add(po.interact());
+
+	var url = po.url("http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png");
+	url.hosts(["a.", "b.", "c.", ""]);
+
+	var tileset = po.image();
+	tileset.url(url);
+
+	map.add(tileset);
+
+	map.center({lat: lat, lon: lon});
+
+	// TO DO:
+	// colour the dots based on privacy
+	// make the dots click-able
+
+	var points = po.geoJson();
+
+	points.features([{
+		'geometry': {
+			'type': 'Point',
+			'coordinates': [ lon, lat ],
+		}
+	}]);
+
+	points.on("load", po.stylist().attr("r", 5));
+
+	map.add(points);
+}
+
+function draw_map_modestmaps(lat, lon){
+
+	var mm = com.modestmaps;
+	var zoom = 15;
+
+	var template = 'http://a.tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png';
+	var provider = new mm.TileStacheStaticMapProvider(template);
+
+	var dims = undefined;
+	var handlers = undefined;
+
+	var map = new mm.Map('map', provider, dims, handlers);
+	var loc = new mm.Location(lat, lon);
+    	map.setCenterZoom(loc, zoom);
+
+	// TO DO
+	// marker
+}
+
+function draw_map (lat, lon){
+	draw_map_polymaps(lat, lon);
+	//draw_map_modestmaps(lat, lon);
+}
+
+{/literal}
+
+var lat = {$dot.latitude|escape};
+var lon = {$dot.longitude|escape};
+
+draw_map(lat, lon);
+
+</script>

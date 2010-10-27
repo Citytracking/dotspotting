@@ -1,4 +1,4 @@
-<div id="dots_map"></div>
+<div id="map"></div>
 <table id="user_dots">
 	<thead>
 		<tr>

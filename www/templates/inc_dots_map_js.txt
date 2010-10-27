@@ -59,7 +59,7 @@ function calculate_extents(dots){
 	var nelat = null;
 	var nelon = null;
 
-	for (var i = 0; i < dots['locations'].length; i++) {
+	for (var i = 0; i < dots['locations'].length; i++){
 		var loc = dots['locations'][i];
 		center.lat += loc.lat;
 		center.lon += loc.lon;
@@ -97,7 +97,7 @@ function draw_map_modestmaps(dots){
 	var dims = undefined;
 	var handlers = undefined;
 
-	var map = new mm.Map('dots_map', provider, dims, handlers);
+	var map = new mm.Map('map', provider, dims, handlers);
 
 	if (dots['locations'].length == 1){
 
@@ -110,7 +110,7 @@ function draw_map_modestmaps(dots){
 		return;
 	}
 
-	var bbox = extents['bbox'];
+	var bbox = adjust_bbox(extents['bbox']);
 
 	var extent = [
 		new mm.Location(bbox[0]['lat'], bbox[0]['lon']),
@@ -135,7 +135,7 @@ function draw_map_polymaps(dots){
 	var po = org.polymaps;
 	var svg = po.svg("svg");
 
-	var div = document.getElementById("dots_map");
+	var div = document.getElementById("map");
 	div.appendChild(svg);
 
 	var map = po.map();
@@ -156,7 +156,8 @@ function draw_map_polymaps(dots){
 	}
 
 	else {
-		map.extent(extents['bbox']);
+		var bbox = adjust_bbox(extents['bbox']);
+		map.extent(bbox);
 	}
 
 	// TO DO:
@@ -170,6 +171,19 @@ function draw_map_polymaps(dots){
 	map.add(points);
 }
 
+// quick and dirty function to tweak the extents of a bounding
+// box so that dots don't get cropped by the edge of the map.
+// this will undoubtedly require finesse-ing over time...
+// (20101027/straup)
+
+function adjust_bbox(bbox){
+	bbox[0]['lat'] -= 2;
+	bbox[0]['lon'] -= 2;
+	bbox[1]['lat'] += 2;
+	bbox[1]['lon'] += 2;
+	return bbox;
+}
+
 function draw_map(){
 
 	try {	 
@@ -180,7 +194,7 @@ function draw_map(){
 	}
 
 	catch (e){
-		console.log('failed to draw map: ' + e);
+		// console.log('failed to draw map: ' + e);
 	}
 }
 	
