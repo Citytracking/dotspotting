@@ -170,8 +170,6 @@
 			'perms' => $perms,
 		);
 		
-dumper($dot);
-
 		# AddSlashes turns null into empty strings.
 		# We don't add latitude/longitude to the $dot array unless they're present
 		# because otherwise mysql will interpret the empty string as a zero.
