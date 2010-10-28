@@ -10,7 +10,7 @@
 	<h2>Welcome to dotspotting</h2>
 
 	{if $cfg.enable_feature_uploads}
-<a href="/upload">Get stated and upload some dots!</a>
+<a href="/upload">Get started and upload some dots!</a>
 	{/if}
 
 {/if}

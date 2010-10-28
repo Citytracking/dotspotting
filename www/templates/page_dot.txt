@@ -38,6 +38,10 @@ A dot by {$cfg.user.username|escape}
 		<th>longitude</th>
 		<td>{$dot.longitude|escape}</td>
 	</tr>
+	<tr>
+		<th>geohash</th>
+		<td><a href="/search.php?gh={$dot.geohash|escape}">{$dot.geohash|escape}</a></td>
+	</tr>
 
 	{foreach from=$dot.extras item="stuff" key="label"}
 	<tr>

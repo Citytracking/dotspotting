@@ -11,6 +11,7 @@
 {if $error.badcrumb}
 CRUMB.
 {else}
+{$error|@dumper}
 INVISIBLE ERROR CAT HISSES AT YOU.
 {/if}
 </p>

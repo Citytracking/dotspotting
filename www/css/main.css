@@ -24,13 +24,12 @@ body {
 
 #nav {
 	background-color: #fff;
-	// padding: 0.5em 1em;
 	margin-top:20px;
 	font-size:small;
 }
 
 #footer {
-	padding: 0.5em 1em;
+	font-size:small;
 	text-align: right;
 	color: #999;
 	margin-top:35px;

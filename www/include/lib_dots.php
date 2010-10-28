@@ -459,7 +459,7 @@
 	# (20101026/straup)
 	#
 	
-	function dots_get_dots_recently_imported($to_fetch=20){
+	function dots_get_dots_recently_imported($to_fetch=15){
 
 		$recent = array();
 
@@ -498,7 +498,8 @@
 					break;
 				}
 
-				$limit = min(3, count($dot_rsp['rows']));
+				$default_limit = 3;	# sudo, make me smarter
+				$limit = min($default_limit, count($dot_rsp['rows']));
 
 				if ($limit){
 
