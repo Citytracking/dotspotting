@@ -50,4 +50,15 @@
 	}
 
 	#################################################################
+
+	function csv_export_dots(&$rows, $fh){
+
+		fputcsv($fh, array_keys($rows[0]));
+
+		foreach ($rows as $row){
+			fputcsv($fh, array_values($row));
+		}
+	}
+
+	#################################################################
 ?>

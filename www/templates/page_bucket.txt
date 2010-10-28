@@ -15,11 +15,15 @@ An unnamed bucket of dots by {$cfg.user.username|escape}
 {/capture}
 {include file="inc_head.txt"}
 
+<h2>
 {if $bucket.label}
-<h2>{$bucket.label|escape}</h2>
+{$bucket.label|escape}
 {else}
-<h2>Bucket ID #{$bucket.id|escape}</h2>
+Bucket ID #{$bucket.id|escape}
 {/if}
+
+<span style="font-size:small;">/ <a href="{$bucket|@urls_url_for_bucket}export">export</a></span>
+</h2>
 
 {if $is_own}
 <form method="POST" style="float:right;">

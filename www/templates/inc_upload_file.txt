@@ -3,6 +3,7 @@
 {else}
 
 <h3>Upload some dots</h3>
+<p class="caveat" style="text-align:left;">At the moment, only the first {$cfg.upload_max_records|escape} records in a file will be imported.</p>
 
 <form action="/upload" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
 	{$crumb_key|crumb_input}

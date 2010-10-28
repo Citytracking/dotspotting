@@ -44,7 +44,7 @@
 
 	#################################################################
 
-	function dots_extras_get_extras(&$dot){
+	function dots_extras_get_extras(&$dot, $more=array()){
 
 		$user = users_get_by_id($dot['user_id']);
 

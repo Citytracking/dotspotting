@@ -552,7 +552,7 @@
 
 		foreach ($rsp['rows'] as $dot){
 
-			dots_load_extras($dot, $viewer_id);
+			dots_load_extras($dot, $viewer_id, $more);
 			$dots[] = $dot;
 		}
 
@@ -625,7 +625,7 @@
 
 	function dots_load_extras(&$dot, $viewer_id, $more=array()){
 
-		$dot['extras'] = dots_extras_get_extras($dot);
+		$dot['extras'] = dots_extras_get_extras($dot, $more);
 
 		if ($more['load_bucket']){
 	 		$dot['bucket'] = buckets_get_bucket($dot['bucket_id']);
