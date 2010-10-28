@@ -67,7 +67,12 @@ function draw_map_modestmaps(lat, lon){
 }
 
 function draw_map (lat, lon){
-	// draw_map_polymaps(lat, lon);
+
+	if (canhas_polymaps){
+		draw_map_polymaps(lat, lon);
+		return;
+	}
+
 	draw_map_modestmaps(lat, lon);
 }
 

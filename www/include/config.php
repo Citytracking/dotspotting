@@ -44,10 +44,6 @@
 
 	$GLOBALS['cfg']['upload_max_records'] = 1000;
 
-	# App / browser flags
-
-	$GLOBALS['cfg']['javascript_use_polymaps'] = 0;	# this get checked/re-assigned in init.php
-
 	# Feature flags
 	# See also: http://code.flickr.com/blog/2009/12/02/flipping-out/
 
@@ -60,4 +56,13 @@
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
 
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
+
+	#
+	# This flag indictates whether you want to use Polymaps
+	# at all independent of whether or not the browser is
+	# capable of dealing with SVG.
+	#
+
+	$GLOBALS['cfg']['enable_feature_polymaps'] = 1;
+
 ?>

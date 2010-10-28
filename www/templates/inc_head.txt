@@ -4,12 +4,19 @@
 	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+{if $cfg.browser.capabilities.polymaps}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery-1.4.3.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.min.js"></script>
-
+{else}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.markers.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.tilestache.js"></script>
+{/if}
+	<script type="text/javascript">
+{* I don't actually know how we want to handle JS globals in a *}
+{* dotspotting context so for now this will do *}
+var canhas_polymaps = {$cfg.browser.capabilities.polymaps|escape};
+	</script>
 	{$extra_head}
 </head>
 <body>

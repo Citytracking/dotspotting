@@ -205,16 +205,14 @@ function adjust_bbox(bbox){
 
 function draw_map(){
 
-	try {	 
-		var dots = collect_dots();
+	var dots = collect_dots();
 
-		draw_map_modestmaps(dots);
-		// draw_map_polymaps(dots);
+	if (canhas_polymaps){	
+		draw_map_polymaps(dots);
+		return;
 	}
 
-	catch (e){
-		// console.log('failed to draw map: ' + e);
-	}
+	draw_map_modestmaps(dots);
 }
 	
 draw_map();

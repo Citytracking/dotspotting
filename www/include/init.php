@@ -44,22 +44,73 @@
 	loadlib("buckets");
 	loadlib("dots");
 	loadlib("urls");
-	
+	loadlib("user_agent");
+
 	#################################################################
 
+	#
 	# Hey look! Running code goes here!
-
-	#
-	# TODO:
-	# test whether browser is capable of running polymaps here
-	# assign $GLOBALS['cfg']['javascript_use_polymaps'] accordingly
 	#
 
-	$GLOBALS['cfg']['javascript_use_polymaps'] = 1;
+	$GLOBALS['cfg']['browser'] = user_agent_info();
+
+	$GLOBALS['cfg']['browser']['capabilities'] = array(
+		'polymaps' => can_use_polymaps(),
+	);
 
 	#################################################################
 
-	function smarty_function_pagination() {
+	#
+	# Dotspotting specific functions and utils go here
+	#
+
+	#################################################################
+
+	function can_use_polymaps(){
+
+		if (! $GLOBALS['cfg']['enable_feature_polymaps']){
+			return 0;
+		}
+
+		$ok_browsers = array(
+			'safari' => 5,
+			'chrome' => 6,
+			'firefox' => 3.5,
+			'opera' => 10,
+		);
+
+		$browser = null;
+		$version = null;
+
+		foreach (array_keys($ok_browsers) as $browser){
+
+			if ($version = $GLOBALS['cfg']['browser'][$browser]){
+
+				# Check to see if we managed to get an actual
+				# version number from lib_user_agent.php
+
+				if ($GLOBALS['cfg']['browser']['version']){
+					$version = $GLOBALS['cfg']['browser']['version'];
+				}
+
+				break;
+			}
+		}
+
+		# dumper("{$browser} {$version}");
+
+		if ((! $version) || ($version < $ok_browsers[$browser])){
+			return 0;
+		}
+
+		return 1;
+	}
+
+	$GLOBALS['smarty']->register_function('can_use_polymaps', 'can_use_polymaps');
+
+	#################################################################
+
+	function smarty_function_pagination(){
 		echo($GLOBALS['smarty']->fetch('inc_pagination.txt'));
 	}
 
