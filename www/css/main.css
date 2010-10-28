@@ -100,7 +100,8 @@ td {
 }
 
 circle {
-    fill: red;
-    stroke: yellow;
-    opacity: .5;
+    fill: #00a308;
+    stroke: #ccff99;
+    stroke-width: 2;	
+    opacity: 1;
 }

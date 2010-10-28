@@ -6,7 +6,9 @@
 	<link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery-1.4.3.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.min.js"></script>
+
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.min.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.markers.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.tilestache.js"></script>
 	{$extra_head}
 </head>

@@ -89,6 +89,8 @@ function draw_map_modestmaps(dots){
 		return;
 	}
 
+	var count = dots['locations'].length;
+
 	var mm = com.modestmaps;
 
 	var template = 'http://a.tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png';
@@ -99,7 +101,7 @@ function draw_map_modestmaps(dots){
 
 	var map = new mm.Map('map', provider, dims, handlers);
 
-	if (dots['locations'].length == 1){
+	if (count == 1){
 
 		var center = extents['center'];
 		var zoom = 14;
@@ -107,17 +109,34 @@ function draw_map_modestmaps(dots){
 		var loc = new mm.Location(center['lat'], center['lon']);
     		map.setCenterZoom(loc, zoom);
 
-		return;
 	}
 
-	var bbox = adjust_bbox(extents['bbox']);
+	else {
+		var bbox = adjust_bbox(extents['bbox']);
 
-	var extent = [
-		new mm.Location(bbox[0]['lat'], bbox[0]['lon']),
-		new mm.Location(bbox[1]['lat'], bbox[1]['lon']),
-	];
+		var extent = [
+			new mm.Location(bbox[0]['lat'], bbox[0]['lon']),
+			new mm.Location(bbox[1]['lat'], bbox[1]['lon']),
+		];
 
-	map.setExtent(extent);
+		map.setExtent(extent);
+	}
+
+	// see how this is different than what we pass
+	// to polymaps? that's a known-known and today
+	// it is a problem that is dressed in hairy yak
+	// clothes...it should be sorted out though.
+	// (20101028/straup)
+
+	var points = []
+
+	for (var i = 0; i < count; i++){
+		var loc = dots['locations'][i];
+		points.push([ loc.lat, loc.lon ]);
+	}
+
+	var markers = new mm.Markers(map);
+	markers.drawPoints(points);
 
 	// draw dots['features'] here
 
@@ -189,8 +208,8 @@ function draw_map(){
 	try {	 
 		var dots = collect_dots();
 
-		//draw_map_modestmaps(dots);
-		draw_map_polymaps(dots);
+		draw_map_modestmaps(dots);
+		// draw_map_polymaps(dots);
 	}
 
 	catch (e){

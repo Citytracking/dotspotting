@@ -37,8 +37,7 @@ function draw_map_polymaps(lat, lon){
 		}
 	}]);
 
-	points.on("load", po.stylist().attr("r", 25));
-
+	points.on("load", po.stylist().attr("r", 5));
 	map.add(points);
 }
 
@@ -48,7 +47,7 @@ function draw_map_modestmaps(lat, lon){
 	var zoom = 15;
 
 	var template = 'http://a.tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png';
-	var provider = new mm.TileStacheStaticMapProvider(template);
+	var provider = new mm.TemplatedMapProvider(template);
 
 	var dims = undefined;
 	var handlers = undefined;
@@ -57,13 +56,19 @@ function draw_map_modestmaps(lat, lon){
 	var loc = new mm.Location(lat, lon);
     	map.setCenterZoom(loc, zoom);
 
-	// TO DO
-	// marker
+	// see how this is different than what we pass
+	// to polymaps? that's a known-known and today
+	// it is a problem that is dressed in hairy yak
+	// clothes...it should be sorted out though.
+	// (20101028/straup)
+
+	var markers = new mm.Markers(map);
+	markers.drawPoints([[lat, lon]]);
 }
 
 function draw_map (lat, lon){
-	draw_map_polymaps(lat, lon);
-	//draw_map_modestmaps(lat, lon);
+	// draw_map_polymaps(lat, lon);
+	draw_map_modestmaps(lat, lon);
 }
 
 {/literal}
