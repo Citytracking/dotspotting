@@ -1,7 +1,11 @@
 {capture assign='page_title'}{$owner.username|possess} buckets{/capture}
 {include file='inc_head.txt'}
 
-<h2>Dots</h2>
+{if $is_own}
+<h2><a href="{$owner|@urls_url_for_user}">Your</a> dots</h2>
+{else}
+<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> dots</h2>
+{/if}
 
 {if $dots|@count == 0}
 

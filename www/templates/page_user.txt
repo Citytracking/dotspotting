@@ -1,5 +1,11 @@
-{capture assign='page_title'}{$owner.username|possess|escape} dots and buckets{/capture}
+{capture assign='page_title'}{$owner.username|possess} dots and buckets{/capture}
 {include file='inc_head.txt'}
+
+{if $is_own}
+<h2>Your dashboard</h2>
+{else}
+<h2>{$owner.username|possess|escape} dashboard</h2>
+{/if}
 
 {include file="inc_user_dashboard.txt"}
 

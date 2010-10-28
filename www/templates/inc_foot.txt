@@ -1,7 +1,7 @@
 	</div>
 
 	<div id="footer">
-		Footer
+		Dotspotting is a thing by <a href="http://www.stamen.com/">Stamen Design</a> !
 	</div>
 
 {if $cfg.admin_flags_show_notices}

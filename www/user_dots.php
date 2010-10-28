@@ -19,7 +19,7 @@
 
 	$dots = dots_get_dots_for_user($owner, $GLOBALS['cfg']['user']['id'], $args);
 
-	$smarty->assign_by_ref('user', $owner);
+	$smarty->assign_by_ref('owner', $owner);
 	$smarty->assign_by_ref('dots', $dots);
 
 	$is_own = ($owner['id'] == $GLOBALS['cfg']['user']['id']) ? 1 : 0;
