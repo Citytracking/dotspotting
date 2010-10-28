@@ -25,6 +25,10 @@
 			'page' => $page
 		);
 
+		if (strlen($geohash) > 8){
+			$geohash = substr($geohash, 0, -2);
+		}
+
 		$dots = search_dots_for_geohash($geohash, $args);
 		$smarty->assign_by_ref('dots', $dots);
 
