@@ -25,7 +25,7 @@
 			'page' => $page
 		);
 
-		if (strlen($geohash) > 8){
+		if (strlen($geohash) >= 8){
 			$geohash = substr($geohash, 0, -2);
 		}
 
