@@ -1,4 +1,24 @@
 {capture assign="page_title"}
+{* waiting on flickr to add support for photo.gne?id=999 support to the oembed endpoint *}
+{if 0}
+{capture assign="extra_head"}
+	<script type="text/javascript" src="/javascript/oembed.js"></script>
+	<script type="text/javascript">
+	{literal}
+	function display_flickr_photo(photo_id){
+		var oembed = new info.aaronland.oEmbed({
+			'service': 'http://www.flickr.com/services/oembed/',
+			'enable_logging': true
+		});
+
+		oembed.fetch('http://www.flickr.com/photo.gne?id=' + photo_id, {'maxwidth': 240}, function(rsp){ 
+			console.log(rsp);
+		});
+	}
+	{/literal}
+	</script>
+{/capture}
+{/if}
 {if $is_own}
 	{if $dot.extras.title}
 A dot titled "{$dot.extras.title.0|escape}", by you!
@@ -46,7 +66,16 @@ A dot by {$cfg.user.username|escape}
 	{foreach from=$dot.extras item="stuff" key="label"}
 	<tr>
 		<th>{$label|escape}</th>
-		<td>{$stuff|@join:", "|escape}</td>
+		<td>
+		{if 0 and $label=='flickr:id'}
+			<script type="text/javascript">
+			display_flickr_photo({$stuff.0|escape});
+			</script>		
+			{$stuff.0|escape}
+		{else}
+			{$stuff|@join:", "|escape}</td>
+		{/if}
+		</td>
 	</tr>
 	{/foreach}
 
