@@ -34,6 +34,8 @@ body {
 	color: #999;
 	margin-top:35px;
 	margin-bottom:20px;
+	border-top:1px solid #ccc;
+	padding-top:30px;
 }
 
 #content {
