@@ -1,0 +1,7 @@
+{assign var="page_title" value="About Dotspotting"}
+{include file="inc_head.txt"}
+
+<h2>About Dotspotting</h2>
+
+{include file="inc_foot.txt"}
+
