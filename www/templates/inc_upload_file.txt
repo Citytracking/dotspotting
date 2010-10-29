@@ -3,7 +3,9 @@
 {else}
 
 <h3>Upload some dots</h3>
-<p class="caveat" style="text-align:left;">At the moment, only the first {$cfg.upload_max_records|escape} records in a file will be imported.</p>
+<p class="caveat" style="text-align:left;">At the moment, only comma-separated (CSV) files are supported and only the first {$cfg.upload_max_records|escape} records in a file will be imported.</p>
+
+<p class="caveat" style="text-align:left;">Also: <strong>All dots are made public by default.</strong> You can override this behaviour in your CSV file by including a <code>perms</code> column and assign the relevant rows a value of <q>private</q>. There will be proper privacy controls on the dotspotting website, and upload pages, shortly.</p>
 
 <form action="/upload" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
 	{$crumb_key|crumb_input}
