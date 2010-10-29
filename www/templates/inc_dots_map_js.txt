@@ -20,8 +20,8 @@ function collect_dots(){
 		});
 
 		var loc = {
-			lat: parseFloat(values[2]),
-			lon: parseFloat(values[3])
+			lat: parseFloat(values[3]),
+			lon: parseFloat(values[4])
 		};
 
 		if (!isNaN(loc.lat) && !isNaN(loc.lon)) {
@@ -34,9 +34,9 @@ function collect_dots(){
 				coordinates: [loc.lon, loc.lat]
 			},
 			properties: {
-				created: values[5],
-				imported: values[6],
-				permissions: values[7]
+				created: values[6],
+				imported: values[7],
+				permissions: values[8]
 			}
 		};
 	});

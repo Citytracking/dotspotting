@@ -399,7 +399,7 @@
 	# Fetch the dot from the shards
 	#	
 
-	function dots_get_dot($dot_id, $viewer_id=0){
+	function dots_get_dot($dot_id, $viewer_id=0, $more=array()){
 
 		if (isset($GLOBALS['dots_local_cache'][$dot_id])){
 			return $GLOBALS['dots_local_cache'][$sot_id];
@@ -428,7 +428,7 @@
 		if ($rsp['ok']){
 
 			if ($dot){
-				$more = array( 'load_bucket' => 1);
+				$more['load_bucket'] = 1;
 				dots_load_extras($dot, $viewer_id, $more);
 			}
 
@@ -507,7 +507,10 @@
 
 					foreach (array_slice($dot_rsp['rows'], 0, $limit) as $row){
 
-						$recent[] = dots_get_dot($row['dot_id']);
+						$viewer_id = 0;
+						$more = array('load_user' => 1);
+
+						$recent[] = dots_get_dot($row['dot_id'], $viewer_id, $more);
 					}
 
 					if (count($recent) == $to_fetch){
@@ -631,6 +634,9 @@
 	 		$dot['bucket'] = buckets_get_bucket($dot['bucket_id']);
 		}
 
+		if ($more['load_user']){
+			$dot['user'] = users_get_by_id($dot['user_id']);
+		}
 	}
 
 	#################################################################

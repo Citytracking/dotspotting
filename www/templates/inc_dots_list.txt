@@ -3,7 +3,8 @@
 <table id="user_dots">
 	<thead>
 		<tr>
-			<th>ID</th>
+			<th>Dot</th>
+			<th>Owner</th>
 			<th>Bucket</th>
 			<th>Latitude</th>
 			<th>Longitude</th>
@@ -23,6 +24,13 @@
 		{assign var="geocoded_by" value=$dot.geocoded_by}
 			<tr class="dot dot_{$permissions_map.$perms|escape}">
 				<td><strong><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></strong></td>
+				<td>
+			{if $owner}
+				<a href="{$owner|@urls_url_for_user}">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
+			{else}
+				<a href="{$dot.user|@urls_url_for_user}">{if $dot.user.id == $cfg.user.id}You{else}{$dot.user.username|escape}{/if}</a>
+			{/if}
+				</td>
 			{if $bucket}
 				<td><a href="{$bucket|@urls_url_for_bucket}">{if $bucket.label}{$bucket.label|escape}{else}ID {$bucket_id|escape}{/if}</a></td>
 			{else}
