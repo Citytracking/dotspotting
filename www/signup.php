@@ -28,10 +28,11 @@
 
 		$ok = 1;
 
-		$email		= post_str('email');
-		$password	= post_str('password');
-		$username	= post_str('username');
-		$redir		= post_str('redir');
+		$username = filter_strict(post_str('username'));
+
+		$email = post_str('email');
+		$password = post_str('password');
+		$redir = post_str('redir');
 
 		$smarty->assign('email', $email);
 		$smarty->assign('password', $password);
@@ -81,9 +82,9 @@
 		if ($ok){
 
 			$user = users_create_user(array(
-				'username'	=> $username,
-				'email'		=> $email,
-				'password'	=> $password,
+				'username' => $username,
+				'email' => $email,
+				'password' => $password,
 			));
 
 			if ($user['id']){

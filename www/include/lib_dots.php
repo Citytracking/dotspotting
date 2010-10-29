@@ -223,12 +223,21 @@
 			# export.
 			#
 
-			if (in_array($label, $dotspotting_keys)){
-				$label = "user:{$label}";
+			$label = filter_strict(trim($label));
+
+			if (! $label){
+				continue;
 			}
 
-			if (! trim($data[$label])){
+			$value = $data[$label];
+			$value = filter_strict(trim($value));
+
+			if (! $value){
 				continue;
+			}
+
+			if (in_array($label, $dotspotting_keys)){
+				$label = "user:{$label}";
 			}
 
 			$extra_rsp = dots_extras_create_extra($dot, $label, $data[$label]);

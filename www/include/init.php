@@ -45,12 +45,29 @@
 	loadlib("dots");
 	loadlib("urls");
 	loadlib("user_agent");
+	loadlib("filter");
 
 	#################################################################
 
 	#
 	# Hey look! Running code goes here!
 	#
+
+	$GLOBALS['filter'] = new lib_filter();
+
+	# This is a shim in the absence of a saner and
+	# plain-old function-y way to use lib_filter...
+
+	function filter_strict($str){
+
+		$whatevar = $GLOBALS['filter']->allowed;
+
+		$GLOBALS['filter']->allowed = array();
+		$str = $GLOBALS['filter']->go($str);
+
+		$GLOBALS['filter']->allowed = $whatevar;
+		return $str;
+	}
 
 	$GLOBALS['cfg']['browser'] = user_agent_info();
 

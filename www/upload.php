@@ -46,7 +46,7 @@
 
 		# store the data
 
-		$label = post_str('label');
+		$label = filter_strict(post_str('label'));
 		$private = (post_str('private')) ? 1 : 0;
 		
 		$more = array(
