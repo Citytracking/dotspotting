@@ -107,6 +107,13 @@ circle {
     opacity: 1;
 }
 
+path {
+    fill: #00a308;
+    stroke: #ccff99;
+    stroke-width: 2;	
+    opacity: .25;
+}
+
 .caveat {
 	font-size:11px;
 	font-style:italic;

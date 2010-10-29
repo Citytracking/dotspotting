@@ -54,12 +54,23 @@ function collect_buckets(){
 		nelat = (nelat) ? Math.max(nelat, ne.lat) : ne.lat;
 		nelon = (nelon) ? Math.max(nelon, ne.lon) : ne.lon;
 
+		var nw = { 'lat': ne['lat'], 'lon': sw['lon'] };
+		var se = { 'lat': sw['lat'], 'lon': ne['lon'] };
+
 		return {
 			geometry: {
-				type: "FIX-ME",
-				coordinates: [ ]
+				type: "Polygon",
+				coordinates: [[
+					[sw['lon'], sw['lat']],
+					[nw['lon'], nw['lat']],
+					[ne['lon'], ne['lat']],
+					[se['lon'], se['lat']],
+					[sw['lon'], sw['lat']]
+				]],
 			},
-			properties: { },
+			properties: {
+				'foo': 'bar',
+			},
 		};
 	});
 
@@ -161,17 +172,11 @@ function draw_map_polymaps(buckets){
 	var bbox = adjust_bbox(buckets['bbox']);
 	map.extent(bbox);
 
-	// TO DO:
-	// colour the dots based on privacy
-	// make the dots click-able
+	var boxes = po.geoJson();
+	boxes.features(buckets['features']);
+	boxes.on("load", po.stylist());
 
-	/*
-	var buckets = po.geoJson();
-	buckets.features(dots['features']);
-	buckets.on("load", po.stylist().attr("r", 5));
-
-	map.add(buckets);
-	*/
+	map.add(boxes);
 }
 
 // quick and dirty function to tweak the extents of a bounding

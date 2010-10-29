@@ -98,6 +98,43 @@ com.modestmaps.Markers.prototype.drawLines = function(latlons, more){
 	this._actuallyDrawLines(locations, draw_extent, more);
 };
 
+// This is just a helper function that hands off to drawPolygons
+// It takes a list of swlat,swlon,nelat,nelon strings and does
+// all the hoop jumping required to draw polygons. The default
+// delimeter is a single space but you can override that by passing
+// in a 'delimeter' argument in a second optional hash of args.
+
+com.modestmaps.Markers.prototype.drawBoundingBoxes = function(bboxes, more){
+
+	var delimeter = ((more) && (more['delimeter'])) ? more['delimeter'] : ' ';
+	var polygons = [];
+
+	var count_bboxes = bboxes.length;
+
+	for (var i = 0; i < count_bboxes; i++){
+
+		var bbox = bboxes[i].split(delimeter);
+
+		var sw = [bbox[0], bbox[1]];
+		var ne = [bbox[2], bbox[3]];
+
+		var nw = [ne[0], sw[1]];
+		var se = [sw[0], ne[1]];
+
+		var coords = [
+			[sw[0], sw[1]],
+			[nw[0], nw[1]],
+			[ne[0], ne[1]],
+			[se[0], se[1]],
+			[sw[0], sw[1]],
+		];
+
+		polygons.push(coords);
+	}
+
+	return this.drawPolygons(polygons, more);
+};
+
 com.modestmaps.Markers.prototype.drawPolygons = function(latlons, more){
 
 	var prepped = this.locatifyLatLons(latlons);
@@ -448,6 +485,7 @@ com.modestmaps.Markers.prototype.circle = function(coords, more){
     var line_width = ((more) && (more['lineWidth'])) ? more['lineWidth'] : 2;
     var line_join = ((more) && (more['lineJoin'])) ? more['lineJoin'] : 'miter';
     var line_cap = ((more) && (more['lineCap'])) ? More['lineCap'] : 'butt';
+    var alpha = ((more) && (more['globalAlpha'])) ? more['globalAlpha'] : 0.25;
 
     var ctx = this.surface.getContext('2d');
 
@@ -456,6 +494,7 @@ com.modestmaps.Markers.prototype.circle = function(coords, more){
     ctx.lineWidth = line_width;
     ctx.lineJoin = line_join;
     ctx.lineCap = line_cap;
+    ctx.globalAlpha = alpha;
 
     ctx.beginPath();
     ctx.arc(coords['x'], coords['y'], r, 0, Math.PI * 2, true);
