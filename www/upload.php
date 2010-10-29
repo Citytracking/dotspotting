@@ -61,6 +61,8 @@
 		if (! $rsp['ok']){
 
 			$GLOBALS['error']['process_fail'] = 1;
+
+			$smarty->assign_by_ref("upload_errors", $rsp['errors']);
 			$smarty->display("page_upload.txt");
 			exit();
 		}

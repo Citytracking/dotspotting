@@ -7,14 +7,20 @@
 
 {if $error|@count}
 
-<p class="error">
-{if $error.badcrumb}
-CRUMB.
+{if $error.invalid_mimetype}
+<p class="error">Your upload failed because your upload was an invalid file type or Dotspotting wasn't smart enough to recognize it.</p>
+{elseif $error.parse_fail}
+<p class="error">Your upload failed because Dotspotting was not able to parse your file. Sad face...</p>
+{elseif $error.process_fail}
+<p class="error">Your upload failed with the following errors:</p>
+<ul>
+{foreach from=$upload_errors item="row"}
+	<li><q>{$row.error|escape}</q> at record #{$row.record|escape}</li>
+{/foreach}
+</ul>
 {else}
-{$error|@dumper}
-INVISIBLE ERROR CAT HISSES AT YOU.
+<p class="error">ARGH!!! INVISIBLE ERROR CAT HISSES AT YOU.</p>
 {/if}
-</p>
 {/if}
 
 {if $upload_complete}

@@ -23,23 +23,31 @@
 			$extras = array_keys($rows[0]['extras']);
 		}
 
-		if (count($extras)){
+		$count_rows = count($rows);
 
-			$count_rows = count($rows);
+		for ($i = 0; $i < $count_rows; $i++){
 
-			for ($i = 0; $i < $count_rows; $i++){
+			$row = $rows[$i];
 
-				$row = $rows[$i];
-
-				foreach ($extras as $k){
-					if (isset($row['extras'][$k])){
-						$row[$k] = implode(",", $row['extras'][$k]);
-					}	
-				}
-
-				unset($row['extras']);
-				$rows[$i] = $row;
+			foreach ($extras as $k){
+				if (isset($row['extras'][$k])){
+					$row[$k] = implode(",", $row['extras'][$k]);
+				}	
 			}
+
+			unset($row['extras']);
+
+			if (isset($row['perms'])){
+				$map = dots_permissions_map();
+				$row['perms'] = $map[$row['perms']];
+			}
+
+			if (isset($row['geocoded_by'])){
+				$map = geo_geocode_service_map();
+				$row['geocoded_by'] = ($row['geocoded_by']) ? $map[$row['geocoded_by']] : '';
+			}
+
+			$rows[$i] = $row;
 		}
 
 		loadlib($format);

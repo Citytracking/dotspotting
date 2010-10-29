@@ -95,7 +95,21 @@
 			);
 		}
 
+		#
+		# Get the list of keys that the dotspotting internals
+		# use. At the moment this is mostly for sanity checking
+		# extras but at some point we may want to use it to
+		# see if there is already a corresponding key/id in the
+		# database and to issue an 'update' rather than an
+		# 'insert'. That would be a nice thing to do. But not
+		# today... (20101029/straup)
+		#
+
+		$dotspotting_keys = dots_dotspotting_keys();
+
+		#
 		# basic geo bits
+		#
 
 		$collapse = 0;	# do not int-ify the coords
 		
@@ -196,19 +210,20 @@
 			return $rsp;
 		}
 
-		# extras
-
-		$extras_ignore = array(
-			'latitude',
-			'longitude',
-			'created',
-			'perms',
-		);
+		#
+		# Add any "extras"
+		#
 
 		foreach (array_keys($data) as $label){
 
-			if (in_array($label, $extras_ignore)){
-				continue;
+			#
+			# some keys are always treated as special so that
+			# they don't clobber the dotspotting internals on
+			# export.
+			#
+
+			if (in_array($label, $dotspotting_keys)){
+				$label = "user:{$label}";
 			}
 
 			if (! trim($data[$label])){
@@ -684,6 +699,21 @@
 		}
 
 		return array( 'ok' => 1 );
+	}
+
+	#################################################################
+
+	function dots_dotspotting_keys(){
+		$sql = "DESCRIBE Dots";
+		$rsp = db_fetch_users(1, $sql);
+
+		$keys = array();
+
+		foreach ($rsp['rows'] as $row){
+			$keys[] = $row['Field'];
+		}
+
+		return $keys;
 	}
 
 	#################################################################
