@@ -35,7 +35,7 @@
 
 	#################################################################
 
-	function dots_import_dots(&$user, &$bucket, &$dots){
+	function dots_import_dots(&$user, &$bucket, &$dots, $more=array()){
 
 		$received = 0;
 		$processed = 0;
@@ -46,7 +46,7 @@
 
 			$received ++;
 
-			$rsp = dots_create_dot($user, $bucket, $dot);
+			$rsp = dots_create_dot($user, $bucket, $dot, $more);
 
 			if (! $rsp['ok']){
 				$rsp['record'] = $received;
@@ -71,7 +71,7 @@
 
 	#################################################################
 
-	function dots_create_dot(&$user, &$bucket, &$data){
+	function dots_create_dot(&$user, &$bucket, &$data, $more=array()){
 
 		# Do the dot validation here mostly so that we
 		# don't have to remember to always do it in the
@@ -154,7 +154,7 @@
 
 		$perms = $perms_map['public'];
 
-		if ($data['perms'] == 'private'){
+		if (($data['perms'] == 'private') || ($more['mark_all_private'])){
 			$perms = $perms_map['private'];
 		}
 

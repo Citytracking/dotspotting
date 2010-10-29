@@ -58,7 +58,7 @@
 		# mostly just because it's boring to type...
 		$bucket = $bucket_rsp['bucket'];		
 
-		$dots_rsp = dots_import_dots($user, $bucket_rsp['bucket'], $data);
+		$dots_rsp = dots_import_dots($user, $bucket_rsp['bucket'], $data, $more);
 
 		$dots_rsp['bucket'] = $bucket;
 

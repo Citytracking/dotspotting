@@ -3,9 +3,11 @@
 {else}
 
 <h3>Upload some dots</h3>
-<p class="caveat" style="text-align:left;">At the moment, only comma-separated (CSV) files are supported and only the first {$cfg.upload_max_records|escape} records in a file will be imported.</p>
+<p class="caveat" style="text-align:left;">At the moment, <strong>only comma-separated (CSV) files are supported</strong> and only the first {$cfg.upload_max_records|escape} records in a file will be imported.</p>
 
-<p class="caveat" style="text-align:left;">Also: <strong>All dots are made public by default.</strong> You can override this behaviour in your CSV file by including a <code>perms</code> column and assign the relevant rows a value of <q>private</q>. There will be proper privacy controls on the dotspotting website, and upload pages, shortly.</p>
+<p class="caveat" style="text-align:left;">Also: <strong>All dots are made public by default.</strong> You can override this behaviour in your CSV file by including a <code>perms</code> column and assign the relevant rows a value of <q>private</q> or by ticking the <q>make all these dots private</q> checkbox below. There is currently no way to toggle privacy settings for individual dots but that be done shortly.</p>
+
+<br />
 
 <form action="/upload" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
 	{$crumb_key|crumb_input}
@@ -18,6 +20,10 @@
 	<input type="text" size="40" name="label" />
 	<br />
 	<label for="label">Give your upload a name (optional)</label>
+	<br /><br />
+
+	<input type="checkbox" name="private" />
+	<label for="private">make all these dots private</label>
 	<br /><br />
 
 	<input type="SUBMIT" value="UPLOAD YOUR DOTS!" />

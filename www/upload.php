@@ -47,11 +47,13 @@
 		# store the data
 
 		$label = post_str('label');
+		$private = (post_str('private')) ? 1 : 0;
 		
 		$more = array(
 			'return_dots' => 0,
 			'label' => $label,
 			'mime_type' => $_FILES['upload']['type'],
+			'mark_all_private' => $private,
 		);
 
 		$rsp = uploads_process_data($GLOBALS['cfg']['user'], $rsp['data'], $more);
