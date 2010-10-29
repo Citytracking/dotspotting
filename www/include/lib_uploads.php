@@ -29,7 +29,9 @@
 
 	function uploads_process_file(&$file){
 
-		$rsp = array( 'ok' => 0 ); 
+		$rsp = array(
+			'ok' => 0,
+		); 
 
 		if ($file['type'] === 'text/csv'){
 			$rsp = csv_parse_file($file['tmp_name']);
@@ -49,26 +51,69 @@
 
 	function uploads_process_data(&$user, &$data, $more=array()){
 
+		#
+		# First do some sanity-checking on the data before
+		# we bother to create a bucket.
+		#
+
+		$record = 1;
+
+		foreach ($data as $row){
+
+			$rsp = dots_ensure_valid_data($row);
+
+			if (! $rsp['ok']){
+
+				return array(
+					'ok' => 0,
+					'errors' => array(array(
+						'error' => $rsp['error'],
+						'record' => $record,
+					))
+				);
+			}
+
+			$record++;
+		}
+
+		#
+		# CAN I HAS MAH BUCKET?
+		#
+
 		$bucket_rsp = buckets_create_bucket($user, $more);
 
 		if (! $bucket_rsp['ok']){
 			return $bucket_rsp;
 		}
 
-		# mostly just because it's boring to type...
 		$bucket = $bucket_rsp['bucket'];		
+
+		#
+		# OMG!!! IT'S FULL OF DOTS!!!!
+		#
+	
+		$more['skip_validation'] = 1;	# see above
 
 		$dots_rsp = dots_import_dots($user, $bucket_rsp['bucket'], $data, $more);
 
-		$dots_rsp['bucket'] = $bucket;
+		# No soup for bucket! Or is it the other way around...
 
-		$count_rsp = buckets_update_dot_count_for_bucket($bucket);
-		$dots_rsp['update_bucket_count'] = $count_rsp['ok'];
-
-		if ($more['return_dots']){
-			$dots_rsp['dots'] = dots_get_dots_for_bucket($bucket, $bucket['user_id']);
+		if (! $dots_rsp['ok']){
+			buckets_delete_bucket($bucket);
 		}
-		
+
+		else {
+
+			$dots_rsp['bucket'] = $bucket;
+
+			$count_rsp = buckets_update_dot_count_for_bucket($bucket);
+			$dots_rsp['update_bucket_count'] = $count_rsp['ok'];
+
+			if ($more['return_dots']){
+				$dots_rsp['dots'] = dots_get_dots_for_bucket($bucket, $bucket['user_id']);
+			}
+		}
+
 		return $dots_rsp;
 	}
 

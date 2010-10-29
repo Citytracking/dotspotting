@@ -11,7 +11,10 @@
 		$fh = fopen($path, 'r');
 
 		if (! $fh){
-			return array( 'ok' => 0, 'error' => 'failed to open file' );
+			return array(
+				'ok' => 0,
+				'error' => 'failed to open file'
+			);
 		}
 
 		$keys = array();

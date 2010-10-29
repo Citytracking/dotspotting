@@ -73,15 +73,16 @@
 
 	function dots_create_dot(&$user, &$bucket, &$data, $more=array()){
 
-		# Do the dot validation here mostly so that we
-		# don't have to remember to always do it in the
-		# various import libraries and/or loop over every
-		# record twice in lib_uploads
+		# if we've gotten here via lib_uploads then
+		# we will have already done validation.
 
-		$rsp = dots_ensure_valid_data($data);
+		if (! $more['skip_validation']){
 
-		if (! $rsp['ok']){
-			return $rsp;
+			$rsp = dots_ensure_valid_data($row);
+
+			if (! $rsp['ok']){
+				return $rsp;
+			}
 		}
 
 		#
