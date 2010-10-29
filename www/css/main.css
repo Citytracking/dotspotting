@@ -31,10 +31,10 @@ body {
 #footer {
 	font-size:small;
 	text-align: right;
-	color: #999;
+	color: darkslategray;
 	margin-top:35px;
 	margin-bottom:20px;
-	border-top:1px solid #ccc;
+	border-top:1px dotted #eee;
 	padding-top:30px;
 }
 
