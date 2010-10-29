@@ -159,7 +159,6 @@ function draw_map_polymaps(buckets){
 	var map = po.map();
 	map.container(svg);
 
-	/*
 	var wheel = po.wheel();
 	wheel.smooth(false);
 	map.add(wheel);
@@ -169,10 +168,6 @@ function draw_map_polymaps(buckets){
 
 	var dblclick = po.dblclick();	
 	map.add(dblclick);
-	*/
-
-	var actions = po.interact();
-	map.add(actions);
 
 	var hash = po.hash();
 	map.add(hash);
@@ -186,7 +181,9 @@ function draw_map_polymaps(buckets){
 	map.add(tileset);
 
 	var bbox = adjust_bbox(buckets['bbox']);
+
 	map.extent(bbox);
+	map.zoom(Math.floor(map.zoom()));
 
 	var boxes = po.geoJson();
 	boxes.features(buckets['features']);

@@ -160,7 +160,6 @@ function draw_map_polymaps(dots){
 	var map = po.map();
 	map.container(svg);
 
-	/*
 	var wheel = po.wheel();
 	wheel.smooth(false);
 	map.add(wheel);
@@ -170,10 +169,6 @@ function draw_map_polymaps(dots){
 
 	var dblclick = po.dblclick();	
 	map.add(dblclick);
-	*/
-
-	var actions = po.interact();
-	map.add(actions);
 
 	var hash = po.hash();
 	map.add(hash);
@@ -194,6 +189,8 @@ function draw_map_polymaps(dots){
 		var bbox = adjust_bbox(extents['bbox']);
 		map.extent(bbox);
 	}
+
+	map.zoom(Math.floor(map.zoom()));
 
 	// TO DO:
 	// colour the dots based on privacy

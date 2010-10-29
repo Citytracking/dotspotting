@@ -12,7 +12,18 @@ function draw_map_polymaps(lat, lon){
 	var map = po.map();
 	map.container(svg);
 
-	map.add(po.interact());
+	var wheel = po.wheel();
+	wheel.smooth(false);
+	map.add(wheel);
+
+	var drag = po.drag();
+	map.add(drag);
+
+	var dblclick = po.dblclick();	
+	map.add(dblclick);
+
+	var hash = po.hash();
+	map.add(hash);
 
 	var url = po.url("http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png");
 	url.hosts(["a.", "b.", "c.", ""]);
@@ -23,6 +34,7 @@ function draw_map_polymaps(lat, lon){
 	map.add(tileset);
 
 	map.center({lat: lat, lon: lon});
+	map.zoom(Math.floor(map.zoom()));
 
 	// TO DO:
 	// colour the dots based on privacy
