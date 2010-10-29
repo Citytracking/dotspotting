@@ -389,11 +389,12 @@ com.modestmaps.Markers.prototype.isContainedBy = function(loc, extent){
 
 com.modestmaps.Markers.prototype.polygon = function(coords, more){
 
-    var fill_style = (more['fillStyle']) ? more['fillStyle'] : '#00A308';
-    var stroke_style = (more['strokeStyle']) ? more['strokeStyle'] : '#ccff99';
-    var line_width = (more['lineWidth']) ? more['lineWidth'] : 1;
-    var line_join = (more['lineJoin']) ? more['lineJoin'] : 'miter';
-    var line_cap = (more['lineCap']) ? more['lineCap'] : 'butt';
+    var fill_style = ((more) && (more['fillStyle'])) ? more['fillStyle'] : '#00A308';
+    var stroke_style = ((more) && (more['strokeStyle'])) ? more['strokeStyle'] : '#ccff99';
+    var line_width = ((more) && (more['lineWidth'])) ? more['lineWidth'] : 1;
+    var line_join = ((more) && (more['lineJoin'])) ? more['lineJoin'] : 'miter';
+    var line_cap = ((more) && (more['lineCap'])) ? more['lineCap'] : 'butt';
+    var alpha = ((more) && (more['globalAlpha'])) ? more['globalAlpha'] : 0.25;
 
     var ctx = this.surface.getContext('2d');
 
@@ -402,7 +403,8 @@ com.modestmaps.Markers.prototype.polygon = function(coords, more){
     ctx.lineWidth = line_width;
     ctx.lineJoin = line_join;
     ctx.lineCap = line_cap;
-
+    ctx.globalAlpha = alpha;
+	
     ctx.beginPath();
 
     for (i in coords){
@@ -419,7 +421,7 @@ com.modestmaps.Markers.prototype.polygon = function(coords, more){
 
     ctx.stroke();
 
-    if (more['is_line']){
+    if ((more) && (more['is_line'])){
         return;
     }
 
@@ -428,6 +430,11 @@ com.modestmaps.Markers.prototype.polygon = function(coords, more){
 };
 
 com.modestmaps.Markers.prototype.line = function(coords, more){
+
+    if (! more){
+	more = {};
+    }       
+
     more['is_line'] = 1;
     this.polygon(coords, more);
 };

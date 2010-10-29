@@ -63,6 +63,6 @@
 	# capable of dealing with SVG.
 	#
 
-	$GLOBALS['cfg']['enable_feature_polymaps'] = 1;
+	$GLOBALS['cfg']['enable_feature_polymaps'] = 0;
 
 ?>

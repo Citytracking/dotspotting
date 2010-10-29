@@ -102,17 +102,37 @@ function draw_map_modestmaps(buckets){
 	// clothes...it should be sorted out though.
 	// (20101028/straup)
 
-	/*
-	var points = []
+	var polygons = [];
 
-	for (var i = 0; i < count; i++){
-		var loc = dots['locations'][i];
-		points.push([ loc.lat, loc.lon ]);
+	count_buckets = buckets['buckets'].length;
+
+	for (var i = 0; i < count_buckets; i++){
+
+		var corners = buckets['buckets'][i];
+		var sw = corners[0];
+		var ne = corners[1];
+
+		// this is seriously silly... we need to figure
+		// out some common ground between modestmaps, polymaps,
+		// modestmaps.markers and so on. for now this will
+		// have to do... (20101029/straup)
+
+		var nw = { 'lat': ne['lat'], 'lon': sw['lon'] };
+		var se = { 'lat': sw['lat'], 'lon': ne['lon'] };
+
+		var coords = [
+			[sw['lat'], sw['lon']],
+			[nw['lat'], nw['lon']],
+			[ne['lat'], ne['lon']],
+			[se['lat'], se['lon']],
+			[sw['lat'], sw['lon']]
+		];
+
+		polygons.push(coords);
 	}
 
 	var markers = new mm.Markers(map);
-	markers.drawPoints(points);
-	*/
+	markers.drawPolygons(polygons);
 
 	return;
 }
