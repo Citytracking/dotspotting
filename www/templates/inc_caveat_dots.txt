@@ -1,1 +1,1 @@
-<p class="caveat">It's true: None of these dots are clickable or interactive. Yet! It is early days in the project still but we'll get there, we promise.</p>
+<p class="caveat">It's true: Nothing is clickable or interactive. Yet! It is early days in the project still but we'll get there, we promise.</p>

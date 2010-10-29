@@ -1,0 +1,185 @@
+{literal}
+<script type="text/javascript">
+
+function collect_buckets(){
+
+	// read the table looking for buckets
+
+	var selector = "#user_buckets tbody tr";
+	var buckets = [];
+
+	var swlat = null;
+	var swlon = null;
+	var nelat = null;
+	var nelon = null;
+
+	var features = $(selector).map(function(i, row) {
+		var values = {};
+
+		// this is pretty brittle and should be updated
+		// to check for class names instead of offsets
+		// (20101027/straup)
+
+		$(row).find("td").each(function(col, td) {
+			values[col] = $(td).text();
+		});
+
+		// account for public vs. private...
+		// see above... urgh...
+
+		var _extent = values[3].split(' ');
+
+		if (_extent.length != 4){
+			_extent = values[4].split(' ');
+		}
+
+		if (_extent.length != 4){
+			return;
+		}
+
+		var sw = {
+			lat: parseFloat(_extent[0]),
+			lon: parseFloat(_extent[1])
+		};
+
+		var ne = {
+			lat: parseFloat(_extent[2]),
+			lon: parseFloat(_extent[3])
+		};
+
+		buckets.push([sw, ne]);
+
+		swlat = (swlat) ? Math.min(swlat, sw.lat) : sw.lat;
+		swlon = (swlon) ? Math.min(swlon, sw.lon) : sw.lon;
+		nelat = (nelat) ? Math.max(nelat, ne.lat) : ne.lat;
+		nelon = (nelon) ? Math.max(nelon, ne.lon) : ne.lon;
+
+		return {
+			geometry: {
+				type: "FIX-ME",
+				coordinates: [ ]
+			},
+			properties: { },
+		};
+	});
+
+	var extent = [
+		{ lat: swlat, lon: swlon },
+		{ lat: nelat, lon: nelon },
+	];
+
+	return {
+		'buckets': buckets,
+		'bbox': extent,
+		'features': features
+	};
+}
+
+function draw_map_modestmaps(buckets){
+
+	var mm = com.modestmaps;
+
+	var template = 'http://a.tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png';
+	var provider = new mm.TemplatedMapProvider(template);
+
+	var dims = undefined;
+	var handlers = undefined;
+
+	var map = new mm.Map('map', provider, dims, handlers);
+
+	var bbox = adjust_bbox(buckets['bbox']);
+
+	var extent = [
+		new mm.Location(bbox[0]['lat'], bbox[0]['lon']),
+		new mm.Location(bbox[1]['lat'], bbox[1]['lon']),
+	];
+
+	map.setExtent(extent);
+
+	// see how this is different than what we pass
+	// to polymaps? that's a known-known and today
+	// it is a problem that is dressed in hairy yak
+	// clothes...it should be sorted out though.
+	// (20101028/straup)
+
+	/*
+	var points = []
+
+	for (var i = 0; i < count; i++){
+		var loc = dots['locations'][i];
+		points.push([ loc.lat, loc.lon ]);
+	}
+
+	var markers = new mm.Markers(map);
+	markers.drawPoints(points);
+	*/
+
+	return;
+}
+
+function draw_map_polymaps(buckets){
+
+	var po = org.polymaps;
+	var svg = po.svg("svg");
+
+	var div = document.getElementById("map");
+	div.appendChild(svg);
+
+	var map = po.map();
+	map.container(svg);
+
+	map.add(po.interact());
+
+	var url = po.url("http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png");
+	url.hosts(["a.", "b.", "c.", ""]);
+
+	var tileset = po.image();
+	tileset.url(url);
+
+	map.add(tileset);
+
+	var bbox = adjust_bbox(buckets['bbox']);
+	map.extent(bbox);
+
+	// TO DO:
+	// colour the dots based on privacy
+	// make the dots click-able
+
+	/*
+	var buckets = po.geoJson();
+	buckets.features(dots['features']);
+	buckets.on("load", po.stylist().attr("r", 5));
+
+	map.add(buckets);
+	*/
+}
+
+// quick and dirty function to tweak the extents of a bounding
+// box so that dots don't get cropped by the edge of the map.
+// this will undoubtedly require finesse-ing over time...
+// (20101027/straup)
+
+function adjust_bbox(bbox){
+	bbox[0]['lat'] -= 2;
+	bbox[0]['lon'] -= 2;
+	bbox[1]['lat'] += 2;
+	bbox[1]['lon'] += 2;
+	return bbox;
+}
+
+function draw_map(){
+
+	var buckets = collect_buckets();
+
+	if (canhas_polymaps){	
+		draw_map_polymaps(buckets);
+		return;
+	}
+
+	draw_map_modestmaps(buckets);
+}
+	
+draw_map();
+
+</script>
+{/literal}

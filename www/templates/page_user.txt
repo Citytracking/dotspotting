@@ -9,4 +9,6 @@
 
 {include file="inc_user_dashboard.txt"}
 
+{include file="inc_buckets_list.txt" header="Recently created buckets"}
+
 {include file='inc_foot.txt'}

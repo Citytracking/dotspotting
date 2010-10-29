@@ -1,0 +1,48 @@
+<div id="map"></div>
+{include file="inc_caveat_dots.txt"}
+
+{if $header}<h3>{$header|escape}</h3>{/if}
+
+<table id="user_buckets">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Label</th>
+			{if $is_own}
+			<th>Dots</th>
+			<th>Dots (public)</th>
+			{else}
+			<th>Dots</th>
+			{/if}
+			<th>Extent (SW, NE)</th>
+			<th>Created</th>
+			{if $is_own}
+			<th>Last Modified</th>
+			{/if}
+		</tr>
+	</thead>
+	<tbody>
+
+{foreach from=$buckets item='bucket'}
+
+		<tr{if $bucket.count_dots_public==0} class="bucket_private"{/if}>
+			<td><a href="{$bucket|@urls_url_for_bucket}">{$bucket.id|escape}</a></td>
+			<td>{if $bucket.label}<a href="{$bucket|@urls_url_for_bucket}">{$bucket.label|escape}</a>{else}&#8212;{/if}</td>
+			{if $is_own}
+			<td>{$bucket.count_dots|escape}</td>
+			<td>{$bucket.count_dots_public|escape}</td>
+			{else}
+			<td>{$bucket.count_dots_public|escape}</td>
+			{/if}
+			<td>{$bucket.extent.swlat|escape} {$bucket.extent.swlon|escape} {$bucket.extent.nelat|escape} {$bucket.extent.nelon|escape}</td>
+			<td>{$bucket.created|date_format:"%Y-%m-%d %H:%M"|escape}</td>
+			{if $is_own}
+			<td>{$bucket.last_modified|date_format:"%Y-%m-%d %H:%M"|escape}</td>
+			{/if}
+		</tr>
+{/foreach}
+
+	</tbody>
+</table>
+
+{include file="inc_buckets_map_js.txt"}
