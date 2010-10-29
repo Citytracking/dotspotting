@@ -3,9 +3,6 @@
 
 {if $cfg.user.id}
 	<h2>Hi {$cfg.user.username|escape}!</h2>
-
-	{if 0}{include file="inc_user_dashboard.txt" owner=$cfg.user}{/if}
-
 {else}
 	<h2>Welcome to dotspotting</h2>
 
