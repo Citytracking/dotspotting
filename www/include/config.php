@@ -4,7 +4,6 @@
 	# $GLOBALS['cfg'] = array();
 
 	$GLOBALS['cfg']['dotspotting_version'] = '0.0.0';	# see also: http://semver.org/
-
 	$GLOBALS['cfg']['flamework_skip_init_config'] = 1;
 
 	# Database stuff

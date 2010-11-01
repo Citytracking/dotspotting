@@ -9,7 +9,8 @@
 	# install.
 	
 	define('DOTSPOTTING_WWW_DIR', dirname(dirname(__FILE__)));
-	define('DOTSPOTTING_SECRETS_DIR', dirname(DOTSPOTTING_WWW_DIR) . '/secrets');
+
+	define('DOTSPOTTING_CONFIG_DIR', dirname(DOTSPOTTING_WWW_DIR) . '/config');
 	define('DOTSPOTTING_FLAMEWORK_DIR', dirname(DOTSPOTTING_WWW_DIR) . '/ext/flamework');
 	#
 	# See what's going on here? There are three separate config
@@ -33,7 +34,7 @@
 	include(DOTSPOTTING_FLAMEWORK_DIR . '/include/config.php');
 
 	include(DOTSPOTTING_WWW_DIR."/include/config.php");
-	include(DOTSPOTTING_SECRETS_DIR . '/dotspotting.php');
+	include(DOTSPOTTING_CONFIG_DIR . '/dotspotting.php');
 
 	# Go, flamework! Go!!
 
