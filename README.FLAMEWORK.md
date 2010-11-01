@@ -5,13 +5,13 @@ Flamework
 
 Dotspotting does not so much piggyback on a traditional framework as it does hold hands with an anti-framework called "Flamework".
 
-Flamework is the mythical PHP framework developed and used by the engineering team at Flickr. It is gradually being rewritten, from scratch, as an open-source project by former Flickr engineers. It is available to download and use on Github:
+Flamework is the mythical ("mythical") PHP framework developed and used by the engineering team at Flickr. It is gradually being rewritten, from scratch, as an open-source project by former Flickr engineers. It is available to download and use on Github:
 
-	[http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
+  [http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
 
 If you've never watched Cal Henderson's "Why I Hate Django" presentation now is probably as good a time as any. It will help you understand a lot about why things were done they were at Flickr and why those of us who've left prefer to keep doing them that way.
 
-	[http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
+  [http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
 
 Flamework is not really a framework, at least not by today's standards. All software development is basically pain management and Flamework assumes that the most important thing is the *speed with which the code running an application can be re-arranged, in order to adapt to circumstances*, even if it's at the cost of "doing things twice" or "repeating ourselves".
 

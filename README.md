@@ -5,7 +5,7 @@ First things first: THIS SHOULD NOT BE CONSIDERED PRODUCTION-READY CODE YET.
 
 That said, it works. It probably doesn't work everywhere and there are almost certainly bugs left to be found but more importantly it is still at a stage where the code and the architecture needs to be able to change without necessarily ensuring backwards compatibility.
 
-Per the terms of the Knight News Challenge Grant that is funding the development of Dotspotting we are committed to working in public so this is the first step in that process. Once a stable baseline for the code and the architecture has been established Dotspotting will follow the conventions established for versioning and changes proposed in the Semantic Versioning specification ([http://semver.org/](http://semver.org/ "Semantic Versioning")).
+Per the terms of the Knight News Challenge Grant that is funding the development of Dotspotting we are committed to working in public *(we think that's a good thing, by the way :-)* so this is the first step in that process. Once a stable baseline for the code and the architecture has been established Dotspotting will follow the conventions established for versioning and changes proposed in the Semantic Versioning specification ([http://semver.org/](http://semver.org/ "Semantic Versioning")).
 
 Right now, the version number for Dotspotting is: "Super Alpha-Beta Disco-Ball".
 
@@ -30,7 +30,7 @@ Installation Instructions
 Flamework (?!)
 --
 
-Dotspotting does not so much piggyback on a traditional framework as it does hold hands with an anti-framework called "Flamework". Flamework is the mythical PHP framework developed and used by the engineering team at Flickr. It is gradually being rewritten, from scratch, as an open-source project by former Flickr engineers.
+Dotspotting does not so much piggyback on a traditional framework as it does hold hands with an anti-framework called "Flamework". Flamework is the mythical ("mythical") PHP framework developed and used by the engineering team at Flickr. It is gradually being rewritten, from scratch, as an open-source project by former Flickr engineers.
 
 If you just want to run Dotspotting that's really all you need to know, now.  If you want to get a better understanding of what's going on under the hood and to glean the relationship between Dotspotting and Flamework you should look at the [README.FLAMEWORK.md](http://github.com/citytracking/dotspotting/blob/master/README.FLAMEWORK.md) document.
 
@@ -56,6 +56,6 @@ Known Knowns
 
 + Dotspotting has proven to be fussy and problematic installing using the default OS X Apache + PHP binaries. We're not sure why but are continuing to poke at the problem. It works fine using tools like MAMP, though.
 
-+ Dotspotting isn't set up to run out of a sub-directory, like a user's `public_html` folder. Yet.
++ Dotspotting still needs to be installed at the root of a domain. It doesn't Just Work (tm) when run out of a user's `public_html` folder, for example. Yet.
 
 + Dotspotting has not been tested on Windows.
