@@ -54,6 +54,8 @@ For a complete list of Dotspotting-specific config options, you should consult t
 Known Knowns
 --
 
-Dotspotting has proven to be fussy and problematic installing using the default OS X Apache + PHP binaries. We're not sure why but are continuing to poke at the problem. It works fine using tools like MAMP, though.
++ Dotspotting has proven to be fussy and problematic installing using the default OS X Apache + PHP binaries. We're not sure why but are continuing to poke at the problem. It works fine using tools like MAMP, though.
 
-Dotspotting has not been tested on Windows yet.
++ Dotspotting isn't set up to run out of a sub-directory, like a user's `public_html` folder. Yet.
+
++ Dotspotting has not been tested on Windows yet.
