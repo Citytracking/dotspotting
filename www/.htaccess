@@ -10,16 +10,6 @@
 # for your production deployment. Yeah. Do that.
 #
 
-# Order Allow,Deny
-# Allow from none
-# Deny from all
-
-# AuthType Basic
-# AuthName "dotspotting"
-# AuthUserFile /ebs/secrets/htusers
-# AuthGroupFile /ebs/secrets/htgroups
-# Require group dotspotting
-
 FileETag none
 
 php_value include_path "./include:../flamework/include:."
