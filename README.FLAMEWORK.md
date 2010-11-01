@@ -9,26 +9,26 @@ Flamework is the mythical ("mythical") PHP framework developed and used by the e
 
   [http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
 
-If you've never watched Cal Henderson's "Why I Hate Django" presentation now is probably as good a time as any. It will help you understand a lot about why things were done they were at Flickr and why those of us who've left prefer to keep doing them that way.
+If you've never watched Cal Henderson's "Why I Hate Django" presentation now is probably as good a time as any. It will help you understand a lot about why things were done they were at Flickr and why those of us who've left prefer to keep doing them that way:
 
   [http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
 
-Flamework is not really a framework, at least not by today's standards. All software development is basically pain management and Flamework assumes that the most important thing is the *speed with which the code running an application can be re-arranged, in order to adapt to circumstances*, even if it's at the cost of "doing things twice" or "repeating ourselves".
+Flamework is not really a framework, at least not by today's standards. All software development is basically pain management and Flamework assumes that the most important thing is *the speed with which the code running an application can be re-arranged, in order to adapt to circumstances*, even if it's at the cost of "doing things twice" or "repeating ourselves".
 
 Dotspotting itself may eventually become a framework but today it is *not*.
 
-Today, Dotspotting is a nascent application that is still trying to recognize, never mind understand, its boundaries. That means it's just too soon for for a unified data and object model and nothing is gained by having to fight against one all the time in order to adapt it to the application itself.
+Today, Dotspotting is a nascent application that is still trying to recognize, never mind understand, its boundaries. That means it's just too soon for for a unified database or object model and nothing is gained by having to fight against one all the time in order to adapt it to the needs of the application itself.
 
 A complete Flamework reference is out of scope for this document but here's the short version:
 
 **Flamework is basically two things:**
 
 1. A set of common libraries and functions.
-2. A set of social conventions for how code is arranged
+2. A series of social conventions for how code is arranged.
 
 **Flamework also [WORDS]:**
 
-* It uses Smarty for templating
+* It uses [Smarty](http://www.smarty.net "Smarty") for templating
 * It uses global variables. Not many but it doesn't make a fuss about the idea of using them.
 * It does not objects or "protected" variables.
 * It breaks it own rules, occasionally and uses objects but only rarely and generally when they are defined by third-party libraries like Smarty.
@@ -74,8 +74,8 @@ Here is a simple bare-bones example of how it all fits together:
 
 The only "rules" here are:
 
-1. Making sure you load "include/init.php"
-2. The part where init.php handles authentication checking and assigns logged in users to the global 'cfg' variable (it also creates and assigns a global $smarty object)
+1. Making sure you load `include/init.php`
+2. The part where `init.php` handles authentication checking and assigns logged in users to the global `$cfg` variable (it also creates and assigns a global `$smarty` object)
 3. The naming conventions for shared libraries, specifically: `lib_SOMETHING.php` which is imported as `loadlib("SOMETHING")`.
 
 Page template names and all that other stuff is, ultimately, your business.
@@ -87,13 +87,13 @@ Flamework assumes a federated model with all the various user data spread across
 
 By default Dotspotting relies on a series of special config flags (in Flamework) called `enable_feature_poormans_(SOME FEATURE)` that will trick Flamework in to treating a single database as many. The goal is to enable (and ensure) that when a given installation of Dotspotting grows beyond a [WORDS] that it can easily be migrated to a more robust system with a minimum of fuss.
 
-1. db_main
++ **db_main**
 
-2. db_users
++ **db_users**
 
 These are federated tables, sometimes called "shards".
 
-3. db_tickets
++ **db_tickets**
 
 One of the things about storing federated user data is that from time to time you may need to "re-balance" your shards, for example moving all of a user's data from shard #5 to shard #23.
 
