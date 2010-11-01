@@ -112,7 +112,7 @@ function draw_map_modestmaps(dots){
 	}
 
 	else {
-		var bbox = adjust_bbox(extents['bbox']);
+		var bbox = utils_adjust_bbox(extents['bbox']);
 
 		var extent = [
 			new mm.Location(bbox[0]['lat'], bbox[0]['lon']),
@@ -186,7 +186,7 @@ function draw_map_polymaps(dots){
 	}
 
 	else {
-		var bbox = adjust_bbox(extents['bbox']);
+		var bbox = utils_adjust_bbox(extents['bbox']);
 		map.extent(bbox);
 	}
 
@@ -202,20 +202,7 @@ function draw_map_polymaps(dots){
 
 	map.add(points);
 }
-
-// quick and dirty function to tweak the extents of a bounding
-// box so that dots don't get cropped by the edge of the map.
-// this will undoubtedly require finesse-ing over time...
-// (20101027/straup)
-
-function adjust_bbox(bbox){
-	bbox[0]['lat'] -= 2;
-	bbox[0]['lon'] -= 2;
-	bbox[1]['lat'] += 2;
-	bbox[1]['lon'] += 2;
-	return bbox;
-}
-
+	
 function draw_map(){
 
 	var dots = collect_dots();

@@ -160,7 +160,8 @@
 		$created = $now;
 
 		if ($alt_created = $data['created']){
-			$created = (intval($alt_created)) ? $alt_created : strtotime($alt_created);
+			# Because intval("2010-09-23T00:18:55Z") returns '2010' ...
+			$created = (is_numeric($alt_created)) ? $alt_created : strtotime($alt_created);
 		}
 
 		# permissions
