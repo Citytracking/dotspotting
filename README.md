@@ -34,6 +34,23 @@ Dotspotting does not so much piggyback on a traditional framework as it does hol
 
 If you just want to run Dotspotting that's really all you need to know, now.  If you want to get a better understanding of what's going on under the hood and to glean the relationship between Dotspotting and Flamework you should look at the [README.FLAMEWORK.md](http://github.com/citytracking/dotspotting/blob/master/README.FLAMEWORK.md) document.
 
+Configuring Dotspotting
+--
+
+Here's what's actually happening when a page on Dotspotting is loaded:
+
+	include(DOTSPOTTING_FLAMEWORK_DIR . '/include/config.php');
+	include(DOTSPOTTING_WWW_DIR."/include/config.php");
+	include(DOTSPOTTING_CONFIG_DIR . '/dotspotting.php');
+
+1. Load the default Flamework config file
+2. Load the default Dotspotting config file
+3. Load the config file specific to *your* installation of Dotspotting.
+
+The important thing to note here is that each file may override values defined in the previous config file.
+
+... consult the [README.CONFIG.md](http://github.com/citytracking/dotspotting/blob/master/README.CONFIG.md) document.
+
 Known Knowns
 --
 

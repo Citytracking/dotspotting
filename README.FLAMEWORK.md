@@ -7,15 +7,17 @@ Dotspotting does not so much piggyback on a traditional framework as it does hol
 
 Flamework is the mythical PHP framework developed and used by the engineering team at Flickr. It is gradually being rewritten, from scratch, as an open-source project by former Flickr engineers. It is available to download and use on Github:
 
-[http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
+	[http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
 
 If you've never watched Cal Henderson's "Why I Hate Django" presentation now is probably as good a time as any. It will help you understand a lot about why things were done they were at Flickr and why those of us who've left prefer to keep doing them that way.
 
-[http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
+	[http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
 
-All software development is basically pain management and Flamework is not really a framework, at least not by today's standards. It assumes that the most important thing is the *speed with which the code running an application can be re-arranged, in order to adapt to circumstances*, even if it's at the cost of "doing things twice" or "repeating ourselves".
+Flamework is not really a framework, at least not by today's standards. All software development is basically pain management and Flamework assumes that the most important thing is the *speed with which the code running an application can be re-arranged, in order to adapt to circumstances*, even if it's at the cost of "doing things twice" or "repeating ourselves".
 
-Dotspotting itself may eventually become a framework but today it is *not*. Today, Dotspotting is a nascent application that is still trying to recognize, never mind, understand its boundaries. That means it's just too soon for for a unified data and object model and nothing is gained by having to fight against one all the time in order to adapt it to the application itself.
+Dotspotting itself may eventually become a framework but today it is *not*.
+
+Today, Dotspotting is a nascent application that is still trying to recognize, never mind understand, its boundaries. That means it's just too soon for for a unified data and object model and nothing is gained by having to fight against one all the time in order to adapt it to the application itself.
 
 A complete Flamework reference is out of scope for this document but here's the short version:
 
@@ -122,6 +124,9 @@ Solr is principally a search engine but it can also be used to do spatial querie
 **PostGIS**
 
 PostGIS a proper spatial database that can do amazing things.
+
+Configuring Flamework
+--
 
 Making Changes to Flamework
 --

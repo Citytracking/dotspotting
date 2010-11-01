@@ -7,11 +7,12 @@
 	# This is painful, but you're not really expected to have
 	# to think about it if you're doing a plain vanilla dotspotting
 	# install.
-	
+
 	define('DOTSPOTTING_WWW_DIR', dirname(dirname(__FILE__)));
 
 	define('DOTSPOTTING_CONFIG_DIR', dirname(DOTSPOTTING_WWW_DIR) . '/config');
 	define('DOTSPOTTING_FLAMEWORK_DIR', dirname(DOTSPOTTING_WWW_DIR) . '/ext/flamework');
+
 	#
 	# See what's going on here? There are three separate config
 	# files and the order they're loaded is important:
