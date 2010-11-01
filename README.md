@@ -47,7 +47,7 @@ Here's what's actually happening when a page on Dotspotting is loaded:
 2. Load the default Dotspotting config file
 3. Load the config file specific to *your* installation of Dotspotting.
 
-The important thing to note here is that each file may override values defined in the previous config file.
+The important thing to note here is that each file may override values defined in the previous config file. We are hoping that in most cases the only one of those three files you'll need to worry about is the last one ([dotspotting.php](http://github.com/Citytracking/dotspotting/blob/master/config/dotspotting.php.example)) but both Flamework and Dotspotting have a lot of knobs and this is where they can be tweaked.
 
 ... consult the [README.CONFIG.md](http://github.com/citytracking/dotspotting/blob/master/README.CONFIG.md) document.
 
