@@ -7,11 +7,11 @@ Dotspotting does not so much piggyback on a traditional framework as it does hol
 
 Flamework is the mythical PHP framework developed and used by the engineering team at Flickr. It is gradually being rewritten, from scratch, as an open-source project by former Flickr engineers. It is available to download and use on Github:
 
-[http://github.com/exflickr/flamework]
+[http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
 
 If you've never watched Cal Henderson's "Why I Hate Django" presentation now is probably as good a time as any. It will help you understand a lot about why things were done they were at Flickr and why those of us who've left prefer to keep doing them that way.
 
-[http://www.youtube.com/watch?v=i6Fr65PFqfk]
+[http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
 
 All software development is basically pain management and Flamework is not really a framework, at least not by today's standards. It assumes that the most important thing is the speed with which the code running an application can be re-arranged, in order to adapt to circumstances, even if it's at the cost of "doing things twice" or "repeating ourselves".
 
@@ -109,17 +109,17 @@ What does this mean? It means that -- at least during the initial releases of Do
 1. There is no global full-text search.
 2. There is only limited global spatial search, which is done using geohashes.
 
-1. MySQL
+**MySQL**
 
 This gets you dots and bounding box (and geohash) queries.
 
-2. Solr
+**Solr**
 
 Solr is principally a search engine but it can also be used to do spatial queries. [WORDS]
 
  gets you "good enough" spatial queries, specifically radial queries using the [WORDS] plugin and whatever is being developed for the next release (1.5). It also, importantly,
 
-3. PostGIS
+**PostGIS**
 
 PostGIS a proper spatial database that can do amazing things.
 
