@@ -5,7 +5,7 @@ First things first:** THIS SHOULD NOT BE CONSIDERED PRODUCTION-READY CODE YET.**
 
 That said, it works. It probably doesn't work everywhere and there are almost certainly bugs left to be found but more importantly it is still at a stage where the code and the architecture need to be able to change without necessarily ensuring backwards compatibility.
 
-There are a whole bunch of features slated for a *1.0* release that simply haven't even been started yet. These include: API endpoints, import and export support for multiple data formats, interactive maps and so on. Per the terms of the [Knight News Challenge Grant](http://content.stamen.com/we_got_a_knight_news_grant) that is funding the development of Dotspotting we are committed to working in public *(we think that's a good thing, by the way :-)* so this is the first step in that process.
+There are a whole bunch of features slated for a *1.0* release that simply haven't even been started yet. These include: API endpoints, import and export support for multiple data formats, interactive maps and so on. Per the terms of the [Knight News Challenge Grant](http://content.stamen.com/we_got_a_knight_news_grant) that is funding the development of Dotspotting we are committed to working in public so this is the first step in that process. *(We think this is a good thing, by the way :-)*
 
 Once a stable baseline for the code and the architecture has been established Dotspotting will follow the conventions established for versioning and changes proposed in the Semantic Versioning specification ([http://semver.org/](http://semver.org/ "Semantic Versioning")).
 
