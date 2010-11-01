@@ -1,7 +1,7 @@
 Flamework
 --
 
-*"Working on the crumbly edge of future-proofing" -- Heather Champ*
+*"Working on the crumbly edge of future-proofing." -- Heather Champ*
 
 Dotspotting does not so much piggyback on a traditional framework as it does hold hands with an anti-framework called "Flamework".
 
@@ -13,7 +13,7 @@ If you've never watched Cal Henderson's "Why I Hate Django" presentation now is 
 
 [http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
 
-All software development is basically pain management and Flamework is not really a framework, at least not by today's standards. It assumes that the most important thing is the speed with which the code running an application can be re-arranged, in order to adapt to circumstances, even if it's at the cost of "doing things twice" or "repeating ourselves".
+All software development is basically pain management and Flamework is not really a framework, at least not by today's standards. It assumes that the most important thing is the *speed with which the code running an application can be re-arranged, in order to adapt to circumstances*, even if it's at the cost of "doing things twice" or "repeating ourselves".
 
 Dotspotting itself may eventually become a framework but today it is *not*. Today, Dotspotting is a nascent application that is still trying to recognize, never mind, understand its boundaries. That means it's just too soon for for a unified data and object model and nothing is gained by having to fight against one all the time in order to adapt it to the application itself.
 
