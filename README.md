@@ -22,6 +22,7 @@ Dependencies
 Installation Instructions
 --
 
+0. Install and configure Apache, MySQL and PHP.
 1. `git clone git@github.com:Citytracking/dotspotting.git`
 2. `git submodule init`
 3. `git submodule update`
