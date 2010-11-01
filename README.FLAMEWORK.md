@@ -26,12 +26,12 @@ A complete Flamework reference is out of scope for this document but here's the 
 1. A set of common libraries and functions.
 2. A series of social conventions for how code is arranged.
 
-**Flamework also [WORDS]:**
+**Flamework also takes the following for granted:**
 
-* It uses [Smarty](http://www.smarty.net "Smarty") for templating
-* It uses global variables. Not many but it doesn't make a fuss about the idea of using them.
-* It does not objects or "protected" variables.
-* It breaks it own rules, occasionally and uses objects but only rarely and generally when they are defined by third-party libraries like Smarty.
+* It uses [Smarty](http://www.smarty.net "Smarty") for templating.
+* It uses global variables. Not many of them but it also doesn't make a fuss about the idea of using them.
+* It does not use objects or "protected" variables.
+* It breaks it own rules occasionally and uses objects but only rarely and generally when they are defined by third-party libraries (like [Smarty](http://www.smarty.net/)).
 
 **For all intents and purposes, Flamework *is* a model-view-controller (MVC) system:**
 
@@ -100,6 +100,8 @@ One of the things about storing federated user data is that from time to time yo
 Search
 --
 
+*Note: This is really specific to Dotspotting but the basic principle(s) apply equally to Flamework.*
+
 Search is one of those things that's all tangled up in how your databases are set up, whether you are doing full-text or spatial queries.
 
 The first release of Dotspotting is geared specifically towards MySQL because it is readily available ...
@@ -124,9 +126,6 @@ Solr is principally a search engine but it can also be used to do spatial querie
 **PostGIS**
 
 PostGIS a proper spatial database that can do amazing things.
-
-Configuring Flamework
---
 
 Making Changes to Flamework
 --
