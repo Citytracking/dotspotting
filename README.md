@@ -58,4 +58,4 @@ Known Knowns
 
 + Dotspotting isn't set up to run out of a sub-directory, like a user's `public_html` folder. Yet.
 
-+ Dotspotting has not been tested on Windows yet.
++ Dotspotting has not been tested on Windows.
