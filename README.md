@@ -30,7 +30,7 @@ Installation Instructions
 Flamework (?!)
 --
 
-Dotspotting does not so much piggyback on a traditional framework as it does hold hands with an anti-framework called "Flamework". Flamework is the mythical ("mythical") PHP framework developed and used by the engineering team at [Flickr](http://code.flickr.com). It is gradually being rewritten, from scratch, as an open-source project by [former Flickr engineers](http://github.com/exflickr).
+Dotspotting does not so much piggyback on a traditional framework as it does hold hands with an anti-framework called "Flamework". Flamework is the mythical ("mythical") PHP framework developed and used by [the engineering team at Flickr](http://code.flickr.com). It is gradually being rewritten, from scratch, as an open-source project by [former Flickr engineers](http://github.com/exflickr).
 
 If you just want to run Dotspotting that's really all you need to know, right now. If you want to get a better understanding of what's going on under the hood and to glean the relationship between Dotspotting and Flamework you should look at the [README.FLAMEWORK.md](http://github.com/citytracking/dotspotting/blob/master/README.FLAMEWORK.md) document.
 
