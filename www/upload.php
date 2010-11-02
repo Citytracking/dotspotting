@@ -6,7 +6,7 @@
 
 	include("include/init.php");
 
-	loadlib("uploads");
+	loadlib("import");
 
 	#################################################################
 
@@ -26,7 +26,7 @@
 
 	if (($_FILES['upload']) && (crumb_check($crumb_key))){
 
-		if (! uploads_is_valid_mimetype($_FILES['upload'])){
+		if (! import_is_valid_mimetype($_FILES['upload'])){
 
 			$GLOBALS['error']['invalid_mimetype'] = 1;
 			$smarty->display("page_upload.txt");
@@ -35,7 +35,7 @@
 
 		# parse the file
 
-		$rsp = uploads_process_file($_FILES['upload']);
+		$rsp = import_process_file($_FILES['upload']);
 
 		if (! $rsp['ok']){
 
@@ -56,7 +56,7 @@
 			'mark_all_private' => $private,
 		);
 
-		$rsp = uploads_process_data($GLOBALS['cfg']['user'], $rsp['data'], $more);
+		$rsp = import_process_data($GLOBALS['cfg']['user'], $rsp['data'], $more);
 
 		if (! $rsp['ok']){
 

@@ -56,7 +56,6 @@
 	#
 
 	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
-	$GLOBALS['cfg']['upload_max_records'] = 1000;
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;
 	$GLOBALS['cfg']['enable_feature_signin'] = 1;
@@ -89,4 +88,5 @@
 
 	$GLOBALS['cfg']['enable_feature_polymaps'] = 1;
 
+	$GLOBALS['cfg']['import_max_records'] = 1000;
 ?>

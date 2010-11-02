@@ -5,7 +5,15 @@
 	#
 
 	include("include/init.php");
+
 	loadlib("export");
+	loadlib("formats");
+
+	#################################################################
+
+	#
+	# Ensure the user, the bucket and perms
+	#
 
 	$owner = ensure_valid_user_from_url();
 
@@ -25,20 +33,21 @@
 		error_403();
 	}
 
+	#
+	# Ensure that this is something we can export
+	#
+
 	$format = get_str('format');
 
-	#
-	# Hey look! See how we're not letting the user ask for a
-	# specific format? that's because I haven't worked out the
-	# code for validating mime-types and formats.
-	# (20101028/straup)
-	#
+	if (! $format){
+		$format = 'csv';
+	}
 
-	$format = 'csv';
+	$map = formats_valid_export_map('key by extension');
 
-	#
-	# validate format here (see above)
-	#
+	if (! isset($map[$format])){
+		error_404();
+	}
 
 	# Hey look! At least to start we are deliberately not doing
 	# any pagination on the 'dots-for-a-bucket' page. We'll see
@@ -47,17 +56,19 @@
 	# (20101025/straup)
 
 	$more = array(
-		'per_page' => $GLOBALS['cfg']['upload_max_records'],
+		'per_page' => $GLOBALS['cfg']['import_max_records'],
 	);
 
 	$bucket['dots'] = dots_get_dots_for_bucket($bucket, $GLOBALS['cfg']['user']['id'], $more);
 	$bbox = implode(", ", array_values($bucket['extent']));
 
-	$mimetype = "text/csv";	# hack for now
+	$mimetype = $map[$format];
 	$filename = "dotspotting-bucket-{$bucket['id']}.{$format}";
 
-	header("Content-Type: " . htmlspecialchars($mimetype));
-	header("Content-Disposition: attachment; filename=\"{$filename}\"");
+	if (! get_str('inline')){
+		header("Content-Type: " . htmlspecialchars($mimetype));
+		header("Content-Disposition: attachment; filename=\"{$filename}\"");
+	}
 
 	header("X-Dotspotting-Bucket-ID: " . htmlspecialchars($bucket['id']));
 	header("X-Dotspotting-Bucket-Label: " . htmlspecialchars($bucket['label']));

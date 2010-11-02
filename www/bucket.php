@@ -60,7 +60,7 @@
 	# (20101025/straup)
 
 	$more = array(
-		'per_page' => $GLOBALS['cfg']['upload_max_records'],
+		'per_page' => $GLOBALS['cfg']['import_max_records'],
 	);
 
 	$bucket['dots'] = dots_get_dots_for_bucket($bucket, $GLOBALS['cfg']['user']['id'], $more);

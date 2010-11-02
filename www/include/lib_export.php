@@ -8,9 +8,9 @@
 
 	#################################################################
 
-	function export_dots(&$rows, $format, $fh=null){
+	# It is assumed that you've validated $format by now
 
-		# validate $format here
+	function export_dots(&$rows, $format, $fh=null){
 
 		if (! $fh){		 
 			$fh = fopen("php://output", 'w');
@@ -45,6 +45,19 @@
 			if (isset($row['geocoded_by'])){
 				$map = geo_geocode_service_map();
 				$row['geocoded_by'] = ($row['geocoded_by']) ? $map[$row['geocoded_by']] : '';
+			}
+
+			$timestamps = array(
+				'created',
+				'imported',
+				'last_modified',
+			);
+
+			foreach ($timestamps as $ts){
+
+				if (isset($row[$ts])){
+					$row[$ts] = gmdate('Y-m-d\TH:m:s e', $row[$ts]);
+				}
 			}
 
 			$rows[$i] = $row;

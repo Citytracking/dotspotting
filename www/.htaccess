@@ -59,7 +59,7 @@ RewriteRule ^u/([0-9]+)/?$				/user.php?user_id=$1&%{QUERY_STRING} [P,L]
 
 RewriteRule ^u/([0-9]+)/dots/([0-9]+)/?$		/dot.php?user_id=$1&dot_id=$2&%{QUERY_STRING} [P,L]
 RewriteRule ^u/([0-9]+)/buckets/([0-9]+)/?$		/bucket.php?user_id=$1&bucket_id=$2&&%{QUERY_STRING} [P,L]
-RewriteRule ^u/([0-9]+)/buckets/([0-9]+)/export/?$	/bucket_export.php?user_id=$1&bucket_id=$2&&%{QUERY_STRING} [P,L]
+RewriteRule ^u/([0-9]+)/buckets/([0-9]+)/export(/([a-z]+))?/?$	/bucket_export.php?user_id=$1&bucket_id=$2&format=$4&%{QUERY_STRING} [P,L]
 
 RewriteRule ^u/([0-9]+)/dots(/page([0-9]+))?/?$		/user_dots.php?user_id=$1&page=$3&%{QUERY_STRING} [P,L]
 RewriteRule ^u/([0-9]+)/buckets(/page([0-9]+))?/?$	/user_buckets.php?user_id=$1&page=$3&%{QUERY_STRING} [P,L]

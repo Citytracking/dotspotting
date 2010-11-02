@@ -7,10 +7,11 @@
 	#################################################################
 
 	loadlib("csv");
+	loadlib("formats");
 
 	#################################################################
 
-	function uploads_is_valid_mimetype(&$file){
+	function import_is_valid_mimetype(&$file){
 
 		# TODO: read bits of the file?
 
@@ -18,7 +19,10 @@
 			return 0;
 		}
 
-		if ($file['type'] !== 'text/csv'){
+		$map = formats_valid_import_map();
+		$type = $file['type'];
+
+		if (! isset($map[$type])){
 			return 0;
 		}
 
@@ -27,14 +31,22 @@
 
 	#################################################################
 
-	function uploads_process_file(&$file){
+	# It is assumed that you've checked $file['type'] by now
+
+	function import_process_file(&$file){
 
 		$rsp = array(
 			'ok' => 0,
 		); 
 
+		$more = array();
+
+		if ($max = $GLOBALS['cfg']['import_max_records']){
+			$more['max_records'] = $max;
+		}
+
 		if ($file['type'] === 'text/csv'){
-			$rsp = csv_parse_file($file['tmp_name']);
+			$rsp = csv_parse_file($file['tmp_name'], $more);
 		}
 
 		# TO DO: check $GLOBALS['cfg'] to see whether we should
@@ -49,7 +61,7 @@
 
 	#################################################################
 
-	function uploads_process_data(&$user, &$data, $more=array()){
+	function import_process_data(&$user, &$data, $more=array()){
 
 		#
 		# First do some sanity-checking on the data before
@@ -119,14 +131,4 @@
 
 	#################################################################
 
-	function uploads_exceeds_max_records($num){
-
-		if (! $GLOBALS['cfg']['uploads_max_records']){
-			return 0;
-		}
-
-		return ($GLOBALS['cfg']['uploads_max_records'] >= $num) ? 1 : 0;
-	}
-
-	#################################################################
 ?>

@@ -230,15 +230,15 @@
 				continue;
 			}
 
+			if (in_array($label, $dotspotting_keys)){
+				continue;
+			}
+
 			$value = $data[$label];
 			$value = filter_strict(trim($value));
 
 			if (! $value){
 				continue;
-			}
-
-			if (in_array($label, $dotspotting_keys)){
-				$label = "user:{$label}";
 			}
 
 			$extra_rsp = dots_extras_create_extra($dot, $label, $data[$label]);

@@ -6,7 +6,7 @@
 
 	#################################################################
 
-	function csv_parse_file($path, $field_names=null){
+	function csv_parse_file($path, $more=array()){
 
 		$fh = fopen($path, 'r');
 
@@ -19,6 +19,8 @@
 
 		$keys = array();
 		$data = array();
+
+		$field_names = (is_array($more['field_names'])) ? $more['field_names'] : null;
 
 		$ln = 1;
 
@@ -42,14 +44,17 @@
 			$data[] = $tmp;
 			$ln ++;
 
-			if (uploads_exceeds_max_records($ln)){
+			if (($more['max_records']) && ($ln >= $more['max_records'])){
 				break;
 			}
 		}
 
 		fclose($fh);
 
-		return array( 'ok' => 1, 'data' => &$data );
+		return array(
+			'ok' => 1,
+			'data' => &$data
+		);
 	}
 
 	#################################################################
