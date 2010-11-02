@@ -101,7 +101,7 @@ These are the federated tables, sometimes called "shards". This is where the bul
 
 + **db_tickets**
 
-One of the things about storing federated user data is that from time to time you may need to "re-balance" your shards, for example moving all of a user's data from shard #5 to shard #23. That means you can no longer rely on an individual database to generate auto-incrementing unique IDs because each database shard creates those IDs in isolation and if you try to move a dot, for example, with ID `123` to a shard with another photo that already has the same ID everything will break and there will be tears.
+One of the things about storing federated user data is that from time to time you may need to "re-balance" your shards, for example moving all of a user's data from shard #5 to shard #23. That means you can no longer rely on an individual database to generate auto-incrementing unique IDs because each database shard creates those IDs in isolation and if you try to move a dot, for example, with ID `123` to a shard with another dot that already has the same ID everything will break and there will be tears.
 
 The way around this is to use "ticketing" servers whose only job is to sit around and assign unique IDs. A discussion of ticketing servers is outside the scope of this document but [Kellan wrote a good blog post about the subject](http://code.flickr.com/blog/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/) if you're interested in learning more. Which is a long way of saying: Flamework uses tickets and they come from the `db_tickets` cluster.
 
