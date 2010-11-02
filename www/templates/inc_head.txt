@@ -39,8 +39,12 @@ var canhas_polymaps = {$cfg.browser.capabilities.polymaps|escape};
 			|
 			<a href="/account/">Account</a>
 			|
+			<a href="/nearby/">Nearby</a>
+			|
 			<a href="/signout/">Logout</a>
 {else}
+			<a href="/nearby/">Nearby</a>
+			|
 			{if $cfg.enable_feature_signin}
 			{if $cfg.enable_feature_signup}
 			<a href="/signup/">Create New Account</a> | {/if}

@@ -4,7 +4,10 @@
 <script type="text/javascript" src="/javascript/geohash.js"></script>
 {/capture}
 {include file="inc_head.txt"}
-<p id="feedback">Find dots near you!</p>
+
+<h2>Find dots near you</h2>
+
+<p id="feedback">In a moment your browser should ask you whether it has permissions to know your location. If you agree, I will ask the sky for your location...</p>
 
 {literal}
 <script type="text/javascript">
@@ -26,10 +29,11 @@
 		};
 
 		var doThisIfNot = function(error_msg){
-			fb.innerHTML = error_msg;
+			fb.innerHTML = '<p class="error">Ack! There was a problem finding your location. Would you like to <a href="/nearby/">try again</a>?</p>';
+			return;
 		};
 
-		var args = { 'enable_logging': true };
+		var args = { 'enable_logging': false };
 
 		var loc = new info.aaronland.geo.Location(args);
 		loc.findMyLocation(doThisOnSuccess, doThisIfNot);

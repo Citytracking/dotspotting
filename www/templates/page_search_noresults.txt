@@ -1,9 +1,11 @@
 {* Just a place-holder because generating a 'title' for search results is a bit of work *}
-{capture assign="page_title"}{if $smarty.get.nearby}Dots nearby{else}Search results{/if}{/capture}
+{capture assign="page_title"}
+{if $smarty.get.nearby}There are no dots nearby!{else}No results for your search{/if}
+{/capture}
 {include file="inc_head.txt"}
 
 <h2>{$page_title|escape}</h2>
 
-{include file="inc_dots_list.txt"}
+<p>Sad face...</p>
 
 {include file="inc_foot.txt"}

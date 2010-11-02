@@ -31,7 +31,12 @@
 		$dots = search_dots_for_geohash($geohash, $GLOBALS['cfg']['user']['id'], $args);
 		$smarty->assign_by_ref('dots', $dots);
 
-		$smarty->display('page_search_results.txt');
+		if (count($dots) == 0){
+			$GLOBALS['smarty']->display('page_search_noresults.txt');
+			exit();
+		}
+
+		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();
 	}
 
@@ -43,6 +48,6 @@
 
 	error_404();
 
-	$smarty->display('page_search.txt');
+	$GLOBALS['smarty']->display('page_search.txt');
 	exit();
 ?>
