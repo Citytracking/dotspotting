@@ -1,0 +1,7 @@
+{assign var="page_title" value="Search"}
+{include file="inc_head.txt"}
+
+<p class="error">Search is currently disabled.</p>
+
+{include file="inc_foot.txt"}
+
