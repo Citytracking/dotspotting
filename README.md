@@ -22,13 +22,14 @@ Dependencies
 Installation Instructions
 --
 
-0. Install and configure Apache, MySQL and PHP.
-1. `git clone git@github.com:Citytracking/dotspotting.git`
-2. `git submodule init`
-3. `git submodule update`
-4. In the `config` directory, copy `dotspotting.php.example` to `dotspotting.php` and adjust the values to suit your configuration.
-5. Ensure that the `www/templates_c` directory can be written to by your web server.
-6. Enable mod_rewrite in your local Apache.
+1. Install and configure Apache, MySQL and PHP.
+2. `git clone git@github.com:Citytracking/dotspotting.git`
+3. `git submodule init`
+4. `git submodule update`
+5. Load the various `*.schema` files in the `schema` directory in to MySQL
+6. In the `config` directory, copy `dotspotting.php.example` to `dotspotting.php` and adjust the values to suit your configuration.
+7. Ensure that the `www/templates_c` directory can be written to by your web server.
+8. Enable mod_rewrite in your local Apache.
 
 Flamework (?!)
 --

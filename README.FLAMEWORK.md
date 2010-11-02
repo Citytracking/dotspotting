@@ -7,11 +7,11 @@ Dotspotting does not so much piggyback on a traditional framework as it does hol
 
 Flamework is the mythical ("mythical") PHP framework developed and used by [the engineering team at Flickr](http://code.flickr.com). It is gradually being rewritten, from scratch, as an open-source project by [former Flickr engineers](http://github.com/exflickr). It is available to download and use on Github:
 
-  [http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
++ [http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
 
 If you've never watched Cal Henderson's "Why I Hate Django" presentation now is probably as good a time as any. It will help you understand a lot about why things were done they were at Flickr and why those of us who've left prefer to keep doing them that way:
 
-  [http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
++ [http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
 
 Flamework is not really a framework, at least not by most people's standards. All software development is basically pain management and Flamework assumes that the most important thing is *the speed with which the code running an application can be re-arranged, in order to adapt to circumstances*, even if it's at the cost of "doing things twice" or "repeating ourselves".
 
@@ -114,26 +114,24 @@ Search
 
 Search is one of those things that's all tangled up in how your databases are set up, whether you are doing full-text or spatial queries.
 
-The first release of Dotspotting is geared specifically towards MySQL because it is readily available on shared web-hosting services, easy to install on both the server and desktop and has a large community of users and documentation.
-
-One consequence of using MySQL is that full-text search is not awesome. One consequence of a federated data model is that it makes doing global search (across all users) problematic enough as to be impossible. This is also not awesome.
+The first release of Dotspotting is geared specifically towards MySQL because it is readily available on shared web-hosting services, easy to install on both the server and desktop and has a large community of users and documentation. One consequence of using MySQL is that full-text search is not awesome. One consequence of a federated data model is that it makes doing global search (across all users) problematic enough as to be impossible. This is also not awesome.
 
 What does this mean? It means that during the initial releases of Dotspotting:
 
 1. There is no global full-text search.
 2. There is only limited global spatial search, which is done using [Geohashes](http://en.wikipedia.org/wiki/Geohash) (stored in a lookup table on the `db_main` cluster).
 
-Moving forward we imagine the code being written in such a way that it can support a limited number of additional databases or search engines, assuming they've been installed and configured by users, with little more effort than adding specific configuration variables. *Before you start asking all the obvious questions, the answer is probably: We don't know yet but it seems like a good plan so we'll try to figure out a way to make it work.*
+Moving forward we imagine the code being written in such a way that it can support a limited number of additional databases or search engines, assuming they've been installed and configured by users, with little more effort than adding specific [configuration variables](http://github.com/citytracking/dotspotting/blob/master/README.CONFIG.md). *Before you start asking all the obvious questions, the answer is probably: We don't know yet but it seems like a good plan so we'll try to figure out a way to make it work.*
 
 We're not actively working on this architecture yet but are thinking about as we go, with an eye towards supporting the following:
 
 + **[MySQL](http://www.mysql.com/)**
 
-This is the default and gets you dots and bounding box (and Geohash) queries.
+This is the default and gets you dots and bounding box (and Geohash) queries. It's also really really fast.
 
 + **[Solr](http://lucene.apache.org/solr/)**
 
-Solr is a open source document indexer written in Java and is principally used a full-text search engine but it can also be used to do spatial queries. Currently radial queries are only available by using a [third-party plugin](http://blog.jteam.nl/2009/08/03/geo-location-search-with-solr-and-lucene/) but spatial indexing for both points and polygons is being [actively developed](http://wiki.apache.org/solr/SpatialSearch) for the next release of Solr (1.5)
+Solr is a open source document indexer written in Java and is principally used a full-text search engine but it can also be used to do spatial queries. Currently radial queries are only available by using a [third-party plugin](http://blog.jteam.nl/2009/08/03/geo-location-search-with-solr-and-lucene/) but spatial indexing for both points and polygons is being [actively developed](http://wiki.apache.org/solr/SpatialSearch) for the next release of Solr (1.5).
 
 + **[PostGIS](http://postgis.refractions.net/)**
 

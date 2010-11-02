@@ -1,1 +1,1 @@
-[please, write me]
+Note: These are not specific databases or database tables but rather "clusters". For details please consult the *database model* section of the [README.FLAMEWORK.md](http://github.com/citytracking/dotspotting/blob/master/README.FLAMEWORK.md) document.
