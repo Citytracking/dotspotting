@@ -22,7 +22,7 @@
 		{foreach from=$dots item=dot}
 		{assign var="perms" value=$dot.perms}
 		{assign var="geocoded_by" value=$dot.geocoded_by}
-			<tr class="dot dot_{$permissions_map.$perms|escape}">
+			<tr class="dot dot_{$permissions_map.$perms|escape}" id="dot_{$dot.id|escape}">
 				<td><strong><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></strong></td>
 				<td>
 			{if $owner}

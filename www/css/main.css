@@ -122,3 +122,7 @@ path {
 	text-align:right;
 	color:red;
 }
+
+.flickr_photo a img {
+	border: none;
+}

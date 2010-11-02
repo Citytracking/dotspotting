@@ -1,7 +1,8 @@
 {capture assign="page_title"}
-{* waiting on flickr to add support for photo.gne?id=999 support to the oembed endpoint *}
-{if 0}
+{if $cfg.enable_feature_magicwords.flickr.id}
 {capture assign="extra_head"}
+	{* waiting on flickr to add support for photo.gne?id=999 support to the oembed endpoint *}
+	{if 0}
 	<script type="text/javascript" src="/javascript/oembed.js"></script>
 	<script type="text/javascript">
 	{literal}
@@ -12,13 +13,56 @@
 		});
 
 		oembed.fetch('http://www.flickr.com/photo.gne?id=' + photo_id, {'maxwidth': 240}, function(rsp){ 
-			console.log(rsp);
+			// see below
 		});
 	}
 	{/literal}
 	</script>
+	{/if}
+	{* just call the API for now... *}
+	<script type="text/javascript" src="/javascript/flickr-api.js"></script>
+	<script type="text/javascript">
+	var apikey = '{$cfg.flickr_apikey|escape}';
+	{literal}
+	function display_flickr_photo(photo_id){
+
+		var flickr = new info.aaronland.flickr.API({
+			'key': apikey,
+			'enable_logging': false,
+		});
+
+		_flickr_photos_getinfo = function(rsp){
+
+			if (rsp['stat'] != 'ok'){
+				return;
+			}
+
+			var ph = rsp['photo'];
+			var ph_url = 'http://farm' + ph['farm'] + '.static.flickr.com/' + ph['server'] + '/' + ph['id'] + '_' + ph['secret'] + '_t.jpg';
+			var ph_page = 'http://www.flickr.com/photos/' + ph['owner']['nsid'] + '/' + ph['id'];
+			var ph_title = ph['title']['_content'];
+
+			var html = '<div class="flickr_photo">' + 
+				    '<a href="' + ph_page + '" target="_flickr"><img src="' + ph_url + '" /></a>' +
+				    '</div>';
+
+			var el = document.getElementById("extras_flickr:id");
+			el.innerHTML = html;
+		};
+
+		var args = {
+			'photo_id': photo_id,
+			'jsoncallback': '_flickr_photos_getinfo',
+		};
+
+		flickr.api_call('flickr.photos.getInfo', args);
+	}
+	{/literal}
+	</script>
+
 {/capture}
 {/if}
+
 {if $is_own}
 	{if $dot.extras.title}
 A dot titled "{$dot.extras.title.0|escape}", by you!
@@ -66,8 +110,8 @@ A dot by {$cfg.user.username|escape}
 	{foreach from=$dot.extras item="stuff" key="label"}
 	<tr>
 		<th>{$label|escape}</th>
-		<td>
-		{if 0 and $label=='flickr:id'}
+		<td id="extras_{$label|escape}">
+		{if $label=='flickr:id' and $cfg.enable_feature_magicwords.flickr.id}
 			<script type="text/javascript">
 			display_flickr_photo({$stuff.0|escape});
 			</script>		

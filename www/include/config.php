@@ -17,17 +17,20 @@
 	);
 
 	$GLOBALS['cfg']['db_enable_poormans_slaves'] = 1;
-
 	$GLOBALS['cfg']['db_enable_poormans_ticketing'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_federation'] = 1;
 
+	#
 	# Templates
+	#
 
 	$GLOBALS['cfg']['smarty_template_dir'] = DOTSPOTTING_WWW_DIR . '/templates';
 	$GLOBALS['cfg']['smarty_compile_dir'] = DOTSPOTTING_WWW_DIR . '/templates_c';
 	$GLOBALS['cfg']['smarty_compile'] = 1;
 
+	#
 	# App specific stuff
+	#
 
 	$GLOBALS['cfg']['pagination_per_page'] = 25;
 	$GLOBALS['cfg']['pagination_spill'] = 5;
@@ -40,20 +43,43 @@
 	$GLOBALS['cfg']['crypto_cookie_secret'] = 'READ-FROM-SECRETS';
 	$GLOBALS['cfg']['crypto_password_secret'] = 'READ-FROM-SECRETS';
 
-	$GLOBALS['cfg']['upload_max_records'] = 1000;
+	#
+	# Third-party API keys
+	#
 
+	$GLOBALS['cfg']['yahoo_apikey'] = 'READ-FROM-SECRETS';
+	$GLOBALS['cfg']['flickr_apikey'] = 'READ-FROM-SECRETS';
+
+	#
 	# Feature flags
 	# See also: http://code.flickr.com/blog/2009/12/02/flipping-out/
+	#
+
+	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
+	$GLOBALS['cfg']['upload_max_records'] = 1000;
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;
 	$GLOBALS['cfg']['enable_feature_signin'] = 1;
 	$GLOBALS['cfg']['enable_feature_account_delete'] = 1;
 	$GLOBALS['cfg']['enable_feature_password_retrieval'] = 0;
 
-	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
-
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
+
+	$GLOBALS['cfg']['enable_feature_magicwords'] = array(
+
+		'geonames' => array(
+			'id' => 0,
+		),
+
+		'flickr' => array(
+			'id' => 1,
+		),
+
+		'yahoo' => array(
+			'woeid' => 0,
+		),
+	);
 
 	#
 	# This flag indictates whether you want to use Polymaps
