@@ -9,7 +9,7 @@ Flamework is the mythical ("mythical") PHP framework developed and used by [the 
 
 + [http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
 
-If you've never watched Cal Henderson's "Why I Hate Django" presentation now is probably as good a time as any. It will help you understand a lot about why things were done they were at Flickr and why those of us who've left prefer to keep doing them that way:
+If you've never watched [Cal Henderson](http://www.iamcal.com)'s "Why I Hate Django" presentation now is probably as good a time as any. It will help you understand a lot about why things were done they were at Flickr and why those of us who've left prefer to keep doing them that way:
 
 + [http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
 
@@ -32,7 +32,7 @@ A complete Flamework reference is out of scope for this document but here's the 
 * It uses global variables. Not many of them but it also doesn't make a fuss about the idea of using them.
 * It does not use objects or "protected" variables.
 * It breaks it own rules occasionally and uses objects but only rarely and generally when they are defined by third-party libraries (like [Smarty](http://www.smarty.net/)).
-* That ["normalized data is for sissies."](http://kottke.org/04/10/normalized-data)
+* That ["normalized data is for sissies"](http://kottke.org/04/10/normalized-data).
 
 **For all intents and purposes, Flamework *is* a model-view-controller (MVC) system:**
 
@@ -114,7 +114,7 @@ Search
 
 Search is one of those things that's all tangled up in how your databases are set up, whether you are doing full-text or spatial queries.
 
-The first release of Dotspotting is geared specifically towards MySQL because it is readily available on shared web-hosting services, easy to install on both the server and desktop and has a large community of users and documentation. One consequence of using MySQL is that full-text search is not awesome. One consequence of a federated data model is that it makes doing global search (across all users) problematic enough as to be impossible. This is also not awesome.
+The first release of Dotspotting is geared specifically towards MySQL because it is readily available on shared web-hosting services, easy to install on both the server and desktop and has a large community of users and documentation. One consequence of using MySQL is that full-text search is not awesome. One consequence of a federated data model is that it makes doing global search (search across all of your users) problematic enough as to be impossible. This is also not awesome.
 
 What does this mean? It means that during the initial releases of Dotspotting:
 
@@ -123,7 +123,7 @@ What does this mean? It means that during the initial releases of Dotspotting:
 
 Moving forward we imagine the code being written in such a way that it can support a limited number of additional databases or search engines, assuming they've been installed and configured by users, with little more effort than adding specific [configuration variables](http://github.com/citytracking/dotspotting/blob/master/README.CONFIG.md). *Before you start asking all the obvious questions, the answer is probably: We don't know yet but it seems like a good plan so we'll try to figure out a way to make it work.*
 
-We're not actively working on this architecture yet but are thinking about as we go, with an eye towards supporting the following:
+We're not actively working on this architecture yet but are thinking about it as we go, with an eye towards supporting the following:
 
 + **[MySQL](http://www.mysql.com/)**
 
