@@ -32,7 +32,7 @@ A complete Flamework reference is out of scope for this document but here's the 
 * It uses global variables. Not many of them but it also doesn't make a fuss about the idea of using them.
 * It does not use objects or "protected" variables.
 * It breaks it own rules occasionally and uses objects but only rarely and generally when they are defined by third-party libraries (like [Smarty](http://www.smarty.net/)).
-* ["Normalized data is for sissies."](http://kottke.org/04/10/normalized-data)
+* That ["normalized data is for sissies."](http://kottke.org/04/10/normalized-data)
 
 **For all intents and purposes, Flamework *is* a model-view-controller (MVC) system:**
 
