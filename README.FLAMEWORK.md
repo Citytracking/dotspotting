@@ -78,6 +78,7 @@ The only "rules" here are:
 1. Making sure you load `include/init.php`
 2. The part where `init.php` handles authentication checking and assigns logged in users to the global `$cfg` variable (it also creates and assigns a global `$smarty` object)
 3. The naming conventions for shared libraries, specifically: `lib_SOMETHING.php` which is imported as `loadlib("SOMETHING")`.
+4. Functions defined in libraries are essentially "namespaced".
 
 Page template names and all that other stuff is, ultimately, your business.
 
@@ -120,23 +121,23 @@ One consequence of using MySQL is that full-text search is not awesome. One cons
 What does this mean? It means that during the initial releases of Dotspotting:
 
 1. There is no global full-text search.
-2. There is only limited global spatial search, which is done using [Geohashes](http://en.wikipedia.org/wiki/Geohash) (stored in a lookup table on the **db_main** cluster).
+2. There is only limited global spatial search, which is done using [Geohashes](http://en.wikipedia.org/wiki/Geohash) (stored in a lookup table on the `db_main` cluster).
 
-Moving forward we imagine the code being written in such a way that it can support a limited number of additional databases or search engines, assuming they've been installed and configured by users, with little more effort than adding specific configuration variables. Before you start asking all the obvious questions, the answer is probably: We don't know yet but it seems like a good plan so we'll try to figure out a way to make it work.
+Moving forward we imagine the code being written in such a way that it can support a limited number of additional databases or search engines, assuming they've been installed and configured by users, with little more effort than adding specific configuration variables. *Before you start asking all the obvious questions, the answer is probably: We don't know yet but it seems like a good plan so we'll try to figure out a way to make it work.*
 
 We're not actively working on this architecture yet but are thinking about as we go, with an eye towards supporting the following:
 
-**[MySQL](http://www.mysql.com/)**
++ **[MySQL](http://www.mysql.com/)**
 
 This is the default and gets you dots and bounding box (and Geohash) queries.
 
-**[Solr](http://lucene.apache.org/solr/)**
++ **[Solr](http://lucene.apache.org/solr/)**
 
 Solr is a open source document indexer written in Java and is principally used a full-text search engine but it can also be used to do spatial queries. Currently radial queries are only available by using a [third-party plugin](http://blog.jteam.nl/2009/08/03/geo-location-search-with-solr-and-lucene/) but spatial indexing for both points and polygons is being [actively developed](http://wiki.apache.org/solr/SpatialSearch) for the next release of Solr (1.5)
 
-**[PostGIS](http://postgis.refractions.net/)**
++ **[PostGIS](http://postgis.refractions.net/)**
 
-PostGIS a "proper" spatial database that can do amazing things so it's a no-brainer in so far as Dotspotting is concerned. It is also not always the easiest tool to install and maintain and in many cases is probably overkill for the problems people are trying to use Dotspotting to solve which is why it is not the default choice.
+PostGIS a "proper" spatial database that can do amazing things so it's a no-brainer in so far as Dotspotting is concerned. It is also not always the easiest tool to install and maintain and in many cases is probably overkill for the problems people are trying to use Dotspotting to solve which is why, for the time being, it is not the default choice.
 
 Making Changes to Flamework
 --
