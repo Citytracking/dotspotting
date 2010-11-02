@@ -55,6 +55,15 @@ The important thing to note here is that each file may override values defined i
 
 For a complete list of Dotspotting-specific config options, you should consult the [README.CONFIG.md](http://github.com/citytracking/dotspotting/blob/master/README.CONFIG.md) document.
 
+"Magic Words"
+--
+
+Dotspotting has support for the idea of "magic words" which are user-defined non-standard properties assigned to a dot that are treated as foreign key lookups in to a third-party database or API.
+
+For example, if a dot has **flickr_id** key whose value is a valid Flickr photo ID then (and only if magic words support is *enabled*) Dotspotting will call the [Flickr API](http://www.flickr.com/services/api) to ask for, and then display, that photo's thumbnail the page for that dot is loaded.
+
+At the moment, only the **flickr:id** magic word is supported but we hope to add similar functionality for **yahoo:woeid** and **geonames:id** shortly.
+
 Known Knowns
 --
 
