@@ -1,0 +1,45 @@
+{assign var="page_title" value="Find nearby dots"}
+{capture assign="extra_head"}
+<script type="text/javascript" src="/javascript/geolocation.js"></script>
+<script type="text/javascript" src="/javascript/geohash.js"></script>
+{/capture}
+{include file="inc_head.txt"}
+<p id="feedback">Find dots near you!</p>
+
+{literal}
+<script type="text/javascript">
+
+	function find_nearby(){
+
+		var fb = document.getElementById('feedback');	
+
+		var doThisOnSuccess = function(lat, lon){
+
+			var gh = encodeGeoHash(lat, lon);
+			var url = '/nearby/' + gh;
+
+			fb.innerHTML = 'Aha! I\'ve found you!! You\'ll be wooshed away in a couple of seconds...';
+
+			setTimeout(function(){
+				location.href = url;
+			}, 2500);
+		};
+
+		var doThisIfNot = function(error_msg){
+			fb.innerHTML = error_msg;
+		};
+
+		var args = { 'enable_logging': true };
+
+		var loc = new info.aaronland.geo.Location(args);
+		loc.findMyLocation(doThisOnSuccess, doThisIfNot);
+	}
+
+	setTimeout(function(){
+		find_nearby();
+	}, 1000);
+
+</script>
+{/literal}
+
+{include file="inc_foot.txt"}
