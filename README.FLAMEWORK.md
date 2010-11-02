@@ -113,28 +113,31 @@ Search
 
 Search is one of those things that's all tangled up in how your databases are set up, whether you are doing full-text or spatial queries.
 
-The first release of Dotspotting is geared specifically towards MySQL because it is readily available ...
+The first release of Dotspotting is geared specifically towards MySQL because it is readily available on shared web-hosting services, easy to install on both the server and desktop and has a large community of users and documentation.
 
 One consequence of using MySQL is that full-text search is not awesome. One consequence of a federated data model is that it makes doing global search (across all users) problematic enough as to be impossible. This is also not awesome.
 
-What does this mean? It means that -- at least during the initial releases of Dotspotting:
+What does this mean? It means that during the initial releases of Dotspotting:
 
 1. There is no global full-text search.
-2. There is only limited global spatial search, which is done using geohashes.
+2. There is only limited global spatial search, which is done using [Geohashes](http://en.wikipedia.org/wiki/Geohash) (stored in a lookup table on the **db_main** cluster).
 
-**MySQL**
+Moving forward we imagine the code being written in such a way that it can support a limited number of additional databases or search engines, assuming they've been installed and configured by users, with little more effort than adding specific configuration variables. Before you start asking all the obvious questions, the answer is probably: We don't know yet but it seems like a good plan so we'll try to figure out a way to make it work.
 
-This gets you dots and bounding box (and geohash) queries.
 
-**Solr**
+**[MySQL](http://www.mysql.com/)**
 
-Solr is principally a search engine but it can also be used to do spatial queries. [WORDS]
+This is the default and gets you dots and bounding box (and Geohash) queries.
+
+**[Solr](http://lucene.apache.org/solr/)**
+
+Solr is a open source document indexer written in Java and is principally used a full-text search engine but it can also be used to do spatial queries. [WORDS]
 
  gets you "good enough" spatial queries, specifically radial queries using the [WORDS] plugin and whatever is being developed for the next release (1.5). It also, importantly,
 
-**PostGIS**
+**[PostGIS](http://postgis.refractions.net/)**
 
-PostGIS a proper spatial database that can do amazing things.
+PostGIS a "proper" spatial database that can do amazing things so it's a no-brainer in so far as Dotspotting is concerned.
 
 Making Changes to Flamework
 --
