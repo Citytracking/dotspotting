@@ -10,8 +10,7 @@
 	#################################################################
 
 	if (! $GLOBALS['cfg']['enable_feature_search']){
-		$GLOBALS['error']['search_disabled'] = 1;
-		$smarty->display('page_search.txt');
+		$smarty->display('page_search_disabled.txt');
 		exit();
 	}
 
