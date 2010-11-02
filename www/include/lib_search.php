@@ -14,7 +14,7 @@
 	# (20101026/straup)
 	#
 
-	function search_dots_for_geohash($geohash, $args){
+	function search_dots_for_geohash($geohash, $viewer_id=0, $args=array()){
 
 		$enc_hash = AddSlashes($geohash);
 
@@ -34,9 +34,13 @@
 
 			$dots = array();
 
+			$more = array(
+				'load_user' => 1,
+			);
+
 			foreach ($rsp['rows'] as $row){
 
-				$dots[] = dots_get_dot($row['dot_id']);
+				$dots[] = dots_get_dot($row['dot_id'], $viewer_id, $more);
 			}
 		}
 

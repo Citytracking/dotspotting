@@ -29,7 +29,7 @@
 			$geohash = substr($geohash, 0, -2);
 		}
 
-		$dots = search_dots_for_geohash($geohash, $args);
+		$dots = search_dots_for_geohash($geohash, $GLOBALS['cfg']['user']['id'], $args);
 		$smarty->assign_by_ref('dots', $dots);
 
 		$smarty->display('page_search_results.txt');
