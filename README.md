@@ -16,7 +16,7 @@ Dependencies
 
 * Apache 2.x (with mod_rewrite enabled)
 * MySQL 5.x
-* PHP 5.x (with mysql and mycrypt support)
+* PHP 5.x (with support for: curl; mbstring, mcrypt; mysql)
 * Flamework (discussed below)
 
 Installation Instructions
@@ -79,6 +79,8 @@ At the moment, only the **flickr:id** magic word is supported but we hope to add
 
 Known Knowns
 --
+
++ Database indexes and other optimizations are not even close to being considered "done".
 
 + Dotspotting has proven to be fussy and problematic installing using the default OS X Apache + PHP binaries. We're not sure why but are continuing to poke at the problem. It works fine using tools like [MAMP](http://www.mamp.info/), though.
 

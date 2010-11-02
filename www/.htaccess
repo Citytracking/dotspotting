@@ -66,7 +66,7 @@ RewriteRule ^u/([0-9]+)/buckets(/page([0-9]+))?/?$	/user_buckets.php?user_id=$1&
 
 # Search
 
-# RewriteRule ^search/?$				/search.php?%{QUERY_STRING}	[P,L]
+RewriteRule ^search/?$				/search.php?%{QUERY_STRING}	[P,L]
 
 RewriteRule ^nearby/?$				/nearby.php?%{QUERY_STRING} [P,L]
 RewriteRule ^nearby/([a-z0-9]+)/?$		/search.php?gh=$1&nearby=1&%{QUERY_STRING}	[P,L]
@@ -74,3 +74,4 @@ RewriteRule ^nearby/([a-z0-9]+)/?$		/search.php?gh=$1&nearby=1&%{QUERY_STRING}	[
 # Misc.
 
 RewriteRule ^about/?$					/about.php?%{QUERY_STRING} [P,L]
+RewriteRule ^help/?$					/help.php?%{QUERY_STRING} [P,L]

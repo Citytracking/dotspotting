@@ -1,0 +1,10 @@
+{assign var="page_title" value="Help"}
+{include file="inc_head.txt"}
+
+<h2>Help</h2>
+
+<a name="uploads"></a>
+
+<h3>Uploads</h3>
+
+{include file="inc_foot.txt"}
