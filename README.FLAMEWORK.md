@@ -105,7 +105,7 @@ One of the things about storing federated user data is that from time to time yo
 
 The way around this is to use "ticketing" servers whose only job is to sit around and assign unique IDs. A discussion of ticketing servers is outside the scope of this document but [Kellan wrote a good blog post about the subject](http://code.flickr.com/blog/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/) if you're interested in learning more. Which is a long way of saying: Flamework uses tickets and they come from the `db_tickets` cluster.
 
-By default Dotspotting relies on a series of special config flags (in Flamework) called `enable_feature_poormans_(SOME FEATURE)` that will trick Flamework in to treating a single database as many. Specifically, all the various databases are treated as though they live in the `db_main` cluster. The goal is to enable (and ensure) that when a given installation of Dotspotting outgrows a simple one or two machine setup that it can easily be migrated to a more robust system with a minimum of fuss.
+By default Dotspotting relies on a series of special config flags called `enable_feature_poormans_(SOME FEATURE)` that will trick Flamework in to treating a single database as many. Specifically, all the various databases are treated as though they live in the `db_main` cluster. The goal is to enable (and ensure) that when a given installation of Dotspotting outgrows a simple one or two machine setup that it can easily be migrated to a more robust system with a minimum of fuss.
 
 Search
 --
