@@ -41,7 +41,20 @@ If you just want to run Dotspotting that's really all you need to know, right no
 Configuring Dotspotting
 --
 
-Here's what's actually happening when a page on Dotspotting is loaded:
+Flamework (and Dotspotting) try to ensure that all an application's configuration information by defined in two (-ish) places:
+
+1. An `.htaccess` file which, in Dotspotting's case, is located in the `www` directory.
+2. One or more PHP files that assign settings to a global `$cfg` hash.
+
+The `.htaccess` file is where the various PHP settings are defined, including this one:
+
+	php_value include_path "./include:../flamework/include:."
+
+That tells PHP to look for stuff first in Dotspotting's `www/include` directory and then, if nothing is found, in Flamework's `include` directory. That's the "holding hands" part.
+
+*The `.htaccess` file is also where all the mod_rewrite rules for pretty URLs are defined.*
+
+As far as the PHP config files go, here's what's actually happening when a page on Dotspotting is loaded:
 
 	include(DOTSPOTTING_FLAMEWORK_DIR . '/include/config.php');
 	include(DOTSPOTTING_WWW_DIR."/include/config.php");
