@@ -32,8 +32,7 @@
 	$GLOBALS['cfg']['pagination_per_page'] = 25;
 	$GLOBALS['cfg']['pagination_spill'] = 5;
 
-	$GLOBALS['cfg']['abs_root_url']		= 'READ-FROM-SECRETS';
-	$GLOBALS['cfg']['safe_abs_root_url']	= $GLOBALS['cfg']['abs_root_url'];
+	$GLOBALS['cfg']['abs_root_url']	= 'READ-FROM-SECRETS';
 
 	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
 	$GLOBALS['cfg']['auth_cookie_name'] = 'a';

@@ -68,10 +68,6 @@
 	# $GLOBALS['cfg']['auth_cookie_secure'] = 0;		# see also: http://github.com/blog/737-sidejack-prevention
 	# $GLOBALS['cfg']['auth_cookie_httponly'] = 0;
 
-	# You can IGNORE these
-
-	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
-
 	#
 	# Another way of dealing with all the password/secrets hoo-hah  would be to create an entirely new
 	# PHP file which is located somewhere safe (and outside of source control) and then to include it
