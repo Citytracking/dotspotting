@@ -1,11 +1,11 @@
 Flamework
 --
 
-*"Working on the crumbly edge of future-proofing." -- Heather Champ*
+*"Working on the crumbly edge of future-proofing." -- [Heather Champ](http://www.hchamp.com/)*
 
 Dotspotting does not so much piggyback on a traditional framework as it does hold hands with an anti-framework called "Flamework".
 
-Flamework is the mythical ("mythical") PHP framework developed and used by the engineering team at Flickr. It is gradually being rewritten, from scratch, as an open-source project by former Flickr engineers. It is available to download and use on Github:
+Flamework is the mythical ("mythical") PHP framework developed and used by [the engineering team at Flickr](http://code.flickr.com). It is gradually being rewritten, from scratch, as an open-source project by [former Flickr engineers](http://github.com/exflickr). It is available to download and use on Github:
 
   [http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
 
@@ -13,7 +13,7 @@ If you've never watched Cal Henderson's "Why I Hate Django" presentation now is 
 
   [http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
 
-Flamework is not really a framework, at least not by today's standards. All software development is basically pain management and Flamework assumes that the most important thing is *the speed with which the code running an application can be re-arranged, in order to adapt to circumstances*, even if it's at the cost of "doing things twice" or "repeating ourselves".
+Flamework is not really a framework, at least not by most people's standards. All software development is basically pain management and Flamework assumes that the most important thing is *the speed with which the code running an application can be re-arranged, in order to adapt to circumstances*, even if it's at the cost of "doing things twice" or "repeating ourselves".
 
 Dotspotting itself may eventually become a framework but today it is *not*.
 
@@ -83,19 +83,27 @@ Page template names and all that other stuff is, ultimately, your business.
 The database model
 --
 
-Flamework assumes a federated model with all the various user data spread across a series of databases.
-
-By default Dotspotting relies on a series of special config flags (in Flamework) called `enable_feature_poormans_(SOME FEATURE)` that will trick Flamework in to treating a single database as many. The goal is to enable (and ensure) that when a given installation of Dotspotting grows beyond a [WORDS] that it can easily be migrated to a more robust system with a minimum of fuss.
+Flamework assumes a federated model with all the various user data spread across a series of databases, or "clusters".
 
 + **db_main**
 
++ **db_main_slave**
+
+These are read-only versions of the `db_main` cluster that are updated using [MySQL replication](http://dev.mysql.com/doc/refman/5.0/en/replication.html).
+
 + **db_users**
 
-These are federated tables, sometimes called "shards".
+These are the federated tables, sometimes called "shards".
 
 + **db_tickets**
 
-One of the things about storing federated user data is that from time to time you may need to "re-balance" your shards, for example moving all of a user's data from shard #5 to shard #23.
+One of the things about storing federated user data is that from time to time you may need to "re-balance" your shards, for example moving all of a user's data from shard #5 to shard #23. That means you can no longer rely on an individual database to generate auto-incrementing unique IDs because each database shard creates those IDs in isolation and if you try to move a dot, for example, with ID `123` to a shard with another photo that already has the same ID everything will break and there will be tears.
+
+The way around this is to use "ticketing" servers whose only job is to sit around and assign unique IDs. A discussion of ticketing servers is outside the scope of this document but [Kellan wrote a good blog post about the subject](http://code.flickr.com/blog/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/) if you're interested in learning more.
+
+By default Dotspotting relies on a series of special config flags (in Flamework) called `enable_feature_poormans_(SOME FEATURE)` that will trick Flamework in to treating a single database as many. The goal is to enable (and ensure) that when a given installation of Dotspotting grows beyond a [WORDS] that it can easily be migrated to a more robust system with a minimum of fuss.
+
+*For each cluster there are a series of corresponding helper functions defined in `lib_db.php`.*
 
 Search
 --
