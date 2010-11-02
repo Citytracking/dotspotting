@@ -88,16 +88,6 @@ function collect_buckets(){
 
 function draw_map_modestmaps(buckets){
 
-	var mm = com.modestmaps;
-
-	var template = 'http://a.tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png';
-	var provider = new mm.TemplatedMapProvider(template);
-
-	var dims = undefined;
-	var handlers = undefined;
-
-	var map = new mm.Map('map', provider, dims, handlers);
-
 	var bbox = utils_adjust_bbox(buckets['bbox']);
 
 	var extent = [
@@ -105,6 +95,9 @@ function draw_map_modestmaps(buckets){
 		new mm.Location(bbox[1]['lat'], bbox[1]['lon']),
 	];
 
+	var mm = com.modestmaps;
+
+	var map = utils_modestmap('map');
 	map.setExtent(extent);
 
 	// see how this is different than what we pass
@@ -151,34 +144,7 @@ function draw_map_modestmaps(buckets){
 function draw_map_polymaps(buckets){
 
 	var po = org.polymaps;
-	var svg = po.svg("svg");
-
-	var div = document.getElementById("map");
-	div.appendChild(svg);
-
-	var map = po.map();
-	map.container(svg);
-
-	var wheel = po.wheel();
-	wheel.smooth(false);
-	map.add(wheel);
-
-	var drag = po.drag();
-	map.add(drag);
-
-	var dblclick = po.dblclick();	
-	map.add(dblclick);
-
-	var hash = po.hash();
-	map.add(hash);
-
-	var url = po.url("http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png");
-	url.hosts(["a.", "b.", "c.", ""]);
-
-	var tileset = po.image();
-	tileset.url(url);
-
-	map.add(tileset);
+	var map = utils_polymap('map');
 
 	var bbox = utils_adjust_bbox(buckets['bbox']);
 

@@ -3,43 +3,16 @@
 
 function draw_map_polymaps(lat, lon){
 
-	var po = org.polymaps;
-	var svg = po.svg("svg");
-
-	var div = document.getElementById("map");
-	div.appendChild(svg);
-
-	var map = po.map();
-	map.container(svg);
-
-	var wheel = po.wheel();
-	wheel.smooth(false);
-	map.add(wheel);
-
-	var drag = po.drag();
-	map.add(drag);
-
-	var dblclick = po.dblclick();	
-	map.add(dblclick);
-
-	var hash = po.hash();
-	map.add(hash);
-
-	var url = po.url("http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png");
-	url.hosts(["a.", "b.", "c.", ""]);
-
-	var tileset = po.image();
-	tileset.url(url);
-
-	map.add(tileset);
+	var map = utils_polymap('map');
 
 	map.center({lat: lat, lon: lon});
-	map.zoom(Math.floor(map.zoom()));
+	map.zoom(14);
 
 	// TO DO:
 	// colour the dots based on privacy
 	// make the dots click-able
 
+	var po = org.polymaps;
 	var points = po.geoJson();
 
 	points.features([{
@@ -55,18 +28,11 @@ function draw_map_polymaps(lat, lon){
 
 function draw_map_modestmaps(lat, lon){
 
+	var map = utils_modestmap('map');
+
 	var mm = com.modestmaps;
-	var zoom = 15;
-
-	var template = 'http://a.tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png';
-	var provider = new mm.TemplatedMapProvider(template);
-
-	var dims = undefined;
-	var handlers = undefined;
-
-	var map = new mm.Map('map', provider, dims, handlers);
 	var loc = new mm.Location(lat, lon);
-    	map.setCenterZoom(loc, zoom);
+    	map.setCenterZoom(loc, 14);
 
 	// see how this is different than what we pass
 	// to polymaps? that's a known-known and today
