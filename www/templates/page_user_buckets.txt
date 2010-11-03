@@ -2,9 +2,9 @@
 {include file='inc_head.txt'}
 
 {if $is_own}
-<h2><a href="{$owner|@urls_url_for_user}">Your</a> buckets (of dots)</h2>
+<h2><a href="{$owner|@urls_url_for_user}">Your</a> buckets (of <a href="{$owner|@urls_dots_for_user}">dots</a>)</h2>
 {else}
-<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> buckets (of dots)</h2>
+<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> buckets (of <a href="{$owner|@urls_dots_for_user}">dots</a>)</h2>
 {/if}
 
 {if $buckets|@count == 0}
