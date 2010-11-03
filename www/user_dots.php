@@ -12,7 +12,7 @@
 	#################################################################
 
 	$owner = ensure_valid_user_from_url();
-	
+
 	$args = array(
 		'page' => get_int64('page'),
 	);
@@ -23,7 +23,7 @@
 	$smarty->assign_by_ref('dots', $dots);
 
 	$is_own = ($owner['id'] == $GLOBALS['cfg']['user']['id']) ? 1 : 0;
-	$smarty->assign('is_own', $is_own);	
+	$smarty->assign('is_own', $is_own);
 
 	if ($is_own){
 		$smarty->assign("permissions_map", dots_permissions_map());

@@ -559,7 +559,7 @@
 
 		shuffle($recent);
 		return $recent;
-	}	
+	}
 
 	#################################################################
 
@@ -587,7 +587,7 @@
 
 		return $dots;
 	}
-	
+
 	#################################################################
 
 	function dots_get_dots_for_user(&$user, $viewer_id=0, $args=array()) {
@@ -601,13 +601,18 @@
 			$sql = _dots_where_public_sql($sql, 1);
 		}
 
-		$sql .= " ORDER BY imported DESC";
+		$order_by = 'id';
+		$order_sort = 'DESC';
+
+		$sql .= " ORDER BY {$order_by} {$order_sort}";
+
+dumper($sql);
 
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
 		$dots = array();
 
 		$more = array(
-		      'load_bucket' => 1,
+			'load_bucket' => 1,
 		);
 
 		foreach ($rsp['rows'] as $dot){
