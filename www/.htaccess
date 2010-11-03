@@ -31,8 +31,14 @@ ErrorDocument 403 /403.php
 
 RewriteEngine on
 
-# Login stuff
+# Because templates_c is listed in the .gitignore file
+# so this is the safest way to ensure no one goes poking
+# around inside
 
+RewriteRule  ^templates_c		/404.php	[P,L]
+
+# Login stuff
+	
 RewriteRule  ^signup/?$			/signup.php?%{QUERY_STRING} [P,L]
 RewriteRule  ^signin/?$			/signin.php?%{QUERY_STRING} [P,L]
 RewriteRule  ^signout/?$		/signout.php?%{QUERY_STRING} [P,L]
