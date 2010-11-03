@@ -25,11 +25,15 @@
 
 <p>By default all dots are imported in to Dotspotting as publicly viewable. At upload time you can either specify that all, or some, of the dots be made private however there is currently <strong>no way to change privacy settings on a dot</strong> once it's been uploaded. <em>This is not a feature. We'll be adding this functionality shortly.</em></p>
 
+<a name="buckets"></a>
+
 <h4>What are <q>Buckets</q>?</h4>
 
 <p>Buckets are the context in which one or more dots were imported in to Dotspotting. At the moment, the only kind of context is the file uploaded to Dotspotting that one or more dots are listed in.</p>
 
 <p>They are separate and distinct from other kinds of collections, say a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
+
+<a name="csv"></a>
 
 <h4>CSV files</h4>
 
@@ -60,6 +64,8 @@ latitude,longitude,perms,created,title,address
 </pre>
 
 <p>Any other fields are stored as <q>extras</q> in Dotspotting.</p>
+
+<a name="magicwords"></a>
 
 <h4><q>Magic Words</q></h4>
 

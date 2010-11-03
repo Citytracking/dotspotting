@@ -61,10 +61,6 @@
 		'polymaps' => can_use_polymaps(),
 	);
 
-	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
-
-	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
-
 	$GLOBALS['filter'] = new lib_filter();
 
 	# This is a shim in the absence of a saner and
@@ -120,16 +116,12 @@
 			}
 		}
 
-		# dumper("{$browser} {$version}");
-
 		if ((! $version) || ($version < $ok_browsers[$browser])){
 			return 0;
 		}
 
 		return 1;
 	}
-
-	$GLOBALS['smarty']->register_function('can_use_polymaps', 'can_use_polymaps');
 
 	#################################################################
 

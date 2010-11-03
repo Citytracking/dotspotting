@@ -38,6 +38,12 @@
 
 	$GLOBALS['cfg']['abs_root_url'] = '';
 
+	# Look carefully - unless you're doing something special you can probably
+	# leave these two assuming you've set 'abs_root_url' above.
+
+	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
+	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
+
 	$GLOBALS['cfg']['db_main']['host'] = '';
 	$GLOBALS['cfg']['db_main']['user'] = '';
 	$GLOBALS['cfg']['db_main']['pass'] = '';
