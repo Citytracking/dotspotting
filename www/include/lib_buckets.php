@@ -181,6 +181,7 @@
 		$enc_id = AddSlashes($user['id']);
 		$sql = "SELECT * FROM Buckets WHERE user_id='{$enc_id}'";
 
+	
 		$more = array(
 			'page' => 1,
 			'per_page' => 100,
@@ -364,6 +365,16 @@
 
 			$sql .= " AND count_dots_public > 0";
 		}
+
+		$order_by = 'created';
+		$order_sort = 'DESC';
+
+		# check $args for alternate sorting
+
+		$order_by = AddSlashes($order_by);
+		$order_sort = AddSlashes($order_sort);
+
+		$sql .= " ORDER BY {$order_by} {$order_sort}";
 
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
 		$buckets = array();

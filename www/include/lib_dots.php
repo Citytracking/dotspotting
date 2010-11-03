@@ -576,6 +576,16 @@
 			$sql = _dots_where_public_sql($sql);
 		}
 
+		$order_by = 'created,id';
+		$order_sort = 'ASC';
+
+		# check $args here for additioning sorting
+
+		$order_by = AddSlashes($order_by);
+		$order_sort = AddSlashes($order_sort);
+
+		$sql .= " ORDER BY {$order_by} {$order_sort}";
+
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);
 		$dots = array();
 
@@ -604,9 +614,12 @@
 		$order_by = 'id';
 		$order_sort = 'DESC';
 
-		$sql .= " ORDER BY {$order_by} {$order_sort}";
+		# check $args here for additioning sorting
 
-dumper($sql);
+		$order_by = AddSlashes($order_by);
+		$order_sort = AddSlashes($order_sort);
+
+		$sql .= " ORDER BY {$order_by} {$order_sort}";
 
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
 		$dots = array();
