@@ -126,3 +126,11 @@ path {
 .flickr_photo a img {
 	border: none;
 }
+
+pre {
+	background-color:#ccc;
+	margin-left:5%;
+	margin-right:5%;
+	padding:25px;
+	border:1px solid #999;
+}

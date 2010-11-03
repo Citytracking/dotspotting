@@ -1,0 +1,78 @@
+{assign var="page_title" value="Frequently Asked Questions"}
+{include file="inc_head.txt"}
+
+<h2>{$page_title|escape}</h2>
+
+<a name="discoball"></a>
+
+<h3><q>Super Alpha Beta Disco Ball</q></h3>
+
+<h4>What does that even mean?</h4>
+
+<p>It means that this is a <em>very early</em> and <em>unfinished</em> preview release of Dotspotting. It means that there are still lots of changes ahead of us. It means there are lots of features to implement and dream up. It means that we are committed to the idea of <a href="http://github.com/citytracking/dotspotting">releasing early</a> and working (and probably failing a little bit too) in public.</p>
+
+<a name="uploads"></a>
+
+<h3>Uploads</h3>
+
+<h4>What kinds of files can I upload to Dotspotting?</h4>
+
+<p>At the moment only comma separated values (CSV) files are supported. Once we finish working out a few more of the basic requirements for the site to work we add importers for a variety of other formats including spreadsheets, KML, GPX files and whatever else people think is useful.</p>
+
+<h4>Can I make my information private?</h4>
+
+<p>The short answer is: Yes. The long answer is: Yes, but maybe no.</p>
+
+<p>By default all dots are imported in to Dotspotting as publicly viewable. At upload time you can either specify that all, or some, of the dots be made private however there is currently <strong>no way to change privacy settings on a dot</strong> once it's been uploaded. <em>This is not a feature.</em></p>
+
+<h4>What are <q>Buckets</q>?</h4>
+
+<p>Buckets are the context in which one or more dots were imported in to Dotspotting. They are separate and distinct from other kinds of collections, say a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
+
+<h4>CSV files</h4>
+
+<p>The minimum list of fields you need to include to import a CSV file are:</p>
+
+<ul>
+	<li>latitude</li>
+	<li>longitude</li>
+</ul>
+
+<p>There are a handful of other fields that are treated as special by Dotspotting. They are:</p>
+
+<ul>
+	<li>perms &#8212; <span style="font-style:italic;">by default all dots are imported as public however if the value of this field is <code>private</code> then the dot will only be visible by the person who uploaded it.</li>
+	<li>created &#8212; <span style="font-style:italic;">if present then Dotspotting will try to parse and assign this value as the creation date for the corresponding dot/row, otherwise the date the row was imported is assumed.</span></li>
+	<li>address &#8212; <span style="font-style:italic;">if a row is missing values for <code>latitude</code> and <code>longitude</code> but it has a <code>address</code> field defined then, so long as geocoding is enabled, Dotspotting will try to fill in coordinate information by asking one or more geocoding services to resolve the address.</span></li>
+</ul>
+
+<p>For example:</p>
+
+<pre>
+latitude,longitude,perms,created,title,address
+1.233434,-35.23762323,,1287599999,,
+21.233434,-38.23762323,private,,hello·world,
+48.233434,-32.29992323,private,,,
+48.233434,-32.29992323,private,October·24·1998,i·like·cake,
+,,private,October·23·2010,geocoded,"2017·Mission·San·Francisc·CA"
+</pre>
+
+<p>Any other fields are stored as <q>extras</q> in Dotspotting.</p>
+
+<h4><q>Magic Words</q></h4>
+
+<p>Dotspotting has support for the idea of "magic words" which are user-defined non-standard properties assigned to a dot that are treated as foreign key lookups in to a third-party database or API.</p>
+
+<p>For example, if a dot has <code>flickr:id</code> key whose value is a valid Flickr photo ID then (and only if magic words support is <em>enabled</em>) Dotspotting will call the <a href="http://www.flickr.com/services/api">Flickr API</a> to ask for, and then display, that photo's thumbnail the page for that dot is loaded.</p>
+
+<p>At the moment, only the <code>flickr:id</code> magic word is supported but we hope to add similar functionality for <code>yahoo:woeid</code> and <code>geonames:id</code> shortly.</p>
+
+<a name="source"></a>
+
+<h3>Source Code</h3>
+
+<p>Dotspotting is an open-source project licensed under the ...</p>
+
+<p>It is available for download on Github: <a href="http://github.com/citytracking/dotspotting">http://github.com/citytracking/dotspotting</a></p>
+
+{include file="inc_foot.txt"}

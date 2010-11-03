@@ -74,4 +74,4 @@ RewriteRule ^nearby/([a-z0-9]+)/?$		/search.php?gh=$1&nearby=1&%{QUERY_STRING}	[
 # Misc.
 
 RewriteRule ^about/?$					/about.php?%{QUERY_STRING} [P,L]
-RewriteRule ^help/?$					/help.php?%{QUERY_STRING} [P,L]
+RewriteRule ^faq/?$					/faq.php?%{QUERY_STRING} [P,L]
