@@ -17,28 +17,30 @@
 
 <h4>What kinds of files can I upload to Dotspotting?</h4>
 
-<p>At the moment only comma separated values (CSV) files are supported. Once we finish working out a few more of the basic requirements for the site to work we add importers for a variety of other formats including spreadsheets, KML, GPX files and whatever else people think is useful.</p>
+<p>At the moment only comma separated values (CSV) files are supported. Once we finish working out a few more of the basic requirements for the site to work we add importers for a variety of other formats including spreadsheets, KML and GPX and GeoJSON files and whatever else people think is useful.</p>
 
 <h4>Can I make my information private?</h4>
 
 <p>The short answer is: Yes. The long answer is: Yes, but maybe no.</p>
 
-<p>By default all dots are imported in to Dotspotting as publicly viewable. At upload time you can either specify that all, or some, of the dots be made private however there is currently <strong>no way to change privacy settings on a dot</strong> once it's been uploaded. <em>This is not a feature.</em></p>
+<p>By default all dots are imported in to Dotspotting as publicly viewable. At upload time you can either specify that all, or some, of the dots be made private however there is currently <strong>no way to change privacy settings on a dot</strong> once it's been uploaded. <em>This is not a feature. We'll be adding this functionality shortly.</em></p>
 
 <h4>What are <q>Buckets</q>?</h4>
 
-<p>Buckets are the context in which one or more dots were imported in to Dotspotting. They are separate and distinct from other kinds of collections, say a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
+<p>Buckets are the context in which one or more dots were imported in to Dotspotting. At the moment, the only kind of context is the file uploaded to Dotspotting that one or more dots are listed in.</p>
+
+<p>They are separate and distinct from other kinds of collections, say a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
 
 <h4>CSV files</h4>
 
-<p>The minimum list of fields you need to include to import a CSV file are:</p>
+<p>The minimum list of fields you need to define to import a CSV file are:</p>
 
 <ul>
 	<li>latitude</li>
 	<li>longitude</li>
 </ul>
 
-<p>There are a handful of other fields that are treated as special by Dotspotting. They are:</p>
+<p>There are a handful of other fields that are treated as <q>special</q> by Dotspotting. They are:</p>
 
 <ul>
 	<li>perms &#8212; <span style="font-style:italic;">by default all dots are imported as public however if the value of this field is <code>private</code> then the dot will only be visible by the person who uploaded it.</li>
@@ -63,9 +65,9 @@ latitude,longitude,perms,created,title,address
 
 <p>Dotspotting has support for the idea of "magic words" which are user-defined non-standard properties assigned to a dot that are treated as foreign key lookups in to a third-party database or API.</p>
 
-<p>For example, if a dot has <code>flickr:id</code> key whose value is a valid Flickr photo ID then (and only if magic words support is <em>enabled</em>) Dotspotting will call the <a href="http://www.flickr.com/services/api">Flickr API</a> to ask for, and then display, that photo's thumbnail the page for that dot is loaded.</p>
+<p>For example, if a dot has <code>flickr:id</code> key whose value is a valid Flickr photo ID then (and only if magic words support is <em>enabled</em>) Dotspotting will call the <a href="http://www.flickr.com/services/api">Flickr API</a> to ask for, and then display, that photo's thumbnail when the page for that dot is loaded.</p>
 
-<p>At the moment, only the <code>flickr:id</code> magic word is supported but we hope to add similar functionality for <code>yahoo:woeid</code> and <code>geonames:id</code> shortly.</p>
+<p>At the moment, only the <code>flickr:id</code> magic word is supported but we hope to add similar functionality for <code>yahoo:woeid</code> and <code>geonames:id</code> (to lookup place names using the <a href="http://developer.yahoo.com/geo/geoplanet/">Yahoo! GeoPlanet</a> and <a href="http://www.geonames.org/">GeoNames</a> services respectively) shortly.</p>
 
 <a name="source"></a>
 
