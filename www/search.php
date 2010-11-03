@@ -21,7 +21,7 @@
 		$page = get_int32('page');
 
 		$args = array(
-			'page' => $page
+			'page' => $page,
 		);
 
 		if (strlen($geohash) >= 8){
@@ -35,6 +35,21 @@
 			$GLOBALS['smarty']->display('page_search_noresults.txt');
 			exit();
 		}
+
+		$page_as_queryarg = 0;
+
+		if (get_str("nearby")){
+			$pagination_url = "/nearby/" . urlencode($gh);
+		}
+
+		else {
+			unset($_GET['page']);
+			$pagination_url = "/search/?" . http_build_query($_GET);
+			$page_as_queryarg = 1;
+		}
+
+		$GLOBALS['smarty']->assign("pagination_url", $pagination_url);
+		$GLOBALS['smarty']->assign("pagination_page_as_queryarg", $page_as_queryarg);
 
 		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();
