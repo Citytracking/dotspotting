@@ -55,6 +55,16 @@
 	# Hey look! Running code goes here!
 	#
 
+	$GLOBALS['cfg']['browser'] = user_agent_info();
+
+	$GLOBALS['cfg']['browser']['capabilities'] = array(
+		'polymaps' => can_use_polymaps(),
+	);
+
+	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
+
+	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
+
 	$GLOBALS['filter'] = new lib_filter();
 
 	# This is a shim in the absence of a saner and
@@ -70,12 +80,6 @@
 		$GLOBALS['filter']->allowed = $whatevar;
 		return $str;
 	}
-
-	$GLOBALS['cfg']['browser'] = user_agent_info();
-
-	$GLOBALS['cfg']['browser']['capabilities'] = array(
-		'polymaps' => can_use_polymaps(),
-	);
 
 	#################################################################
 

@@ -62,9 +62,18 @@
 	$GLOBALS['cfg']['crypto_crumb_secret'] = '';
 
 	#
+	# You SHOULD change these
+	#
+
+	# $GLOBALS['cfg']['email_from_name']	= 'example name';
+	# $GLOBALS['cfg']['email_from_email']	= 'admin@example.com';
+	# $GLOBALS['cfg']['auto_email_args']	= '-admin@example.com';
+
+	#
 	# You MAY want to change these
 	#
 	
+	# $GLOBALS['cfg']['auth_cookie_name'] = 'a';
 	# $GLOBALS['cfg']['auth_cookie_secure'] = 0;		# see also: http://github.com/blog/737-sidejack-prevention
 	# $GLOBALS['cfg']['auth_cookie_httponly'] = 0;
 
