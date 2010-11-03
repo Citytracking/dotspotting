@@ -7,7 +7,7 @@
 
 <h2>Find dots near you</h2>
 
-<p id="feedback">In a moment your browser should ask you whether it has permissions to know your location. If you agree, I will ask the sky for your location...</p>
+<p id="feedback">In a moment your browser should ask you whether it may have permission to know your location. If you agree, I will ask the sky for your location...</p>
 
 {literal}
 <script type="text/javascript">
