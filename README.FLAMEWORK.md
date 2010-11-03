@@ -9,7 +9,7 @@ Flamework is the mythical ("mythical") PHP framework developed and used by [the 
 
 + [http://github.com/exflickr/flamework](http://github.com/exflickr/flamework "Flamework")
 
-If you've never watched [Cal Henderson](http://www.iamcal.com)'s "Why I Hate Django" presentation now is probably as good a time as any. It will help you understand a lot about why things were done they were at Flickr and why those of us who've left prefer to keep doing them that way:
+If you've never watched [Cal Henderson's](http://www.iamcal.com) "Why I Hate Django" presentation now is probably as good a time as any. It will help you understand a lot about why things were done they were at Flickr and why those of us who've left prefer to keep doing them that way:
 
 + [http://www.youtube.com/watch?v=i6Fr65PFqfk](http://www.youtube.com/watch?v=i6Fr65PFqfk "Why I Hate Django")
 
@@ -140,7 +140,7 @@ PostGIS a "proper" spatial database that can do amazing things so it's a no-brai
 Making Changes to Flamework
 --
 
-We use our own fork of Flamework, but pull and push changes to the main repository as appropriate. For the time being, our fork of Flamework sits in /ext/flamework as a submodule (hence the submodule lines in the installation instructions).
+**We use our own fork of Flamework**, but pull and push changes to the main repository as appropriate. For the time being, our fork of Flamework sits in `/ext/flamework` as a submodule (hence the submodule lines in the installation instructions).
 
 Sometimes you might have to make some changes to Flamework. Making changes to git submodules can be a bit strange, so let's explain:
 
