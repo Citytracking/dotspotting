@@ -1,4 +1,0 @@
-<div style="margin-bottom:10px;">
-<div class="caveat">It's true: Nothing is clickable or interactive. Yet! It is early days in the project still but we'll get there, we promise</div>
-<div style="color:#999;margin-top:5px;text-align:right;font-size:11px;">Map data <a href="http://creativecommons.org/licenses/by-sa/3.0/">CCBYSA</a> 2010 <a href="http://openstreetmap.org/">OpenStreetMap.org</a> contributors</div>
-</div>

@@ -1,5 +1,4 @@
-<div id="map"></div>
-{include file="inc_caveat_dots.txt"}
+{include file="inc_map.txt"}
 <table id="user_dots">
 	<thead>
 		<tr>
