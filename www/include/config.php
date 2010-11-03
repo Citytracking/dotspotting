@@ -81,6 +81,8 @@
 
 	$GLOBALS['cfg']['import_max_records'] = 1000;
 
+	$GLOBALS['cfg']['show_show_header_message'] = 0;
+
 	#
 	# Email
 	#

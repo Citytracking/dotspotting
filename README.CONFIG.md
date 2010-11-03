@@ -101,6 +101,14 @@ App Specific Stuff
 	$GLOBALS['cfg']['import_max_records'] = 1000;
 
 	#
+	# This flag controls whether or not to include the 
+	# inc_header_message.txt template at the top of every
+	# page on Dotspotting.
+	#
+
+	$GLOBALS['cfg']['show_header_message'] = 0;
+
+	#
 	# Pagination hooks for things like displaying lists of dots
 	# or other search results. If 'pagination_spill' is defined
 	# and the value of the last paginated set is less than 'spill'

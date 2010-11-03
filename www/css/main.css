@@ -58,6 +58,14 @@ body {
 	text-align: center;
 }
 
+#header_message{
+    border-bottom:1px dotted #999;
+    padding:10px;	
+    background-color:#ddd;
+    text-align:left;
+    padding-left:5%;
+}
+
 h1 {
 	margin-top: 0;
 }

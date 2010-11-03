@@ -1,0 +1,3 @@
+<div id="header_message">
+HEY LOOK! THIS IS THE SUPER ALPHA-BETA-DISCO-BALL VERSION ( <a href="/about">tell me more</a> )
+</div>

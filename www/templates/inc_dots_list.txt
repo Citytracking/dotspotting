@@ -31,7 +31,7 @@
 			{/if}
 				</td>
 			{if $bucket}
-				<td><a href="{$bucket|@urls_url_for_bucket}">{if $bucket.label}{$bucket.label|escape}{else}ID {$bucket_id|escape}{/if}</a></td>
+				<td><a href="{$bucket|@urls_url_for_bucket}">{if $bucket.label}{$bucket.label|escape}{else}<span style="font-style:italic;">untitled</span>{/if}</a></td>
 			{else}
 				<td><a href="{$dot.bucket|@urls_url_for_bucket}">{if $dot.bucket.label}{$dot.bucket.label|escape}{else}<span class="untitled">untitled</span>{/if}</a></td>
 			{/if}
