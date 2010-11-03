@@ -63,7 +63,7 @@ Here is a simple bare-bones example of how it all fits together:
 		$GLOBALS['smarty']->assign_by_ref("foo", example_foo());
 		$GLOBALS['smarty']->display("page_example.txt");
 		exit();
-	</php>
+	?>
 
 	# page_example.txt
 

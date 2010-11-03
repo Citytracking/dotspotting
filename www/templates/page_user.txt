@@ -42,6 +42,7 @@
 {/if}
 {/if}
 
-{include file="inc_buckets_list.txt" header="Recently created buckets"}
+{capture assign="header"}{$owner.username|@possess} recently created buckets{/capture}
+{include file="inc_buckets_list.txt" header=$header}
 
 {include file='inc_foot.txt'}
