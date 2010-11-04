@@ -117,10 +117,16 @@ A dot by {$cfg.user.username|escape}
 	<tr>
 		<th>{$label|escape}</th>
 		<td id="extras_{$label|escape}">
+		{* this shouldn't be inlined here *}
 		{if $label=='flickr:id' and $cfg.enable_feature_magicwords.flickr.id}
 			<script type="text/javascript">
-			display_flickr_photo({$stuff.0|escape});
-			</script>		
+			var photo_id={$stuff.0|escape};
+			{literal}
+			setTimeout(function(){
+				display_flickr_photo(photo_id);
+			}, 2500);
+			</script>
+			{/literal}		
 			{$stuff.0|escape}
 		{else}
 			{$stuff|@join:", "|escape}</td>

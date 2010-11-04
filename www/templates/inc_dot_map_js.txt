@@ -3,7 +3,8 @@
 
 function draw_map_polymaps(lat, lon){
 
-	var map = utils_polymap('map');
+	var more = { 'static': 1 };
+	var map = utils_polymap('map', more);
 
 	map.center({lat: lat, lon: lon});
 	map.zoom(14);
@@ -28,7 +29,8 @@ function draw_map_polymaps(lat, lon){
 
 function draw_map_modestmaps(lat, lon){
 
-	var map = utils_modestmap('map');
+	var more = { 'static' : 1 };	 
+	var map = utils_modestmap('map', more);
 
 	var mm = com.modestmaps;
 	var loc = new mm.Location(lat, lon);

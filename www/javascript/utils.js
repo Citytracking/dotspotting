@@ -1,7 +1,7 @@
 // This is probably (hopefully?) just a temporary place-holder for
 // shared/common functions (20101101/straup) 
 
-function utils_polymap(map_id){
+function utils_polymap(map_id, more){
 
 	var po = org.polymaps;
 	var svg = po.svg("svg");
@@ -12,18 +12,20 @@ function utils_polymap(map_id){
 	var map = po.map();
 	map.container(svg);
 
-	var wheel = po.wheel();
-	wheel.smooth(false);
-	map.add(wheel);
+	if ((more) && (! more['static'])){
+		var wheel = po.wheel();
+		wheel.smooth(false);
+		map.add(wheel);
 
-	var drag = po.drag();
-	map.add(drag);
+		var drag = po.drag();
+		map.add(drag);
 
-	var dblclick = po.dblclick();	
-	map.add(dblclick);
+		var dblclick = po.dblclick();	
+		map.add(dblclick);
 
-	var hash = po.hash();
-	map.add(hash);
+		var hash = po.hash();
+		map.add(hash);
+	}
 
 	var url = po.url("http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png");
 	url.hosts(["a.", "b.", "c.", ""]);
@@ -35,7 +37,7 @@ function utils_polymap(map_id){
 	return map;
 }
 
-function utils_modestmap(map_id){
+function utils_modestmap(map_id, more){
 
 	var mm = com.modestmaps;
 	
@@ -44,6 +46,10 @@ function utils_modestmap(map_id){
 
 	var dims = undefined;
 	var handlers = undefined;
+
+	if ((more) && (more['static'])){
+	    handlers = [];
+	}
 
 	var map = new mm.Map(map_id, provider, dims, handlers);
 	return map;
