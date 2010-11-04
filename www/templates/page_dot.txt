@@ -75,10 +75,13 @@
 	{literal}
 	function display_woeid(woeid){
 
-		yqlgeo.get('woeid:' + woeid, function(rsp){
+		yqlgeo.get('woeid:' + 3534, function(rsp){
+
+			if ((rsp['error']) || (! rsp['place'])){
+				return;
+			}
 
 			var pl = rsp['place'];
-			console.log(pl);
 
 			var name = pl['name'];
 			var placetype = pl['placeTypeName']['content'];
