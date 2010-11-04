@@ -47,10 +47,10 @@
 			var html = 
 				photo_id +
 				'<div class="flickr_photo">' + 
+				'Flickr ID ' + photo_id + ' is a photo titled <q><a href="' + ph_page + '" target="_flickr">' + ph_title + '</a></q>' +
+				'by ' + ph_owner +
+				'<br /><br />' + 
 				'<a href="' + ph_page + '" target="_flickr"><img src="' + ph_url + '" /></a>' +
-				'<br />' + 
-				'<q><a href="' + ph_page + '" target="_flickr">' + ph_title + '</a></q><br />' +
-				'<em>by ' + ph_owner + '</em>' +
 				'</div>';
 
 			var el = document.getElementById("extras_flickr:id");
@@ -89,7 +89,7 @@
 			var html = 
 				woeid +
 				'<div class="yahoo_woeid">' + 
-				'WOE ID ' + woeid + ' is named <q>' + name + '</q> and is a ' + placetype;
+				'WOE ID ' + woeid + ' is named <q>' + name + '</q> and is a ' + placetype.toLowerCase();
 
 			if (placetype != 'Country'){
 				html += ' in ' + pl['country']['content'];

@@ -148,8 +148,9 @@ path {
 }
 
 .flickr_photo {
-    margin-top: 20px;
+    margin-top: 10px;
     font-size:small;
+    font-style:italic;
 }
 
 .yahoo_woeid {
