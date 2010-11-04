@@ -300,7 +300,7 @@
 		$enc_id = AddSlashes($bucket_id);
 		$enc_user = AddSlashes($user['id']);
 
-		$sql = "SELECT * FROM Buckets WHERE id='{$enc_id}' AND user_id='{$enc_user}'";
+		$sql = "SELECT * FROM Buckets WHERE id='{$enc_id}'";
 
 		$rsp = db_fetch_users($user['cluster_id'], $sql);
 		$bucket = db_single($rsp);

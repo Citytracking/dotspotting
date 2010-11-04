@@ -21,11 +21,11 @@
 		# No point in doing a LIKE operation when it's a FQ geohash
 
 		if (strlen($enc_hash) == 12){
-			$sql = "SELECT * FROM DotsLookup WHERE deleted=0 AND perms=0 AND geohash='{$enc_hash}'";
+			$sql = "SELECT * FROM DotsLookup WHERE geohash='{$enc_hash}' AND perms=0 AND deleted=0";
 		}
 
 		else {
-			$sql = "SELECT * FROM DotsLookup WHERE deleted=0 AND perms=0 AND geohash LIKE '{$enc_hash}%'";
+			$sql = "SELECT * FROM DotsLookup WHERE geohash LIKE '{$enc_hash}%' AND perms=0 AND deleted=0";
 		}
 
 		$rsp = db_fetch_paginated($sql, $args);

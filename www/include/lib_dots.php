@@ -4,6 +4,9 @@
 	# $Id$
 	#
 
+	# TO DO ? add a has_extras columns to Dots? probably...
+	# (20101103/straup)
+
 	#################################################################
 
 	loadlib("dots_extras");
@@ -515,7 +518,7 @@
 
 				$enc_bucket = AddSlashes($bucket['bucket_id']);
 
-				$dot_sql = "SELECT * FROM DotsLookup WHERE bucket_id='{$enc_bucket}' AND deleted=0 AND perms=0 ORDER BY imported DESC";
+				$dot_sql = "SELECT * FROM DotsLookup WHERE bucket_id='{$enc_bucket}' AND perms=0 AND deleted=0 ORDER BY imported DESC";
 				$dot_args = array( 'per_page' => 15 );
 
 				$dot_rsp = db_fetch_paginated($dot_sql, $dot_args);
@@ -672,6 +675,12 @@
 
 	function dots_load_extras(&$dot, $viewer_id, $more=array()){
 
+		# to be written...
+		#
+		# if ($dot['has_extras']){
+		# 	$dot['extras'] = dots_extras_get_extras($dot, $more);
+		# }
+
 		$dot['extras'] = dots_extras_get_extras($dot, $more);
 
 		if ($more['load_bucket']){
@@ -756,7 +765,7 @@
 
 		$where .= ($has_where) ? "AND" : "WHERE";
 
-		$sql .= " {$where} perms=0 AND (latitude IS NOT NULL AND longitude IS NOT NULL)";
+		$sql .= " {$where} perms=0 AND latitude IS NOT NULL AND longitude IS NOT NULL";
 
 		return $sql;
 	}

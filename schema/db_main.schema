@@ -35,7 +35,10 @@ CREATE TABLE `DotsLookup` (
   `imported` int(10) unsigned NOT NULL,
   `deleted` int(10) unsigned NOT NULL,
   `bucket_id` bigint(20) unsigned NOT NULL,
-  `geohash` varchar(12) CHARACTER SET latin1 DEFAULT NULL
+  `geohash` varchar(12) CHARACTER SET latin1 DEFAULT NULL,
+  KEY `by_user` (`dot_id`),
+  KEY `by_geohash` (`geohash`,`perms`,`deleted`),
+  KEY `by_bucket` (`bucket_id`,`perms`,`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `BucketsLookup`;
@@ -44,6 +47,7 @@ CREATE TABLE `BucketsLookup` (
   `bucket_id` bigint(20) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `created` int(10) unsigned NOT NULL,
-  `deleted` int(10) unsigned NOT NULL
+  `deleted` int(10) unsigned NOT NULL,
+  KEY `by_user` (`bucket_id`),
+  KEY `by_deleted` (`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
