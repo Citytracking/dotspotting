@@ -219,6 +219,8 @@
 		# Add any "extras"
 		#
 
+		$has_extras = 0;
+
 		foreach (array_keys($data) as $label){
 
 			#
@@ -246,9 +248,20 @@
 
 			$extra_rsp = dots_extras_create_extra($dot, $label, $data[$label]);
 
-			if (! $extra_rsp['ok']){
-				# do something...
+			if ($extra_rsp['ok']){
+				$has_extras ++;
 			}
+
+			# else, do something ?
+		}
+
+		#
+		# Has extras?
+		#
+
+		if ($has_extras){
+
+			dots_update_dot($dot, array('has_extras' => 1));
 		}
 
 		#
@@ -675,13 +688,9 @@
 
 	function dots_load_extras(&$dot, $viewer_id, $more=array()){
 
-		# to be written...
-		#
-		# if ($dot['has_extras']){
-		# 	$dot['extras'] = dots_extras_get_extras($dot, $more);
-		# }
-
-		$dot['extras'] = dots_extras_get_extras($dot, $more);
+		if ($dot['has_extras']){
+			$dot['extras'] = dots_extras_get_extras($dot, $more);
+		}
 
 		if ($more['load_bucket']){
 	 		$dot['bucket'] = buckets_get_bucket($dot['bucket_id']);

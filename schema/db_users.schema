@@ -27,6 +27,7 @@ CREATE TABLE `Dots` (
   `imported` int(10) unsigned NOT NULL,
   `perms` tinyint(3) unsigned NOT NULL,
   `geocoded_by` tinyint(3) unsigned NOT NULL,
+  `has_extras` tinyint(3) unsigned NOT NULL,
   UNIQUE KEY `by_id` (`id`),
   KEY `by_user` (`user_id`),
   KEY `by_bucket` (`bucket_id`,`created`)

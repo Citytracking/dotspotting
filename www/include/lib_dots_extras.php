@@ -44,6 +44,12 @@
 
 	#################################################################
 
+	function dots_extras_delete_extra(){
+		# remember to update Dots:has_extras here
+	}
+
+	#################################################################
+
 	function dots_extras_get_extras(&$dot, $more=array()){
 
 		$user = users_get_by_id($dot['user_id']);
