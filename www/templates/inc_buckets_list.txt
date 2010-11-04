@@ -2,6 +2,13 @@
 
 {if $header}<h3>{$header|escape}</h3>{/if}
 
+{if !$buckets|@count}
+{if $is_own}
+<p>You haven't uploaded any dots yet. <a href="{$cfg.abs_root_url}upload">Would you like to upload some now?</a></p>
+{else}
+<p>{$owner.username|escape} has not uploaded any dots yet.</p>
+{/if}
+{else}
 <table id="user_buckets">
 	<thead>
 		<tr>
@@ -18,6 +25,7 @@
 			{if $is_own}
 			<th>Last Modified</th>
 			<th>File Type</th>
+			{* a column for delete bucket links - this doesn't work because of the way crumbs are generated - this is not a feature *}
 			{/if}
 		</tr>
 	</thead>
@@ -39,11 +47,13 @@
 			{if $is_own}
 			<td>{$bucket.last_modified|date_format:"%Y-%m-%d %H:%M"|escape}</td>
 			<td>{$bucket.mime_type|escape}</td>
+			{* delete links - see above inre: crumbs *}
 			{/if}
 		</tr>
 {/foreach}
 
 	</tbody>
 </table>
+{/if}
 
 {include file="inc_buckets_map_js.txt"}

@@ -1,6 +1,10 @@
 {capture assign='page_title'}{$owner.username|possess} buckets{/capture}
 {include file='inc_head.txt'}
 
+{if $smarty.get.deleted}
+<p class="success">Your bucket has been deleted.</p>
+{/if}
+
 {if $is_own}
 <h2><a href="{$owner|@urls_url_for_user}">Your</a> buckets (of <a href="{$owner|@urls_dots_for_user}">dots</a>)</h2>
 {else}

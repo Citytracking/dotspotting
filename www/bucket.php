@@ -48,6 +48,13 @@
 				$smarty->assign('deleted', $rsp);
 			}
 
+			if ($rsp['ok']){
+
+				$redir = urls_buckets_for_user($GLOBALS['cfg']['user']) . "?deleted=1";
+				header("location: $redir");
+				exit();
+			}
+
 			$smarty->display('page_bucket_delete.txt');
 			exit();
 		}
