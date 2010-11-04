@@ -75,7 +75,7 @@
 	{literal}
 	function display_woeid(woeid){
 
-		yqlgeo.get('woeid:' + 3534, function(rsp){
+		yqlgeo.get('woeid:' + woeid, function(rsp){
 
 			if ((rsp['error']) || (! rsp['place'])){
 				return;
