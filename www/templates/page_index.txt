@@ -4,7 +4,7 @@
 {if $cfg.user.id}
 	<h2>Hi {$cfg.user.username|escape}!</h2>
 {else}
-	<h2>Welcome to dotspotting</h2>
+	<h2>Welcome to dotspotting!</h2>
 
 	{if $cfg.enable_feature_uploads}
 <a href="/upload">Get started and upload some dots!</a>
@@ -13,7 +13,7 @@
 {/if}
 
 {if $recent_dots|@count}
-	<h3>Recent Dots added to Dotspotting</h3>
+	<h3>Recent Dots added to Dotspotting:</h3>
 	{include file="inc_dots_list.txt" dots=$recent_dots}
 {/if}
 

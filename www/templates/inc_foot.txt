@@ -1,11 +1,10 @@
 	</div>
 
 	<div id="footer">
-		THIS IS THE SUPER ALPHA-BETA-DISCO-BALL VERSION
-		<br />
-		and should still be considered <a href="/about/">a work in motion</a>
-		<br /><br />
-		<strong>Dotspotting is a thing by <a href="http://www.stamen.com/">Stamen Design</a> / it also has a <a href="{$cfg.abs_root_url}faq/">FAQ</a></strong>
+		{if $cfg.show_show_header_message}
+			{include file="inc_header_message.txt"}
+		{/if}
+		<strong>Dotspotting is a thing by <a href="http://www.stamen.com/" class="stamen">Stamen Design</a> / it also has a <a href="{$cfg.abs_root_url}faq/">FAQ</a></strong>
 	</div>
 
 {if $cfg.admin_flags_show_notices}
