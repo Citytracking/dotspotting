@@ -1,6 +1,6 @@
 {capture assign="page_title"}
-{if $cfg.enable_feature_magicwords.flickr.id}
 {capture assign="extra_head"}
+{if $cfg.enable_feature_magicwords.flickr.id}
 	{* waiting on flickr to add support for photo.gne?id=999 support to the oembed endpoint *}
 	{if 0}
 	<script type="text/javascript" src="/javascript/oembed.js"></script>
@@ -47,10 +47,10 @@
 			var html = 
 				photo_id +
 				'<div class="flickr_photo">' + 
+				'Flickr ID ' + photo_id + ' is a photo titled <q><a href="' + ph_page + '" target="_flickr">' + ph_title + '</a></q>' +
+				'by ' + ph_owner +
+				'<br /><br />' + 
 				'<a href="' + ph_page + '" target="_flickr"><img src="' + ph_url + '" /></a>' +
-				'<br />' + 
-				'<q><a href="' + ph_page + '" target="_flickr">' + ph_title + '</a></q><br />' +
-				'<em>by ' + ph_owner + '</em>' +
 				'</div>';
 
 			var el = document.getElementById("extras_flickr:id");
@@ -67,8 +67,47 @@
 	{/literal}
 	</script>
 
-{/capture}
 {/if}
+{if $cfg.enable_feature_magicwords.yahoo.woeid}
+	{* this is a patched version of christian's yqlgeo library (20101104/straup) *}
+	<script type="text/javascript" src="/javascript/yqlgeo.js"></script>
+	<script type="text/javascript">
+	{literal}
+	function display_woeid(woeid){
+
+		yqlgeo.get('woeid:' + woeid, function(rsp){
+
+			if ((rsp['error']) || (! rsp['place'])){
+				return;
+			}
+
+			var pl = rsp['place'];
+
+			var name = pl['name'];
+			var placetype = pl['placeTypeName']['content'];
+
+			var html = 
+				woeid +
+				'<div class="yahoo_woeid">' + 
+				'WOE ID ' + woeid + ' is named <q>' + name + '</q> and is a ' + placetype.toLowerCase();
+
+			if (placetype != 'Country'){
+				html += ' in ' + pl['country']['content'];
+			}
+
+			html += '</div>';
+
+			var el = document.getElementById("extras_yahoo:woeid");
+			el.innerHTML = html;
+
+		});
+	}
+	{/literal}
+	</script>
+{/if}
+
+{/capture}
+
 
 {if $is_own}
 	{if $dot.extras.title}
@@ -128,6 +167,19 @@ A dot by {$cfg.user.username|escape}
 			</script>
 			{/literal}		
 			{$stuff.0|escape}
+
+		{elseif $label=='yahoo:woeid' and $cfg.enable_feature_magicwords.yahoo.woeid}
+
+			<script type="text/javascript">
+			var woe_id={$stuff.0|escape};
+			{literal}
+			setTimeout(function(){
+				display_woeid(woe_id);
+			}, 2500);
+			</script>
+			{/literal}		
+			{$stuff.0|escape}
+
 		{else}
 			{$stuff|@join:", "|escape}</td>
 		{/if}
