@@ -40,11 +40,18 @@
 			var ph = rsp['photo'];
 			var ph_url = 'http://farm' + ph['farm'] + '.static.flickr.com/' + ph['server'] + '/' + ph['id'] + '_' + ph['secret'] + '_t.jpg';
 			var ph_page = 'http://www.flickr.com/photos/' + ph['owner']['nsid'] + '/' + ph['id'];
-			var ph_title = ph['title']['_content'];
 
-			var html = '<div class="flickr_photo">' + 
-				    '<a href="' + ph_page + '" target="_flickr"><img src="' + ph_url + '" /></a>' +
-				    '</div>';
+			var ph_title = ph['title']['_content'];
+			var ph_owner = ph['owner']['username'];
+
+			var html = 
+				photo_id +
+				'<div class="flickr_photo">' + 
+				'<a href="' + ph_page + '" target="_flickr"><img src="' + ph_url + '" /></a>' +
+				'<br />' + 
+				'<q><a href="' + ph_page + '" target="_flickr">' + ph_title + '</a></q><br />' +
+				'<em>by ' + ph_owner + '</em>' +
+				'</div>';
 
 			var el = document.getElementById("extras_flickr:id");
 			el.innerHTML = html;

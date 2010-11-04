@@ -107,6 +107,11 @@ table {
 
 td {
     padding: 6px;
+    vertical-align:text-top;	
+}
+
+th {
+    vertical-align:text-top;
 }
 
 .dot_private {
@@ -140,6 +145,11 @@ path {
 	font-style:italic;
 	text-align:right;
 	color:red;
+}
+
+.flickr_photo {
+    margin-top: 20px;
+    font-size:small;
 }
 
 .flickr_photo a img {
