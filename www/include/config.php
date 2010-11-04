@@ -36,7 +36,7 @@
 		),
 
 		'yahoo' => array(
-			'woeid' => 0,
+			'woeid' => 1,
 		),
 	);
 

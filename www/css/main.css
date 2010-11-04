@@ -152,6 +152,12 @@ path {
     font-size:small;
 }
 
+.yahoo_woeid {
+    margin-top: 10px;
+    font-size:small;
+    font-style:italic;
+}
+
 .flickr_photo a img {
 	border: none;
 }
