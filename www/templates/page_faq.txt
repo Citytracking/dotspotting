@@ -75,7 +75,7 @@ latitude,longitude,perms,created,title,address
 
 <p>For example, if a dot has <code>flickr:id</code> key whose value is a valid Flickr photo ID then (and only if magic words support is <em>enabled</em>) Dotspotting will call the <a href="http://www.flickr.com/services/api">Flickr API</a> to ask for, and then display, that photo's thumbnail when the page for that dot is loaded.</p>
 
-<p>At the moment, only the <code>flickr:id</code> magic word is supported but we hope to add similar functionality for <code>yahoo:woeid</code> and <code>geonames:id</code> (to lookup place names using the <a href="http://developer.yahoo.com/geo/geoplanet/">Yahoo! GeoPlanet</a> and <a href="http://www.geonames.org/">GeoNames</a> services respectively) shortly.</p>
+<p>At the moment, support is only available for <code>flickr:id</code> and <code>yahoo:woeid</code> (to lookup place names using the <a href="http://developer.yahoo.com/geo/geoplanet/">Yahoo! GeoPlanet</a>) magic words. We hope to add similar functionality for <code><a href="http://www.geonames.org/">geonames:id</a></code> and other services shortly.</p>
 
 <a name="source"></a>
 
