@@ -65,6 +65,8 @@ latitude,longitude,perms,created,title,address
 
 <p>Any other fields are stored as <q>extras</q> in Dotspotting.</p>
 
+<p>You order of the column headers is up to you. In this example <code>latitude</code> is the first column but it could just as easily be the last. You only need to make sure that the values are in the same position as their corresponding header.</p>
+
 <a name="magicwords"></a>
 
 <h4><q>Magic Words</q></h4>
