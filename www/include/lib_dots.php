@@ -163,8 +163,15 @@
 		$created = $now;
 
 		if ($alt_created = $data['created']){
+
 			# Because intval("2010-09-23T00:18:55Z") returns '2010' ...
-			$created = (is_numeric($alt_created)) ? $alt_created : strtotime($alt_created);
+			# Because is_numeric(20101029154025.000) returns true ...
+			# Because strtotime(time()) returns false ...
+			# BECAUSE GOD HATES YOU ...
+
+			$created = (preg_match("/^\d+$/", $alt_created)) ? $alt_created : strtotime($alt_created);
+
+			# if ! $created then reassign $now ?
 		}
 
 		# permissions
@@ -707,7 +714,7 @@
 
 		$skip_required_latlon = 0;
 
-		if (isset($data['address']) && (! isset($data['latitude'])) && (! isset($data['longitude']))){
+		if (isset($data['address']) && ((empty($data['latitude'])) || (empty($data['longitude'])))){
 
 			$skip_required_latlon = 1;
 
