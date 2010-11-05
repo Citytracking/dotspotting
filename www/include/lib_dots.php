@@ -707,7 +707,7 @@
 
 		$skip_required_latlon = 0;
 
-		if (isset($data['address']) && (empty($data['latitude']) || empty($data['longitude']))){
+		if (isset($data['address']) && (! isset($data['latitude'])) && (! isset($data['longitude']))){
 
 			$skip_required_latlon = 1;
 
@@ -736,7 +736,7 @@
 				return array( 'ok' => 0, 'error' => 'missing longitude' );
 			}
 
-			if (! geo_utils_is_valid_longitude($data['latitude'])){
+			if (! geo_utils_is_valid_latitude($data['latitude'])){
 				return array( 'ok' => 0, 'error' => 'invalid latitude' );
 			}
 
