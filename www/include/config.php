@@ -1,6 +1,14 @@
 <?php
 
 	#
+	# HEY LOOK! THESE ARE THE *DEFAULT* CONFIG SETTINGS FOR 
+	# DOTSPOTTING. IF YOU NEED TO CHANGE THINGS YOU SHOULD DO
+	# IT OVER IN: dotspotting/config/dotspotting.php
+	#
+	# SEE ALSO: dotspotting/README.CONFIG.md
+	#
+
+	#
 	# We assume this is declared in flamework/include/config.php
 	# $GLOBALS['cfg'] = array();
 	#
@@ -81,7 +89,7 @@
 
 	$GLOBALS['cfg']['import_max_records'] = 1000;
 
-	$GLOBALS['cfg']['show_show_header_message'] = 1;
+	$GLOBALS['cfg']['show_show_header_message'] = 0;
 
 	#
 	# Email

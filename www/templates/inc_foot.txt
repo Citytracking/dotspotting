@@ -1,9 +1,7 @@
 	</div>
 
 	<div id="footer">
-		{if $cfg.show_show_header_message}
-			{include file="inc_header_message.txt"}
-		{/if}
+		{include file="inc_discoball.txt"}
 		<strong>Dotspotting is a thing by <a href="http://www.stamen.com/" class="stamen">Stamen Design</a> / it also has a <a href="{$cfg.abs_root_url}faq/">FAQ</a></strong>
 	</div>
 
