@@ -24,12 +24,13 @@ Installation Instructions
 
 1. Install and configure Apache, MySQL and PHP.
 2. `git clone git@github.com:Citytracking/dotspotting.git`
-3. `git submodule init`
-4. `git submodule update`
-5. Load the various `*.schema` files in the `schema` directory in to MySQL
-6. In the `config` directory, copy `dotspotting.php.example` to `dotspotting.php` and adjust the values to suit your configuration.
-7. Ensure that the `www/templates_c` directory can be written to by your web server.
-8. Enable mod_rewrite in your local Apache.
+3. cd `dotspotting`
+4. `git submodule init`
+5. `git submodule update`
+6. Load the various `*.schema` files in the `schema` directory in to MySQL
+7. In the `config` directory, copy `dotspotting.php.example` to `dotspotting.php` and adjust the values to suit your configuration.
+8. Ensure that the `www/templates_c` directory can be written to by your web server.
+9. Ensure that mod_rewrite is enabled in your local Apache configuration.
 
 Flamework (?!)
 --
@@ -54,7 +55,7 @@ The `.htaccess` file is where the various PHP settings are defined, including th
 
 	php_value include_path "./include:../flamework/include:."
 
-That tells PHP to look for stuff first in Dotspotting's `www/include` directory and then, if nothing is found, in Flamework's `include` directory. That's the "holding hands" part.
+That tells PHP to look for stuff first in Dotspotting's `www/include` directory and then, if nothing is found, in Flamework's `include` directory. That's the "holding hands" part. Note that Dotspotting does not care about any of the "application" files in Flamework (signin.php, etc.) as it uses its own.
 
 *The `.htaccess` file is also where all the mod_rewrite rules for pretty URLs are defined.*
 
