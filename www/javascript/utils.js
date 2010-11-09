@@ -12,7 +12,7 @@ function utils_polymap(map_id, more){
 	var map = po.map();
 	map.container(svg);
 
-	if ((more) && (! more['static'])){
+	if ((! more) || (! more['static'])){
 		var wheel = po.wheel();
 		wheel.smooth(false);
 		map.add(wheel);
