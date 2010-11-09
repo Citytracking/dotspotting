@@ -1,13 +1,20 @@
 {assign var="page_title" value="Your account"}
 {include file="inc_head.txt"}
 
-<h2>Your account</h2>
+<h2>Your Stuff</h2>
+
+<ul>
+	<li><a href="{$cfg.user|@urls_buckets_for_user}">All your buckets</a></li>
+	<li><a href="{$cfg.user|@urls_dots_for_user}">All your dots</a></li>
+</ul>
+
+<h2>Your Account</h2>
 
 {if $smarty.get.password}<p class="message">Your password has been updated.</p>{/if}
 
 <ul>
-	<li><a href="/account/password/">Change your password</a></li>
-	<li><a href="/account/delete/">Delete your account</a></li>
+	<li><a href="{$cfg.abs_root_url}account/password/">Change your password</a></li>
+	<li><a href="{$cfg.abs_root_url}account/delete/">Delete your account</a></li>
 </ul>
 
 {include file="inc_foot.txt"}
