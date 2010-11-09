@@ -18,10 +18,11 @@
 
 		$counts = buckets_counts_for_user($GLOBALS['cfg']['user'], $GLOBALS['cfg']['user']['id']);
 		$GLOBALS['cfg']['user']['counts'] = $counts;
-	}
 
-	$recent_dots = dots_get_dots_recently_imported();
-	$smarty->assign_by_ref('recent_dots', $recent_dots);
+		$recent_dots = dots_get_dots_recently_imported();
+		$smarty->assign_by_ref('recent_dots', $recent_dots);
+
+	}
 
 	#################################################################
 

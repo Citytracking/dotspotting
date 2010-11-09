@@ -1,0 +1,11 @@
+{capture assign="page_title}Recently uploaded dots{/capture}
+{include file='inc_head.txt'}
+
+{if $recent_dots|@count}
+	<h3>Recent Dots added to Dotspotting:</h3>
+	{include file="inc_dots_list.txt" dots=$recent_dots}
+{else}
+	<p>Hrmph! No one has uploaded any dots yet!</p>
+{/if}
+
+{include file='inc_foot.txt'}

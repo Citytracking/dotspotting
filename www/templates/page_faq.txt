@@ -49,7 +49,7 @@
 <ul>
 	<li>perms &#8212; <span style="font-style:italic;">by default all dots are imported as public however if the value of this field is <code>private</code> then the dot will only be visible by the person who uploaded it.</li>
 	<li>created &#8212; <span style="font-style:italic;">if present then Dotspotting will try to parse and assign this value as the creation date for the corresponding dot/row, otherwise the date the row was imported is assumed.</span></li>
-	<li>address &#8212; <span style="font-style:italic;">if a row is missing values for <code>latitude</code> and <code>longitude</code> but it has a <code>address</code> field defined then, so long as geocoding is enabled, Dotspotting will try to fill in coordinate information by asking one or more geocoding services to resolve the address.</span></li>
+	<li>address &#8212; <span style="font-style:italic;">if a row is <span style="text-decoration:underline;">missing values for <code>latitude</code> and <code>longitude</code> but it has an <code>address</code> field</span> defined then, so long as geocoding is enabled, Dotspotting will try to fill in coordinate information by asking one or more geocoding services to resolve the address.</span></li>
 </ul>
 
 <p>For example:</p>
@@ -81,8 +81,8 @@ latitude,longitude,perms,created,title,address
 
 <h3>Source Code</h3>
 
-<p>Dotspotting is an open-source project licensed under the ...</p>
+<p>Dotspotting is an open-source project licensed under the [LICENSE]</p>
 
-<p>It is available for download on Github: <a href="http://github.com/citytracking/dotspotting">http://github.com/citytracking/dotspotting</a></p>
+<p>It is available for download on Github: <a href="https://github.com/citytracking/dotspotting">https://github.com/citytracking/dotspotting</a></p>
 
 {include file="inc_foot.txt"}
