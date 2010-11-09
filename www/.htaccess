@@ -31,6 +31,10 @@ ErrorDocument 403 /403.php
 
 RewriteEngine on
 
+# API
+
+RewriteRule	^rest/?$		/api_rest.php?%{QUERY_STRING} [P,L]
+
 # Login stuff
 	
 RewriteRule  ^signup/?$			/signup.php?%{QUERY_STRING} [P,L]

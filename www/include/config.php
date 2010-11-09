@@ -22,6 +22,7 @@
 	#
 
 	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
+	$GLOBALS['cfg']['enable_feature_api'] = 0;
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;
 	$GLOBALS['cfg']['enable_feature_signin'] = 1;
@@ -63,6 +64,12 @@
 	$GLOBALS['cfg']['db_enable_poormans_slaves'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_ticketing'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_federation'] = 1;
+
+	#
+	# API stuff
+	#
+
+	include_once('config-api.php');
 
 	#
 	# Templates
