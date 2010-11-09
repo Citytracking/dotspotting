@@ -4,7 +4,7 @@
 {if $cfg.user.id}
 	<h2>Hi {$cfg.user.username|escape}!</h2>
 {else}
-	<h2>Welcome to dotspotting!</h2>
+	<h2>Welcome to Dotspotting!</h2>
 
 	<div style="margin-left:20%;margin-bottom:25px;">
 	<div><a href="http://www.flickr.com/photos/apelad/3866190995/" title="Laugh-Out-Loud Cats #1223 by Ape Lad, on Flickr" target="_flickr"><img src="http://farm3.static.flickr.com/2093/3866190995_2fa09e50bc.jpg" width="500" height="328" alt="Laugh-Out-Loud Cats #1223" /></a></div>
