@@ -69,7 +69,8 @@
 
 {/if}
 {if $cfg.enable_feature_magicwords.yahoo.woeid}
-	{* this is a patched version of christian's yqlgeo library (20101104/straup) *}
+	{* this is a patched version of christian's yqlgeo library *}
+	{* I need to send him a patch... (20101104/straup) *}
 	<script type="text/javascript" src="/javascript/yqlgeo.js"></script>
 	<script type="text/javascript">
 	{literal}
@@ -152,6 +153,20 @@ A dot by {$cfg.user.username|escape}
 		<td><a href="/search.php?gh={$dot.geohash|escape}">{$dot.geohash|escape}</a></td>
 	</tr>
 
+	{if $dot.address}
+	<tr>
+		<th>address</th>
+		<td>{$dot.address|escape}</td>
+	</tr>
+	{/if}
+
+	{if $geocoded_by}
+	<tr>
+		<th>geocoded by</th>
+		<td>{$geocoder_map.$geocoded_by|escape}</td>
+	</tr>
+	{/if}
+
 	{foreach from=$dot.extras item="stuff" key="label"}
 	<tr>
 		<th>{$label|escape}</th>
@@ -195,13 +210,6 @@ A dot by {$cfg.user.username|escape}
 		<th>permissions</th>
 		<td>{$permissions_map.$perms|escape}</td>
 	</tr>
-
-	{if $geocoded_by}
-	<tr>
-		<th>geocoded by</th>
-		<td>{$geocoder_map.$geocoded_by|escape}</td>
-	</tr>
-	{/if}
 
 	{/if}
 
