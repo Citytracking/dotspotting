@@ -210,3 +210,13 @@ pre {
 	padding:25px;
 	border:1px solid #999;
 }
+
+.csv_fields li {
+	line-height: 25px;
+	margin-bottom: 10px;
+}
+
+.important {
+    text-decoration: underline;
+    font-weight: 600;
+}
