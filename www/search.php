@@ -25,7 +25,7 @@
 		);
 
 		if (strlen($geohash) >= 8){
-			$geohash = substr($geohash, 0, -2);
+			$geohash = substr($geohash, 0, -5);
 		}
 
 		$dots = search_dots_for_geohash($geohash, $GLOBALS['cfg']['user']['id'], $args);
