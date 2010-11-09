@@ -39,7 +39,7 @@
 		$page_as_queryarg = 0;
 
 		if (get_str("nearby")){
-			$pagination_url = "/nearby/" . urlencode($gh);
+			$pagination_url = "/nearby/" . urlencode($geohash);
 		}
 
 		else {
