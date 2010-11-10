@@ -4,7 +4,6 @@
 {if $cfg.user.id}
 	<h2>Hi {$cfg.user.username|escape}!</h2>
 {else}
-	<h2>Welcome to Dotspotting!</h2>
 
 	<div style="margin-left:20%;margin-bottom:25px;">
 	<div><a href="http://www.flickr.com/photos/apelad/3866190995/" title="Laugh-Out-Loud Cats #1223 by Ape Lad, on Flickr" target="_flickr"><img src="http://farm3.static.flickr.com/2093/3866190995_2fa09e50bc.jpg" width="500" height="328" alt="Laugh-Out-Loud Cats #1223" /></a></div>
@@ -13,6 +12,8 @@
 	</div>
 
 	{if $cfg.enable_feature_uploads}
+	
+<h2>Welcome to Dotspotting!</h2>
 <p><a href="{$cfg.abs_root_url}/upload">Get started and upload some dots</a> or find out more by reading the <a href="{$cfg.abs_root_url}faq">Dotspotting FAQ</a>.</p>
 
 <p>You can also see <a href="{$cfg.abs_root_url}recent/">recently uploaded dots</a>!</p>
