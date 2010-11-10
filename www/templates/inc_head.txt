@@ -31,7 +31,7 @@ var canhas_polymaps = {$cfg.browser.capabilities.polymaps|escape};
 
 	<div id="nav">
 		<div id="logo" style="float: left;">
-			<a href="/" style=""><img src="/images/dotspotting.png" height="100" width="100" /></a>
+			<a href="/" style=""><img src="{$cfg.abs_root_url}images/dotspotting.png" height="100" width="100" alt="Dotspotting" /></a>
 		</div>
 		<div id="login" style="float: right;">
 {if $cfg.user.id}
