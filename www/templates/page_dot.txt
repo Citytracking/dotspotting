@@ -14,113 +14,15 @@ A dot by {$cfg.user.username|escape}
 {/if}
 {/capture}
 {capture assign="extra_head"}
+{if $cfg.enable_feature_magicwords.walkingpapers.scanid}
+	{include file="inc_dot_magicwords_walkingpapers_scanid.txt"}
+{/if}
 {if $cfg.enable_feature_magicwords.flickr.id}
-	{* waiting on flickr to add support for photo.gne?id=999 support to the oembed endpoint *}
-	{if 0}
-	<script type="text/javascript" src="/javascript/oembed.js"></script>
-	<script type="text/javascript">
-	{literal}
-	function display_flickr_photo(photo_id){
-		var oembed = new info.aaronland.oEmbed({
-			'service': 'http://www.flickr.com/services/oembed/',
-			'enable_logging': true
-		});
-
-		oembed.fetch('http://www.flickr.com/photo.gne?id=' + photo_id, {'maxwidth': 240}, function(rsp){ 
-			// see below
-		});
-	}
-	{/literal}
-	</script>
-	{/if}
-	{* just call the API for now... *}
-	<script type="text/javascript" src="/javascript/flickr-api.js"></script>
-	<script type="text/javascript">
-	var apikey = '{$cfg.flickr_apikey|escape}';
-	{literal}
-	function display_flickr_photo(photo_id){
-
-		var flickr = new info.aaronland.flickr.API({
-			'key': apikey,
-			'enable_logging': false,
-		});
-
-		_flickr_photos_getinfo = function(rsp){
-
-			if (rsp['stat'] != 'ok'){
-				return;
-			}
-
-			var ph = rsp['photo'];
-			var ph_url = 'http://farm' + ph['farm'] + '.static.flickr.com/' + ph['server'] + '/' + ph['id'] + '_' + ph['secret'] + '_t.jpg';
-			var ph_page = 'http://www.flickr.com/photos/' + ph['owner']['nsid'] + '/' + ph['id'];
-
-			var ph_title = ph['title']['_content'];
-			var ph_owner = ph['owner']['username'];
-
-			var html = 
-				photo_id +
-				'<div class="flickr_photo">' + 
-				'Flickr ID ' + photo_id + ' is a photo titled <q><a href="' + ph_page + '" target="_flickr">' + ph_title + '</a></q>' +
-				'by ' + ph_owner +
-				'<br /><br />' + 
-				'<a href="' + ph_page + '" target="_flickr"><img src="' + ph_url + '" /></a>' +
-				'</div>';
-
-			var el = document.getElementById("extras_flickr:id");
-			el.innerHTML = html;
-		};
-
-		var args = {
-			'photo_id': photo_id,
-			'jsoncallback': '_flickr_photos_getinfo',
-		};
-
-		flickr.api_call('flickr.photos.getInfo', args);
-	}
-	{/literal}
-	</script>
-
+	{include file="inc_dot_magicwords_flickr_id.txt"}
 {/if}
 {if $cfg.enable_feature_magicwords.yahoo.woeid}
-	{* this is a patched version of christian's yqlgeo library *}
-	{* I need to send him a patch... (20101104/straup) *}
-	<script type="text/javascript" src="/javascript/yqlgeo.js"></script>
-	<script type="text/javascript">
-	{literal}
-	function display_woeid(woeid){
-
-		yqlgeo.get('woeid:' + woeid, function(rsp){
-
-			if ((rsp['error']) || (! rsp['place'])){
-				return;
-			}
-
-			var pl = rsp['place'];
-
-			var name = pl['name'];
-			var placetype = pl['placeTypeName']['content'];
-
-			var html = 
-				woeid +
-				'<div class="yahoo_woeid">' + 
-				'WOE ID ' + woeid + ' is named <q>' + name + '</q> and is a ' + placetype.toLowerCase();
-
-			if (placetype != 'Country'){
-				html += ' in ' + pl['country']['content'];
-			}
-
-			html += '</div>';
-
-			var el = document.getElementById("extras_yahoo:woeid");
-			el.innerHTML = html;
-
-		});
-	}
-	{/literal}
-	</script>
+	{include file="inc_dot_magicwords_yahoo_woeid.txt"}
 {/if}
-
 {/capture}
 {include file="inc_head.txt"}
 
@@ -189,6 +91,18 @@ A dot by {$cfg.user.username|escape}
 			{literal}
 			setTimeout(function(){
 				display_woeid(woe_id);
+			}, 2500);
+			</script>
+			{/literal}		
+			{$stuff.0.value|escape}
+
+		{elseif $label=='walkingpapers:scanid' and $cfg.enable_feature_magicwords.walkingpapers.scanid}
+
+			<script type="text/javascript">
+			var scan_id='{$stuff.0.value|escape}';
+			{literal}
+			setTimeout(function(){
+				display_walkingpapers_scan(scan_id);
 			}, 2500);
 			</script>
 			{/literal}		

@@ -1,0 +1,15 @@
+	<script type="text/javascript" src="/javascript/oembed.js"></script>
+	<script type="text/javascript">
+	{literal}
+	function display_walkingpapers_scan(scan_id){
+		var oembed = new info.aaronland.oEmbed({
+			'service': 'http://www.walkingpapers.org/services/oembed/',
+			'enable_logging': true
+		});
+
+		oembed.fetch('http://www.walkingpapers.org/scan.gne?id=' + scan_id, {}, function(rsp){ 
+			console.log(rsp);
+		});
+	}
+	{/literal}
+	</script>
