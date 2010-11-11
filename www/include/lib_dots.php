@@ -227,7 +227,9 @@
 
 		#
 		# Denormalize the list of (not standard) extras
-		# keys for display on bucket/dot list views
+		# keys for display on bucket/dot list views - this
+		# is mostly so that we don't have to fetch (n) rows
+		# from DotsExtras everytime we show a list of dots.
 		#
 
 		if (count($dot['extras'])){
