@@ -66,6 +66,17 @@
 	$GLOBALS['cfg']['db_enable_poormans_federation'] = 1;
 
 	#
+	# See also: lib_dots_derive.php
+	#
+
+	$GLOBALS['cfg']['dots_derived_from'] = array(
+		0 => 'user',
+		1 => 'dotspotting',
+		2 => 'geocoded (yahoo)',
+		3 => 'geohash',
+	);
+
+	#
 	# API stuff
 	#
 

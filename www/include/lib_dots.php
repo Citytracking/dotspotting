@@ -4,16 +4,12 @@
 	# $Id$
 	#
 
-	# TO DO ? add a has_extras columns to Dots? probably...
-	# (20101103/straup)
-
 	#################################################################
 
+	loadlib("dots_derive");
 	loadlib("dots_extras");
 
 	loadlib("geo_utils");
-	loadlib("geo_geohash");
-	loadlib("geo_geocode");
 
 	#################################################################
 
@@ -100,64 +96,17 @@
 		}
 
 		#
-		# Get the list of keys that the dotspotting internals
-		# use. At the moment this is mostly for sanity checking
-		# extras but at some point we may want to use it to
-		# see if there is already a corresponding key/id in the
-		# database and to issue an 'update' rather than an
-		# 'insert'. That would be a nice thing to do. But not
-		# today... (20101029/straup)
+		# Assign basic geo bits - keep track of stuff that has
+		# been derived so that we can flag them accordingly in
+		# the DotsExtras table.
 		#
 
-		$dotspotting_keys = dots_dotspotting_keys();
+		list($data, $derived) = dots_derive_location_data($data);
 
 		#
-		# basic geo bits
-		#
-
-		$collapse = 0;	# do not int-ify the coords
-		
-		# if we have an address field, and no latitude/longitude, do the geocode thing
-
-		# TODO: move all of this in to a separate function that
-		# can schedule offline/out-of-band tasks.
-		# (20101025/straup)
-
-		if (isset($data['address']) && (empty($data['latitude']) || empty($data['longitude']))){
-
-			$geocode_rsp = geo_geocode_string($data['address']);
-
-			# Like with geocoding being disabled, it's not clear
-			# that returning an error is necessarily the best thing
-			# to do. (20101023/straup)
-		
-			if (! $geocode_rsp['ok']){
-
-				return array(
-					'ok' => 0,
-					'error' => 'Geocoder failed',
-				);
-			}
-
-			$lat = $geocode_rsp['latitude'];
-			$lon = $geocode_rsp['longitude'];
-			$geocoded_by = $geocode_rsp['service_id'];
-
-			$map = geo_geocode_service_map();
-			$geocoder = $map[$geocoded_by];
-
-			foreach ($geocode_rsp['extras'] as $k => $v){
-				$data["{$geocoder}:{$k}"] = $v;
-			}
-		}
-
-		else {
-
-			$lat = $data['latitude'];
-			$lon = $data['longitude'];
-		}
-
 		# creation date for the point (different from import date)
+		# should this be stored/flagged as an extra?
+		#
 
 		$now = time();
 		$created = $now;
@@ -174,10 +123,11 @@
 			# if ! $created then reassign $now ?
 		}
 
+		#
 		# permissions
+		#
 
 		$perms_map = dots_permissions_map('string keys');
-
 		$perms = $perms_map['public'];
 
 		if (($data['perms'] == 'private') || ($more['mark_all_private'])){
@@ -195,25 +145,25 @@
 			'last_modified' => $now,
 			'perms' => $perms,
 		);
-		
-		# AddSlashes turns null into empty strings.
-		# We don't add latitude/longitude to the $dot array unless they're present
-		# because otherwise mysql will interpret the empty string as a zero.
 
-		if (isset($lat) && isset($lon)) {
+		#
+		# Things to denormalize back into the Dots table
+		# mostly for search. Don't assign empty strings for
+		# lat/lon because MySQL will store them as 0.0 rather
+		# than NULLs
+		# 
 
-			$lat = geo_utils_prepare_coordinate($lat, $collapse);
-			$lon = geo_utils_prepare_coordinate($lon, $collapse);
+		$to_denormalize = array(
+			'latitude',
+			'longitude',
+			'geohash',
+		);
 
-			$geohash = geo_geohash_encode($lat, $lon);
+		foreach ($to_denormalize as $key){
 
-			$dot['latitude'] = AddSlashes($lat);
-			$dot['longitude'] = AddSlashes($lon);
-			$dot['geohash'] = AddSlashes($geohash);
-		}
-
-		if (isset($geocoded_by)){
-			$dot['geocoded_by'] = AddSlashes($geocoded_by);
+			if ((isset($data[$key])) && (! empty($data[$key]))){
+				$dot[$key] = AddSlashes($data[$key]);
+			}
 		}
 
 		$rsp = db_insert_users($user['cluster_id'], 'Dots', $dot);
@@ -242,10 +192,6 @@
 				continue;
 			}
 
-			if (in_array($label, $dotspotting_keys)){
-				continue;
-			}
-
 			$value = $data[$label];
 			$value = filter_strict(trim($value));
 
@@ -253,7 +199,17 @@
 				continue;
 			}
 
-			$extra_rsp = dots_extras_create_extra($dot, $label, $data[$label]);
+			$extra = array(
+				'label' => $label,
+				'value' => $data[$label],
+			);
+
+			if (isset($derived[$label])){
+
+				$extra['derived_from'] = $derived[$label];
+			}
+
+			$extra_rsp = dots_extras_create_extra($dot, $extra);
 
 			if ($extra_rsp['ok']){
 				$has_extras ++;
@@ -262,12 +218,7 @@
 			# else, do something ?
 		}
 
-		#
-		# Has extras?
-		#
-
 		if ($has_extras){
-
 			dots_update_dot($dot, array('has_extras' => 1));
 		}
 
@@ -275,13 +226,15 @@
 		# Update the DotsLookup table
 		#
 
+		# TO DO: created date ?
+
 		$lookup = array(
 			'dot_id' => AddSlashes($id),
 			'bucket_id' => AddSlashes($bucket['id']),
 			'user_id' => AddSlashes($user['id']),
 			'imported' => AddSlashes($now),
 			'perms' => AddSlashes($perms),
-			'geohash' => AddSlashes($geohash),
+			'geohash' => AddSlashes($data['geohash']),
 		);
 
 		$lookup_rsp = db_insert('DotsLookup', $lookup);
@@ -478,7 +431,7 @@
 
 			if ($dot){
 				$more['load_bucket'] = 1;
-				dots_load_extras($dot, $viewer_id, $more);
+				dots_load_relations($dot, $viewer_id, $more);
 			}
 
 			$GLOBALS['dots_local_cache'][$dot_id] = $dot;
@@ -614,7 +567,7 @@
 
 		foreach ($rsp['rows'] as $dot){
 
-			dots_load_extras($dot, $viewer_id, $more);
+			dots_load_relations($dot, $viewer_id, $more);
 			$dots[] = $dot;
 		}
 
@@ -623,7 +576,7 @@
 
 	#################################################################
 
-	function dots_get_dots_for_user(&$user, $viewer_id=0, $args=array()) {
+	function dots_get_dots_for_user(&$user, $viewer_id=0, $more=array()) {
 
 		$enc_id = AddSlashes($user['id']);
 
@@ -644,16 +597,16 @@
 
 		$sql .= " ORDER BY {$order_by} {$order_sort}";
 
-		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
+		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);
 		$dots = array();
 
-		$more = array(
+		$even_more = array(
 			'load_bucket' => 1,
 		);
 
 		foreach ($rsp['rows'] as $dot){
 
-			dots_load_extras($dot, $viewer_id, $more);
+			dots_load_relations($dot, $viewer_id, $even_more);
 			$dots[] = $dot;
 		}
 
@@ -693,11 +646,11 @@
 
 	# Note the pass-by-ref
 
-	function dots_load_extras(&$dot, $viewer_id, $more=array()){
+	function dots_load_relations(&$dot, $viewer_id, $more=array()){
 
-		if ($dot['has_extras']){
+#		if ($dot['has_extras']){
 			$dot['extras'] = dots_extras_get_extras($dot, $more);
-		}
+#		}
 
 		if ($more['load_bucket']){
 	 		$dot['bucket'] = buckets_get_bucket($dot['bucket_id']);
@@ -781,7 +734,9 @@
 
 		$where .= ($has_where) ? "AND" : "WHERE";
 
-		$sql .= " {$where} perms=0 AND latitude IS NOT NULL AND longitude IS NOT NULL";
+		$sql .= " {$where} perms=0";
+
+		# $sql .= " AND latitude IS NOT NULL AND longitude IS NOT NULL";
 
 		return $sql;
 	}

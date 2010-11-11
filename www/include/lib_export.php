@@ -30,8 +30,22 @@
 			$row = $rows[$i];
 
 			foreach ($extras as $k){
+
+				# assume that the data in Dots trumps all
+
+				if ($row[$k]){
+					continue;
+				}
+
 				if (isset($row['extras'][$k])){
-					$row[$k] = implode(",", $row['extras'][$k]);
+
+					$values = array();
+
+					foreach ($row['extras'][$k] as $e){
+						$values[] = $e['value'];
+					}
+
+					$row[$k] = implode(",", $values);
 				}	
 			}
 
@@ -40,11 +54,6 @@
 			if (isset($row['perms'])){
 				$map = dots_permissions_map();
 				$row['perms'] = $map[$row['perms']];
-			}
-
-			if (isset($row['geocoded_by'])){
-				$map = geo_geocode_service_map();
-				$row['geocoded_by'] = ($row['geocoded_by']) ? $map[$row['geocoded_by']] : '';
 			}
 
 			$timestamps = array(

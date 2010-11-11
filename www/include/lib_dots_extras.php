@@ -11,21 +11,19 @@
 	# do we need to track who created the extra (probably
 	# but probably not for version one)
 
-	function dots_extras_create_extra(&$dot, $label, $value){
+	function dots_extras_create_extra(&$dot, $extra){
 
 		$user = users_get_by_id($dot['user_id']);
 
-		if (strpos($label, ":")){
-			list($ns, $label) = explode(":", $label, 2);
-		}
+		$extra['user_id'] = $user['id'];
+		$extra['dot_id'] = $dot['id'];
 
-		$extra = array(
-			'user_id' => $user['id'],
-			'dot_id' => $dot['id'],
-			'namespace' => $ns,
-			'label' => $label,
-			'value' => $value,
-		);
+		if (strpos($extra['label'], ":")){
+			list($ns, $label) = explode(":", $extra['label'], 2);
+
+			$extra['namespace'] = $ns;
+			$extra['label'] = $label;
+		}
 
 		$hash = array();
 
@@ -63,24 +61,46 @@
 
 		foreach ($rsp['rows'] as $row){
 
+			$label = $row['label'];
+
 			if ($ns = $row['namespace']){
-				$row['label'] = implode(":", array(
-					$row['namespace'],
-					$row['label']
-				));
+				$label = implode(":", array($ns, $label));
 			}
 
-			$label = $row['label'];
+			# if (isset($dot[$label])){
+			#	continue;
+			# }
 
 			if (! is_array($extras[$label])){
 				$extras[$label] = array();
 			}
 
-			$extras[$label][] = $row['value'];
+			$extras[$label][] = $row;
 		}
 
 		return $extras;
 	}
 
 	#################################################################
+
+	#
+	# This is just a dumb utility function and
+	# is called from inc_dots_list.php
+	#
+
+	function dots_extras_keys_for_listview($dot){
+
+		$keys = array();
+
+		foreach ($dot['extras'] as $key => $ignore){
+			if (! isset($dot[$key])){
+				$keys[] = $key;
+			}
+		}
+
+		return $keys;
+	}
+
+	#################################################################
+
 ?>

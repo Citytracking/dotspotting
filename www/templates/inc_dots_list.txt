@@ -12,7 +12,6 @@
 			{if $is_own}
 			<th>Imported</th>
 			<th>Permissions</th>
-			{* <th>Geocoded By</th> *}
 			{/if}
 			<th>Extras</th>
 		</tr>
@@ -42,9 +41,8 @@
 			{if $is_own}
 				<td>{$dot.imported|date_format:"%Y-%m-%d %H:%M"|escape}</td>
 				<td>{$permissions_map.$perms|escape}</td>
-				{* <td>{if $geocoded_by}{$geocoder_map.$geocoded_by|escape}{else}&#8212;{/if}</td> *}
 			{/if}
-				<td>{if $dot.extras|@count}{$dot.extras|@array_keys|@join:", "|escape}{else}&#8212;{/if}</td>
+				<td>{if $dot.extras|@count}{$dot|@dots_extras_keys_for_listview|@join:", "|escape}{else}&#8212;{/if}</td>
 			</tr>
 		{/foreach}
 	</tbody>

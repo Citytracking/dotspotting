@@ -168,38 +168,42 @@ A dot by {$cfg.user.username|escape}
 	{/if}
 
 	{foreach from=$dot.extras item="stuff" key="label"}
+	{if !$dot.$label}
 	<tr>
 		<th>{$label|escape}</th>
 		<td id="extras_{$label|escape}">
 		{* this shouldn't be inlined here *}
 		{if $label=='flickr:id' and $cfg.enable_feature_magicwords.flickr.id}
 			<script type="text/javascript">
-			var photo_id={$stuff.0|escape};
+			var photo_id={$stuff.0.value|escape};
 			{literal}
 			setTimeout(function(){
 				display_flickr_photo(photo_id);
 			}, 2500);
 			</script>
 			{/literal}		
-			{$stuff.0|escape}
+			{$stuff.0.value|escape}
 
 		{elseif $label=='yahoo:woeid' and $cfg.enable_feature_magicwords.yahoo.woeid}
 
 			<script type="text/javascript">
-			var woe_id={$stuff.0|escape};
+			var woe_id={$stuff.0.value|escape};
 			{literal}
 			setTimeout(function(){
 				display_woeid(woe_id);
 			}, 2500);
 			</script>
 			{/literal}		
-			{$stuff.0|escape}
+			{$stuff.0.value|escape}
 
 		{else}
-			{$stuff|@join:", "|escape}</td>
+			{foreach from=$stuff item="row"}
+			{$row.value|escape}<br />
+			{/foreach}
 		{/if}
 		</td>
 	</tr>
+	{/if}
 	{/foreach}
 
 	{if $is_own}
