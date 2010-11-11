@@ -1,6 +1,39 @@
 // This is probably (hopefully?) just a temporary place-holder for
 // shared/common functions (20101101/straup) 
 
+function utils_tile_provider(){
+
+    var template = 'http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png';
+    var hosts = [ 'a.', 'b.', 'c.' ];
+
+    var uri = new info.aaronland.URI();
+    
+    var t = (uri.query.contains('template')) ? uri.query.get('template') : null;
+    var h = (uri.query.contains('hosts')) ? uri.query.get('hosts') : null;
+
+    // currently only TileStache-style cache tile
+    // URLs are supported (20101111/straup)
+
+    var s = (uri.query.contains('static')) ? 1 : 0;
+
+    // seriously, do some proper validation here...
+
+    if ((t) && (t.indexOf('http') === 0)){
+
+	    template = t;
+
+	    hosts = ((h) && (h.indexOf('{S}') != -1)) ? h : null;
+    }
+
+    var rsp = {
+	'template' : template,
+	'hosts' : hosts,
+	'static' : s,
+    };	
+
+    return rsp;
+}
+
 function utils_polymap(map_id, more){
 
 	var po = org.polymaps;
@@ -13,6 +46,7 @@ function utils_polymap(map_id, more){
 	map.container(svg);
 
 	if ((! more) || (! more['static'])){
+
 		var wheel = po.wheel();
 		wheel.smooth(false);
 		map.add(wheel);
@@ -23,12 +57,19 @@ function utils_polymap(map_id, more){
 		var dblclick = po.dblclick();	
 		map.add(dblclick);
 
-		var hash = po.hash();
-		map.add(hash);
+		// add hash control here? anecdotally it seems
+		// to be more hassle/confusing than not...
+		// (2010111/straup)
+
 	}
 
-	var url = po.url("http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png");
-	url.hosts(["a.", "b.", "c.", ""]);
+	var tp = utils_tile_provider();
+
+	var url = (tp['static']) ? tilestache(tp['template']) : po.url(tp['template']);
+
+	if (tp['hosts']){
+		url.hosts(tp['hosts']);
+	}
 
 	var tileset = po.image();
 	tileset.url(url);
@@ -40,9 +81,17 @@ function utils_polymap(map_id, more){
 function utils_modestmap(map_id, more){
 
 	var mm = com.modestmaps;
-	
-	var template = 'http://a.tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png';
-	var provider = new mm.TemplatedMapProvider(template);
+	var tp = utils_tile_provider();
+
+	var provider = null;
+
+	if (tp['static']){
+	    provider = new mm.TileStacheStaticMapProvider(tp['template'], tp['hosts']);
+	}
+
+	else {
+	    provider = new mm.TemplatedMapProvider(tp['template'], tp['hosts']);
+	}
 
 	var dims = undefined;
 	var handlers = undefined;
