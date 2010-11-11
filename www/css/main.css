@@ -95,6 +95,18 @@ a {
     color: white;
 }
 
+#discoball {
+	padding:5px;
+	background-color:#000;
+	color:#fff;
+	text-align:center;
+	margin-bottom:10px;
+}
+
+#discoball a {
+	color: white;
+}
+
 h1 {
 	margin-top: 0;
 }
