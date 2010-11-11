@@ -78,6 +78,10 @@
 	#
 	# You MAY want to change these
 	#
+
+	# $GLOBALS['cfg']['disable_site'] = 0;			# this does pretty much what it sounds likeo
+	# $GLOBALS['cfg']['show_header_message'] = 0;		# this displays the contents of inc_header_message.txt
+								# at the top of every page
 	
 	# $GLOBALS['cfg']['auth_cookie_name'] = 'a';
 	# $GLOBALS['cfg']['auth_cookie_secure'] = 0;		# see also: http://github.com/blog/737-sidejack-prevention
