@@ -37,7 +37,7 @@
 
 <p class="tx1">The minimum list of fields you need to define to import a CSV file are:</p>
 
-<ul class="csv_field">
+<ul class="csv_fields">
 	<li>latitude</li>
 	<li>longitude</li>
 </ul>
