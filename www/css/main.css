@@ -228,6 +228,7 @@ pre {
 }
 
 .csv_fields li {
+	font-size: 14px;
 	line-height: 25px;
 	margin-bottom: 10px;
 }
@@ -239,4 +240,11 @@ pre {
 
 .logo {
 	border: none;
+}
+
+.tx1 {
+	font-size: 14px;
+	line-height: 150%;
+	margin-top: 0px;
+	margin-bottom: 12px;
 }
