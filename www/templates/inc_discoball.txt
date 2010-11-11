@@ -1,3 +1,3 @@
-<div class="discoball" style="padding:5px;background-color:#ddd; text-align:center;margin-bottom:10px;">
+<div id="discoball">
 HEY LOOK! THIS IS THE SUPER ALPHA-BETA-DISCO-BALL VERSION ( <a href="/about">tell me more</a> )
 </div>
