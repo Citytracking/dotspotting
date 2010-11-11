@@ -1,4 +1,18 @@
 {capture assign="page_title"}
+{if $is_own}
+	{if $dot.extras.title}
+A dot titled "{$dot.extras.title.0.value|escape}", by you!
+	{else}
+A dot by you!
+	{/if}
+{else}
+	{if $dot.extras.title}
+A dot titled "{$dot.extras.title.0.value|escape}", by {$owner.username|escape}!
+	{else}
+A dot by {$cfg.user.username|escape}
+	{/if}
+{/if}
+{/capture}
 {capture assign="extra_head"}
 {if $cfg.enable_feature_magicwords.flickr.id}
 	{* waiting on flickr to add support for photo.gne?id=999 support to the oembed endpoint *}
@@ -107,22 +121,6 @@
 	</script>
 {/if}
 
-{/capture}
-
-
-{if $is_own}
-	{if $dot.extras.title}
-A dot titled "{$dot.extras.title.0|escape}", by you!
-	{else}
-A dot by you!
-	{/if}
-{else}
-	{if $dot.extras.title}
-A dot titled "{$dot.extras.title.0|escape}", by {$owner.username|escape}!
-	{else}
-A dot by {$cfg.user.username|escape}
-	{/if}
-{/if}
 {/capture}
 {include file="inc_head.txt"}
 

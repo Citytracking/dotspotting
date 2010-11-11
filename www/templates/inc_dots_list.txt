@@ -42,7 +42,7 @@
 				<td>{$dot.imported|date_format:"%Y-%m-%d %H:%M"|escape}</td>
 				<td>{$permissions_map.$perms|escape}</td>
 			{/if}
-				<td>{if $dot.extras|@count}{$dot|@dots_extras_keys_for_listview|@join:", "|escape}{else}&#8212;{/if}</td>
+				<td>{if $dot.extras_listview}{$dot.extras_listview|escape}{else}&#8212;{/if}</td>
 			</tr>
 		{/foreach}
 	</tbody>

@@ -176,7 +176,7 @@
 		# Add any "extras"
 		#
 
-		$has_extras = 0;
+		$dot['extras'] = array();
 
 		foreach (array_keys($data) as $label){
 
@@ -212,14 +212,40 @@
 			$extra_rsp = dots_extras_create_extra($dot, $extra);
 
 			if ($extra_rsp['ok']){
-				$has_extras ++;
+
+				$label = $extra_rsp['extra']['label'];
+
+				if (! is_array($dot['extras'][$label])){
+					$dot['extras'][$label] = array();
+				}
+
+				$dot['extras'][$label][] = $extra_rsp['extra'];
 			}
 
 			# else, do something ?
 		}
 
-		if ($has_extras){
-			dots_update_dot($dot, array('has_extras' => 1));
+		#
+		# Denormalize the list of (not standard) extras
+		# keys for display on bucket/dot list views
+		#
+
+		if (count($dot['extras'])){
+
+			$keys = dots_extras_keys_for_listview($dot);
+
+			if (count($keys)){
+
+				$listview = implode(", ", $keys);
+
+				$listview_rsp = dots_update_dot($dot, array(
+					'extras_listview' => AddSlashes($listview),
+				));
+
+				if ($listview_rsp['ok']){
+					$dot['extras_listview'] = $listview;
+				}
+			}
 		}
 
 		#
@@ -403,38 +429,43 @@
 
 	function dots_get_dot($dot_id, $viewer_id=0, $more=array()){
 
+		# Can has cache! Note this is just the raw stuff
+		# from the Dots table and that 'relations' get loaded
+		# below.
+
 		if (isset($GLOBALS['dots_local_cache'][$dot_id])){
-			return $GLOBALS['dots_local_cache'][$sot_id];
+			$dot = $GLOBALS['dots_local_cache'][$sot_id];
 		}
 
-		$lookup = dots_lookup_dot($dot_id);
+		else {
+			$lookup = dots_lookup_dot($dot_id);
 
-		if ((! $lookup) || ($lookup['deleted'])){
-			return;
-		}
-
-		$user = users_get_by_id($lookup['user_id']);
-
-		$enc_id = AddSlashes($dot_id);
-		$enc_user = AddSlashes($user['id']);
-
-		$sql = "SELECT * FROM Dots WHERE id='{$enc_id}'";
-
-		if ($viewer_id !== $user['id']){
-			# $sql = _dots_where_public_sql($sql);
-		}
-
-		$rsp = db_fetch_users($user['cluster_id'], $sql);
-		$dot = db_single($rsp);
-
-		if ($rsp['ok']){
-
-			if ($dot){
-				$more['load_bucket'] = 1;
-				dots_load_relations($dot, $viewer_id, $more);
+			if ((! $lookup) || ($lookup['deleted'])){
+				return;
 			}
 
-			$GLOBALS['dots_local_cache'][$dot_id] = $dot;
+			$user = users_get_by_id($lookup['user_id']);
+
+			$enc_id = AddSlashes($dot_id);
+			$enc_user = AddSlashes($user['id']);
+
+			$sql = "SELECT * FROM Dots WHERE id='{$enc_id}'";
+
+			if ($viewer_id !== $user['id']){
+				$sql = _dots_where_public_sql($sql);
+			}
+
+			$rsp = db_fetch_users($user['cluster_id'], $sql);
+			$dot = db_single($rsp);
+
+			if ($rsp['ok']){
+				$GLOBALS['dots_local_cache'][$dot_id] = $dot;
+			}
+		}
+
+		if ($dot){
+			$more['load_bucket'] = 1;
+			dots_load_relations($dot, $viewer_id, $more);
 		}
 
 		return $dot;
@@ -648,9 +679,9 @@
 
 	function dots_load_relations(&$dot, $viewer_id, $more=array()){
 
-#		if ($dot['has_extras']){
+		if ($more['load_extras']){
 			$dot['extras'] = dots_extras_get_extras($dot, $more);
-#		}
+		}
 
 		if ($more['load_bucket']){
 	 		$dot['bucket'] = buckets_get_bucket($dot['bucket_id']);
