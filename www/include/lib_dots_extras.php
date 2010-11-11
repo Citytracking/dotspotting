@@ -13,8 +13,20 @@
 
 	function dots_extras_create_extra(&$dot, $extra){
 
+		$id = dbtickets_create(64);
+
+		if (! $id){
+			return array(
+				'ok' => 0,
+				'error' => 'Ticket server failed',
+			);
+		}
+
+		#
+
 		$user = users_get_by_id($dot['user_id']);
 
+		$extra['id'] = $id;
 		$extra['user_id'] = $user['id'];
 		$extra['dot_id'] = $dot['id'];
 
@@ -79,6 +91,26 @@
 		}
 
 		return $extras;
+	}
+
+	#################################################################
+
+	function dots_extras_update_extra(&$extra, $update){
+
+		$user = users_get_by_id($dot['user_id']);
+
+		$enc_id = AddSlashes($extra['id']);
+		$where = "id='{$enc_id}'";
+
+		$hash = array();
+
+		foreach ($update as $key => $value){
+			$hash[$key] = AddSlashes($value);
+		}
+
+		$rsp = db_update_users($user['cluster_id'], 'DotsExtras', $hash, $where);
+
+		return $rsp;
 	}
 
 	#################################################################
