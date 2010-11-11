@@ -8,6 +8,21 @@
 
 	#################################################################
 
+	#
+	# These are columns to explicitly remove from the export data.
+	# It's not an awesome way to do things on the other hand I'm
+	# not sure there's anything like a "right way" to deal with this
+	# outside of replacing the bad smell (below) with a boat-load
+	# of painful twisty code. I will gladly be proven wrong...
+	# (20101111/straup)
+	# 
+
+	$GLOBALS['export_ignore_columns'] = array(
+		'extras_listview',
+	);
+
+	#################################################################
+
 	# It is assumed that you've validated $format by now
 
 	function export_dots(&$rows, $format, $fh=null){
@@ -29,6 +44,15 @@
 
 			$row = $rows[$i];
 
+			# See above.
+
+			foreach ($GLOBALS['export_ignore_columns'] as $key){
+
+				if (isset($row[$key])){
+					unset($row[$key]);
+				}
+			}
+
 			foreach ($extras as $k){
 
 				# assume that the data in Dots trumps all
@@ -43,6 +67,12 @@
 
 					foreach ($row['extras'][$k] as $e){
 						$values[] = $e['value'];
+
+						# derived from stuff - this should be considered
+						# incomplete (20101111/straup)
+
+						$d = "{$k}:derived_from";
+						$row[$d] = $e['derived_from'];
 					}
 
 					$row[$k] = implode(",", $values);

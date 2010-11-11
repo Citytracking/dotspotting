@@ -38,12 +38,16 @@
 
 	$GLOBALS['cfg']['enable_feature_magicwords'] = array(
 
+		'flickr' => array(
+			'id' => 1,
+		),
+
 		'geonames' => array(
 			'id' => 0,
 		),
 
-		'flickr' => array(
-			'id' => 1,
+		'walkingpapers' => array(
+			'scanid' => 1,
 		),
 
 		'yahoo' => array(
