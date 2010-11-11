@@ -236,3 +236,7 @@ pre {
     text-decoration: underline;
     font-weight: 600;
 }
+
+.logo {
+	border: none;
+}
