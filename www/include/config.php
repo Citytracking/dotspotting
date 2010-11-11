@@ -16,6 +16,8 @@
 	$GLOBALS['cfg']['dotspotting_version'] = '0.0.0';	# see also: http://semver.org/
 	$GLOBALS['cfg']['flamework_skip_init_config'] = 1;
 
+	$GLOBALS['cfg']['site_disabled'] = 0;
+
 	#
 	# Feature flags
 	# See also: http://code.flickr.com/blog/2009/12/02/flipping-out/
