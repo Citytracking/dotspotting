@@ -17,32 +17,32 @@
 
 <h4>What kinds of files can I upload to Dotspotting?</h4>
 
-<p>At the moment <span class="important">only comma separated values (CSV) files are supported</span>. Once we finish working out a few more of the basic requirements for the site to work we add importers for a variety of other formats including spreadsheets, KML and GPX and GeoJSON files and whatever else people think is useful.</p>
+<p class="tx1">At the moment <span class="important">only comma separated values (CSV) files are supported</span>. Once we finish working out a few more of the basic requirements for the site to work we add importers for a variety of other formats including spreadsheets, KML and GPX and GeoJSON files and whatever else people think is useful.</p>
 
 <h4>Can I make my information private?</h4>
 
-<p>The short answer is: Yes. The long answer is: Yes, but maybe no.</p>
+<p class="tx1">The short answer is: Yes. The long answer is: Yes, but maybe no.</p>
 
-<p><span class="important">By default all dots are imported in to Dotspotting as publicly viewable.</span> At upload time you can either specify that all, or some, of the dots be made private however there is currently <strong>no way to change privacy settings on a dot</strong> once it's been uploaded. <em>This is not a feature. We'll be adding this functionality shortly.</em></p>
+<p class="tx1"><span class="important">By default all dots are imported in to Dotspotting as publicly viewable.</span> At upload time you can either specify that all, or some, of the dots be made private however there is currently <strong>no way to change privacy settings on a dot</strong> once it's been uploaded. <em>This is not a feature. We'll be adding this functionality shortly.</em></p>
 
 <a name="buckets"></a>
 
 <h4>What are <q>Buckets</q>?</h4>
 
-<p>Buckets are the context in which one or more dots were imported in to Dotspotting. At the moment, the only kind of context is the file uploaded to Dotspotting that one or more dots are listed in. They are separate and distinct from other kinds of collections, say a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
+<p class="tx1">Buckets are the context in which one or more dots were imported in to Dotspotting. At the moment, the only kind of context is the file uploaded to Dotspotting that one or more dots are listed in. They are separate and distinct from other kinds of collections, say a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
 
 <a name="csv"></a>
 
 <h4>CSV files</h4>
 
-<p>The minimum list of fields you need to define to import a CSV file are:</p>
+<p class="tx1">The minimum list of fields you need to define to import a CSV file are:</p>
 
 <ul class="csv_field">
 	<li>latitude</li>
 	<li>longitude</li>
 </ul>
 
-<p>There are a handful of other fields that are treated as <q>special</q> by Dotspotting. They are:</p>
+<p class="tx1">There are a handful of other fields that are treated as <q>special</q> by Dotspotting. They are:</p>
 
 <ul class="csv_fields">
 	<li>perms &#8212; <span style="font-style:italic;">by default all dots are imported as public however if the value of this field is <code>private</code> then the dot will only be visible by the person who uploaded it.</li>
@@ -50,7 +50,7 @@
 	<li>address &#8212; <span style="font-style:italic;">if a row is <span class="important">missing values for <code>latitude</code> and <code>longitude</code> but it has an <code>address</code> field</span> defined then, so long as geocoding is enabled, Dotspotting will try to fill in coordinate information by asking one or more geocoding services to resolve the address.</span></li>
 </ul>
 
-<p>For example:</p>
+<p class="tx1">For example:</p>
 
 <pre>
 latitude,longitude,perms,created,title,address
@@ -61,26 +61,26 @@ latitude,longitude,perms,created,title,address
 ,,private,October·23·2010,geocoded,"2017·Mission·San·Francisc·CA"
 </pre>
 
-<p>Any other fields are stored as <q>extras</q> in Dotspotting.</p>
+<p class="tx1">Any other fields are stored as <q>extras</q> in Dotspotting.</p>
 
-<p><span class="important">You order of the column headers is up to you.</span> In this example <code>latitude</code> is the first column but it could just as easily be the last. You only need to make sure that the values are in the same position as their corresponding header.</p>
+<p class="tx1"><span class="important">You order of the column headers is up to you.</span> In this example <code>latitude</code> is the first column but it could just as easily be the last. You only need to make sure that the values are in the same position as their corresponding header.</p>
 
 <a name="magicwords"></a>
 
 <h4><q>Magic Words</q></h4>
 
-<p>Dotspotting has support for the idea of "magic words" which are user-defined non-standard properties assigned to a dot that are treated as foreign key lookups in to a third-party database or API.</p>
+<p class="tx1">Dotspotting has support for the idea of "magic words" which are user-defined non-standard properties assigned to a dot that are treated as foreign key lookups in to a third-party database or API.</p>
 
-<p>For example, if a dot has <code>flickr:id</code> key whose value is a valid Flickr photo ID then (and only if magic words support is <em>enabled</em>) Dotspotting will call the <a href="http://www.flickr.com/services/api">Flickr API</a> to ask for, and then display, that photo's thumbnail when the page for that dot is loaded.</p>
+<p class="tx1">For example, if a dot has <code>flickr:id</code> key whose value is a valid Flickr photo ID then (and only if magic words support is <em>enabled</em>) Dotspotting will call the <a href="http://www.flickr.com/services/api">Flickr API</a> to ask for, and then display, that photo's thumbnail when the page for that dot is loaded.</p>
 
-<p>At the moment, support is only available for <code>flickr:id</code> and <code>yahoo:woeid</code> (to lookup place names using the <a href="http://developer.yahoo.com/geo/geoplanet/">Yahoo! GeoPlanet</a> service) magic words. We hope to add similar functionality for <code><a href="http://www.geonames.org/">geonames:id</a></code> and other services shortly.</p>
+<p class="tx1">At the moment, support is only available for <code>flickr:id</code> and <code>yahoo:woeid</code> (to lookup place names using the <a href="http://developer.yahoo.com/geo/geoplanet/">Yahoo! GeoPlanet</a> service) magic words. We hope to add similar functionality for <code><a href="http://www.geonames.org/">geonames:id</a></code> and other services shortly.</p>
 
 <a name="source"></a>
 
 <h3>Source Code</h3>
 
-<p>Dotspotting is an open-source project licensed under the [LICENSE]</p>
+<p class="tx1">Dotspotting is an open-source project licensed under the [LICENSE]</p>
 
-<p>It is available for download on Github: <a href="https://github.com/citytracking/dotspotting">https://github.com/citytracking/dotspotting</a></p>
+<p class="tx1">It is available for download on Github: <a href="https://github.com/citytracking/dotspotting">https://github.com/citytracking/dotspotting</a></p>
 
 {include file="inc_foot.txt"}
