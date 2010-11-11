@@ -228,6 +228,7 @@ pre {
 }
 
 .csv_fields li {
+	font-size: 14px;
 	line-height: 25px;
 	margin-bottom: 10px;
 }
