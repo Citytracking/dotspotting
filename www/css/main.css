@@ -91,20 +91,20 @@ a {
     padding-left:5%;
 }
 
-#header_message p {
-    color: white;
-}
-
 #discoball {
 	padding:5px;
 	background-color:#000;
-	color:#fff;
+	color:#fff; 
 	text-align:center;
 	margin-bottom:10px;
 }
 
 #discoball a {
-	color: white;
+	padding:5px;
+	background-color:#000;
+	color:#fff; 
+	text-align:center;
+	margin-bottom:10px;
 }
 
 h1 {
