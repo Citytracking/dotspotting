@@ -236,3 +236,10 @@ pre {
     text-decoration: underline;
     font-weight: 600;
 }
+
+.tx1 {
+	font-size: 14px;
+	line-height: 150%;
+	margin-top: 0px;
+	margin-bottom: 12px;
+}
