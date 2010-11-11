@@ -26,8 +26,7 @@ CREATE TABLE `Dots` (
   `last_modified` int(10) unsigned NOT NULL,
   `imported` int(10) unsigned NOT NULL,
   `perms` tinyint(3) unsigned NOT NULL,
-  `geocoded_by` tinyint(3) unsigned NOT NULL,
-  `has_extras` tinyint(3) unsigned NOT NULL,
+  `extras_listview` TEXT NOT NULL,
   UNIQUE KEY `by_id` (`id`),
   KEY `by_user` (`user_id`),
   KEY `by_bucket` (`bucket_id`,`created`)
@@ -36,10 +35,12 @@ CREATE TABLE `Dots` (
 DROP TABLE IF EXISTS `DotsExtras`;
 
 CREATE TABLE `DotsExtras` (
+  `id` int(20) unsigned NOT NULL,
   `dot_id` bigint(20) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
-  `namespace` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `label` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `value` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `namespace` varchar(255) DEFAULT NULL,
+  `label` varchar(255) DEFAULT NULL,
+  `value` varchar(255) TEXT DEFAULT NULL,
+  `derived_from` tinyint(3) unsigned NOT NULL,
   UNIQUE KEY `by_extra` (`dot_id`,`namespace`,`label`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
