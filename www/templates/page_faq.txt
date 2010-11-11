@@ -9,7 +9,7 @@
 
 <h4>What does that even mean?</h4>
 
-<p>It means that <span class="important">this is a <em>very early</em> and <em>unfinished</em> preview release of Dotspotting</span>. It means that there are still lots of changes ahead of us. It means there are lots of features to implement and dream up. It means that we are committed to the idea of <a href="http://github.com/citytracking/dotspotting">releasing early</a> and working (and probably failing a little bit too) in public.</p>
+<p class="tx1">It means that <span class="important">this is a <em>very early</em> and <em>unfinished</em> preview release of Dotspotting</span>. It means that there are still lots of changes ahead of us. It means there are lots of features to implement and dream up. It means that we are committed to the idea of <a href="http://github.com/citytracking/dotspotting">releasing early</a> and working (and probably failing a little bit too) in public.</p>
 
 <a name="uploads"></a>
 
