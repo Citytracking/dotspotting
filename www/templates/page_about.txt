@@ -7,7 +7,7 @@
 <a href="http://www.flickr.com/photos/straup/5124826660/" title="1288311519955 by straup, on Flickr"><img src="http://farm5.static.flickr.com/4106/5124826660_8704761734_m.jpg" width="240" height="192" alt="1288311519955" style="border:none;"/></a>
 </div>
 
-<p>Dotspotting is the first project Stamen is releasing as part of Citytracking, a project funded by the Knight News Challenge. [1] We're making tools to help people gather data about cities and make that data more legible. Our hope is to do this in a way that's simple enough for regular people to get involved, but robust enough for real research to happen along the way.</p>
+<p class="tx1">Dotspotting is the first project Stamen is releasing as part of Citytracking, a project funded by the Knight News Challenge. [1] We're making tools to help people gather data about cities and make that data more legible. Our hope is to do this in a way that's simple enough for regular people to get involved, but robust enough for real research to happen along the way.</p>
 
 <p>There's currently a whole chain of elements involved in building digital civic infrastructure for the public, and these are represented by various Stamen projects and those of others. At the moment, the current hodgepodge of bits—including APIs [2] and official sources, scraped websites, sometimes-reusable data formats and datasets, visualizations, embeddable widgets etc.—is fractured, overly technical and obscure, held in the knowledge base of a relatively small number of people, and requires considerable expertise to harness. That is, unless you're willing to use generic tools like Google Maps. We want to change this. Visualizing city data shouldn't be this hard, or this generic.</p>
 
