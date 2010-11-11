@@ -86,9 +86,13 @@ a {
 #header_message{
     border-bottom:1px dotted #999;
     padding:10px;	
-    background-color:#ddd;
+    background-color:#000;
     text-align:left;
     padding-left:5%;
+}
+
+#header_message p {
+    color: white;
 }
 
 h1 {
