@@ -36,14 +36,20 @@ function _show_oam_data(req){
 	var width = data['width'];
 
 	var url = data['url'];
+
+	var bbox = data['bbox'];
+	bbox = [ bbox[1], bbox[0], bbox[3], bbox[2] ];
+
 	var license = data['license']['name'];
+	var license_url = data['license']['url'];
 
 	var html = 
 		map_id + 
 		'<div class="oam_map">' +
 		'Open Aerial Map ID ' + map_id + ' is a <a href="' + url + '" target="_oam">' + format + ' file</a> ' +
 		'(' + width + ' x ' + height + ')' +
-		' published under a <a href="">' + license + '</a> license';
+		' published under a <q><a href="' + license_url + '" target="_oam">' + license + '</a></q> license.' +
+		' Its area of coverage is ' + bbox.join(', ');
 		'</div>';
 
 	var el = document.getElementById("extras_oam:mapid");
