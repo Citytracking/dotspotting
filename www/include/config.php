@@ -47,7 +47,7 @@
 		),
 
 		'oam' => array(
-			'mapid' => 0,
+			'mapid' => 1,
 		),
 
 		'walkingpapers' => array(

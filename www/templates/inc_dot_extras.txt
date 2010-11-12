@@ -21,7 +21,7 @@
 			var map_id={$stuff.0.value|escape};
 			{literal}
 			setTimeout(function(){
-				display_oam_map(map_id);
+				show_oam_data(map_id);
 			}, 2500);
 			</script>
 			{/literal}		

@@ -1,14 +1,55 @@
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/oam.js"></script>
-	<script type="text/javascript">
-	{literal}
-	function display_oam_map(map_id){
-		var oam = new info.aaronland.oam({
-			'enable_logging': true
-		});
+<script type="text/javascript">
+{literal}
 
-		oam.fetch(map_id, function(rsp){ 
-			console.log(rsp);
-		});
-	}
-	{/literal}
-	</script>
+function show_oam_data(map_id){
+
+	var url = 'http://oam.osgeo.org/api/image/' + encodeURIComponent(map_id) + '/';
+
+	var req = new XMLHttpRequest();
+	req.open('GET', url, true);  
+
+	req.onreadystatechange = function (e){  
+
+		if (req.readyState == 4){  
+			if (req.status == 200){
+
+				try {
+					_show_oam_data(req);
+				}
+
+				catch (e){ }
+			}
+		}
+	};  
+
+	req.send(null);  
+}
+
+function _show_oam_data(req){
+
+	var data = JSON.parse(req.responseText);
+
+	var map_id = data['id'];
+
+	var format = data['file_format'];
+	var height = data['height'];
+	var width = data['width'];
+
+	var url = data['url'];
+	var license = data['license']['name'];
+
+	var html = 
+		map_id + 
+		'<div class="oam_map">' +
+		'Open Aerial Map ID ' + map_id + ' is a <a href="' + url + '" target="_oam">' + format + ' file</a> ' +
+		'(' + width + ' x ' + height + ')' +
+		' published under a <a href="">' + license + '</a> license';
+		'</div>';
+
+	var el = document.getElementById("extras_oam:mapid");
+	el.innerHTML = html;
+
+}
+
+{/literal}
+</script>
