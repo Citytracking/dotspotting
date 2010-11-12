@@ -24,6 +24,8 @@
 	#
 
 	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
+	$GLOBALS['cfg']['enable_feature_uploads_by_url'] = 1;
+
 	$GLOBALS['cfg']['enable_feature_api'] = 0;
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;

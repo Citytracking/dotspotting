@@ -1,0 +1,21 @@
+{assign var="page_title" value="Upload by URL"}
+{include file="inc_head.txt"}
+
+{if $import}
+
+{if $import['ok']}OK{else}NOT OK{/if}
+
+{else}
+
+{$url|escape}
+
+<form method="POST" action="{$cfg.abs_root_url}upload/url/">
+	{$crumb_key|crumb_input}
+	<input type="hidden" name="confirm" value="1" />
+	<input type="hidden" name="url" value="{$url|escape}" />
+	<input type="submit" value="UPLOAD" />
+</form>
+
+{/if}
+
+{include file="inc_foot.txt"}
