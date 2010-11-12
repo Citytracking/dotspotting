@@ -3,7 +3,7 @@
 
 function show_walkingpaper_scan(scan_id){
 
-	var url = '' + encodeURIComponent(scan_id) + '/';
+	var url = 'http://www.walking-papers.org/scan.php?type=json&id=' + encodeURIComponent(scan_id);
 
 	var req = new XMLHttpRequest();
 	req.open('GET', url, true);  
@@ -27,11 +27,35 @@ function show_walkingpaper_scan(scan_id){
 function _show_walkingpaper_scan(req){
 
 	var data = JSON.parse(req.responseText);
+	// console.log(data);
+
+	var scan_id = data['id'];
+
+	var permalink = 'http://www.walking-papers.org/scan.php?id=' + encodeURIComponent(scan_id);	
+
+	var scan_thumb = data['preview_url'];
+
+	// var print_thumb = data['print']['preview_url'];
+	// var qr_thumb = data['qrcode_url'];
+
+	var title = data['description'];
+	var created = data['created'];
+
+	var dt = new Date( parseInt(created) * 1000 );
 
 	var html = 
-		'';
-		map_id + 
+		scan_id + 
 		'<div class="walkingpaper_scan">' +
+		'<a href="' + permalink + '" target="_walkingpapers"><img src="' + scan_thumb + '" /></a>' + 
+		// '<img src="' + qr + '" height="128" width="128" />' + 
+		'Scan ID <strong>' + scan_id + '</strong> references a scan from <a href="' + permalink + '" target="_walkingpapers">Walking Papers</a>';
+
+	if (title){
+		html += ', titled <q><a href="' + permalink + '" target="_walkingpapers">' + title + '</a></q>';
+	}
+
+	html +=
+		', that was created ' + dt.toDateString() + '.' + 
 		'</div>';
 
 	var el = document.getElementById("extras_walkingpapers:scanid");

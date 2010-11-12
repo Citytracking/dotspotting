@@ -221,6 +221,13 @@ path {
     font-style:italic;
 }
 
+.walkingpaper_scan img {
+    border: 1px dotted #ccc;
+    padding: 2px;
+    margin-bottom:10px;
+    display:block;
+}
+
 .yahoo_woeid {
     margin-top: 10px;
     font-size:small;

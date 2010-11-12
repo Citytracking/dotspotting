@@ -33,7 +33,7 @@
 			var scan_id='{$stuff.0.value|escape}';
 			{literal}
 			setTimeout(function(){
-				display_walkingpapers_scan(scan_id);
+				show_walkingpaper_scan(scan_id);
 			}, 2500);
 			</script>
 			{/literal}		
