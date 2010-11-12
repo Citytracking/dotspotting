@@ -1,15 +1,42 @@
-	<script type="text/javascript" src="/javascript/oembed.js"></script>
-	<script type="text/javascript">
-	{literal}
-	function display_walkingpapers_scan(scan_id){
-		var oembed = new info.aaronland.oEmbed({
-			'service': 'http://www.walkingpapers.org/services/oembed/',
-			'enable_logging': true
-		});
+<script type="text/javascript">
+{literal}
 
-		oembed.fetch('http://www.walkingpapers.org/scan.gne?id=' + scan_id, {}, function(rsp){ 
-			console.log(rsp);
-		});
-	}
-	{/literal}
-	</script>
+function show_walkingpaper_scan(scan_id){
+
+	var url = '' + encodeURIComponent(scan_id) + '/';
+
+	var req = new XMLHttpRequest();
+	req.open('GET', url, true);  
+
+	req.onreadystatechange = function (e){  
+
+		if (req.readyState == 4){  
+			if (req.status == 200){
+				try {
+					_show_walkingpaper_scan(req);
+				}
+
+				catch (e){ }
+			}
+		}
+	};  
+
+	req.send(null);  
+}
+
+function _show_walkingpaper_scan(req){
+
+	var data = JSON.parse(req.responseText);
+
+	var html = 
+		'';
+		map_id + 
+		'<div class="walkingpaper_scan">' +
+		'</div>';
+
+	var el = document.getElementById("extras_walkingpapers:scanid");
+	el.innerHTML = html;
+}
+
+{/literal}
+</script>

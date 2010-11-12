@@ -12,7 +12,6 @@ function show_oam_data(map_id){
 
 		if (req.readyState == 4){  
 			if (req.status == 200){
-
 				try {
 					_show_oam_data(req);
 				}
