@@ -1,0 +1,14 @@
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/oam.js"></script>
+	<script type="text/javascript">
+	{literal}
+	function display_oam_map(map_id){
+		var oam = new info.aaronland.oam({
+			'enable_logging': true
+		});
+
+		oam.fetch(map_id, function(rsp){ 
+			console.log(rsp);
+		});
+	}
+	{/literal}
+	</script>

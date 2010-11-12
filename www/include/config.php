@@ -46,8 +46,12 @@
 			'id' => 0,
 		),
 
+		'oam' => array(
+			'mapid' => 0,
+		),
+
 		'walkingpapers' => array(
-			'scanid' => 1,
+			'scanid' => 0,
 		),
 
 		'yahoo' => array(

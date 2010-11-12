@@ -13,12 +13,16 @@ A dot by {$cfg.user.username|escape}
 	{/if}
 {/if}
 {/capture}
+{* open question: should this be inlined directly in inc_dot_extras? (20101111/straup) *}
 {capture assign="extra_head"}
-{if $cfg.enable_feature_magicwords.walkingpapers.scanid}
-	{include file="inc_dot_magicwords_walkingpapers_scanid.txt"}
-{/if}
 {if $cfg.enable_feature_magicwords.flickr.id}
 	{include file="inc_dot_magicwords_flickr_id.txt"}
+{/if}
+{if $cfg.enable_feature_magicwords.oam.mapid}
+	{include file="inc_dot_magicwords_oam_mapid.txt"}
+{/if}
+{if $cfg.enable_feature_magicwords.walkingpapers.scanid}
+	{include file="inc_dot_magicwords_walkingpapers_scanid.txt"}
 {/if}
 {if $cfg.enable_feature_magicwords.yahoo.woeid}
 	{include file="inc_dot_magicwords_yahoo_woeid.txt"}
@@ -67,56 +71,7 @@ A dot by {$cfg.user.username|escape}
 	</tr>
 	{/if}
 
-	{foreach from=$dot.extras item="stuff" key="label"}
-	{if !$dot.$label}
-	<tr>
-		<th>{$label|escape}</th>
-		<td id="extras_{$label|escape}">
-		{* this shouldn't be inlined here *}
-		{if $label=='flickr:id' and $cfg.enable_feature_magicwords.flickr.id}
-			<script type="text/javascript">
-			var photo_id={$stuff.0.value|escape};
-			{literal}
-			setTimeout(function(){
-				display_flickr_photo(photo_id);
-			}, 2500);
-			</script>
-			{/literal}		
-			{$stuff.0.value|escape}
-
-		{elseif $label=='yahoo:woeid' and $cfg.enable_feature_magicwords.yahoo.woeid}
-
-			<script type="text/javascript">
-			var woe_id={$stuff.0.value|escape};
-			{literal}
-			setTimeout(function(){
-				display_woeid(woe_id);
-			}, 2500);
-			</script>
-			{/literal}		
-			{$stuff.0.value|escape}
-
-		{elseif $label=='walkingpapers:scanid' and $cfg.enable_feature_magicwords.walkingpapers.scanid}
-
-			<script type="text/javascript">
-			var scan_id='{$stuff.0.value|escape}';
-			{literal}
-			setTimeout(function(){
-				display_walkingpapers_scan(scan_id);
-			}, 2500);
-			</script>
-			{/literal}		
-			{$stuff.0.value|escape}
-
-		{else}
-			{foreach from=$stuff item="row"}
-			{$row.value|escape}<br />
-			{/foreach}
-		{/if}
-		</td>
-	</tr>
-	{/if}
-	{/foreach}
+	{include file="inc_dot_extras.txt"}
 
 	{if $is_own}
 		{assign var="perms" value=$dot.perms}
