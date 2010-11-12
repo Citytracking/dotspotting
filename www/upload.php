@@ -26,26 +26,6 @@
 
 	if (($_FILES['upload']) && (crumb_check($crumb_key))){
 
-		if (! import_is_valid_mimetype($_FILES['upload'])){
-
-			$GLOBALS['error']['invalid_mimetype'] = 1;
-			$smarty->display("page_upload.txt");
-			exit();
-		}
-
-		# parse the file
-
-		$rsp = import_process_file($_FILES['upload']);
-
-		if (! $rsp['ok']){
-
-			$GLOBALS['error']['parse_fail'] = 1;
-			$smarty->display("page_upload.txt");
-			exit();
-		}
-
-		# store the data
-
 		$label = filter_strict(post_str('label'));
 		$private = (post_str('private')) ? 1 : 0;
 		
@@ -56,18 +36,7 @@
 			'mark_all_private' => $private,
 		);
 
-		$rsp = import_process_data($GLOBALS['cfg']['user'], $rsp['data'], $more);
-
-		if (! $rsp['ok']){
-
-			$GLOBALS['error']['process_fail'] = 1;
-
-			$smarty->assign_by_ref("upload_errors", $rsp['errors']);
-			$smarty->display("page_upload.txt");
-			exit();
-		}
-
-		# Happy happy!
+		$rsp = import_import_file($GLOBALS['cfg']['user'], $_FILES['upload'], $more);
 
 		$smarty->assign("upload_complete", 1);
 		$smarty->assign_by_ref("rsp", $rsp);
