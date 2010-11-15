@@ -246,10 +246,20 @@ pre {
 	border:1px solid #999;
 }
 
-.csv_fields li {
+.faq_csvfields li {
 	font-size: 14px;
 	line-height: 25px;
 	margin-bottom: 10px;
+}
+
+.faq_magicwords li {
+	font-size: 14px;
+	line-height: 25px;
+	margin-bottom: 10px;
+}
+
+li code {
+    font-weight: 700;
 }
 
 .important {

@@ -35,19 +35,23 @@
 
 <h4>CSV files</h4>
 
-<p class="tx1">The minimum list of fields you need to define to import a CSV file are:</p>
+<p class="tx1">The minimum list of columns you need to define to import a CSV file are:</p>
 
-<ul class="csv_fields">
-	<li>latitude</li>
-	<li>longitude</li>
+<ul class="faq_csvfields">
+	<li><code>latitude</code></li>
+	<li><code>longitude</code></li>
 </ul>
 
-<p class="tx1">There are a handful of other fields that are treated as <q>special</q> by Dotspotting. They are:</p>
+<p class="tx1">Just to be clear, what that means is that your CSV file needs to <em>define</em> those columns even if they are empty. That's because there are a handful of other fields that are treated as <q>special</q> by Dotspotting. They are:</p>
 
-<ul class="csv_fields">
-	<li>perms &#8212; <span style="font-style:italic;">by default all dots are imported as public however if the value of this field is <code>private</code> then the dot will only be visible by the person who uploaded it.</li>
-	<li>created &#8212; <span style="font-style:italic;">if present then Dotspotting will try to parse and assign this value as the creation date for the corresponding dot/row, otherwise the date the row was imported is assumed.</span></li>
-	<li>address &#8212; <span style="font-style:italic;">if a row is <span class="important">missing values for <code>latitude</code> and <code>longitude</code> but it has an <code>address</code> field</span> defined then, so long as geocoding is enabled, Dotspotting will try to fill in coordinate information by asking one or more geocoding services to resolve the address.</span></li>
+<ul class="faq_csvfields">
+
+	<li><code>address</code> &#8212; <span style="font-style:italic;">if a row is <span class="important">missing values for <code>latitude</code> and <code>longitude</code> but it has an <code>address</code> field</span> defined then, so long as geocoding is enabled, Dotspotting will try to fill in coordinate information by asking one or more geocoding services to resolve the address.</span></li>
+
+	<li><code>perms</code> &#8212; <span style="font-style:italic;">by default all dots are imported as public however if the value of this field is <code>private</code> then the dot will only be visible by the person who uploaded it.</li>
+
+	<li><code>created</code> &#8212; <span style="font-style:italic;">if present then Dotspotting will try to parse and assign this value as the creation date for the corresponding dot/row, otherwise the date the row was imported is assumed.</span></li>
+
 </ul>
 
 <p class="tx1">For example:</p>
@@ -63,7 +67,7 @@ latitude,longitude,perms,created,title,address
 
 <p class="tx1">Any other fields are stored as <q>extras</q> in Dotspotting.</p>
 
-<p class="tx1"><span class="important">You order of the column headers is up to you.</span> In this example <code>latitude</code> is the first column but it could just as easily be the last. You only need to make sure that the values are in the same position as their corresponding header.</p>
+<p class="tx1"><span class="important"><em>The order of the column headers is up to you.</em></span> In this example <code>latitude</code> is the first column but it could just as easily be the last. You only need to make sure that the values are in the same position as their corresponding header.</p>
 
 <a name="magicwords"></a>
 
@@ -73,14 +77,26 @@ latitude,longitude,perms,created,title,address
 
 <p class="tx1">For example, if a dot has <code>flickr:id</code> key whose value is a valid Flickr photo ID then (and only if magic words support is <em>enabled</em>) Dotspotting will call the <a href="http://www.flickr.com/services/api">Flickr API</a> to ask for, and then display, that photo's thumbnail when the page for that dot is loaded.</p>
 
-<p class="tx1">At the moment, support is only available for <code>flickr:id</code> and <code>yahoo:woeid</code> (to lookup place names using the <a href="http://developer.yahoo.com/geo/geoplanet/">Yahoo! GeoPlanet</a> service) magic words. We hope to add similar functionality for <code><a href="http://www.geonames.org/">geonames:id</a></code> and other services shortly.</p>
+<p class="tx1">At the moment, support is available for the following magic word keys:</p>
+
+<ul class="faq_magicwords">
+
+	<li><code>flickr:id</code> &#8212; to lookup photo information (including thumbnails) from <a href="http://www.flickr.com/">Flickr</a>.</li>
+
+	<li><code>yahoo:woeid</code> &#8212; to lookup place names using the <a href="http://developer.yahoo.com/geo/geoplanet/">Yahoo! GeoPlanet</a> service. <span style="font-style:italic;">We plan to add similar functionality for <code><a href="http://www.geonames.org/">geonames:id</a></code> and other location services shortly.</span></li>
+
+	<li><code>walkingpapers:scanid</code> &#8212; to lookup map information (including thumbnails) from <a href="http://www.walking-papers.org/">Walking Papers</a>.</li>
+
+</ul>
 
 <a name="source"></a>
 
 <h3>Source Code</h3>
 
-<p class="tx1">Dotspotting is an open-source project licensed under the [LICENSE]</p>
+<p></p>
 
-<p class="tx1">It is available for download on Github: <a href="https://github.com/citytracking/dotspotting">https://github.com/citytracking/dotspotting</a></p>
+<p class="tx1">Dotspotting is an open-source project licensed under the <a href="http://www.gnu.org/licenses/gpl.html" class="important">GNU Public License, version 3.0</a>.</p>
+
+<p class="tx1">It is available for download on Github: <a href="https://github.com/citytracking/dotspotting">https://github.com/citytracking/dotspotting</a>.</p>
 
 {include file="inc_foot.txt"}
