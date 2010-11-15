@@ -27,9 +27,13 @@ function show_walkingpaper_scan(scan_id){
 function _show_walkingpaper_scan(req){
 
 	var data = JSON.parse(req.responseText);
-	// console.log(data);
-
 	var scan_id = data['id'];
+
+	// make sure we actually get something sane back from walking papers
+
+	if (! scan_id){
+		return;
+	}
 
 	var permalink = 'http://www.walking-papers.org/scan.php?id=' + encodeURIComponent(scan_id);	
 
