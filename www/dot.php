@@ -15,7 +15,11 @@
 		error_404();
 	}
 
-	$dot = dots_get_dot($dot_id, $GLOBALS['cfg']['user']['id']);
+	$more = array(
+		'load_extras' => 1
+	);
+
+	$dot = dots_get_dot($dot_id, $GLOBALS['cfg']['user']['id'], $more);
 
 	if (! $dot){
 		error_404();

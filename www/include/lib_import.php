@@ -11,6 +11,89 @@
 
 	#################################################################
 
+	function import_import_file(&$user, &$file, $more=array()){
+
+		if (! import_is_valid_mimetype($file)){
+
+			return array(
+				'error' => 'invalid_mimetype',
+				'ok' => 0,
+			);
+		}
+
+		#
+		# parse the file
+		#
+
+		$process_rsp = import_process_file($file);
+
+		if (! $process_rsp['ok']){
+
+			return $process_rsp;
+		}
+
+		#
+		# store the data
+		#
+
+		$import_more = array(
+			'return_dots' => $more['return_dots'],
+			'label' => $more['label'],
+			'mark_all_private' => $more['mark_all_private'],
+			'mime_type' => $file['type'],
+		);
+
+
+		$import_rsp = import_process_data($user, $process_rsp['data'], $import_more);
+
+		return $import_rsp;
+	}
+
+	#################################################################
+
+	function import_import_uri(&$user, $uri, $more=array()){
+
+		# QUESTION: do a HEAD here to check the content-type and file-size ?
+
+		# TO DO: pass range headers here (also patch flamework to allow headers)
+
+		$http_rsp = http_get($uri);
+		dumper($http_rsp);
+
+		if (! $http_rsp['ok']){
+			return $http_rsp;
+		}
+
+		#
+		# Write the file to disk
+		#
+	
+		$type = $http_rsp['headers']['content-type'];
+
+		$fname = tempnam("/tmp", $user['username']);
+		$fh = fopen($fname, "w");
+
+		if (! $fh){
+
+			return array(
+				'ok' => 0,
+				'error' => 'failed to open tmp filehandle',
+			);
+		}
+
+		fwrite($fh, $http_rsp['body']);
+		fclose($fh);
+
+		$upload = array(
+			'type' => $type,
+			'tmp_name' => $fname,
+		);
+
+		return import_import_file($user, $upload, $more);
+	}
+
+	#################################################################
+
 	function import_is_valid_mimetype(&$file){
 
 		# TODO: read bits of the file?

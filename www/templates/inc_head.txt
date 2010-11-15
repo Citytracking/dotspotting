@@ -8,8 +8,10 @@
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery-1.4.3.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/latlong.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/utils.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/uri.js"></script>
 {if $cfg.browser.capabilities.polymaps}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.min.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.tilestache.js"></script>
 {else}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.markers.js"></script>
@@ -31,7 +33,7 @@ var canhas_polymaps = {$cfg.browser.capabilities.polymaps|escape};
 
 	<div id="nav">
 		<div id="logo" style="float: left;">
-			<a href="/" style=""><img src="{$cfg.abs_root_url}images/dotspotting.png" height="68" width="324" alt="Dotspotting" /></a>
+			<a href="/" style=""><img src="{$cfg.abs_root_url}images/dotspotting.png" height="68" width="324" alt="Dotspotting" class="logo" /></a>
 		</div>
 		<div id="login" style="float: right;">
 {if $cfg.user.id}

@@ -16,12 +16,16 @@
 	$GLOBALS['cfg']['dotspotting_version'] = '0.0.0';	# see also: http://semver.org/
 	$GLOBALS['cfg']['flamework_skip_init_config'] = 1;
 
+	$GLOBALS['cfg']['site_disabled'] = 0;
+
 	#
 	# Feature flags
 	# See also: http://code.flickr.com/blog/2009/12/02/flipping-out/
 	#
 
 	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
+	$GLOBALS['cfg']['enable_feature_uploads_by_url'] = 1;
+
 	$GLOBALS['cfg']['enable_feature_api'] = 0;
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;
@@ -36,12 +40,20 @@
 
 	$GLOBALS['cfg']['enable_feature_magicwords'] = array(
 
+		'flickr' => array(
+			'id' => 1,
+		),
+
 		'geonames' => array(
 			'id' => 0,
 		),
 
-		'flickr' => array(
-			'id' => 1,
+		'oam' => array(
+			'mapid' => 1,
+		),
+
+		'walkingpapers' => array(
+			'scanid' => 0,
 		),
 
 		'yahoo' => array(
@@ -64,6 +76,17 @@
 	$GLOBALS['cfg']['db_enable_poormans_slaves'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_ticketing'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_federation'] = 1;
+
+	#
+	# See also: lib_dots_derive.php
+	#
+
+	$GLOBALS['cfg']['dots_derived_from'] = array(
+		0 => 'user',
+		1 => 'dotspotting',
+		2 => 'geocoded (yahoo)',
+		3 => 'geohash',
+	);
 
 	#
 	# API stuff

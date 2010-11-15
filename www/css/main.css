@@ -209,6 +209,25 @@ path {
     font-style:italic;
 }
 
+.oam_map {
+    margin-top: 10px;
+    font-size:small;
+    font-style:italic;
+}
+
+.walkingpaper_scan {
+    margin-top: 10px;
+    font-size:small;
+    font-style:italic;
+}
+
+.walkingpaper_scan img {
+    border: 1px dotted #ccc;
+    padding: 2px;
+    margin-bottom:10px;
+    display:block;
+}
+
 .yahoo_woeid {
     margin-top: 10px;
     font-size:small;
@@ -236,6 +255,10 @@ pre {
 .important {
     text-decoration: underline;
     font-weight: 600;
+}
+
+.logo {
+	border: none;
 }
 
 .tx1 {

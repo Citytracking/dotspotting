@@ -11,21 +11,31 @@
 	# do we need to track who created the extra (probably
 	# but probably not for version one)
 
-	function dots_extras_create_extra(&$dot, $label, $value){
+	function dots_extras_create_extra(&$dot, $extra){
+
+		$id = dbtickets_create(64);
+
+		if (! $id){
+			return array(
+				'ok' => 0,
+				'error' => 'Ticket server failed',
+			);
+		}
+
+		#
 
 		$user = users_get_by_id($dot['user_id']);
 
-		if (strpos($label, ":")){
-			list($ns, $label) = explode(":", $label, 2);
-		}
+		$extra['id'] = $id;
+		$extra['user_id'] = $user['id'];
+		$extra['dot_id'] = $dot['id'];
 
-		$extra = array(
-			'user_id' => $user['id'],
-			'dot_id' => $dot['id'],
-			'namespace' => $ns,
-			'label' => $label,
-			'value' => $value,
-		);
+		if (strpos($extra['label'], ":")){
+			list($ns, $label) = explode(":", $extra['label'], 2);
+
+			$extra['namespace'] = $ns;
+			$extra['label'] = $label;
+		}
 
 		$hash = array();
 
@@ -63,24 +73,66 @@
 
 		foreach ($rsp['rows'] as $row){
 
+			$label = $row['label'];
+
 			if ($ns = $row['namespace']){
-				$row['label'] = implode(":", array(
-					$row['namespace'],
-					$row['label']
-				));
+				$label = implode(":", array($ns, $label));
 			}
 
-			$label = $row['label'];
+			# if (isset($dot[$label])){
+			#	continue;
+			# }
 
 			if (! is_array($extras[$label])){
 				$extras[$label] = array();
 			}
 
-			$extras[$label][] = $row['value'];
+			$extras[$label][] = $row;
 		}
 
 		return $extras;
 	}
 
 	#################################################################
+
+	function dots_extras_update_extra(&$extra, $update){
+
+		$user = users_get_by_id($dot['user_id']);
+
+		$enc_id = AddSlashes($extra['id']);
+		$where = "id='{$enc_id}'";
+
+		$hash = array();
+
+		foreach ($update as $key => $value){
+			$hash[$key] = AddSlashes($value);
+		}
+
+		$rsp = db_update_users($user['cluster_id'], 'DotsExtras', $hash, $where);
+
+		return $rsp;
+	}
+
+	#################################################################
+
+	#
+	# This is just a dumb utility function and
+	# is called from inc_dots_list.php
+	#
+
+	function dots_extras_keys_for_listview($dot){
+
+		$keys = array();
+
+		foreach ($dot['extras'] as $key => $ignore){
+			if (! isset($dot[$key])){
+				$keys[] = $key;
+			}
+		}
+
+		return $keys;
+	}
+
+	#################################################################
+
 ?>

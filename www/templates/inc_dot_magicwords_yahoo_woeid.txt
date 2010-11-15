@@ -1,0 +1,36 @@
+	{* this is a patched version of christian's yqlgeo library *}
+	{* I need to send him a patch... (20101104/straup) *}
+	<script type="text/javascript" src="/javascript/yqlgeo.js"></script>
+	<script type="text/javascript">
+	{literal}
+	function display_woeid(woeid){
+
+		yqlgeo.get('woeid:' + woeid, function(rsp){
+
+			if ((rsp['error']) || (! rsp['place'])){
+				return;
+			}
+
+			var pl = rsp['place'];
+
+			var name = pl['name'];
+			var placetype = pl['placeTypeName']['content'];
+
+			var html = 
+				woeid +
+				'<div class="yahoo_woeid">' + 
+				'WOE ID ' + woeid + ' is named <q>' + name + '</q> and is a ' + placetype.toLowerCase();
+
+			if (placetype != 'Country'){
+				html += ' in ' + pl['country']['content'];
+			}
+
+			html += '</div>';
+
+			var el = document.getElementById("extras_yahoo:woeid");
+			el.innerHTML = html;
+
+		});
+	}
+	{/literal}
+	</script>

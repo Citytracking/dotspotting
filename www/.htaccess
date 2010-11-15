@@ -56,6 +56,7 @@ RewriteRule  ^account/delete/?$			/account_delete.php?%{QUERY_STRING} [P,L]
 # Uploads
 
 RewriteRule ^upload/?$				/upload.php?%{QUERY_STRING} [P,L]
+RewriteRule ^upload/url/?$			/upload_by_url.php?%{QUERY_STRING} [P,L]
 
 # User stuff
 
