@@ -53,7 +53,7 @@
 		),
 
 		'walkingpapers' => array(
-			'scanid' => 0,
+			'scanid' => 1,
 		),
 
 		'yahoo' => array(

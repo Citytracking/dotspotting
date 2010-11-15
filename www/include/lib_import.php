@@ -58,7 +58,6 @@
 		# TO DO: pass range headers here (also patch flamework to allow headers)
 
 		$http_rsp = http_get($uri);
-		dumper($http_rsp);
 
 		if (! $http_rsp['ok']){
 			return $http_rsp;
