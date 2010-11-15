@@ -1,0 +1,12 @@
+{assign var="page_title" value="Uploads are currently disabled"}
+{include file="inc_head.txt"}
+
+<p class="error">
+{if $error.uploads_by_url_disabled}
+Remote uploads are currently disabled.
+{else}
+Uploads are currently disabled.
+{/if}
+</p>
+
+{include file="inc_foot.txt"}

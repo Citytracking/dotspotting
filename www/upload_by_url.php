@@ -18,14 +18,14 @@
 	if (! $GLOBALS['cfg']['enable_feature_uploads']){
 
 		$GLOBALS['error']['uploads_disabled'] = 1;
-		$smarty->display("page_upload.txt");
+		$smarty->display("page_upload_disabled.txt");
 		exit();
 	}
 
 	if (! $GLOBALS['cfg']['enable_feature_uploads_by_url']){
 
 		$GLOBALS['error']['uploads_by_url_disabled'] = 1;
-		$smarty->display("page_upload.txt");
+		$smarty->display("page_upload_disabled.txt");
 		exit();
 	}
 
