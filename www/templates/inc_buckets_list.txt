@@ -16,15 +16,15 @@
 			<th>Label</th>
 			{if $is_own}
 			<th>Dots</th>
-			<th>Dots (public)</th>
+			<th nowrap>Public Dots</th>
 			{else}
 			<th>Dots</th>
 			{/if}
-			<th>Extent (SW, NE)</th>
+			<th nowrap>Extent (SW, NE)</th>
 			<th>Created</th>
 			{if $is_own}
-			<th>Last Modified</th>
-			<th>File Type</th>
+			<th nowrap>Last Modified</th>
+			<th nowrap>File Type</th>
 			{* a column for delete bucket links - this doesn't work because of the way crumbs are generated - this is not a feature *}
 			{/if}
 		</tr>
