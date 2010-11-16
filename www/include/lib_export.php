@@ -18,6 +18,7 @@
 	# 
 
 	$GLOBALS['export_ignore_columns'] = array(
+		'extras_json',
 		'extras_listview',
 	);
 
