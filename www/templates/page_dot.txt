@@ -52,6 +52,14 @@ A dot by {$cfg.user.username|escape}
 		<th>longitude</th>
 		<td>{$dot.longitude|escape}</td>
 	</tr>
+
+	{if $dot.altitude}
+	<tr>
+		<th>altitude</th>
+		<td>{$dot.altitude|escape}</td>
+	</tr>
+	{/if}
+
 	<tr>
 		<th>geohash</th>
 		<td><a href="/search.php?gh={$dot.geohash|escape}">{$dot.geohash|escape}</a></td>

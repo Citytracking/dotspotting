@@ -7,10 +7,10 @@
 			<th>Bucket</th>
 			<th>Latitude</th>
 			<th>Longitude</th>
+			<th>Altitude</th>
 			<th>Geohash</th>
 			<th>Created</th>
 			{if $is_own}
-			<th>Imported</th>
 			<th>Permissions</th>
 			{/if}
 			<th>Extras</th>
@@ -34,12 +34,12 @@
 			{else}
 				<td><a href="{$dot.bucket|@urls_url_for_bucket}">{if $dot.bucket.label}{$dot.bucket.label|escape}{else}<span class="untitled">untitled</span>{/if}</a></td>
 			{/if}
-				<td nowrap>{$dot.latitude|escape}</td>
-				<td nowrap>{$dot.longitude|escape}</td>
+				<td nowrap>{if $dot.latitude}{$dot.latitude|escape}{else}&#8212;{/if}</td>
+				<td nowrap>{if $dot.longitude}{$dot.longitude|escape}{else}&#8212;{/if}</td>
+				<td nowrap>{if $dot.altitude}{$dot.altitude|escape}{else}&#8212;{/if}</td>
 				<td><a href="/search.php?gh={$dot.geohash|escape}">{$dot.geohash|escape}</a></td>
 				<td>{if $dot.created}{$dot.created|date_format:"%Y-%m-%d %H:%M"|escape}{else}&#8212;{/if}</td>
 			{if $is_own}
-				<td>{$dot.imported|date_format:"%Y-%m-%d %H:%M"|escape}</td>
 				<td>{$permissions_map.$perms|escape}</td>
 			{/if}
 				<td>{if $dot.extras_listview}{$dot.extras_listview|escape}{else}&#8212;{/if}</td>

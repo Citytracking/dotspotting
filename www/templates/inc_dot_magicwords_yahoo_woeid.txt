@@ -13,16 +13,19 @@
 
 			var pl = rsp['place'];
 
-			var name = pl['name'];
-			var placetype = pl['placeTypeName']['content'];
+			var name = htmlspecialchars(pl['name']);
+			var placetype = htmlspecialchars(pl['placeTypeName']['content'].toLowerCase());
+
+			var url = 'http://woe.spum.org/id/' + encodeURIComponent(woeid);
 
 			var html = 
 				woeid +
 				'<div class="yahoo_woeid">' + 
-				'WOE ID ' + woeid + ' is named <q>' + name + '</q> and is a ' + placetype.toLowerCase();
+				'WOE ID <a href="' + url + '" target="_woeid">' + woeid + '</a> is named ' +
+				'<q><a href="' + url + '" target="_woeid">' + name + '</a></q> and is a ' + placetype;
 
 			if (placetype != 'Country'){
-				html += ' in ' + pl['country']['content'];
+				html += ' in ' + htmlspecialchars(pl['country']['content']);
 			}
 
 			html += '</div>';

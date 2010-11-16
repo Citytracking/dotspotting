@@ -156,6 +156,7 @@
 		$to_denormalize = array(
 			'latitude',
 			'longitude',
+			'altitude',
 			'geohash',
 		);
 
@@ -166,17 +167,11 @@
 			}
 		}
 
-		$rsp = db_insert_users($user['cluster_id'], 'Dots', $dot);
-
-		if (! $rsp['ok']){
-			return $rsp;
-		}
-
 		#
 		# Add any "extras"
 		#
 
-		$dot['extras'] = array();
+		$extras = array();
 
 		foreach (array_keys($data) as $label){
 
@@ -209,20 +204,11 @@
 				$extra['derived_from'] = $derived[$label];
 			}
 
-			$extra_rsp = dots_extras_create_extra($dot, $extra);
-
-			if ($extra_rsp['ok']){
-
-				$label = $extra_rsp['extra']['label'];
-
-				if (! is_array($dot['extras'][$label])){
-					$dot['extras'][$label] = array();
-				}
-
-				$dot['extras'][$label][] = $extra_rsp['extra'];
+			if (! is_array($extras[$label])){
+				$extras[$label] = array();
 			}
 
-			# else, do something ?
+			$extras[$label][] = $extra;
 		}
 
 		#
@@ -232,23 +218,21 @@
 		# from DotsExtras everytime we show a list of dots.
 		#
 
-		if (count($dot['extras'])){
-
-			$keys = dots_extras_keys_for_listview($dot);
-
-			if (count($keys)){
-
-				$listview = implode(", ", $keys);
-
-				$listview_rsp = dots_update_dot($dot, array(
-					'extras_listview' => AddSlashes($listview),
-				));
-
-				if ($listview_rsp['ok']){
-					$dot['extras_listview'] = $listview;
-				}
-			}
+		if (count($extras)){
+			$dot['extras_json'] = json_encode($extras);
 		}
+
+		#
+		# Look, we are creating the dot now
+		#
+
+		$rsp = db_insert_users($user['cluster_id'], 'Dots', $dot);
+
+		if (! $rsp['ok']){
+			return $rsp;
+		}
+
+		$dot['extras'] = $extras;
 
 		#
 		# Update the DotsLookup table
@@ -681,9 +665,15 @@
 
 	function dots_load_relations(&$dot, $viewer_id, $more=array()){
 
-		if ($more['load_extras']){
-			$dot['extras'] = dots_extras_get_extras($dot, $more);
+		$extras = ($dot['extras_json']) ? json_decode($dot['extras_json'], 1) : array();
+
+		$dot['extras'] = $extras;
+
+		if (count($dot['extras'])){
+			$dot['extras_listview'] = implode(", ", dots_extras_keys_for_listview($dot, $dot['extras']));
 		}
+
+		#
 
 		if ($more['load_bucket']){
 	 		$dot['bucket'] = buckets_get_bucket($dot['bucket_id']);

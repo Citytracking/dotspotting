@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/latlong.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/utils.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/uri.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/htmlspecialchars.js"></script>
 {if $cfg.browser.capabilities.polymaps}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.tilestache.js"></script>

@@ -57,7 +57,6 @@
 
 	$more = array(
 		'per_page' => $GLOBALS['cfg']['import_max_records'],
-		'load_extras' => 1,
 	);
 
 	$bucket['dots'] = dots_get_dots_for_bucket($bucket, $GLOBALS['cfg']['user']['id'], $more);

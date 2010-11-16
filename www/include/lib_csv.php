@@ -42,11 +42,12 @@
 			}
 
 			$data[] = $tmp;
-			$ln ++;
 
 			if (($more['max_records']) && ($ln >= $more['max_records'])){
 				break;
 			}
+
+			$ln ++;
 		}
 
 		fclose($fh);

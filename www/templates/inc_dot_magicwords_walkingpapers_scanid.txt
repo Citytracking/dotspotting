@@ -39,11 +39,8 @@ function _show_walkingpaper_scan(req){
 
 	var scan_thumb = data['preview_url'];
 
-	// var print_thumb = data['print']['preview_url'];
-	// var qr_thumb = data['qrcode_url'];
-
-	var title = data['description'];
-	var created = data['created'];
+	var title = htmlspecialchars(data['description']);
+	var created = htmlspecialchars(data['created']);
 
 	var dt = new Date( parseInt(created) * 1000 );
 
@@ -51,8 +48,8 @@ function _show_walkingpaper_scan(req){
 		scan_id + 
 		'<div class="walkingpaper_scan">' +
 		'<a href="' + permalink + '" target="_walkingpapers"><img src="' + scan_thumb + '" /></a>' + 
-		// '<img src="' + qr + '" height="128" width="128" />' + 
-		'Scan ID <strong>' + scan_id + '</strong> references a scan from <a href="' + permalink + '" target="_walkingpapers">Walking Papers</a>';
+		'Scan ID <strong>' + htmlspecialchars(scan_id) + '</strong> ' + 
+		'references a scan from <a href="' + permalink + '" target="_walkingpapers">Walking Papers</a>';
 
 	if (title){
 		html += ', titled <q><a href="' + permalink + '" target="_walkingpapers">' + title + '</a></q>';

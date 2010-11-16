@@ -120,11 +120,11 @@
 	# is called from inc_dots_list.php
 	#
 
-	function dots_extras_keys_for_listview($dot){
+	function dots_extras_keys_for_listview(&$dot, &$extras){
 
 		$keys = array();
 
-		foreach ($dot['extras'] as $key => $ignore){
+		foreach ($extras as $key => $ignore){
 			if (! isset($dot[$key])){
 				$keys[] = $key;
 			}
