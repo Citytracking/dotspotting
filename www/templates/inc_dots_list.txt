@@ -8,12 +8,12 @@
 			<th>Latitude</th>
 			<th>Longitude</th>
 			<th>Altitude</th>
-			<th>Geohash</th>
+			<th>Location</th>
+			<th>Type</th>
 			<th>Created</th>
 			{if $is_own}
 			<th>Permissions</th>
 			{/if}
-			<th>Extras</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -29,20 +29,23 @@
 				<a href="{$dot.user|@urls_url_for_user}">{if $dot.user.id == $cfg.user.id}You{else}{$dot.user.username|escape}{/if}</a>
 			{/if}
 				</td>
+
 			{if $bucket}
-				<td><a href="{$bucket|@urls_url_for_bucket}">{if $bucket.label}{$bucket.label|escape}{else}<span style="font-style:italic;">untitled</span>{/if}</a></td>
+				<td><a href="{$bucket|@urls_url_for_bucket}">{if $bucket.label}{$bucket.label|truncate:40:"..."|escape}{else}<span style="font-style:italic;">untitled</span>{/if}</a></td>
 			{else}
-				<td><a href="{$dot.bucket|@urls_url_for_bucket}">{if $dot.bucket.label}{$dot.bucket.label|escape}{else}<span class="untitled">untitled</span>{/if}</a></td>
+				<td><a href="{$dot.bucket|@urls_url_for_bucket}">{if $dot.bucket.label}{$dot.bucket.label|truncate:40:"..."|escape}{else}<span class="untitled">untitled</span>{/if}</a></td>
 			{/if}
+
 				<td nowrap>{if $dot.latitude}{$dot.latitude|escape}{else}&#8212;{/if}</td>
 				<td nowrap>{if $dot.longitude}{$dot.longitude|escape}{else}&#8212;{/if}</td>
 				<td nowrap>{if $dot.altitude}{$dot.altitude|escape}{else}&#8212;{/if}</td>
-				<td><a href="/search.php?gh={$dot.geohash|escape}">{$dot.geohash|escape}</a></td>
+				<td nowrap>{if $dot.location}{$dot.location|escape}{else}&#8212;{/if}</td>
+				<td nowrap>{if $dot.type}{$dot.type|escape}{else}&#8212;{/if}</td>
 				<td>{if $dot.created}{$dot.created|date_format:"%Y-%m-%d %H:%M"|escape}{else}&#8212;{/if}</td>
+
 			{if $is_own}
 				<td>{$permissions_map.$perms|escape}</td>
 			{/if}
-				<td>{if $dot.extras_listview}{$dot.extras_listview|escape}{else}&#8212;{/if}</td>
 			</tr>
 		{/foreach}
 	</tbody>
