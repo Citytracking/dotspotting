@@ -14,6 +14,7 @@
 			{if $is_own}
 			<th>Permissions</th>
 			{/if}
+			<th>Extras</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -46,6 +47,7 @@
 			{if $is_own}
 				<td>{$permissions_map.$perms|escape}</td>
 			{/if}
+				<td>{if $dot.extras_listview}{$dot.extras_listview|escape}{else}&#8212;{/if}</td>
 			</tr>
 		{/foreach}
 	</tbody>

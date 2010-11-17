@@ -43,10 +43,7 @@
 			'mime_type' => $file['type'],
 		);
 
-
-		$import_rsp = import_process_data($user, $process_rsp['data'], $import_more);
-
-		return $import_rsp;
+		return import_process_data($user, $process_rsp['data'], $import_more);
 	}
 
 	#################################################################
@@ -83,6 +80,11 @@
 		fwrite($fh, $http_rsp['body']);
 		fclose($fh);
 
+		#
+		# Okay, now hand off to the regular process
+		# file uploads functionality
+		#
+
 		$upload = array(
 			'type' => $type,
 			'tmp_name' => $fname,
@@ -95,7 +97,9 @@
 
 	function import_is_valid_mimetype(&$file){
 
+		#
 		# TODO: read bits of the file?
+		#
 
 		if (! isset($file['type'])){
 			return 0;
@@ -117,6 +121,10 @@
 
 	function import_process_file(&$file){
 
+		#
+		# Basic setup stuff
+		#
+
 		$rsp = array(
 			'ok' => 0,
 		); 
@@ -127,9 +135,47 @@
 			$more['max_records'] = $max;
 		}
 
-		if ($file['type'] === 'text/csv'){
-			$rsp = csv_parse_file($file['tmp_name'], $more);
+		#
+		# CAN HAZ FILE?
+		#
+
+		$fh = fopen($file['path'], 'r');
+
+		if (! $fh){
+
+			return array(
+				'ok' => 0,
+				'error' => 'failed to open file'
+			);
 		}
+
+		#
+		# Okay, now figure what we need to load and call. We
+		# do this by asking the import map for an extension
+		# corresponding to the file's mime-type (note: at some
+		# point we may need to make this a bit more fine-grained
+		# but today we don't) and then load lib_EXTENSION and
+		# call that library's 'parse_fh' function.
+		#
+
+		$map = formats_valid_import_map();
+
+		$type = $map[$file['type']];
+		$func = "{$type}_parse_fh";
+
+		#
+		# HEY LOOK! THIS PART IS IMPORTANT!! It is left to the
+		# format specific libraries to sanitize both field names
+		# and values (using lib_sanitize). This is *not* a 
+		# question of validating the data (checking lat/lon
+		# ranges etc.) but just making sure that the user isn't
+		# passing in pure crap. Take a look at the parse_fh function
+		# in lib_csv for an example of how/what to do.
+		#
+
+		loadlib($type);
+
+		$rsp = call_user_func_array($func, array($fh, $more));
 
 		# TO DO: check $GLOBALS['cfg'] to see whether we should
 		# store a permanent copy of $file['tmp_name'] somewhere
