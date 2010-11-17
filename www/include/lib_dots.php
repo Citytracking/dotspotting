@@ -8,6 +8,7 @@
 
 	loadlib("dots_derive");
 	loadlib("dots_extras");
+	loadlib("dots_lookup");
 
 	loadlib("geo_utils");
 
@@ -109,18 +110,25 @@
 		#
 
 		$now = time();
-		$created = $now;
 
-		if ($alt_created = $data['created']){
+		if ($created = $data['created']){
 
+			#
 			# Because intval("2010-09-23T00:18:55Z") returns '2010' ...
 			# Because is_numeric(20101029154025.000) returns true ...
 			# Because strtotime(time()) returns false ...
 			# BECAUSE GOD HATES YOU ...
+			#
 
-			$created = (preg_match("/^\d+$/", $alt_created)) ? $alt_created : strtotime($alt_created);
+			$created = (preg_match("/^\d+$/", $created)) ? $created : strtotime($created);
 
 			# if ! $created then reassign $now ?
+
+			# Now convert everything back in to a datetime string
+
+			if ($created){
+				$created = gmdate('Y-m-d H:i:s', $created);
+			}
 		}
 
 		#
@@ -134,16 +142,20 @@
 			$perms = $perms_map['private'];
 		}
 
-		# go!
+		$type = ($data['type']) ? $data['type'] : '';
+
+		#
+		# Go! Or rather... start!
+		#
 
 		$dot = array(
 			'id' => $id,
-			'user_id' => AddSlashes($user['id']),
-			'bucket_id' => AddSlashes($bucket['id']),
+			'user_id' => $user['id'],
+			'bucket_id' => $bucket['id'],
 			'imported' => $now,
-			'created' => $created,
 			'last_modified' => $now,
 			'perms' => $perms,
+			'created' => $created,
 		);
 
 		#
@@ -158,12 +170,14 @@
 			'longitude',
 			'altitude',
 			'geohash',
+			'location',
+			'type',
 		);
 
 		foreach ($to_denormalize as $key){
 
 			if ((isset($data[$key])) && (! empty($data[$key]))){
-				$dot[$key] = AddSlashes($data[$key]);
+				$dot[$key] = $data[$key];
 			}
 		}
 
@@ -238,21 +252,22 @@
 		# Update the DotsLookup table
 		#
 
-		# TO DO: created date ?
-
 		$lookup = array(
-			'dot_id' => AddSlashes($id),
-			'bucket_id' => AddSlashes($bucket['id']),
-			'user_id' => AddSlashes($user['id']),
-			'imported' => AddSlashes($now),
-			'perms' => AddSlashes($perms),
-			'geohash' => AddSlashes($data['geohash']),
+			'dot_id' => $id,
+			'bucket_id' => $bucket['id'],
+			'user_id' => $user['id'],
+			'imported' => $now,
+			'created' => $dot['created'],
+			'perms' => $perms,
+			'geohash' => $dot['geohash'],
+			'type' => $dot['type'],
 		);
 
-		$lookup_rsp = db_insert('DotsLookup', $lookup);
+		$lookup_rsp = dots_lookup_create($lookup);
 
 		if (! $lookup_rsp['ok']){
-			# What? 
+
+			# What then...
 		}
 
 		#
@@ -663,9 +678,15 @@
 
 	# Note the pass-by-ref
 
-	function dots_load_relations(&$dot, $viewer_id, $more=array()){
+	function dots_load_relations(&$dot, $viewer_id=0, $more=array()){
 
-		$extras = ($dot['extras_json']) ? json_decode($dot['extras_json'], 1) : array();
+		if ($dot['extras_json']){
+			$extras = json_decode($dot['extras_json'], 1);
+		}
+
+		if (! $extras){
+			$extras = array();
+		}
 
 		$dot['extras'] = $extras;
 

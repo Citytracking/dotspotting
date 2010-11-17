@@ -38,6 +38,7 @@
 			$tmp = array();
 
 			for ($i = 0; $i < count($field_names); $i++){
+
 				$tmp[ $field_names[$i] ] = $row[$i];
 			}
 
