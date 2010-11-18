@@ -109,7 +109,7 @@ App Specific Stuff
 	$GLOBALS['cfg']['pagination_per_page'] = 25;
 	$GLOBALS['cfg']['pagination_spill'] = 5;
 
-Database Stuff
+Database Stuff (simple)
 --
 
 	#
@@ -134,6 +134,9 @@ Database Stuff
 	$GLOBALS['cfg']['db_enable_poormans_slaves'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_ticketing'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_federation'] = 1;
+
+Database Stuff (fancy)
+--
 
 	#
 	# Here's an example of a 'properly' federated system. This just means any set of MySQL databases segregated
