@@ -178,17 +178,57 @@ Database Stuff
 	# $GLOBALS['cfg']['db_users']['pass'] = '******';
 
 	# Finally set up your ticket servers. In this example, there's only one ticketing server but you may have two in
-	# case the first one crashes or become unreliable. NOTE: THERE'S STILL SOME HOOP-JUMPING TO DO (WRITE ABOUT) TO
-	# CONFIGURE THE AUTO INCREMENT SETTINGS FOR THE TICKETING SERVERS (20101118/straup)
+	# case the first one crashes or become unreliable. In either case, you'll need to make sure that your database(s)
+	# are set up to increment by a value of 2 per the following:
+	#
+	# http://code.flickr.com/blog/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/
 	#
 	# $GLOBALS['cfg']['db_tickets']['name'] = 'tickets';
 	#
 	# $GLOBALS['cfg']['db_tickets']['host'] = array(
 	# 	'dotspotting-dbtickets-1.null-island.rds.amazonaws.com',
+	# 	'dotspotting-dbtickets-2.null-island.rds.amazonaws.com',
 	# );
 	#
 	# $GLOBALS['cfg']['db_tickets']['user'] = 'example';
 	# $GLOBALS['cfg']['db_tickets']['pass'] = '******';
+
+	#
+	# Since we're using RDS as an example set up, here's what I needed to do (around November 2010) to get things
+	# working. Unfortunately, the web-based tools for dealing with MySQL configs in RDS still aren't awesome so you'll
+	# need to get your hands dirty with what Amazon calls "DB parameter groups" which is essentially a canned
+	# abstraction layer for MySQL configs. Creating them is easy using the web tools, so the following assumes that
+	# you've created two groups: 'dotspotting-dbtickets-even' and 'dotspotting-dbtickets-odd'
+	#
+	# This is where it gets fun. The first thing you'll need to do is download and configure the RDS command line
+	# tool: http://aws.amazon.com/developertools/Amazon-RDS/2928
+	#
+	# Next run the following commands (note that you'll need to adjust example.cfg to use your own AWS configs):
+	#
+	# $>./bin/rds rds-modify-db-parameter-group dotspotting-dbtickets-even \
+	#    --parameters "name=auto_increment_increment, value=2, method=immediate"
+	#    --parameters "name=auto_increment_offset, value=2, method=immediate"
+	#    --aws-credential-file=./example.cfg
+	#
+	# $>./bin/rds rds-modify-db-parameter-group dotspotting-dbtickets-odd \
+	#    --parameters "name=auto_increment_increment, value=2, method=immediate"
+	#    --parameters "name=auto_increment_offset, value=1, method=immediate"
+	#    --aws-credential-file=./example.cfg
+	#
+	# This is how you adjust RDS instances to use the settings defined in the article about ticketing. It's not
+	# awesome, I know. Now you need to assign those database configs to your two (or one) ticketing servers. Let's
+	# assume that they're called 'dotspotting-tickets-1' and 'dotspotting-tickets-2'. Again, adjust for taste you'd
+	# run the following:
+	#
+	# $> ./bin/rds rds-modify-db-instance dotspotting-tickets-1 -g dotspotting-dbtickets-odd \
+	#     --aws-credential-file=./aws.cfg
+	#
+	# $> ./bin/rds rds-modify-db-instance dotspotting-tickets-2 -g dotspotting-dbtickets-even \
+	#     --aws-credential-file=./aws.cfg
+	#
+	# Finally, you'll need to reboot those two databases. You can do this from the command line or just the web
+	# interface, whichever seems less painful at this point...
+	#
 
 Templates
 --
