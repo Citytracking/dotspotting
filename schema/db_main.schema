@@ -35,7 +35,9 @@ CREATE TABLE `DotsLookup` (
   `imported` int(10) unsigned NOT NULL,
   `deleted` int(10) unsigned NOT NULL,
   `bucket_id` bigint(20) unsigned NOT NULL,
-  `geohash` varchar(12) CHARACTER SET latin1 DEFAULT NULL,
+  `geohash` varchar(12) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `created` DATETIME,
   KEY `by_user` (`dot_id`),
   KEY `by_geohash` (`geohash`,`perms`,`deleted`),
   KEY `by_bucket` (`bucket_id`,`perms`,`deleted`)

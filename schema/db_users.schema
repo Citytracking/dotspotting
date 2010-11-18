@@ -1,3 +1,4 @@
+
 DROP TABLE IF EXISTS `Buckets`;
 
 CREATE TABLE `Buckets` (
@@ -5,9 +6,9 @@ CREATE TABLE `Buckets` (
   `created` int(10) unsigned NOT NULL,
   `last_modified` int(10) unsigned NOT NULL,
   `count_dots` int(11) unsigned NOT NULL,
-  `count_dots_public` int(11) unsigned NOT NULL,
   `id` int(20) unsigned NOT NULL,
   `label` varchar(255) DEFAULT NULL,
+  `count_dots_public` int(11) unsigned NOT NULL,
   `mime_type` varchar(24) DEFAULT NULL,
   UNIQUE KEY `by_id` (`id`),
   KEY `by_user` (`user_id`,`count_dots_public`)
@@ -16,32 +17,34 @@ CREATE TABLE `Buckets` (
 DROP TABLE IF EXISTS `Dots`;
 
 CREATE TABLE `Dots` (
-  `id` int(20) unsigned NOT NULL,
   `bucket_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `latitude` decimal(9,6) DEFAULT NULL,
   `longitude` decimal(9,6) DEFAULT NULL,
-  `altitude` decimal(10,6) DEFAULT NULL,
-  `geohash` char(12) DEFAULT NULL,
-  `created` int(10) unsigned NOT NULL,
+  `geohash` char(12) CHARACTER SET latin1 DEFAULT NULL,
   `last_modified` int(10) unsigned NOT NULL,
   `imported` int(10) unsigned NOT NULL,
   `perms` tinyint(3) unsigned NOT NULL,
-  `extras_json` TEXT NOT NULL,
+  `id` int(20) unsigned NOT NULL,
+  `altitude` decimal(10,6) DEFAULT NULL,
+  `extras_json` text NOT NULL,
+  `created` datetime DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
   UNIQUE KEY `by_id` (`id`),
   KEY `by_user` (`user_id`),
-  KEY `by_bucket` (`bucket_id`,`created`)
+  KEY `by_bucket` (`bucket_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `DotsExtras`;
 
 CREATE TABLE `DotsExtras` (
-  `id` int(20) unsigned NOT NULL,
   `dot_id` bigint(20) unsigned NOT NULL,
+  `label` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `namespace` varchar(255) DEFAULT NULL,
-  `label` varchar(255) DEFAULT NULL,
-  `value` varchar(255) TEXT DEFAULT NULL,
   `derived_from` tinyint(3) unsigned NOT NULL,
-  UNIQUE KEY `by_extra` (`dot_id`,`namespace`,`label`,`value`)
+  `value` text,
+  `id` bigint(20) unsigned NOT NULL,
+  UNIQUE KEY `by_extra` (`dot_id`,`namespace`,`label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
