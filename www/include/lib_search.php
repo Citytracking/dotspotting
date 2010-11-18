@@ -4,51 +4,263 @@
 	# $Id$
 	#
 
+	# HEY LOOK! I STILL HAVEN'T ADDED PROPER (DB) INDEXES FOR ANY
+	# OF THIS STUFF YET (20101119/straup)
+
 	#################################################################
 
-	#
-	# This is *not* the generic search function. That's going to
-	# take a little more planning. This is a quick and dirty shim
-	# to allow searching across geohashes. Also, this assumes you're
-	# passing pagination information by hand in $args.
-	# (20101026/straup)
-	#
+	function search_dots(&$args, $viewer_id=0){
 
-	function search_dots_for_geohash($geohash, $viewer_id=0, $args=array()){
+		if (intval($args['u'])){
 
-		$enc_hash = AddSlashes($geohash);
-
-		# No point in doing a LIKE operation when it's a FQ geohash
-
-		if (strlen($enc_hash) == 12){
-			$sql = "SELECT * FROM DotsLookup WHERE geohash='{$enc_hash}' AND perms=0 AND deleted=0";
+			return search_dots_for_user($args, $viewer_id);
 		}
 
-		else {
-			$sql = "SELECT * FROM DotsLookup WHERE geohash LIKE '{$enc_hash}%' AND perms=0 AND deleted=0";
-		}
+		return search_dots_for_all($args, $viewer_id);
+	}
 
-		$rsp = db_fetch_paginated($sql, $args);
+	#################################################################
 
-		if ($rsp['ok']){
+	function search_dots_for_user(&$args, $viewer_id=0){
 
-			$dots = array();
+		$where_parts = _search_generate_where_parts($args);
+		$where = array();
 
-			$more = array(
-				'load_user' => 1,
+		if (! $where_parts['user']){
+
+			return array(
+				'ok' => 0,
+				'error' => 'Not valid user',
 			);
+		}
 
-			foreach ($rsp['rows'] as $row){
+		foreach (array('user', 'geo', 'time', 'type', 'location') as $what){
 
-				$dots[] = dots_get_dot($row['dot_id'], $viewer_id, $more);
+			if (isset($where_parts[$what])){
+				$where = array_merge($where, $where_parts[$what]);
 			}
 		}
 
-		else {
-			# Logging?
+		# Always with the public
+
+		if ($viewer_id != $where_parts['user_row']['id']){
+			$where[] = "`perms`=0";
 		}
 
-		return $dots;
+		#
+		# Go!
+		#
+
+		$cluster = $where_parts['user_row']['cluster_id'];
+
+		$sql = "SELECT * FROM Dots WHERE " . implode(" AND ", $where);
+
+		$more = array(
+			'page' => $args['page'],
+		);
+
+		$rsp = db_fetch_paginated_users($cluster, $sql, $more);
+
+		if (! $rsp['ok']){
+			return $rsp;
+		}
+
+		$dots = array();
+
+		$dot_more = array(
+			'load_user' => 1,
+		);
+
+		foreach ($rsp['rows'] as $row){
+
+			dots_load_relations($row, $viewer_id, $dot_more);
+			$dots[] = $row;
+		}
+
+		return array(
+			'ok' => 1,
+			'dots' => &$dots,
+		);
+	}
+
+	#################################################################
+
+	function search_dots_for_all(&$args, $viewer_id=0){
+
+		$where_parts = _search_generate_where_parts($args);
+
+		$where = array();
+
+		# (latlon|geohash), dt, perms
+		# (latlon|geohash), dt, type, perms
+		# (latlon|geohash), perms
+		# type, perms
+		# dt, perms
+
+		foreach (array('geo', 'time', 'type') as $what){
+
+			if (isset($where_parts[$what])){
+				$where = array_merge($where, $where_parts[$what]);
+			}
+		}
+
+		if (! count($where)){
+
+			return array(
+				'ok' => 0,
+				'error' => 'No valid search criteria',
+			);
+		}
+
+		# Always with the public
+
+		$where[] = "`perms`=0";
+
+		#
+		# Go!
+		#
+
+		$sql = "SELECT * FROM DotsLookup WHERE " . implode(" AND ", $where);
+
+		$more = array(
+			'page' => $args['page'],
+		);
+
+		$rsp = db_fetch_paginated($sql, $more);
+
+		if (! $rsp['ok']){
+			return $rsp;
+		}
+
+		$dots = array();
+
+		$dot_more = array(
+			'load_user' => 1,
+		);
+
+		foreach ($rsp['rows'] as $row){
+
+			$dots[] = dots_get_dot($row['dot_id'], $viewer_id, $dot_more);
+		}
+
+		return array(
+			'ok' => 1,
+			'dots' => &$dots,
+		);
+	}
+
+	#################################################################
+
+	function _search_generate_where_parts(&$args){
+
+		$where_parts = array();
+
+		#
+		# Geo
+		#
+
+		if ($args['bbox']){
+
+			list($swlat, $swlon, $nelat, $nelon) = explode(",", $args['bbox'], 4);
+
+			$where_parts['geo'] = array(
+				"`latitude` >= " . AddSlashes($swlat),
+				"`longitude` >= " . AddSlashes($swlon),
+				"`latitude` <= " . AddSlashes($nelat),
+				"`longitude` <= " . AddSlashes($nelon),
+			);
+		}
+
+		else if ($args['gh']){
+
+			$geohash = substr($args['gh'], 0, 5);
+
+			$where_parts['geo'] = array(
+				"`geohash` LIKE '" . AddSlashes($geohash) . "%'",
+			);
+		}
+
+		else {}
+
+		#
+		# type (or poorman's "what")
+		#
+
+		if ($args['type']){
+
+			$where_parts['type'] = array(
+				"`type`='" . AddSlashes($args['type']) . "'",
+			);
+		}
+
+		#
+		# location (or poorman's "where")
+		#
+
+		if ($args['location']){
+
+			$where_parts['location'] = array(
+				"`location`='" . AddSlashes($args['location']) . "'",
+			);
+		}
+
+		#
+		# Time
+		#
+
+		if ($args['dt']){
+
+			$parts = explode("/", $args['dt'], 2);
+
+			$date_start = strtotime($parts[0]);
+			$date_end = null;
+
+			if (count($parts) == 2){
+				$date_end = strtotime($parts[1]);
+			}
+
+			# ensure ($parts[0] && $date_start) and ($parts[1] && $end_date) here ?
+
+			$time_parts = array();
+
+			if ($date_start){
+				$time_parts[] = "UNIX_TIMESTAMP(created) >= " . AddSlashes($date_start);
+			}
+
+			if ($date_end){
+				$time_parts[] = "UNIX_TIMESTAMP(created) <= " . AddSlashes($date_end);
+			}
+
+			if (count($time_parts)){
+				$where_parts['time'] = $time_parts;
+			}
+		}
+
+		#
+		# User stuff 
+		#
+
+		if ($args['u']){
+
+			$user = users_get_by_id($args['u']);
+
+			if (($user) && (! $user['deleted'])){
+
+				$where_parts['user'] = array(
+					"`user_id`=" . AddSlashes($user['id']),
+				);
+
+				$where_parts['user_row'] = $user;
+			}
+		}
+
+		return $where_parts;
+	}
+
+	#################################################################
+
+	function _search_generate_result_set(&$rsp, $viewer_id){
+
 	}
 
 	#################################################################

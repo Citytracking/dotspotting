@@ -16,30 +16,31 @@
 
 	#################################################################
 
-	if ($geohash = get_str('gh')){
+	# First, do some basic args munging
 
-		$page = get_int32('page');
+	$args = array();
 
-		$args = array(
-			'page' => $page,
-		);
+	foreach ($_GET as $key => $value){
+		$args[ $key ] = sanitize($value, 'str');
+	}
 
-		if (strlen($geohash) >= 8){
-			$geohash = substr($geohash, 0, -5);
-		}
+	#################################################################
 
-		$dots = search_dots_for_geohash($geohash, $GLOBALS['cfg']['user']['id'], $args);
-		$smarty->assign_by_ref('dots', $dots);
+	if (count($args)){
 
-		if (count($dots) == 0){
+		$rsp = search_dots($args, $GLOBALS['cfg']['user']['id']);
+
+		if ((! $rsp['ok']) || (! count($rsp['dots']))){
 			$GLOBALS['smarty']->display('page_search_noresults.txt');
 			exit();
 		}
 
+		$smarty->assign_by_ref('dots', $rsp['dots']);
 		$page_as_queryarg = 0;
 
-		if (get_str("nearby")){
-			$pagination_url = "/nearby/" . urlencode($geohash);
+		if (($args['nearby']) && ($args['gh'])){
+			$enc_gh = urlencode($args['gh']);
+			$pagination_url = "/nearby/{$enc_gh}/";
 		}
 
 		else {
@@ -54,14 +55,6 @@
 		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();
 	}
-
-	#
-	# There is no search to speak of yet and the geohash stuff
-	# relies on a magic rewrite rule so don't even pretend.
-	# (20101026/straup)
-	# 
-
-	error_404();
 
 	$GLOBALS['smarty']->display('page_search.txt');
 	exit();
