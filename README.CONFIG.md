@@ -190,11 +190,14 @@ Database Stuff (fancy)
 	#
 	# http://code.flickr.com/blog/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/
 	#
-	# $GLOBALS['cfg']['db_tickets']['name'] = 'tickets';
+	# $GLOBALS['cfg']['db_tickets']['name'] = array(
+	#	1 => 'tickets',
+	#	1 => 'tickets',
+	# );
 	#
 	# $GLOBALS['cfg']['db_tickets']['host'] = array(
-	# 	'dotspotting-dbtickets-1.null-island.rds.amazonaws.com',
-	# 	'dotspotting-dbtickets-2.null-island.rds.amazonaws.com',
+	# 	1 => 'dotspotting-dbtickets-1.null-island.rds.amazonaws.com',
+	# 	2 => 'dotspotting-dbtickets-2.null-island.rds.amazonaws.com',
 	# );
 	#
 	# $GLOBALS['cfg']['db_tickets']['user'] = 'example';
