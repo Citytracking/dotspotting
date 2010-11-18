@@ -1,5 +1,9 @@
-Configuring Dotspotting
+Configuring Dotspotting (the long version)
 --
+
+This is meant to be the long and thorough version outlining all (most?) of the various knobs and levers in Dotspotting. This document is meant to be a reference and you do *not* need worry about most of things discussed here. Unless you're curious that way.
+
+If you just want to dive in you should start with the [example Dotspotting config](https://github.com/Citytracking/dotspotting/blob/master/config/dotspotting.php.example) which contains only those configs you MUST, SHOULD and MAY want to change in order to get up and running.
 
 *For the sake of brevity this document only covers config variables that are specific to Dotspotting. I will make a similar document for Flamework soon. I promise.*
 
