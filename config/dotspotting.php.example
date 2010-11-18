@@ -45,6 +45,7 @@
 	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
 
 	$GLOBALS['cfg']['db_main']['host'] = '';
+	$GLOBALS['cfg']['db_main']['name'] = '';	# as in the name of your database
 	$GLOBALS['cfg']['db_main']['user'] = '';
 	$GLOBALS['cfg']['db_main']['pass'] = '';
 
@@ -59,7 +60,7 @@
 	#
 	# No, really - change these. These are the secrets used to encrypt the various pieces of sensitive
 	# data on your website. These aren't secrets that you'll ever need to type in to a form so you
-	# should make them long and twisty and hard to guess (a good rule of thumb is 13 or more characters
+	# should make them long and twisty and hard to guess (a good rule of thumb is 13-24 characters
 	# of gibberish).
 	#
 
@@ -68,7 +69,7 @@
 	$GLOBALS['cfg']['crypto_crumb_secret'] = '';
 
 	#
-	# You SHOULD change these
+	# You SHOULD change these (note: this assumes you're running a mail server)
 	#
 
 	# $GLOBALS['cfg']['email_from_name']	= 'example name';
@@ -80,10 +81,12 @@
 	#
 
 	# $GLOBALS['cfg']['disable_site'] = 0;			# this does pretty much what it sounds likeo
+
 	# $GLOBALS['cfg']['show_header_message'] = 0;		# this displays the contents of inc_header_message.txt
 								# at the top of every page
 	
 	# $GLOBALS['cfg']['auth_cookie_name'] = 'a';
+
 	# $GLOBALS['cfg']['auth_cookie_secure'] = 0;		# see also: http://github.com/blog/737-sidejack-prevention
 	# $GLOBALS['cfg']['auth_cookie_httponly'] = 0;
 
