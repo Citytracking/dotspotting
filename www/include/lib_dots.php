@@ -42,11 +42,23 @@
 
 		$errors = array();
 
+		$timings = array(
+			0 => 0
+		);
+
+		$start_all = microtime_ms() / 1000;
+
 		foreach ($dots as $dot){
 
 			$received ++;
 
+			$start = microtime_ms() / 1000;
+
 			$rsp = dots_create_dot($user, $bucket, $dot, $more);
+
+			$end = microtime_ms() / 1000;
+
+			$timings[ $received ] = $end - $start;
 
 			if (! $rsp['ok']){
 				$rsp['record'] = $received;
@@ -58,11 +70,15 @@
 			$processed ++;
 		}
 
+		$end_all = microtime_ms() / 1000;
+		$timings[0] = $end_all - $start_all;
+
 		$ok = ($processed) ? 1 : 0;
 
 		return array(
 			'ok' => $ok,
-			'errors' => $errors,
+			'errors' => &$errors,
+			'timings' => &$timings,
 			'dots_received' => $received,
 			'dots_processed' => $processed,
 		);
