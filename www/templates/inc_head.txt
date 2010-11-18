@@ -22,6 +22,8 @@
 {* I don't actually know how we want to handle JS globals in a *}
 {* dotspotting context so for now this will do *}
 var canhas_polymaps = {$cfg.browser.capabilities.polymaps|escape};
+var _maptiles_template_url = '{$cfg.maptiles_template_url|escape}';
+var _maptiles_template_hosts = '{$cfg.maptiles_template_hosts|@join:","|escape}'.split(',');
 	</script>
 	{$extra_head}
 </head>

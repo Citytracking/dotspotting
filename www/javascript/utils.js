@@ -3,8 +3,8 @@
 
 function utils_tile_provider(){
 
-    var template = 'http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/998/256/{Z}/{X}/{Y}.png';
-    var hosts = [ 'a.', 'b.', 'c.' ];
+    var template = _maptiles_template_url;
+    var hosts = _maptiles_template_hosts;
 
     var uri = new info.aaronland.URI();
     
