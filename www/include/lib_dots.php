@@ -24,6 +24,15 @@
 		$map = array(
 			0 => 'public',
 			1 => 'private',
+
+			# These are just placeholders for now. It's not clear to
+			# me whether we should be saving state in the DotsLookup
+			# table when a dot is deleted. At the moment we just make
+			# all deleted dots private so we can cut down on the (db)
+			# index space for public search.... (20101119/straup)
+
+			# 2 => 'public,deleted',
+			# 3 => 'private,deleted',
 		);
 
 		if ($string_keys){
@@ -372,16 +381,17 @@
 		# Update the lookup table
 		#
 
+		$perms_map = dots_permissions_map('string keys');
+
 		$new_geohash = substr($dot['geohash'], 0, 3);
 
 		$lookup_update = array(
 			'deleted' => time(),
-			'geohash' => AddSlashes($new_geohash),
+			'perms' => $perms_map['private'],	# see notes in dots_permissions_map
+			'geohash' => $new_geohash,
 		);
 
-		$lookup_where = "dot_id='{$enc_id}'";
-
-		$lookup_rsp = db_update('DotsLookup', $lookup_update, $lookup_where);
+		$lookup_rsp = dots_lookup_update($dot, $lookup_update);
 
 		if (! $lookup_rsp['ok']){
 			# What?
