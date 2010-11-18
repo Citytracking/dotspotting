@@ -12,8 +12,8 @@ The Basics
 	#
 
 	#
-	# See that 'flamework_skip_init_config' flag? Don't change that
-	# unless you want to break your installation of Dotspotting.
+	# See that 'flamework_skip_init_config' flag? Don't change that unless you want to break your installation
+	# of Dotspotting.
 	#
 
 	$GLOBALS['cfg']['dotspotting_version'] = '0.0.0';	# see also: http://semver.org/
@@ -23,13 +23,10 @@ Feature Flags
 --
 
 	#
-	# Various flags to control who can sign up or log in
-	# to your service. Note how in this example password
-	# retrieval is disabled (because maybe you haven't set
-	# up an email server with which to send password
-	# reminders). These are designed to let you gracefully
-	# degrade an installation of Dotspotting if there are
-	# growing pains or other unexpected freak outs.
+	# Various flags to control who can sign up or log in to your service. Note how in this example password
+	# retrieval is disabled (because maybe you haven't set up an email server with which to send password
+	# reminders). These are designed to let you gracefully degrade an installation of Dotspotting if there
+	# are growing pains or other unexpected freak outs.
 	#
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;
@@ -43,17 +40,15 @@ Feature Flags
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
 
 	#
-	# Toggle the use of Polymaps independent of whether a
-	# user's browser supports SVG
+	# Toggle the use of Polymaps independent of whether a user's browser supports SVG
 	#
 
 	$GLOBALS['cfg']['enable_feature_polymaps'] = 1;
 
 	#
-	# Magic words are a runtime display feature to hook in
-	# to third-party APIs and services in order to display
-	# dynamic content. You can read more about then in the
-	# FAQ: http://your-dotspotting.example.com/faq/#magicwords
+	# Magic words are a runtime display feature to hook in to third-party APIs and services in order
+	# to display dynamic content. You can read more about then in the FAQ:
+	# http://your-dotspotting.example.com/faq/#magicwords
  	#
 
 	$GLOBALS['cfg']['enable_feature_magicwords'] = array(
@@ -75,8 +70,7 @@ App Specific Stuff
 --
 
 	#
-	# As in: Where your installation of Dotspotting lives
-	# on the Internets
+	# As in: Where your installation of Dotspotting lives on the Internets.
 	#
 
 	$GLOBALS['cfg']['abs_root_url'] = 'READ-FROM-CONFIG';
@@ -93,26 +87,23 @@ App Specific Stuff
 	$GLOBALS['cfg']['crypto_password_secret'] = 'READ-FROM-CONFIG';
 
 	#
-	# If you need to ensure that people don't flood your installation
-	# with dots, ensure that this has a value > 0. This is read in
-	# lib_import.
+	# If you need to ensure that people don't flood your installation with dots, ensure that this has a
+	# value > 0. This is read in lib_import.
 	#
 
 	$GLOBALS['cfg']['import_max_records'] = 1000;
 
 	#
-	# This flag controls whether or not to include the 
-	# inc_header_message.txt template at the top of every
+	# This flag controls whether or not to include the inc_header_message.txt template at the top of every
 	# page on Dotspotting.
 	#
 
 	$GLOBALS['cfg']['show_header_message'] = 0;
 
 	#
-	# Pagination hooks for things like displaying lists of dots
-	# or other search results. If 'pagination_spill' is defined
-	# and the value of the last paginated set is less than 'spill'
-	# those records will be included on the second to last page.
+	# Pagination hooks for things like displaying lists of dots or other search results. If 'pagination_spill'
+	# is defined and the value of the last paginated set is less than 'spill' those records will be included
+	# on the second to last page.
 	#
 
 	$GLOBALS['cfg']['pagination_per_page'] = 25;
@@ -122,8 +113,7 @@ Database Stuff
 --
 
 	#
-	# You will need at least one MySQL database in
-	# order to run Dotspotting. Details go here.
+	# You will need at least one MySQL database in order to run Dotspotting. Details go here.
 	#
 
 	$GLOBALS['cfg']['db_main'] = array(
@@ -135,12 +125,9 @@ Database Stuff
 	);
 
 	#
-	# See these? They are the magic flags that allow
-	# Dotspotting to run on a single database without
-	# any extra fussing. If your installation of
-	# Dotspotting ever outgrows this setup you will
-	# need to add complete config blocks for the following
-	# database clusters: 'db_main_slaves', 'db_users'
+	# See these? They are the magic flags that allow Dotspotting to run on a single database without
+	# any extra fussing. If your installation of Dotspotting ever outgrows this setup you will need
+	# to add complete config blocks for the following database clusters: 'db_main_slaves', 'db_users'
 	# and 'db_tickets'
 	#
 
@@ -148,12 +135,66 @@ Database Stuff
 	$GLOBALS['cfg']['db_enable_poormans_ticketing'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_federation'] = 1;
 
+	#
+	# Here's an example of a 'properly' federated system. This just means any set of MySQL databases segregated
+	# in to the following clusters: 1) a 'dbmain' cluster for things that require centralized lookup 2) one or
+	# more 'dbusers' clusters where dots and buckets will live 3) one or more 'dbtickets' cluster which can be
+	# used to generate unique IDs across your dotspotting installation. In the example below, we'll assumed there
+	# are (3) databases set up and running on Amazon's RDS infrastructure (http://aws.amazon.com/rds/)
+	#
+
+	# If you haven't already, you'll need to set up each cluster with its corresponding database schema. Like this:
+	# 
+	# $> mysql -u example -h dotspotting-dbmain.null-island.rds.amazonaws.com -p main < schema/db_main.schema
+	# $> mysql -u example -h dotspotting-dbusers-1.null-island.rds.amazonaws.com -p users < schema/db_users.schema
+	# $> mysql -u example -h dotspotting-dbtickets-1.null-island.rds.amazonaws.com -p tickets < schema/db_tickets.schema
+
+	# First, ensure that all the 'poorman' database configs are disabled
+	#
+	# $GLOBALS['cfg']['db_enable_poormans_slaves'] = 0;
+	# $GLOBALS['cfg']['db_enable_poormans_ticketing'] = 0;
+	# $GLOBALS['cfg']['db_enable_poormans_federation'] = 0;
+
+	# Next, configure the 'db_main' cluster. This looks exactly like your database configs for a not-federated setup.
+	#
+	# $GLOBALS['cfg']['db_main']['name'] = 'main';
+	# $GLOBALS['cfg']['db_main']['host'] = 'dotspotting-dbmain.null-islan.rds.amazonaws.com';
+	# $GLOBALS['cfg']['db_main']['user'] = 'example';
+	# $GLOBALS['cfg']['db_main']['pass'] = '******';
+
+	# Now, add configs for your user shards. Note that there is only a single user shard (1) with a single database
+	# tied to it. Over time you may want to configure your user shards to be "multi-master" but if you don't already
+	# know that means, don't worry about it. This is all you need to do for now.
+	#
+	# $GLOBALS['cfg']['db_users']['name'] = array(
+	# 	1 => 'users',
+	# );
+	#
+	# $GLOBALS['cfg']['db_users']['host'] = array(
+	# 	1 => 'dotspotting-dbusers-1.null-island.rds.amazonaws.com',
+	# );
+	#
+	# $GLOBALS['cfg']['db_users']['user'] = 'example';
+	# $GLOBALS['cfg']['db_users']['pass'] = '******';
+
+	# Finally set up your ticket servers. In this example, there's only one ticketing server but you may have two in
+	# case the first one crashes or become unreliable. NOTE: THERE'S STILL SOME HOOP-JUMPING TO DO (WRITE ABOUT) TO
+	# CONFIGURE THE AUTO INCREMENT SETTINGS FOR THE TICKETING SERVERS (20101118/straup)
+	#
+	# $GLOBALS['cfg']['db_tickets']['name'] = 'tickets';
+	#
+	# $GLOBALS['cfg']['db_tickets']['host'] = array(
+	# 	'dotspotting-dbtickets-1.null-island.rds.amazonaws.com',
+	# );
+	#
+	# $GLOBALS['cfg']['db_tickets']['user'] = 'example';
+	# $GLOBALS['cfg']['db_tickets']['pass'] = '******';
+
 Templates
 --
 
 	#
-	# Basically just where Smarty can read/write its
-	# templates. Remember that the 'smarty_compile_dir'
+	# Basically just where Smarty can read/write its templates. Remember that the 'smarty_compile_dir'
 	# needs to be able to written to by your web server.
 	#
 
@@ -165,10 +206,8 @@ Email
 --
 
 	#
-	# Stuff used to fill in headers when sending email from
-	# lib_email.php (in Flamework). Note that installing and
-	# setting up an email server is not part of Dotspotting's
-	# scope.
+	# Stuff used to fill in headers when sending email from# lib_email.php (in Flamework). Note that installing
+	# and setting up an email server is not part of Dotspotting's scope.
 	#
 
 	$GLOBALS['cfg']['email_from_name']	= 'READ-FROM-CONFIG';
@@ -179,9 +218,8 @@ Third Party API keys
 --
 
 	#
-	# Pretty much what it sounds like. A Flickr API key is required
-	# for Flickr "magic words" support (at least until Flickr fixes
-	# its Oembed endpoint).
+	# Pretty much what it sounds like. A Flickr API key is required for Flickr "magic words" support (at least until Flickr
+	# fixes its Oembed endpoint).
 	#
 
 	$GLOBALS['cfg']['flickr_apikey'] = 'READ-FROM-CONFIG';
