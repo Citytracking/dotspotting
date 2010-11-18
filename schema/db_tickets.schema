@@ -9,7 +9,7 @@ CREATE TABLE `Tickets32` (
   `stub` char(1) CHARACTER SET latin1 NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `stub` (`stub`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `Tickets64`
@@ -22,5 +22,5 @@ CREATE TABLE `Tickets64` (
   `stub` char(1) CHARACTER SET latin1 NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `stub` (`stub`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

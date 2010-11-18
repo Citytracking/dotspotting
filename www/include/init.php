@@ -29,7 +29,7 @@
 	# passwords and other things that shouldn't be checked in
 	# to source control
 	#
-	# (20100908/asc)
+	# (20100908/straup)
 	#
 
 	include(DOTSPOTTING_FLAMEWORK_DIR . '/include/config.php');
