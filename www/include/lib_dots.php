@@ -7,8 +7,8 @@
 	#################################################################
 
 	loadlib("dots_derive");
-	loadlib("dots_extras");
 	loadlib("dots_lookup");
+	loadlib("dots_search");
 
 	loadlib("geo_utils");
 
@@ -24,15 +24,6 @@
 		$map = array(
 			0 => 'public',
 			1 => 'private',
-
-			# These are just placeholders for now. It's not clear to
-			# me whether we should be saving state in the DotsLookup
-			# table when a dot is deleted. At the moment we just make
-			# all deleted dots private so we can cut down on the (db)
-			# index space for public search.... (20101119/straup)
-
-			# 2 => 'public,deleted',
-			# 3 => 'private,deleted',
 		);
 
 		if ($string_keys){
@@ -152,8 +143,12 @@
 			# Now convert everything back in to a datetime string
 
 			if ($created){
-				$created = gmdate('Y-m-d H:i:s', $created);
+				$data['created'] = gmdate('Y-m-d H:i:s', $created);
 			}
+		}
+
+		else {
+			$data['created'] = gmdate('Y-m-d H:i:s', $now);
 		}
 
 		#
@@ -167,8 +162,6 @@
 			$perms = $perms_map['private'];
 		}
 
-		$type = ($data['type']) ? $data['type'] : '';
-
 		#
 		# Go! Or rather... start!
 		#
@@ -177,26 +170,13 @@
 			'id' => $id,
 			'user_id' => $user['id'],
 			'sheet_id' => $sheet['id'],
-			'imported' => $now,
-			'last_modified' => $now,
 			'perms' => $perms,
-			'created' => $created,
 		);
 
-		#
-		# Things to denormalize back into the Dots table
-		# mostly for search. Don't assign empty strings for
-		# lat/lon because MySQL will store them as 0.0 rather
-		# than NULLs
-		# 
-
 		$to_denormalize = array(
-			'latitude',
-			'longitude',
-			'altitude',
-			'geohash',
 			'location',
 			'type',
+			'created',
 		);
 
 		foreach ($to_denormalize as $key){
@@ -210,15 +190,9 @@
 		# Add any "extras"
 		#
 
-		$extras = array();
+		$details = array();
 
 		foreach (array_keys($data) as $label){
-
-			#
-			# some keys are always treated as special so that
-			# they don't clobber the dotspotting internals on
-			# export.
-			#
 
 			$label = filter_strict(trim($label));
 
@@ -233,8 +207,16 @@
 				continue;
 			}
 
-			$extra = array(
-				'label' => $label,
+			$ns = null;
+			$pred = $label;
+
+			if (strpos($label, ':')){
+				list($ns, $pred) = explode(':', $label, 2);
+			}
+
+			$detail = array(
+				'namespace' => $ns,
+				'label' => $pred,
 				'value' => $data[$label],
 			);
 
@@ -243,23 +225,16 @@
 				$extra['derived_from'] = $derived[$label];
 			}
 
-			if (! is_array($extras[$label])){
-				$extras[$label] = array();
+			if (! is_array($details[$label])){
+				$details[$label] = array();
 			}
 
-			$extras[$label][] = $extra;
+			$details[$label][] = $detail;
 		}
 
-		#
-		# Denormalize the list of (not standard) extras
-		# keys for display on sheet/dot list views - this
-		# is mostly so that we don't have to fetch (n) rows
-		# from DotsExtras everytime we show a list of dots.
-		#
+		$dot['details_json'] = json_encode($details);
 
-		if (count($extras)){
-			$dot['extras_json'] = json_encode($extras);
-		}
+		dumper($dot);
 
 		#
 		# Look, we are creating the dot now
@@ -282,16 +257,46 @@
 			'sheet_id' => $sheet['id'],
 			'user_id' => $user['id'],
 			'imported' => $now,
-			'created' => $dot['created'],
-			'perms' => $perms,
-			'geohash' => $dot['geohash'],
-			'type' => $dot['type'],
+			'last_modified' => $now,
 		);
 
 		$lookup_rsp = dots_lookup_create($lookup);
 
 		if (! $lookup_rsp['ok']){
+			# What then...
+		}
 
+		#
+		# Now the searching
+		#
+
+		$search = array(
+			'dot_id' => $id,
+			'sheet_id' => $sheet['id'],
+			'user_id' => $user['id'],
+			'imported' => $now,
+			'created' => $data['created'],
+			'perms' => $perms,
+			'type' => $data['type'],
+			'location' => $data['location'],
+			'geohash' => $data['geohash'],
+		);
+
+		#
+		# Don't assign empty strings for lat/lon because MySQL will
+		# store them as 0.0 rather than NULLs
+		# 
+
+		foreach (array('latitude', 'longitude') as $coord){
+
+			if (is_numeric($data[$coord])){
+				$search[$coord] = $data[$coord];
+			}
+		}
+
+		$search_rsp = dots_search_add_dot($search);
+
+		if (! $search_rsp['ok']){
 			# What then...
 		}
 
@@ -316,8 +321,6 @@
 			$update[$k] = AddSlashes($v);
 		}
 
-		$update['last_modified'] = time();
-
 		$rsp = db_update_users($user['cluster_id'], 'Dots', $update, $where);
 
 		if ($rsp['ok']){
@@ -325,25 +328,26 @@
 		}
 
 		#
-		# Update perms in the lookup table?
+		# Update search: TODO
 		#
 
-		if (isset($update['perms'])){
+		#
+		# Update the lookup table?
+		#
 
-			$sheet = sheets_get_sheet($dot['sheet_id']);
-			$count_rsp = sheets_update_dot_count_for_sheet($sheet);
+		$sheet = sheets_get_sheet($dot['sheet_id']);
+		$count_rsp = sheets_update_dot_count_for_sheet($sheet);
 
-			$lookup_update = array(
-				'perms' => $update['perms']
-			);
+		$lookup_update = array(
+			'last_modified' => $now,
+		);
 
-			$lookup_where = "dot_id='{$enc_id}'";
+		$lookup_where = "dot_id='{$enc_id}'";
 
-			$lookup_rsp = db_update('DotsLookup', $lookup_update, $lookup_where);
+		$lookup_rsp = db_update('DotsLookup', $lookup_update, $lookup_where);
 
-			if (! $lookup_rsp['ok']){
-				# What?
-			}
+		if (! $lookup_rsp['ok']){
+			# What?
 		}
 
 		# Happy!		
@@ -355,40 +359,44 @@
 
 	function dots_delete_dot(&$dot, $more=array()){
 
+		#
+		# Update the search table
+		#
+
+ 		if (! isset($more['skip_update_search'])){
+
+			$search_rsp = dots_search_remove_dot($dot);
+
+			if (! $search_rsp['ok']){
+				# What?
+			}
+		}
+
 		$user = users_get_by_id($dot['user_id']);
 
 		$enc_id = AddSlashes($dot['id']);
 
-		$sql = "DELETE FROM DotsExtras WHERE dot_id='{$enc_id}'";
+		$sql = "DELETE FROM Dots WHERE id='{$enc_id}'";
 		$rsp = db_write_users($user['cluster_id'], $sql);
 
 		if (! $rsp['ok']){
 			return $rsp;
 		}
 
-		$sql = "DELETE FROM Dots WHERE id='{$enc_id}'";
-		$rsp = db_write_users($user['cluster_id'], $sql);
-
-		if (($rsp['ok']) && (! isset($more['skip_sheet_update']))){
+ 		if (! isset($more['skip_update_sheet'])){
 
 			$sheet = sheets_get_sheet($dot['sheet_id']);
 
 			$rsp2 = sheets_update_dot_count_for_sheet($sheet);
 			$rsp['update_sheet_count'] = $rsp2['ok'];
 		}
-
+		
 		#
 		# Update the lookup table
 		#
 
-		$perms_map = dots_permissions_map('string keys');
-
-		$new_geohash = substr($dot['geohash'], 0, 3);
-
 		$lookup_update = array(
 			'deleted' => time(),
-			'perms' => $perms_map['private'],	# see notes in dots_permissions_map
-			'geohash' => $new_geohash,
 		);
 
 		$lookup_rsp = dots_lookup_update($dot, $lookup_update);
@@ -410,18 +418,16 @@
 
 	function dots_get_extent_for_sheet(&$sheet, $viewer_id=0){
 
-		$user = users_get_by_id($sheet['user_id']);
-
 		$enc_id = AddSlashes($sheet['id']);
 
-		$sql = "SELECT MIN(latitude) AS swlat, MIN(longitude) AS swlon, MAX(latitude) AS nelat, MAX(longitude) AS nelon FROM Dots WHERE sheet_id='{$enc_id}'";
+		$sql = "SELECT MIN(latitude) AS swlat, MIN(longitude) AS swlon, MAX(latitude) AS nelat, MAX(longitude) AS nelon FROM DotsSearch WHERE sheet_id='{$enc_id}'";
 
 		if ($viewer_id !== $sheet['user_id']){
 
 			$sql = _dots_where_public_sql($sql);
 		}
 
-		return db_single(db_fetch_users($user['cluster_id'], $sql));
+		return db_single(db_fetch($sql));
 	}
 
 	#################################################################
@@ -465,10 +471,18 @@
 		}
 
 		else {
+
 			$lookup = dots_lookup_dot($dot_id);
 
-			if ((! $lookup) || ($lookup['deleted'])){
+			if (! $lookup){
 				return;
+			}
+
+			if ($lookup['deleted']){
+				return array(
+					'id' => $lookup['dot_id'],
+					'deleted' => $lookup['deleted'],
+				);
 			}
 
 			$user = users_get_by_id($lookup['user_id']);
@@ -492,7 +506,7 @@
 
 		if ($dot){
 			$more['load_sheet'] = 1;
-			dots_load_relations($dot, $viewer_id, $more);
+			dots_load_details($dot, $viewer_id, $more);
 		}
 
 		return $dot;
@@ -549,7 +563,7 @@
 
 				$enc_sheet = AddSlashes($sheet['sheet_id']);
 
-				$dot_sql = "SELECT * FROM DotsLookup WHERE sheet_id='{$enc_sheet}' AND perms=0 AND deleted=0 ORDER BY imported DESC";
+				$dot_sql = "SELECT * FROM DotsSearch WHERE sheet_id='{$enc_sheet}' AND perms=0 ORDER BY imported DESC";
 				$dot_args = array( 'per_page' => 15 );
 
 				$dot_rsp = db_fetch_paginated($dot_sql, $dot_args);
@@ -625,7 +639,7 @@
 
 		foreach ($rsp['rows'] as $dot){
 
-			dots_load_relations($dot, $viewer_id, $more);
+			dots_load_details($dot, $viewer_id, $more);
 			$dots[] = $dot;
 		}
 
@@ -664,7 +678,7 @@
 
 		foreach ($rsp['rows'] as $dot){
 
-			dots_load_relations($dot, $viewer_id, $even_more);
+			dots_load_details($dot, $viewer_id, $even_more);
 			$dots[] = $dot;
 		}
 
@@ -704,21 +718,34 @@
 
 	# Note the pass-by-ref
 
-	function dots_load_relations(&$dot, $viewer_id=0, $more=array()){
+	function dots_load_details(&$dot, $viewer_id=0, $more=array()){
 
-		if ($dot['extras_json']){
-			$extras = json_decode($dot['extras_json'], 1);
+		$dot['details'] = json_decode($dot['details_json'], 1);
+
+		$geo_bits = array(
+			'latitude',
+			'longitude',
+			'altitude',
+			'geohash'
+		);
+
+		foreach ($geo_bits as $what){
+
+			if (isset($dot['details'][$what])){
+				$dot[$what] = $dot['details'][$what][0]['value'];
+			}
 		}
 
-		if (! $extras){
-			$extras = array();
-		}
+		$listview = array();
 
-		$dot['extras'] = $extras;
+		foreach ($dot['details'] as $label => $ignore){
 
-		if (count($dot['extras'])){
-			$dot['extras_listview'] = implode(", ", dots_extras_keys_for_listview($dot, $dot['extras']));
+			if (! isset($dot[$label])){
+				$listview[] = $label;
+			}
 		}
+		
+		$dot['details_listview'] = implode(", ", $listview);
 
 		#
 
@@ -780,21 +807,6 @@
 
 	#################################################################
 
-	function dots_dotspotting_keys(){
-		$sql = "DESCRIBE Dots";
-		$rsp = db_fetch_users(1, $sql);
-
-		$keys = array();
-
-		foreach ($rsp['rows'] as $row){
-			$keys[] = $row['Field'];
-		}
-
-		return $keys;
-	}
-
-	#################################################################
-
 	#
 	# Do not include any dots that may in the queue
 	# waiting to be geocoded, etc.
@@ -805,9 +817,6 @@
 		$where .= ($has_where) ? "AND" : "WHERE";
 
 		$sql .= " {$where} perms=0";
-
-		# $sql .= " AND latitude IS NOT NULL AND longitude IS NOT NULL";
-
 		return $sql;
 	}
 

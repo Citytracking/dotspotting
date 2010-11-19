@@ -1,50 +1,28 @@
+DROP TABLE IF EXISTS `Sheets`;
 
-DROP TABLE IF EXISTS `Buckets`;
-
-CREATE TABLE `Buckets` (
+CREATE TABLE `Sheets` (
+  `id` int(20) unsigned NOT NULL PRIMARY KEY,
   `user_id` int(11) unsigned NOT NULL,
   `created` int(10) unsigned NOT NULL,
   `last_modified` int(10) unsigned NOT NULL,
   `count_dots` int(11) unsigned NOT NULL,
-  `id` int(20) unsigned NOT NULL,
-  `label` varchar(255) DEFAULT NULL,
+  `label` varchar(255) NOT NULL,
   `count_dots_public` int(11) unsigned NOT NULL,
-  `mime_type` varchar(24) DEFAULT NULL,
-  UNIQUE KEY `by_id` (`id`),
+  `mime_type` varchar(24) NOT NULL,
   KEY `by_user` (`user_id`,`count_dots_public`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `Dots`;
 
 CREATE TABLE `Dots` (
-  `bucket_id` int(11) unsigned NOT NULL,
+  `id` int(20) unsigned NOT NULL PRIMARY KEY,
+  `sheet_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
-  `latitude` decimal(9,6) DEFAULT NULL,
-  `longitude` decimal(9,6) DEFAULT NULL,
-  `geohash` char(12) CHARACTER SET latin1 DEFAULT NULL,
-  `last_modified` int(10) unsigned NOT NULL,
-  `imported` int(10) unsigned NOT NULL,
   `perms` tinyint(3) unsigned NOT NULL,
-  `id` int(20) unsigned NOT NULL,
-  `altitude` decimal(10,6) DEFAULT NULL,
-  `extras_json` text NOT NULL,
+  `details_json` text NOT NULL,
   `created` datetime DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
-  UNIQUE KEY `by_id` (`id`),
+  `type` varchar(255) NOT NULL,
+  `location` varchar(255) NOT NULL,
   KEY `by_user` (`user_id`),
-  KEY `by_bucket` (`bucket_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `DotsExtras`;
-
-CREATE TABLE `DotsExtras` (
-  `dot_id` bigint(20) unsigned NOT NULL,
-  `label` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `user_id` int(11) unsigned NOT NULL,
-  `namespace` varchar(255) DEFAULT NULL,
-  `derived_from` tinyint(3) unsigned NOT NULL,
-  `value` text,
-  `id` bigint(20) unsigned NOT NULL,
-  UNIQUE KEY `by_extra` (`dot_id`,`namespace`,`label`)
+  KEY `by_sheet` (`sheet_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

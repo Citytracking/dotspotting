@@ -29,27 +29,42 @@ CREATE TABLE `UsersPasswordReset` (
 DROP TABLE IF EXISTS `DotsLookup`;
 
 CREATE TABLE `DotsLookup` (
-  `dot_id` bigint(20) unsigned NOT NULL,
+  `dot_id` bigint(20) unsigned NOT NULL PRIMARY KEY,
   `user_id` int(11) unsigned NOT NULL,
-  `perms` tinyint(3) unsigned NOT NULL,
   `imported` int(10) unsigned NOT NULL,
+  `last_modified` int(10) unsigned NOT NULL,
   `deleted` int(10) unsigned NOT NULL,
-  `bucket_id` bigint(20) unsigned NOT NULL,
-  `geohash` varchar(12) DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `created` DATETIME,
-  KEY `by_user` (`dot_id`),
-  KEY `by_geohash` (`geohash`,`perms`,`deleted`),
-  KEY `by_bucket` (`bucket_id`,`perms`,`deleted`)
+  `sheet_id` int(11) unsigned NOT NULL,
+  KEY `by_id` (`dot_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `BucketsLookup`;
 
-CREATE TABLE `BucketsLookup` (
-  `bucket_id` bigint(20) unsigned NOT NULL,
+DROP TABLE IF EXISTS `SheetsLookup`;
+
+CREATE TABLE `SheetsLookup` (
+  `sheet_id` int(11) unsigned NOT NULL PRIMARY KEY,
   `user_id` int(11) unsigned NOT NULL,
   `created` int(10) unsigned NOT NULL,
+  `last_modified` int(10) unsigned NOT NULL,
   `deleted` int(10) unsigned NOT NULL,
-  KEY `by_user` (`bucket_id`),
+  KEY `by_id` (`sheet_id`),
   KEY `by_deleted` (`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `DotsSearch`;
+
+CREATE TABLE `DotsSearch` (
+  `dot_id` int(20) unsigned NOT NULL PRIMARY KEY,
+  `sheet_id` int(11) unsigned NOT NULL,
+  `user_id` int(11) unsigned NOT NULL,
+  `perms` tinyint(3) unsigned NOT NULL,
+  `latitude` decimal(9,6) DEFAULT NULL,
+  `longitude` decimal(9,6) DEFAULT NULL,
+  `geohash` char(12) NOT NULL,
+  `created` datetime DEFAULT NULL,
+  `imported` int(10) unsigned NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `location` varchar(255) NOT NULL,
+  KEY `by_user` (`user_id`),
+  KEY `by_sheet` (`sheet_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

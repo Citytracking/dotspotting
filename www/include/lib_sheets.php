@@ -13,7 +13,7 @@
 
 	function sheets_create_sheet(&$user, $more=array()){
 
-		$sheet_id = dbtickets_create(64);
+		$sheet_id = dbtickets_create(32);
 
 		if (! $sheet_id){
 
@@ -93,6 +93,16 @@
 
 	function sheets_delete_sheet(&$sheet){
 
+		#
+		# First, purge search
+		#
+
+		dots_search_remove_sheet($sheet);
+
+		#
+		# Okay, go
+		#
+
 		$user = users_get_by_id($sheet['user_id']);
 
 		$enc_id = AddSlashes($sheet['id']);
@@ -125,7 +135,8 @@
 			foreach ($rsp['rows'] as $dot){
 
 				$dot_more = array(
-					'skip_sheet_update' => 1
+					'skip_update_sheet' => 1,
+					'skip_update_search' => 1,
 				);
 
 				$dot_rsp = dots_delete_dot($dot, $dot_more);

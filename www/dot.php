@@ -21,6 +21,11 @@
 		error_404();
 	}
 
+	if ($dot['deleted']){
+		$smarty->display("page_dot_deleted.txt");
+		exit;
+	}
+
 	if (! dots_can_view_dot($dot, $GLOBALS['cfg']['user']['id'])){
 		error_403();
 	}

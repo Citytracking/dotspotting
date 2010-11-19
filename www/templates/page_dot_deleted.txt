@@ -1,0 +1,5 @@
+{include file="inc_head.txt"}
+
+<p>This dot has been deleted.</p>
+
+{include file="inc_foot.txt"}

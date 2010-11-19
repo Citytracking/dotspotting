@@ -14,7 +14,7 @@
 			{if $is_own}
 			<th>Permissions</th>
 			{/if}
-			<th>Extras</th>
+			<th>Other</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -37,8 +37,8 @@
 				<td><a href="{$dot.sheet|@urls_url_for_sheet}">{if $dot.sheet.label}{$dot.sheet.label|truncate:40:"..."|escape}{else}<span class="untitled">untitled</span>{/if}</a></td>
 			{/if}
 
-				<td nowrap>{if $dot.latitude}{$dot.latitude|escape}{else}&#8212;{/if}</td>
-				<td nowrap>{if $dot.longitude}{$dot.longitude|escape}{else}&#8212;{/if}</td>
+				<td nowrap>{if $dot.latitude}<a href="{$cfg.abs_root_url}nearby/{$dot.geohash|escape:'url'}">{$dot.latitude|escape}</a>{else}&#8212;{/if}</td>
+				<td nowrap>{if $dot.longitude}<a href="{$cfg.abs_root_url}nearby/{$dot.geohash|escape:'url'}">{$dot.longitude|escape}</a>{else}&#8212;{/if}</td>
 				<td nowrap>{if $dot.altitude}{$dot.altitude|escape}{else}&#8212;{/if}</td>
 				<td nowrap>{if $dot.location}{$dot.location|escape}{else}&#8212;{/if}</td>
 				<td nowrap>{if $dot.type}{$dot.type|escape}{else}&#8212;{/if}</td>
@@ -47,7 +47,7 @@
 			{if $is_own}
 				<td>{$permissions_map.$perms|escape}</td>
 			{/if}
-				<td>{if $dot.extras_listview}{$dot.extras_listview|escape}{else}&#8212;{/if}</td>
+				<td>{if $dot.details_listview}{$dot.details_listview|escape}{else}&#8212;{/if}</td>
 			</tr>
 		{/foreach}
 	</tbody>

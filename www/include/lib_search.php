@@ -11,82 +11,6 @@
 
 	function search_dots(&$args, $viewer_id=0){
 
-		if (intval($args['u'])){
-
-			return search_dots_for_user($args, $viewer_id);
-		}
-
-		return search_dots_for_all($args, $viewer_id);
-	}
-
-	#################################################################
-
-	function search_dots_for_user(&$args, $viewer_id=0){
-
-		$where_parts = _search_generate_where_parts($args);
-		$where = array();
-
-		if (! $where_parts['user']){
-
-			return array(
-				'ok' => 0,
-				'error' => 'Not valid user',
-			);
-		}
-
-		foreach (array('user', 'geo', 'time', 'type', 'location') as $what){
-
-			if (isset($where_parts[$what])){
-				$where = array_merge($where, $where_parts[$what]);
-			}
-		}
-
-		# Always with the public
-
-		if ($viewer_id != $where_parts['user_row']['id']){
-			$where[] = "`perms`=0";
-		}
-
-		#
-		# Go!
-		#
-
-		$cluster = $where_parts['user_row']['cluster_id'];
-
-		$sql = "SELECT * FROM Dots WHERE " . implode(" AND ", $where);
-
-		$more = array(
-			'page' => $args['page'],
-		);
-
-		$rsp = db_fetch_paginated_users($cluster, $sql, $more);
-
-		if (! $rsp['ok']){
-			return $rsp;
-		}
-
-		$dots = array();
-
-		$dot_more = array(
-			'load_user' => 1,
-		);
-
-		foreach ($rsp['rows'] as $row){
-
-			dots_load_relations($row, $viewer_id, $dot_more);
-			$dots[] = $row;
-		}
-
-		return array(
-			'ok' => 1,
-			'dots' => &$dots,
-		);
-	}
-
-	#################################################################
-
-	function search_dots_for_all(&$args, $viewer_id=0){
-
 		$where_parts = _search_generate_where_parts($args);
 
 		$where = array();
@@ -97,7 +21,7 @@
 		# type, perms
 		# dt, perms
 
-		foreach (array('geo', 'time', 'type') as $what){
+		foreach (array('user', 'geo', 'time', 'type') as $what){
 
 			if (isset($where_parts[$what])){
 				$where = array_merge($where, $where_parts[$what]);
@@ -112,15 +36,25 @@
 			);
 		}
 
+		#
 		# Always with the public
+		#
 
-		$where[] = "`perms`=0";
+		$is_own = 0;
+
+		if (($where_parts['user_row']) && ($where_parts['user_row']['id'] === $viewer_id)){
+			$is_own = 1;
+		}
+
+		if (! $is_own){
+			$where[] = "`perms`=0";
+		}
 
 		#
 		# Go!
 		#
 
-		$sql = "SELECT * FROM DotsLookup WHERE " . implode(" AND ", $where);
+		$sql = "SELECT * FROM DotsSearch WHERE " . implode(" AND ", $where);
 
 		$more = array(
 			'page' => $args['page'],
