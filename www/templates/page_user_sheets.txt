@@ -1,0 +1,29 @@
+{capture assign='page_title'}{$owner.username|possess} sheets{/capture}
+{include file='inc_head.txt'}
+
+{if $smarty.get.deleted}
+<p class="success">Your sheet has been deleted.</p>
+{/if}
+
+{if $is_own}
+<h2><a href="{$owner|@urls_url_for_user}">Your</a> sheets (of <a href="{$owner|@urls_dots_for_user}">dots</a>)</h2>
+{else}
+<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> sheets (of <a href="{$owner|@urls_dots_for_user}">dots</a>)</h2>
+{/if}
+
+{if $sheets|@count == 0}
+
+{if $owner.id != $cfg.user.id}
+<p>{$owner.username|escape} hasn't uploaded any dots yet.</p>
+{else}
+<p>You haven't uploaded any dots yet.</p>
+{/if}
+
+{else}
+
+{include file="inc_sheets_list.txt"}
+{pagination}
+
+{/if}
+
+{include file='inc_foot.txt'}

@@ -1,0 +1,31 @@
+{capture assign="page_title"}{if $sheet.label}Delete your sheet named "{$sheet.label|escape}" ?{else}Delete one of your sheets (ID #{$sheet.id|escape}){/if}{/capture}
+{include file="inc_head.txt"}
+
+{if $deleted}
+
+{if $deleted.ok}
+<p>Okay! Your sheet has been deleted. <a href="{$cfg.user|@urls_url_for_user}">Go back to your other sheets.</a></p>
+{else}
+<p class="error">Ack! There was a problem deleting your sheet.</p>
+{/if}
+
+{else}
+
+{if $sheet.label}
+<p>Are you sure you want to delete the sheet named <q>{$sheet.label|escape}</q> ?</p>
+{else}
+<p>Are you sure you want to delete this sheet?</p>
+{/if}
+
+<p>It has {$sheet.count_dots|escape} dots associated with it. They will <strong>all be deleted</strong> along with the sheet. There is no undo!</p>
+
+<form method="POST">
+	{$crumb_key|crumb_input}
+	<input type="hidden" name="delete" value="1" />
+	<input type="hidden" name="confirm" value="1" />
+	<input type="submit" value="YES DELETE THIS SHEET" />
+</form>
+
+{/if}
+
+{include file="inc_foot.txt"}

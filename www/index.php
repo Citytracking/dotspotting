@@ -16,7 +16,7 @@
 
 		# Assign counts if showing dashboard on splash page
 
-		$counts = buckets_counts_for_user($GLOBALS['cfg']['user'], $GLOBALS['cfg']['user']['id']);
+		$counts = sheets_counts_for_user($GLOBALS['cfg']['user'], $GLOBALS['cfg']['user']['id']);
 		$GLOBALS['cfg']['user']['counts'] = $counts;
 
 		$recent_dots = dots_get_dots_recently_imported();

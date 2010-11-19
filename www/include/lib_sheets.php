@@ -6,16 +6,16 @@
 
 	#################################################################
 
-	$GLOBALS['buckets_lookup_local_cache'] = array();
-	$GLOBALS['buckets_local_cache'] = array();
+	$GLOBALS['sheets_lookup_local_cache'] = array();
+	$GLOBALS['sheets_local_cache'] = array();
 
 	#################################################################
 
-	function buckets_create_bucket(&$user, $more=array()){
+	function sheets_create_sheet(&$user, $more=array()){
 
-		$bucket_id = dbtickets_create(64);
+		$sheet_id = dbtickets_create(64);
 
-		if (! $bucket_id){
+		if (! $sheet_id){
 
 			return array(
 				'ok' => 0,
@@ -25,11 +25,11 @@
 
 		$now = time();
 
-		$bucket = array(
+		$sheet = array(
 			'user_id' => $user['id'],
 			'created' => $now,
 			'last_modified' => $now,
-			'id' => $bucket_id,
+			'id' => $sheet_id,
 		);
 
 		$optional = array(
@@ -40,17 +40,17 @@
 		foreach ($optional as $o){
 
 			if (isset($more[$o])){
-				$bucket[$o] = $more[$o];
+				$sheet[$o] = $more[$o];
 			}
 		}
 
 		$hash = array();
 
-		foreach ($bucket as $k => $v){
+		foreach ($sheet as $k => $v){
 			$hash[$k] = AddSlashes($v);
 		}
 
-		$rsp = db_insert_users($user['cluster_id'], 'Buckets', $hash);
+		$rsp = db_insert_users($user['cluster_id'], 'Sheets', $hash);
 
 		if (! $rsp['ok']){
 			return null;
@@ -61,12 +61,12 @@
 		#
 
 		$lookup = array(
-			'bucket_id' => AddSlashes($bucket_id),
+			'sheet_id' => AddSlashes($sheet_id),
 			'user_id' => AddSlashes($user['id']),
 			'created' => AddSlashes($now),
 		);
 
-		$lookup_rsp = db_insert('BucketsLookup', $lookup);
+		$lookup_rsp = db_insert('SheetsLookup', $lookup);
 
 		if (! $lookup_rsp['ok']){
 			# What ?
@@ -76,9 +76,9 @@
 		# Okay!
 		#
 
-		buckets_load_extras($bucket, $user['id']);
+		sheets_load_extras($sheet, $user['id']);
 
-		$rsp['bucket'] = $bucket;
+		$rsp['sheet'] = $sheet;
 		return $rsp;
 	}
 
@@ -91,12 +91,12 @@
 	# necessary.
 	#
 
-	function buckets_delete_bucket(&$bucket){
+	function sheets_delete_sheet(&$sheet){
 
-		$user = users_get_by_id($bucket['user_id']);
+		$user = users_get_by_id($sheet['user_id']);
 
-		$enc_id = AddSlashes($bucket['id']);
-		$sql = "SELECT * FROM Dots WHERE bucket_id='{$enc_id}'";
+		$enc_id = AddSlashes($sheet['id']);
+		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_id}'";
 
 		$more = array(
 			'page' => 1,
@@ -125,7 +125,7 @@
 			foreach ($rsp['rows'] as $dot){
 
 				$dot_more = array(
-					'skip_bucket_update' => 1
+					'skip_sheet_update' => 1
 				);
 
 				$dot_rsp = dots_delete_dot($dot, $dot_more);
@@ -138,7 +138,7 @@
 			$more['page'] ++;
 		}
 
-		$sql = "DELETE FROM Buckets WHERE id='{$enc_id}'";
+		$sql = "DELETE FROM Sheets WHERE id='{$enc_id}'";
 		$rsp = db_write_users($user['cluster_id'], $sql);
 
 		#
@@ -149,9 +149,9 @@
 			'deleted' => time(),
 		);
 
-		$where = "bucket_id='{$enc_id}'";
+		$where = "sheet_id='{$enc_id}'";
 
-		$lookup_rsp = db_update('BucketsLookup', $update, $where);
+		$lookup_rsp = db_update('SheetsLookup', $update, $where);
 
 		if (! $lookup_rsp['ok']){
 			# what?
@@ -176,10 +176,10 @@
 	# necessary.
 	#
 
-	function buckets_delete_buckets_for_user(&$user){
+	function sheets_delete_sheets_for_user(&$user){
 
 		$enc_id = AddSlashes($user['id']);
-		$sql = "SELECT * FROM Buckets WHERE user_id='{$enc_id}'";
+		$sql = "SELECT * FROM Sheets WHERE user_id='{$enc_id}'";
 
 	
 		$more = array(
@@ -189,8 +189,8 @@
 
 		$page_count = null;
 
-		$buckets_count = 0;
-		$buckets_deleted = 0;
+		$sheets_count = 0;
+		$sheets_deleted = 0;
 
 		$dots_count = 0;
 		$dots_deleted = 0;
@@ -200,8 +200,8 @@
 			$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);		
 
 			if (! $rsp['ok']){
-				$rsp['buckets_deleted'] = $buckets_deleted;
-				$rsp['buckets_count'] = $buckets_count;
+				$rsp['sheets_deleted'] = $sheets_deleted;
+				$rsp['sheets_count'] = $sheets_count;
 				$rsp['dots_deleted'] = $dots_deleted;
 				$rsp['dots_count'] = $dots_count;
 
@@ -210,19 +210,19 @@
 
 			if (! isset($page_count)){
 				$page_count = $rsp['pagination']['page_count'];
-				$buckets_count = $rsp['pagination']['total_count'];
+				$sheets_count = $rsp['pagination']['total_count'];
 			}
 
-			foreach ($rsp['rows'] as $bucket){
+			foreach ($rsp['rows'] as $sheet){
 
-				$bucket_rsp = buckets_delete_bucket($bucket);
+				$sheet_rsp = sheets_delete_sheet($sheet);
 
-				if ($bucket_rsp['ok']){
+				if ($sheet_rsp['ok']){
 
-					$dots_count += $bucket_rsp['dots_count'];
-					$dots_deleted += $bucket_rsp['dots_deleted'];
+					$dots_count += $sheet_rsp['dots_count'];
+					$dots_deleted += $sheet_rsp['dots_deleted'];
 
-					$buckets_deleted ++;
+					$sheets_deleted ++;
 				}
 			}
 
@@ -231,8 +231,8 @@
 
 		return array(
 			'ok' => 1,
-			'buckets_deleted' => $buckets_deleted,
-			'buckets_count' => $buckets_count,
+			'sheets_deleted' => $sheets_deleted,
+			'sheets_count' => $sheets_count,
 			'dots_deleted' => $dots_deleted,
 			'dots_count' => $dots_count,
 		);
@@ -244,34 +244,34 @@
 	# Note the pass-by-ref
 	#
 
-	function buckets_load_extras(&$bucket, $viewer_id=0, $more=array()){
+	function sheets_load_extras(&$sheet, $viewer_id=0, $more=array()){
 
-		$bucket['extent'] = dots_get_extent_for_bucket($bucket, $viewer_id);
+		$sheet['extent'] = dots_get_extent_for_sheet($sheet, $viewer_id);
 
 		if ($more['load_dots']){
-			$bucket['dots'] = dots_get_dots_for_bucket($bucket, $viewer_id);
+			$sheet['dots'] = dots_get_dots_for_sheet($sheet, $viewer_id);
 		}
 	}
 
 	#################################################################
 
 	#
-	# Grab the bucket from db_main
+	# Grab the sheet from db_main
 	#
 
-	function buckets_lookup_bucket($bucket_id){
+	function sheets_lookup_sheet($sheet_id){
 
-		if (isset($GLOBALS['buckets_lookup_local_cache'][$bucket_id])){
-			return $GLOBALS['buckets_lookup_local_cache'][$bucket_id];
+		if (isset($GLOBALS['sheets_lookup_local_cache'][$sheet_id])){
+			return $GLOBALS['sheets_lookup_local_cache'][$sheet_id];
 		}
 
-		$enc_id = AddSlashes($bucket_id);
+		$enc_id = AddSlashes($sheet_id);
 
-		$sql = "SELECT * FROM BucketsLookup WHERE bucket_id='{$enc_id}'";
+		$sql = "SELECT * FROM SheetsLookup WHERE sheet_id='{$enc_id}'";
 		$rsp = db_fetch($sql);
 
 		if ($rsp['ok']){
-			$GLOBALS['buckets_lookup_local_cache'][$bucket_id] = $rsp;
+			$GLOBALS['sheets_lookup_local_cache'][$sheet_id] = $rsp;
 		}
 
 		return db_single($rsp);
@@ -280,16 +280,16 @@
 	#################################################################
 
 	#
-	# Grab the bucket from the shards
+	# Grab the sheet from the shards
 	#
 
-	function buckets_get_bucket($bucket_id, $viewer_id=0, $more=array()){
+	function sheets_get_sheet($sheet_id, $viewer_id=0, $more=array()){
 
-		if (isset($GLOBALS['buckets_local_cache'][$bucket_id])){
-			return $GLOBALS['buckets_local_cache'][$bucket_id];
+		if (isset($GLOBALS['sheets_local_cache'][$sheet_id])){
+			return $GLOBALS['sheets_local_cache'][$sheet_id];
 		}
 
-		$lookup = buckets_lookup_bucket($bucket_id);
+		$lookup = sheets_lookup_sheet($sheet_id);
 
 		if ((! $lookup) || ($lookup['deleted'])){
 			return;
@@ -297,32 +297,32 @@
 
 		$user = users_get_by_id($lookup['user_id']);
 
-		$enc_id = AddSlashes($bucket_id);
+		$enc_id = AddSlashes($sheet_id);
 		$enc_user = AddSlashes($user['id']);
 
-		$sql = "SELECT * FROM Buckets WHERE id='{$enc_id}'";
+		$sql = "SELECT * FROM Sheets WHERE id='{$enc_id}'";
 
 		$rsp = db_fetch_users($user['cluster_id'], $sql);
-		$bucket = db_single($rsp);
+		$sheet = db_single($rsp);
 
-		if ($bucket){
+		if ($sheet){
 
-			buckets_load_extras($bucket, $viewer_id, $more);
-			$GLOBALS['buckets_local_cache'][$bucket_id] = $bucket;
+			sheets_load_extras($sheet, $viewer_id, $more);
+			$GLOBALS['sheets_local_cache'][$sheet_id] = $sheet;
 		}
 
-		return $bucket;
+		return $sheet;
 	}
 
 	#################################################################
 
-	function buckets_can_view_bucket(&$bucket, $viewer_id=0){
+	function sheets_can_view_sheet(&$sheet, $viewer_id=0){
 
-		if ($bucket['user_id'] == $viewer_id){
+		if ($sheet['user_id'] == $viewer_id){
 			return 1;
 		}
 
-		if ($bucket['count_dots_public'] >= 1){
+		if ($sheet['count_dots_public'] >= 1){
 			return 1;
 		}
 
@@ -331,11 +331,11 @@
 
 	#################################################################
 
-	function buckets_update_bucket(&$bucket, $update){
+	function sheets_update_sheet(&$sheet, $update){
 
-		$user = users_get_by_id($bucket['user_id']);
+		$user = users_get_by_id($sheet['user_id']);
 
-		$enc_id = AddSlashes($bucket['id']);
+		$enc_id = AddSlashes($sheet['id']);
 		$where = "id='{$enc_id}'";
 
 		foreach ($update as $k => $v){
@@ -344,10 +344,10 @@
 
 		$update['last_modified'] = time();
 
-		$rsp = db_update_users($user['cluster_id'], 'Buckets', $update, $where);
+		$rsp = db_update_users($user['cluster_id'], 'Sheets', $update, $where);
 
 		if ($rsp['ok']){
-			unset($GLOBALS['buckets_local_cache'][$bucket['id']]);
+			unset($GLOBALS['sheets_local_cache'][$sheet['id']]);
 		}
 
 		return $rsp;
@@ -355,11 +355,11 @@
 
 	#################################################################
 
-	function buckets_buckets_for_user($user, $viewer_id=0, $args=array()){
+	function sheets_sheets_for_user($user, $viewer_id=0, $args=array()){
 
 		$enc_id = AddSlashes($user['id']);
 
-		$sql = "SELECT * FROM Buckets WHERE user_id='{$enc_id}'";
+		$sql = "SELECT * FROM Sheets WHERE user_id='{$enc_id}'";
 
 		if ($user['id'] != $viewer_id){
 
@@ -377,42 +377,42 @@
 		$sql .= " ORDER BY {$order_by} {$order_sort}";
 
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
-		$buckets = array();
+		$sheets = array();
 
 		foreach ($rsp['rows'] as $row){
-			buckets_load_extras($row, $viewer_id);
-			$buckets[] = $row;
+			sheets_load_extras($row, $viewer_id);
+			$sheets[] = $row;
 		}
 
-		return $buckets;
+		return $sheets;
 	}
 
 	#################################################################
 
-	function buckets_update_dot_count_for_bucket(&$bucket){
+	function sheets_update_dot_count_for_sheet(&$sheet){
 
-		$counts = dots_count_dots_for_bucket($bucket);
+		$counts = dots_count_dots_for_sheet($sheet);
 
 		$update = array(
 			'count_dots' => $counts['total'],
 			'count_dots_public' => $counts['public'],
 		);
 
-		return buckets_update_bucket($bucket, $update);
+		return sheets_update_sheet($sheet, $update);
 	}
 
 	#################################################################
 
-	function buckets_counts_for_user(&$user, $viewer_id=0){
+	function sheets_counts_for_user(&$user, $viewer_id=0){
 
 		$enc_id = AddSlashes($user['id']);
 
 		if ($viewer_id == $user['id']){
-			$sql = "SELECT COUNT(id) AS count_buckets, SUM(count_dots) AS count_dots FROM Buckets WHERE user_id='{$enc_id}'";
+			$sql = "SELECT COUNT(id) AS count_sheets, SUM(count_dots) AS count_dots FROM Sheets WHERE user_id='{$enc_id}'";
 			return db_single(db_fetch_users($user['cluster_id'], $sql));
 		}
 
-		$sql = "SELECT COUNT(id) AS count_buckets, SUM(count_dots_public) AS count_dots FROM Buckets WHERE user_id='{$enc_id}' AND count_dots_public > 0";
+		$sql = "SELECT COUNT(id) AS count_sheets, SUM(count_dots_public) AS count_dots FROM Sheets WHERE user_id='{$enc_id}' AND count_dots_public > 0";
 		return db_single(db_fetch_users($user['cluster_id'], $sql));
 	}
 

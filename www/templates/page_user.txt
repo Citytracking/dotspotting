@@ -1,48 +1,48 @@
-{capture assign='page_title'}{$owner.username|possess} dots and buckets{/capture}
+{capture assign='page_title'}{$owner.username|possess} dots and sheets{/capture}
 {include file='inc_head.txt'}
 
 {if $cfg.user.id == $owner.id}
 
-{if $owner.counts.count_buckets == 0}
+{if $owner.counts.count_sheets == 0}
 
 <h2><a href="{$owner|@urls_url_for_user}">You</a> haven't uploaded any dots yet.</h2>
 
-{elseif $owner.counts.count_buckets == 1}
+{elseif $owner.counts.count_sheets == 1}
 
 	{if $owner.counts.count_dots == 1}
-	<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">1 dot</a> (in to a <a href="{$owner|@urls_buckets_for_user}">single bucket</a>) so far.</h2>
+	<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">1 dot</a> (in to a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>) so far.</h2>
 	{else}
-	<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to a <a href="{$owner|@urls_buckets_for_user}">single bucket</a>) so far.</h2>
+	<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>) so far.</h2>
 	{/if}
 
 {else}
 
-<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to <a href="{$owner|@urls_buckets_for_user}">{$owner.counts.count_buckets|escape} buckets</a>) so far.</h2>
+<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to <a href="{$owner|@urls_sheets_for_user}">{$owner.counts.count_sheets|escape} sheets</a>) so far.</h2>
 
 {/if}
 
 {else}
 
-{if $owner.counts.count_buckets == 0}
+{if $owner.counts.count_sheets == 0}
 
 <h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> hasn't uploaded any dots yet.</h2>
 
-{elseif $owner.counts.count_buckets == 1}
+{elseif $owner.counts.count_sheets == 1}
 
 	{if $owner.counts.count_dots == 1}
-	<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">1 dot</a> (in to a <a href="{$owner|@urls_buckets_for_user}">single bucket</a>) so far.</h2>
+	<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">1 dot</a> (in to a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>) so far.</h2>
 	{else}
-	<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to a <a href="{$owner|@urls_buckets_for_user}">single bucket</a>) so far.</h2>
+	<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>) so far.</h2>
 	{/if}
 
 {else}
 
-<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to <a href="{$owner|@urls_buckets_for_user}">{$owner.counts.count_buckets|escape} buckets</a>) so far.</h2>
+<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (in to <a href="{$owner|@urls_sheets_for_user}">{$owner.counts.count_sheets|escape} sheets</a>) so far.</h2>
 
 {/if}
 {/if}
 
-{capture assign="header"}{if $is_own}Your recently created buckets{else}{$owner.username|@possess} recently created buckets{/if}{/capture}
-{include file="inc_buckets_list.txt" header=$header}
+{capture assign="header"}{if $is_own}Your recently created sheets{else}{$owner.username|@possess} recently created sheets{/if}{/capture}
+{include file="inc_sheets_list.txt" header=$header}
 
 {include file='inc_foot.txt'}

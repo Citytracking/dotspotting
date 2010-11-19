@@ -4,7 +4,7 @@
 		<tr>
 			<th>Dot</th>
 			<th>Owner</th>
-			<th>Bucket</th>
+			<th>Sheet</th>
 			<th>Latitude</th>
 			<th>Longitude</th>
 			<th>Altitude</th>
@@ -31,10 +31,10 @@
 			{/if}
 				</td>
 
-			{if $bucket}
-				<td><a href="{$bucket|@urls_url_for_bucket}">{if $bucket.label}{$bucket.label|truncate:40:"..."|escape}{else}<span style="font-style:italic;">untitled</span>{/if}</a></td>
+			{if $sheet}
+				<td><a href="{$sheet|@urls_url_for_sheet}">{if $sheet.label}{$sheet.label|truncate:40:"..."|escape}{else}<span style="font-style:italic;">untitled</span>{/if}</a></td>
 			{else}
-				<td><a href="{$dot.bucket|@urls_url_for_bucket}">{if $dot.bucket.label}{$dot.bucket.label|truncate:40:"..."|escape}{else}<span class="untitled">untitled</span>{/if}</a></td>
+				<td><a href="{$dot.sheet|@urls_url_for_sheet}">{if $dot.sheet.label}{$dot.sheet.label|truncate:40:"..."|escape}{else}<span class="untitled">untitled</span>{/if}</a></td>
 			{/if}
 
 				<td nowrap>{if $dot.latitude}{$dot.latitude|escape}{else}&#8212;{/if}</td>

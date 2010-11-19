@@ -1,4 +1,4 @@
-{capture assign='page_title'}{$owner.username|possess} buckets{/capture}
+{capture assign='page_title'}{$owner.username|possess} dots{/capture}
 {include file='inc_head.txt'}
 
 {if $is_own}

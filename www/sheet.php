@@ -9,19 +9,19 @@
 
 	$owner = ensure_valid_user_from_url();
 
-	$bucket_id = get_int64('bucket_id');
+	$sheet_id = get_int64('sheet_id');
 
-	if (! $bucket_id){
+	if (! $sheet_id){
 		error_404();
 	}
 
-	$bucket = buckets_get_bucket($bucket_id, $GLOBALS['cfg']['user']['id']);
+	$sheet = sheets_get_sheet($sheet_id, $GLOBALS['cfg']['user']['id']);
 
-	if (! $bucket){
+	if (! $sheet){
 		error_404();
 	}
 
-	if (! buckets_can_view_bucket($bucket, $GLOBALS['cfg']['user']['id'])){
+	if (! sheets_can_view_sheet($sheet, $GLOBALS['cfg']['user']['id'])){
 		error_403();
 	}
 
@@ -31,37 +31,37 @@
 	$smarty->assign("is_own", $is_own);
 
 	$smarty->assign_by_ref("owner", $owner);
-	$smarty->assign_by_ref("bucket", $bucket);
+	$smarty->assign_by_ref("sheet", $sheet);
 
-	# delete this bucket?
+	# delete this sheet?
 
 	if ($is_own){
 
-		$crumb_key = 'delete-bucket';
+		$crumb_key = 'delete-sheet';
 		$smarty->assign("crumb_key", $crumb_key);
 
 		if ((post_str('delete')) && (crumb_check($crumb_key))){
 
 			if (post_str('confirm')){
 
-				$rsp = buckets_delete_bucket($bucket);
+				$rsp = sheets_delete_sheet($sheet);
 				$smarty->assign('deleted', $rsp);
 			}
 
 			if ($rsp['ok']){
 
-				$redir = urls_buckets_for_user($GLOBALS['cfg']['user']) . "?deleted=1";
+				$redir = urls_sheets_for_user($GLOBALS['cfg']['user']) . "?deleted=1";
 				header("location: $redir");
 				exit();
 			}
 
-			$smarty->display('page_bucket_delete.txt');
+			$smarty->display('page_sheet_delete.txt');
 			exit();
 		}
 	}
 
 	# Hey look! At least to start we are deliberately not doing
-	# any pagination on the 'dots-for-a-bucket' page. We'll see
+	# any pagination on the 'dots-for-a-sheet' page. We'll see
 	# how long its actually sustainable but for now it keeps a
 	# variety of (display) avenues open.
 	# (20101025/straup)
@@ -70,13 +70,13 @@
 		'per_page' => $GLOBALS['cfg']['import_max_records'],
 	);
 
-	$bucket['dots'] = dots_get_dots_for_bucket($bucket, $GLOBALS['cfg']['user']['id'], $more);
+	$sheet['dots'] = dots_get_dots_for_sheet($sheet, $GLOBALS['cfg']['user']['id'], $more);
 
 	if ($is_own){
 		$smarty->assign("permissions_map", dots_permissions_map());
 		$smarty->assign("geocoder_map", geo_geocode_service_map());
 	}
 
-	$smarty->display("page_bucket.txt");
+	$smarty->display("page_sheet.txt");
 	exit;
 ?>

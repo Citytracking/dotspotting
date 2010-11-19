@@ -43,8 +43,8 @@
 
 	#################################################################
 
-	loadlib("buckets");
 	loadlib("dots");
+	loadlib("sheets");
 	loadlib("urls");
 	loadlib("user_agent");
 	loadlib("filter");
@@ -143,7 +143,7 @@
 	#################################################################
 
 	function users_delete_user_callback(&$user){
-		return buckets_delete_buckets_for_user($user);
+		return sheets_delete_sheets_for_user($user);
 	}
 
 	#################################################################

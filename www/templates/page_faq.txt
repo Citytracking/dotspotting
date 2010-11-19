@@ -25,11 +25,11 @@
 
 <p class="tx1"><span class="important">By default all dots are imported in to Dotspotting as publicly viewable.</span> At upload time you can either specify that all, or some, of the dots be made private however there is currently <strong>no way to change privacy settings on a dot</strong> once it's been uploaded. <em>This is not a feature. We'll be adding this functionality shortly.</em></p>
 
-<a name="buckets"></a>
+<a name="sheets"></a>
 
-<h4>What are <q>Buckets</q>?</h4>
+<h4>What are <q>Sheets</q>?</h4>
 
-<p class="tx1">Buckets are the context in which one or more dots were imported in to Dotspotting. At the moment, the only kind of context is the file uploaded to Dotspotting that one or more dots are listed in. They are separate and distinct from other kinds of collections, say a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
+<p class="tx1">Sheets are the context in which one or more dots were imported in to Dotspotting. At the moment, the only kind of context is the file uploaded to Dotspotting that one or more dots are listed in. They are separate and distinct from other kinds of collections, say a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
 
 <a name="csv"></a>
 

@@ -4,7 +4,7 @@
 <h2>Your Stuff</h2>
 
 <ul>
-	<li><a href="{$cfg.user|@urls_buckets_for_user}">All your buckets</a></li>
+	<li><a href="{$cfg.user|@urls_sheets_for_user}">All your sheets</a></li>
 	<li><a href="{$cfg.user|@urls_dots_for_user}">All your dots</a></li>
 </ul>
 

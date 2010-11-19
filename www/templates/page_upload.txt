@@ -25,10 +25,10 @@
 
 {if $upload_complete}
 
-{if $rsp.bucket.label}
-<p>Your dots ({$rsp.dots_processed|escape} of them) have been uploaded in to a bucket labeled <a href="{$rsp.bucket|@urls_url_for_bucket}">{$rsp.bucket.label|escape}</a>.</p>
+{if $rsp.sheet.label}
+<p>Your dots ({$rsp.dots_processed|escape} of them) have been uploaded in to a sheet labeled <a href="{$rsp.sheet|@urls_url_for_sheet}">{$rsp.sheet.label|escape}</a>.</p>
 {else}
-<p>Your dots ({$rsp.dots_processed|escape} of them) have been uploaded in to a new <a href="{$rsp.bucket|@urls_url_for_bucket}">bucket</a>.</p>
+<p>Your dots ({$rsp.dots_processed|escape} of them) have been uploaded in to a new <a href="{$rsp.sheet|@urls_url_for_sheet}">sheet</a>.</p>
 {/if}
 
 {if $rsp.dots_received != $rsp.dots_processed}

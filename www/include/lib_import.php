@@ -179,7 +179,7 @@
 
 		# TO DO: check $GLOBALS['cfg'] to see whether we should
 		# store a permanent copy of $file['tmp_name'] somewhere
-		# on disk. It would be nice to store it with the bucket
+		# on disk. It would be nice to store it with the sheet
 		# ID the data has been associated which we don't have
 		# yet so maybe this isn't the best place to do the storing...
 		# (2010107/straup) 
@@ -193,7 +193,7 @@
 
 		#
 		# First do some sanity-checking on the data before
-		# we bother to create a bucket.
+		# we bother to create a sheet.
 		#
 
 		$record = 1;
@@ -217,16 +217,16 @@
 		}
 
 		#
-		# CAN I HAS MAH BUCKET?
+		# CAN I HAS MAH SHEET?
 		#
 
-		$bucket_rsp = buckets_create_bucket($user, $more);
+		$sheet_rsp = sheets_create_sheet($user, $more);
 
-		if (! $bucket_rsp['ok']){
-			return $bucket_rsp;
+		if (! $sheet_rsp['ok']){
+			return $sheet_rsp;
 		}
 
-		$bucket = $bucket_rsp['bucket'];		
+		$sheet = $sheet_rsp['sheet'];		
 
 		#
 		# OMG!!! IT'S FULL OF DOTS!!!!
@@ -234,23 +234,23 @@
 	
 		$more['skip_validation'] = 1;	# see above
 
-		$dots_rsp = dots_import_dots($user, $bucket_rsp['bucket'], $data, $more);
+		$dots_rsp = dots_import_dots($user, $sheet_rsp['sheet'], $data, $more);
 
-		# No soup for bucket! Or is it the other way around...
+		# No soup for sheet! Or is it the other way around...
 
 		if (! $dots_rsp['ok']){
-			buckets_delete_bucket($bucket);
+			sheets_delete_sheet($sheet);
 		}
 
 		else {
 
-			$dots_rsp['bucket'] = $bucket;
+			$dots_rsp['sheet'] = $sheet;
 
-			$count_rsp = buckets_update_dot_count_for_bucket($bucket);
-			$dots_rsp['update_bucket_count'] = $count_rsp['ok'];
+			$count_rsp = sheets_update_dot_count_for_sheet($sheet);
+			$dots_rsp['update_sheet_count'] = $count_rsp['ok'];
 
 			if ($more['return_dots']){
-				$dots_rsp['dots'] = dots_get_dots_for_bucket($bucket, $bucket['user_id']);
+				$dots_rsp['dots'] = dots_get_dots_for_sheet($sheet, $sheet['user_id']);
 			}
 		}
 

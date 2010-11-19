@@ -12,24 +12,24 @@
 	#################################################################
 
 	#
-	# Ensure the user, the bucket and perms
+	# Ensure the user, the sheet and perms
 	#
 
 	$owner = ensure_valid_user_from_url();
 
-	$bucket_id = get_int64('bucket_id');
+	$sheet_id = get_int64('sheet_id');
 
-	if (! $bucket_id){
+	if (! $sheet_id){
 		error_404();
 	}
 
-	$bucket = buckets_get_bucket($bucket_id, $GLOBALS['cfg']['user']['id']);
+	$sheet = sheets_get_sheet($sheet_id, $GLOBALS['cfg']['user']['id']);
 
-	if (! $bucket){
+	if (! $sheet){
 		error_404();
 	}
 
-	if (! buckets_can_view_bucket($bucket, $GLOBALS['cfg']['user']['id'])){
+	if (! sheets_can_view_sheet($sheet, $GLOBALS['cfg']['user']['id'])){
 		error_403();
 	}
 
@@ -50,7 +50,7 @@
 	}
 
 	# Hey look! At least to start we are deliberately not doing
-	# any pagination on the 'dots-for-a-bucket' page. We'll see
+	# any pagination on the 'dots-for-a-sheet' page. We'll see
 	# how long its actually sustainable but for now it keeps a
 	# variety of (display) avenues open.
 	# (20101025/straup)
@@ -59,20 +59,20 @@
 		'per_page' => $GLOBALS['cfg']['import_max_records'],
 	);
 
-	$bucket['dots'] = dots_get_dots_for_bucket($bucket, $GLOBALS['cfg']['user']['id'], $more);
-	$bbox = implode(", ", array_values($bucket['extent']));
+	$sheet['dots'] = dots_get_dots_for_sheet($sheet, $GLOBALS['cfg']['user']['id'], $more);
+	$bbox = implode(", ", array_values($sheet['extent']));
 
 	$mimetype = $map[$format];
-	$filename = "dotspotting-bucket-{$bucket['id']}.{$format}";
+	$filename = "dotspotting-sheet-{$sheet['id']}.{$format}";
 
 	if (! get_str('inline')){
 		header("Content-Type: " . htmlspecialchars($mimetype));
 		header("Content-Disposition: attachment; filename=\"{$filename}\"");
 	}
 
-	header("X-Dotspotting-Bucket-ID: " . htmlspecialchars($bucket['id']));
-	header("X-Dotspotting-Bucket-Label: " . htmlspecialchars($bucket['label']));
-	header("X-Dotspotting-Bucket-Extent: " . htmlspecialchars($bbox));
+	header("X-Dotspotting-Sheet-ID: " . htmlspecialchars($sheet['id']));
+	header("X-Dotspotting-Sheet-Label: " . htmlspecialchars($sheet['label']));
+	header("X-Dotspotting-Sheet-Extent: " . htmlspecialchars($bbox));
 
 	#
 	# As of this writing, the 'export' functionality assumes that
@@ -85,6 +85,6 @@
 	# (20101028/straup)
 	#
 
-	export_dots($bucket['dots'], $format);
+	export_dots($sheet['dots'], $format);
 	exit();
 ?>

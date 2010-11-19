@@ -1,12 +1,12 @@
 {literal}
 <script type="text/javascript">
 
-function collect_buckets(){
+function collect_sheets(){
 
-	// read the table looking for buckets
+	// read the table looking for sheets
 
-	var selector = "#user_buckets tbody tr";
-	var buckets = [];
+	var selector = "#user_sheets tbody tr";
+	var sheets = [];
 
 	var swlat = null;
 	var swlon = null;
@@ -47,7 +47,7 @@ function collect_buckets(){
 			lon: parseFloat(_extent[3])
 		};
 
-		buckets.push([sw, ne]);
+		sheets.push([sw, ne]);
 
 		swlat = (swlat) ? Math.min(swlat, sw.lat) : sw.lat;
 		swlon = (swlon) ? Math.min(swlon, sw.lon) : sw.lon;
@@ -80,15 +80,15 @@ function collect_buckets(){
 	];
 
 	return {
-		'buckets': buckets,
+		'sheets': sheets,
 		'bbox': extent,
 		'features': features
 	};
 }
 
-function draw_map_modestmaps(buckets){
+function draw_map_modestmaps(sheets){
 
-	var bbox = utils_adjust_bbox(buckets['bbox']);
+	var bbox = utils_adjust_bbox(sheets['bbox']);
 
 	var extent = [
 		new mm.Location(bbox[0]['lat'], bbox[0]['lon']),
@@ -108,11 +108,11 @@ function draw_map_modestmaps(buckets){
 
 	var polygons = [];
 
-	count_buckets = buckets['buckets'].length;
+	count_sheets = sheets['sheets'].length;
 
-	for (var i = 0; i < count_buckets; i++){
+	for (var i = 0; i < count_sheets; i++){
 
-		var corners = buckets['buckets'][i];
+		var corners = sheets['sheets'][i];
 		var sw = corners[0];
 		var ne = corners[1];
 
@@ -141,18 +141,18 @@ function draw_map_modestmaps(buckets){
 	return;
 }
 
-function draw_map_polymaps(buckets){
+function draw_map_polymaps(sheets){
 
 	var po = org.polymaps;
 	var map = utils_polymap('map');
 
-	var bbox = utils_adjust_bbox(buckets['bbox']);
+	var bbox = utils_adjust_bbox(sheets['bbox']);
 
 	map.extent(bbox);
 	map.zoom(Math.floor(map.zoom()));
 
 	var boxes = po.geoJson();
-	boxes.features(buckets['features']);
+	boxes.features(sheets['features']);
 	boxes.on("load", po.stylist());
 
 	map.add(boxes);
@@ -160,14 +160,14 @@ function draw_map_polymaps(buckets){
 
 function draw_map(){
 
-	var buckets = collect_buckets();
+	var sheets = collect_sheets();
 
 	if (canhas_polymaps){	
-		draw_map_polymaps(buckets);
+		draw_map_polymaps(sheets);
 		return;
 	}
 
-	draw_map_modestmaps(buckets);
+	draw_map_modestmaps(sheets);
 }
 	
 draw_map();

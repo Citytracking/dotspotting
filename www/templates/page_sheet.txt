@@ -1,0 +1,57 @@
+{capture assign="page_title"}
+{if $is_own}
+	{if $sheet.label}
+"{$sheet.label|escape}", a sheet of dots by you!
+	{else}
+An unnamed sheet of dots by you!
+	{/if}
+{else}
+	{if $sheet.label}
+"{$sheet.label|escape}", a sheet of dots by {$cfg.user.username|escape}
+	{else}
+An unnamed sheet of dots by {$cfg.user.username|escape}
+	{/if}
+{/if}
+{/capture}
+{include file="inc_head.txt"}
+
+<h2>
+{if $sheet.label}
+{$sheet.label|escape}
+{else}
+Sheet ID #{$sheet.id|escape}
+{/if}
+
+<span style="font-size:small;">/ <a href="{$sheet|@urls_url_for_sheet}export">export</a></span>
+</h2>
+
+{if $is_own}
+<form method="POST" style="float:right;">
+	{$crumb_key|crumb_input}
+	<input type="hidden" name="delete" value="1" />
+	<input type="submit" value="DELETE THIS SHEET" />
+</form>
+{/if}
+
+<table>
+	<tr>
+		<th>Owner</th>
+		<td><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a></td>
+	</tr>
+	<tr>
+		<th>Created</th>
+		<td>{$sheet.created|date_format:"%Y-%m-%d %H %M"|escape}</td>
+	</tr>
+	<tr>
+		<th>Last Modified</th>
+		<td>{$sheet.created|date_format:"%Y-%m-%d %H %M"|escape}</td>
+	</tr>
+	<tr>
+		<th>Bounding Box</th>
+		<td>{$sheet.extent.swlat|escape} {$sheet.extent.swlon|escape} {$sheet.extent.nelat|escape} {$sheet.extent.nelon|escape}</td>
+	</tr>
+</table>
+
+{include file="inc_dots_list.txt" dots=$sheet.dots}
+
+{include file="inc_foot.txt"}

@@ -31,10 +31,10 @@ A dot by {$cfg.user.username|escape}
 {include file="inc_head.txt"}
 
 {include file="inc_map.txt"}
-{if $dot.bucket.label}
-<p>This dot is part of a bucket named <a href="{$dot.bucket|@urls_url_for_bucket}">{$dot.bucket.label|escape}</a>, created {$dot.bucket.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
+{if $dot.sheet.label}
+<p>This dot is part of a sheet named <a href="{$dot.sheet|@urls_url_for_sheet}">{$dot.sheet.label|escape}</a>, created {$dot.sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
 {else}
-<p>This dot is part of an <a href="{$dot.bucket|@urls_url_for_bucket}">unnamed bucket</a>, created {$dot.bucket.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
+<p>This dot is part of an <a href="{$dot.sheet|@urls_url_for_sheet}">unnamed sheet</a>, created {$dot.sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
 {/if}
 
 <table>

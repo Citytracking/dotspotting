@@ -44,7 +44,7 @@
 
 	#################################################################
 
-	function dots_import_dots(&$user, &$bucket, &$dots, $more=array()){
+	function dots_import_dots(&$user, &$sheet, &$dots, $more=array()){
 
 		$received = 0;
 		$processed = 0;
@@ -63,7 +63,7 @@
 
 			$start = microtime_ms() / 1000;
 
-			$rsp = dots_create_dot($user, $bucket, $dot, $more);
+			$rsp = dots_create_dot($user, $sheet, $dot, $more);
 
 			$end = microtime_ms() / 1000;
 
@@ -96,7 +96,7 @@
 
 	#################################################################
 
-	function dots_create_dot(&$user, &$bucket, &$data, $more=array()){
+	function dots_create_dot(&$user, &$sheet, &$data, $more=array()){
 
 		# if we've gotten here via lib_uploads then
 		# we will have already done validation.
@@ -176,7 +176,7 @@
 		$dot = array(
 			'id' => $id,
 			'user_id' => $user['id'],
-			'bucket_id' => $bucket['id'],
+			'sheet_id' => $sheet['id'],
 			'imported' => $now,
 			'last_modified' => $now,
 			'perms' => $perms,
@@ -252,7 +252,7 @@
 
 		#
 		# Denormalize the list of (not standard) extras
-		# keys for display on bucket/dot list views - this
+		# keys for display on sheet/dot list views - this
 		# is mostly so that we don't have to fetch (n) rows
 		# from DotsExtras everytime we show a list of dots.
 		#
@@ -279,7 +279,7 @@
 
 		$lookup = array(
 			'dot_id' => $id,
-			'bucket_id' => $bucket['id'],
+			'sheet_id' => $sheet['id'],
 			'user_id' => $user['id'],
 			'imported' => $now,
 			'created' => $dot['created'],
@@ -330,8 +330,8 @@
 
 		if (isset($update['perms'])){
 
-			$bucket = buckets_get_bucket($dot['bucket_id']);
-			$count_rsp = buckets_update_dot_count_for_bucket($bucket);
+			$sheet = sheets_get_sheet($dot['sheet_id']);
+			$count_rsp = sheets_update_dot_count_for_sheet($sheet);
 
 			$lookup_update = array(
 				'perms' => $update['perms']
@@ -369,12 +369,12 @@
 		$sql = "DELETE FROM Dots WHERE id='{$enc_id}'";
 		$rsp = db_write_users($user['cluster_id'], $sql);
 
-		if (($rsp['ok']) && (! isset($more['skip_bucket_update']))){
+		if (($rsp['ok']) && (! isset($more['skip_sheet_update']))){
 
-			$bucket = buckets_get_bucket($dot['bucket_id']);
+			$sheet = sheets_get_sheet($dot['sheet_id']);
 
-			$rsp2 = buckets_update_dot_count_for_bucket($bucket);
-			$rsp['update_bucket_count'] = $rsp2['ok'];
+			$rsp2 = sheets_update_dot_count_for_sheet($sheet);
+			$rsp['update_sheet_count'] = $rsp2['ok'];
 		}
 
 		#
@@ -408,15 +408,15 @@
 
 	#################################################################
 
-	function dots_get_extent_for_bucket(&$bucket, $viewer_id=0){
+	function dots_get_extent_for_sheet(&$sheet, $viewer_id=0){
 
-		$user = users_get_by_id($bucket['user_id']);
+		$user = users_get_by_id($sheet['user_id']);
 
-		$enc_id = AddSlashes($bucket['id']);
+		$enc_id = AddSlashes($sheet['id']);
 
-		$sql = "SELECT MIN(latitude) AS swlat, MIN(longitude) AS swlon, MAX(latitude) AS nelat, MAX(longitude) AS nelon FROM Dots WHERE bucket_id='{$enc_id}'";
+		$sql = "SELECT MIN(latitude) AS swlat, MIN(longitude) AS swlon, MAX(latitude) AS nelat, MAX(longitude) AS nelon FROM Dots WHERE sheet_id='{$enc_id}'";
 
-		if ($viewer_id !== $bucket['user_id']){
+		if ($viewer_id !== $sheet['user_id']){
 
 			$sql = _dots_where_public_sql($sql);
 		}
@@ -427,7 +427,7 @@
 	#################################################################
 
 	#
-	# Grab the bucket from db_main
+	# Grab the sheet from db_main
 	#
 
 	function dots_lookup_dot($dot_id){
@@ -491,7 +491,7 @@
 		}
 
 		if ($dot){
-			$more['load_bucket'] = 1;
+			$more['load_sheet'] = 1;
 			dots_load_relations($dot, $viewer_id, $more);
 		}
 
@@ -523,8 +523,8 @@
 
 		$recent = array();
 
-		$bucket_sql = "SELECT * FROM BucketsLookup WHERE deleted=0 ORDER BY created DESC";
-		$bucket_args = array( 'page' => 1 );
+		$sheet_sql = "SELECT * FROM SheetsLookup WHERE deleted=0 ORDER BY created DESC";
+		$sheet_args = array( 'page' => 1 );
 
 		$page_count = null;
 		$total_count = null;
@@ -532,24 +532,24 @@
 		$iters = 0;
 		$max_iters = 15;
 
-		while((! isset($page_count)) || ($page_count >= $bucket_args['page'])){
+		while((! isset($page_count)) || ($page_count >= $sheet_args['page'])){
 
-			$bucket_rsp = db_fetch_paginated($bucket_sql, $bucket_args);
+			$sheet_rsp = db_fetch_paginated($sheet_sql, $sheet_args);
 
-			if (! $bucket_rsp['ok']){
+			if (! $sheet_rsp['ok']){
 				break;
 			}
 
 			if (! isset($page_count)){
-				$page_count = $bucket_rsp['pagination']['page_count'];
-				$total_count = $bucket_rsp['pagination']['total_count'];
+				$page_count = $sheet_rsp['pagination']['page_count'];
+				$total_count = $sheet_rsp['pagination']['total_count'];
 			}
 
-			foreach ($bucket_rsp['rows'] as $bucket){
+			foreach ($sheet_rsp['rows'] as $sheet){
 
-				$enc_bucket = AddSlashes($bucket['bucket_id']);
+				$enc_sheet = AddSlashes($sheet['sheet_id']);
 
-				$dot_sql = "SELECT * FROM DotsLookup WHERE bucket_id='{$enc_bucket}' AND perms=0 AND deleted=0 ORDER BY imported DESC";
+				$dot_sql = "SELECT * FROM DotsLookup WHERE sheet_id='{$enc_sheet}' AND perms=0 AND deleted=0 ORDER BY imported DESC";
 				$dot_args = array( 'per_page' => 15 );
 
 				$dot_rsp = db_fetch_paginated($dot_sql, $dot_args);
@@ -583,7 +583,7 @@
 				break;
 			}
 
-			$bucket_args['page'] ++;
+			$sheet_args['page'] ++;
 			$iters ++;
 
 			if ($iters == $max_iters){
@@ -597,15 +597,15 @@
 
 	#################################################################
 
-	function dots_get_dots_for_bucket(&$bucket, $viewer_id=0, $more=array()){
+	function dots_get_dots_for_sheet(&$sheet, $viewer_id=0, $more=array()){
 
-		$user = users_get_by_id($bucket['user_id']);
+		$user = users_get_by_id($sheet['user_id']);
 
-		$enc_id = AddSlashes($bucket['id']);
+		$enc_id = AddSlashes($sheet['id']);
 
-		$sql = "SELECT * FROM Dots WHERE bucket_id='{$enc_id}'";
+		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_id}'";
 
-		if ($viewer_id !== $bucket['user_id']){
+		if ($viewer_id !== $sheet['user_id']){
 
 			$sql = _dots_where_public_sql($sql);
 		}
@@ -659,7 +659,7 @@
 		$dots = array();
 
 		$even_more = array(
-			'load_bucket' => 1,
+			'load_sheet' => 1,
 		);
 
 		foreach ($rsp['rows'] as $dot){
@@ -673,19 +673,19 @@
 
 	#################################################################
 
-	function dots_count_dots_for_bucket(&$bucket){
+	function dots_count_dots_for_sheet(&$sheet){
 
-		$user = users_get_by_id($bucket['user_id']);
-		$enc_id = AddSlashes($bucket['id']);
+		$user = users_get_by_id($sheet['user_id']);
+		$enc_id = AddSlashes($sheet['id']);
 
-		$sql = "SELECT COUNT(id) AS count_total FROM Dots WHERE bucket_id='{$enc_id}'";
+		$sql = "SELECT COUNT(id) AS count_total FROM Dots WHERE sheet_id='{$enc_id}'";
 
 		$rsp = db_fetch_users($user['cluster_id'], $sql);
 		$row = db_single($rsp);
 
 		$count_total = $row['count_total'];
 
-		$sql = "SELECT COUNT(id) AS count_public FROM Dots WHERE bucket_id='{$enc_id}'";
+		$sql = "SELECT COUNT(id) AS count_public FROM Dots WHERE sheet_id='{$enc_id}'";
 
 		$sql = _dots_where_public_sql($sql);
 
@@ -722,8 +722,8 @@
 
 		#
 
-		if ($more['load_bucket']){
-	 		$dot['bucket'] = buckets_get_bucket($dot['bucket_id']);
+		if ($more['load_sheet']){
+	 		$dot['sheet'] = sheets_get_sheet($dot['sheet_id']);
 		}
 
 		if ($more['load_user']){

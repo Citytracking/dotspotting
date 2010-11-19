@@ -13,10 +13,10 @@
 
 	#################################################################
 
-	function urls_url_for_bucket(&$bucket){
+	function urls_url_for_sheet(&$sheet){
 
-		$user = users_get_by_id($bucket['user_id']);
-		return urls_buckets_for_user($user) . "{$bucket['id']}/";
+		$user = users_get_by_id($sheet['user_id']);
+		return urls_sheets_for_user($user) . "{$sheet['id']}/";
 	}
 
 	#################################################################
@@ -36,9 +36,9 @@
 
 	#################################################################
 
-	function urls_buckets_for_user(&$user){
+	function urls_sheets_for_user(&$user){
 
-		return urls_url_for_user($user) . "buckets/";
+		return urls_url_for_user($user) . "sheets/";
 	}
 
 	#################################################################
