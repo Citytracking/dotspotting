@@ -234,8 +234,6 @@
 
 		$dot['details_json'] = json_encode($details);
 
-		dumper($dot);
-
 		#
 		# Look, we are creating the dot now
 		#
