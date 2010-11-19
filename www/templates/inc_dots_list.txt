@@ -42,7 +42,7 @@
 				<td nowrap>{if $dot.altitude}{$dot.altitude|escape}{else}&#8212;{/if}</td>
 				<td nowrap>{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&l={$dot.location|escape:'url'}">{$dot.location|escape}</a>{else}&#8212;{/if}</td>
 				<td nowrap>{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&t={$dot.type|escape:'url'}">{$dot.type|escape}</a>{else}&#8212;{/if}</td>
-				<td>{if $dot.created}{$dot.created|date_format:"%Y-%m-%d %H:%M"|escape}{else}&#8212;{/if}</td>
+				<td>{if $dot.created}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&dt=({$dot.created|date_format:"%Y-%m-%dT%H"|escape:'url'})">{$dot.created|escape}{else}&#8212;{/if}</td>
 
 			{if $is_own}
 				<td>{$permissions_map.$perms|escape}</td>

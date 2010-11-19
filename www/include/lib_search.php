@@ -21,6 +21,11 @@
 		# type, perms
 		# dt, perms
 
+		#
+		# Note that order of these keys is important. They are dictated by
+		# the indexes on DotsSearch.
+		#
+
 		foreach (array('user', 'geo', 'time', 'type', 'location') as $what){
 
 			if (isset($where_parts[$what])){
@@ -51,15 +56,16 @@
 		}
 
 		#
-		# Check to see if we can just query a user's shard
+		# Check to see if we can just query a user's shard. This is
+		# just a placeholder for now as everything reads from DotsSearch.
+		# See also: README.SEARCH.md (20101120/straup)
 		#
 
-		$use_shard = (isset($where_parts['user_row'])) ? 1 : 0;
-
-		if ($use_shard){
-
-			$use_shard = (isset($where_parts['type']) || isset($where_parts['location']) || isset($where_parts['time']) ? 1 : 0;
-		}
+		# $use_shard = (isset($where_parts['user_row'])) ? 1 : 0;
+		# 
+		# if ($use_shard){
+		# 	$use_shard = (isset($where_parts['type']) || isset($where_parts['location']) || isset($where_parts['time']) ? 1 : 0;
+		# }
 
 		#
 		# Go!
@@ -71,6 +77,8 @@
 
 		return _search_dots_all($where, $more);
 	}
+
+	#################################################################
 
 	function _search_dots_all($where, $more=array()){
 
@@ -167,13 +175,47 @@
 
 		if ($args['dt']){
 
-			$parts = explode("/", $args['dt'], 2);
-
-			$date_start = strtotime($parts[0]);
+			$date_start = null;
 			$date_end = null;
 
-			if (count($parts) == 2){
-				$date_end = strtotime($parts[1]);
+			# "Around" a given date. For example:
+			# http://dotspotting.example.com/search/?dt=(2010-10)
+
+			if (preg_match("/^\(((\d{4})(?:-(\d{2})(?:-(\d{2})(?:(?:T|\s)(\d{2})(?:\:(\d{2})(?:\:(\d{2}))?)?)?)?)?)\)$/i", $args['dt'], $m)){
+
+				list($ignore, $dt, $year, $month, $day, $hour) = $m;
+
+				$offset = 0;
+
+				if ($hour){
+					$offset = 60 * 60;
+				}
+
+				elseif ($day){
+					$offset = 60 * 60 * 24;
+				}
+
+				elseif ($month){
+					$offset = 60 * 60 * 24 * 28;
+				}
+
+				elseif ($year){
+					$offset = 60 * 60 * 24 * 365;
+				}
+
+				if ($ts = strtotime($dt)){
+					$date_start = $ts - $offset;
+					$date_end = $ts + $offset;
+				}
+			}
+
+			else {
+				$parts = explode("/", $args['dt'], 2);
+				$date_start = strtotime($parts[0]);
+
+				if (count($parts) == 2){
+					$date_end = strtotime($parts[1]);
+				}
 			}
 
 			# ensure ($parts[0] && $date_start) and ($parts[1] && $end_date) here ?
