@@ -3,6 +3,7 @@
 {include file="inc_head.txt"}
 
 <h2>{$page_title|escape}</h2>
+{if $query_all_url}<div id="search_see_all"><a href="{$cfg.abs_root_url}{$query_all_url|escape}">see results for all users</a></div>{/if}
 
 {include file="inc_dots_list.txt"}
 {pagination}

@@ -21,7 +21,7 @@
 		# type, perms
 		# dt, perms
 
-		foreach (array('user', 'geo', 'time', 'type') as $what){
+		foreach (array('user', 'geo', 'time', 'type', 'location') as $what){
 
 			if (isset($where_parts[$what])){
 				$where = array_merge($where, $where_parts[$what]);
@@ -51,15 +51,39 @@
 		}
 
 		#
+		# Check to see if we can just query a user's shard
+		#
+
+		$use_shard = 1;
+
+		if ($use_shard){
+
+			$use_shard = (isset($where_parts['geo']) && $where_parts['geo_query'] == 'geohash') ? 1 : 0;
+		}
+
+		if ($use_shard){
+
+			$use_shard = (isset($where_parts['type']) || isset($where_parts['location'])) ? 1 : 0;
+		}
+
+		#
+		# Go!
+		#
+
+		$more = array(
+		      'page' => $args['page'],
+		);
+
+		return _search_dots_all($where, $more);
+	}
+
+	function _search_dots_all($where, $more=array()){
+
+		#
 		# Go!
 		#
 
 		$sql = "SELECT * FROM DotsSearch WHERE " . implode(" AND ", $where);
-
-		$more = array(
-			'page' => $args['page'],
-		);
-
 		$rsp = db_fetch_paginated($sql, $more);
 
 		if (! $rsp['ok']){
@@ -93,7 +117,7 @@
 		# Geo
 		#
 
-		if ($args['bbox']){
+		if ($args['b']){
 
 			list($swlat, $swlon, $nelat, $nelon) = explode(",", $args['bbox'], 4);
 
@@ -103,6 +127,8 @@
 				"`latitude` <= " . AddSlashes($nelat),
 				"`longitude` <= " . AddSlashes($nelon),
 			);
+
+			$where_parts['geo_query'] = 'bbox';
 		}
 
 		else if ($args['gh']){
@@ -112,6 +138,8 @@
 			$where_parts['geo'] = array(
 				"`geohash` LIKE '" . AddSlashes($geohash) . "%'",
 			);
+
+			$where_parts['geo_query'] = 'geohash';
 		}
 
 		else {}
@@ -120,10 +148,10 @@
 		# type (or poorman's "what")
 		#
 
-		if ($args['type']){
+		if ($args['t']){
 
 			$where_parts['type'] = array(
-				"`type`='" . AddSlashes($args['type']) . "'",
+				"`type`='" . AddSlashes($args['t']) . "'",
 			);
 		}
 
@@ -131,10 +159,10 @@
 		# location (or poorman's "where")
 		#
 
-		if ($args['location']){
+		if ($args['l']){
 
 			$where_parts['location'] = array(
-				"`location`='" . AddSlashes($args['location']) . "'",
+				"`location`='" . AddSlashes($args['l']) . "'",
 			);
 		}
 
