@@ -20,9 +20,9 @@ CREATE TABLE `Dots` (
   `user_id` int(11) unsigned NOT NULL,
   `perms` tinyint(3) unsigned NOT NULL,
   `details_json` text NOT NULL,
-  `created` datetime DEFAULT NULL,
-  `type` varchar(255) NOT NULL,
   `location` varchar(255) NOT NULL,
-  KEY `by_user` (`user_id`),
-  KEY `by_sheet` (`sheet_id`)
+  KEY `by_user` (`user_id`, `perms`),
+  KEY `by_user_created` (`user_id`, `perms`, `created`),
+  KEY `by_sheet` (`sheet_id`, `perms`)
+  KEY `by_sheet_created` (`sheet_id`, `perms`, `created`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -172,11 +172,15 @@
 			'sheet_id' => $sheet['id'],
 			'perms' => $perms,
 		);
-
+					
 		$to_denormalize = array(
-			'location',
-			'type',
 			'created',
+
+			# Maybe on these but not. Maybe, as in
+			# for sorting but that might be easier
+			# in JS? (20101120/straup)
+			# 'location',
+			# 'type',
 		);
 
 		foreach ($to_denormalize as $key){
@@ -634,7 +638,7 @@
 			$sql = _dots_where_public_sql($sql);
 		}
 
-		$order_by = 'created,id';
+		$order_by = 'id';
 		$order_sort = 'ASC';
 
 		# check $args here for additioning sorting

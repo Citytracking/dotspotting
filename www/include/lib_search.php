@@ -54,16 +54,11 @@
 		# Check to see if we can just query a user's shard
 		#
 
-		$use_shard = 1;
+		$use_shard = (isset($where_parts['user_row'])) ? 1 : 0;
 
 		if ($use_shard){
 
-			$use_shard = (isset($where_parts['geo']) && $where_parts['geo_query'] == 'geohash') ? 1 : 0;
-		}
-
-		if ($use_shard){
-
-			$use_shard = (isset($where_parts['type']) || isset($where_parts['location'])) ? 1 : 0;
+			$use_shard = (isset($where_parts['type']) || isset($where_parts['location']) || isset($where_parts['time']) ? 1 : 0;
 		}
 
 		#
