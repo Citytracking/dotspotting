@@ -461,7 +461,7 @@
 	function dots_get_dot($dot_id, $viewer_id=0, $more=array()){
 
 		# Can has cache! Note this is just the raw stuff
-		# from the Dots table and that 'relations' get loaded
+		# from the Dots table and that 'details' get loaded
 		# below.
 
 		if (isset($GLOBALS['dots_local_cache'][$dot_id])){
@@ -470,20 +470,32 @@
 
 		else {
 
-			$lookup = dots_lookup_dot($dot_id);
+			# This is the kind of thing that would be set by lib_search
 
-			if (! $lookup){
+			if ($user_id = $more['dot_user_id']){
+				$user = users_get_by_id($more['dot_user_id']);
+			}
+
+			else {
+				$lookup = dots_lookup_dot($dot_id);
+
+				if (! $lookup){
+					return;
+				}
+
+				if ($lookup['deleted']){
+					return array(
+						'id' => $lookup['dot_id'],
+						'deleted' => $lookup['deleted'],
+					);
+				}
+
+				$user = users_get_by_id($lookup['user_id']);
+			}
+
+			if (! $user){
 				return;
 			}
-
-			if ($lookup['deleted']){
-				return array(
-					'id' => $lookup['dot_id'],
-					'deleted' => $lookup['deleted'],
-				);
-			}
-
-			$user = users_get_by_id($lookup['user_id']);
 
 			$enc_id = AddSlashes($dot_id);
 			$enc_user = AddSlashes($user['id']);
@@ -748,7 +760,12 @@
 		#
 
 		if ($more['load_sheet']){
-	 		$dot['sheet'] = sheets_get_sheet($dot['sheet_id']);
+
+			$sheet_more = array(
+				'sheet_user_id' => $dot['user_id'],
+			);
+
+	 		$dot['sheet'] = sheets_get_sheet($dot['sheet_id'], $viewer_id, $sheet_more);
 		}
 
 		if ($more['load_user']){

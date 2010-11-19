@@ -76,7 +76,7 @@
 		# Okay!
 		#
 
-		sheets_load_extras($sheet, $user['id']);
+		sheets_load_details($sheet, $user['id']);
 
 		$rsp['sheet'] = $sheet;
 		return $rsp;
@@ -255,9 +255,11 @@
 	# Note the pass-by-ref
 	#
 
-	function sheets_load_extras(&$sheet, $viewer_id=0, $more=array()){
+	function sheets_load_details(&$sheet, $viewer_id=0, $more=array()){
 
-		$sheet['extent'] = dots_get_extent_for_sheet($sheet, $viewer_id);
+		if ($more['load_extent']){
+			$sheet['extent'] = dots_get_extent_for_sheet($sheet, $viewer_id);
+		}
 
 		if ($more['load_dots']){
 			$sheet['dots'] = dots_get_dots_for_sheet($sheet, $viewer_id);
@@ -297,28 +299,52 @@
 	function sheets_get_sheet($sheet_id, $viewer_id=0, $more=array()){
 
 		if (isset($GLOBALS['sheets_local_cache'][$sheet_id])){
-			return $GLOBALS['sheets_local_cache'][$sheet_id];
+			$sheet = $GLOBALS['sheets_local_cache'][$sheet_id];
 		}
 
-		$lookup = sheets_lookup_sheet($sheet_id);
+		else {
 
-		if ((! $lookup) || ($lookup['deleted'])){
-			return;
+			# this is the sort of thing that would be called from lib_dots
+
+			if ($sheet_user_id = $more['sheet_user_id']){
+				$user = users_get_by_id($sheet_user_id);
+			}
+
+			else {
+
+				$lookup = sheets_lookup_sheet($sheet_id);
+
+				if (! $lookup){
+					return;
+				}
+
+				if ($lookup['deleted']){
+
+					return array(
+						'id' => $sheet_id,
+						'deleted' => $lookup['deleted'],
+					);
+				}
+
+				$user = users_get_by_id($lookup['user_id']);
+			}
+
+			if (! $user['id']){
+				return;
+			}
+
+			$enc_id = AddSlashes($sheet_id);
+			$enc_user = AddSlashes($user['id']);
+
+			$sql = "SELECT * FROM Sheets WHERE id='{$enc_id}'";
+
+			$rsp = db_fetch_users($user['cluster_id'], $sql);
+			$sheet = db_single($rsp);
 		}
-
-		$user = users_get_by_id($lookup['user_id']);
-
-		$enc_id = AddSlashes($sheet_id);
-		$enc_user = AddSlashes($user['id']);
-
-		$sql = "SELECT * FROM Sheets WHERE id='{$enc_id}'";
-
-		$rsp = db_fetch_users($user['cluster_id'], $sql);
-		$sheet = db_single($rsp);
 
 		if ($sheet){
 
-			sheets_load_extras($sheet, $viewer_id, $more);
+			sheets_load_details($sheet, $viewer_id, $more);
 			$GLOBALS['sheets_local_cache'][$sheet_id] = $sheet;
 		}
 
@@ -391,7 +417,7 @@
 		$sheets = array();
 
 		foreach ($rsp['rows'] as $row){
-			sheets_load_extras($row, $viewer_id);
+			sheets_load_details($row, $viewer_id);
 			$sheets[] = $row;
 		}
 

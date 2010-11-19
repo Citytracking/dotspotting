@@ -15,7 +15,11 @@
 		error_404();
 	}
 
-	$sheet = sheets_get_sheet($sheet_id, $GLOBALS['cfg']['user']['id']);
+	$more = array(
+		'load_extent' => 1,
+	);
+
+	$sheet = sheets_get_sheet($sheet_id, $GLOBALS['cfg']['user']['id'], $more);
 
 	if (! $sheet){
 		error_404();

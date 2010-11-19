@@ -73,7 +73,7 @@
 		);
 
 		foreach ($rsp['rows'] as $row){
-
+			$dot_more['dot_user_id'] = $row['user_id'];
 			$dots[] = dots_get_dot($row['dot_id'], $viewer_id, $dot_more);
 		}
 
