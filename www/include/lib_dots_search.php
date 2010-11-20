@@ -19,6 +19,26 @@
 
 	#################################################################
 
+	function dots_search_add_lots_of_dots(&$dots, $add_offline=0){
+
+		$_dots = array();
+
+		foreach ($dots as $d){
+
+			$hash = array();
+
+			foreach ($d as $key => $value){
+				$hash[$key] = AddSlashes($value);
+			}
+
+			$_dots[] = $hash;
+		}
+
+		return db_insert_many('DotsSearch', $_dots);
+	}
+
+	#################################################################
+
 	function dots_search_remove_dot(&$dot){
 
 		$enc_id = AddSlashes($dot['id']);

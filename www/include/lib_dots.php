@@ -41,12 +41,18 @@
 		$processed = 0;
 
 		$errors = array();
+		$search = array();
 
 		$timings = array(
 			0 => 0
 		);
 
 		$start_all = microtime_ms() / 1000;
+
+		# As in: don't update DotsSearch inline but save
+		# all the inserts and do them at at end. 
+
+		$more['batch_search_update'] = 1;
 
 		foreach ($dots as $dot){
 
@@ -67,8 +73,25 @@
 				continue;
 			}
 
+			if (isset($rsp['search'])){
+				$search[] = $rsp['search'];
+			}
+
 			$processed ++;
 		}
+
+		#
+
+		if (count($search)){
+
+			$search_rsp = dots_search_add_lots_of_dots($search);
+
+			if (! $search_rsp){
+				# What then ?
+			}
+		}
+
+		#
 
 		$end_all = microtime_ms() / 1000;
 		$timings[0] = $end_all - $start_all;
@@ -296,17 +319,23 @@
 			}
 		}
 
-		$search_rsp = dots_search_add_dot($search);
+		if ($more['batch_search_update']){
+			$rsp['search'] = &$search;
+		}
 
-		if (! $search_rsp['ok']){
-			# What then...
+		else {
+			$search_rsp = dots_search_add_dot($search);
+
+			if (! $search_rsp['ok']){
+				# What then...
+			}
 		}
 
 		#
 		# Happy happy
 		#
 
-		$rsp['dot'] = $dot;
+		$rsp['dot'] = &$dot;
 		return $rsp;
 	}
 

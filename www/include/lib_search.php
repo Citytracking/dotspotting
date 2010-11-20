@@ -4,9 +4,6 @@
 	# $Id$
 	#
 
-	# HEY LOOK! I STILL HAVEN'T ADDED PROPER (DB) INDEXES FOR ANY
-	# OF THIS STUFF YET (20101119/straup)
-
 	#################################################################
 
 	function search_dots(&$args, $viewer_id=0){
@@ -14,12 +11,6 @@
 		$where_parts = _search_generate_where_parts($args);
 
 		$where = array();
-
-		# (latlon|geohash), dt, perms
-		# (latlon|geohash), dt, type, perms
-		# (latlon|geohash), perms
-		# type, perms
-		# dt, perms
 
 		#
 		# Note that order of these keys is important. They are dictated by
@@ -61,11 +52,13 @@
 		# See also: README.SEARCH.md (20101120/straup)
 		#
 
+		#
 		# $use_shard = (isset($where_parts['user_row'])) ? 1 : 0;
 		# 
 		# if ($use_shard){
 		# 	$use_shard = (isset($where_parts['type']) || isset($where_parts['location']) || isset($where_parts['time']) ? 1 : 0;
 		# }
+		#
 
 		#
 		# Go!
@@ -122,13 +115,17 @@
 
 		if ($args['b']){
 
-			list($swlat, $swlon, $nelat, $nelon) = explode(",", $args['bbox'], 4);
+			# TO DO: convert to a geohash of (n) length
+			# dumper(geo_geohash_encode($swlat, $swlon));
+			# dumper(geo_geohash_encode($nelat, $nelon));
+
+			list($swlat, $swlon, $nelat, $nelon) = explode(",", $args['b'], 4);
 
 			$where_parts['geo'] = array(
-				"`latitude` >= " . AddSlashes($swlat),
-				"`longitude` >= " . AddSlashes($swlon),
-				"`latitude` <= " . AddSlashes($nelat),
-				"`longitude` <= " . AddSlashes($nelon),
+				"`latitude` >= " . AddSlashes(trim($swlat)),
+				"`longitude` >= " . AddSlashes(trim($swlon)),
+				"`latitude` <= " . AddSlashes(trim($nelat)),
+				"`longitude` <= " . AddSlashes(trim($nelon)),
 			);
 
 			$where_parts['geo_query'] = 'bbox';
@@ -181,7 +178,10 @@
 			# "Around" a given date. For example:
 			# http://dotspotting.example.com/search/?dt=(2010-10)
 
-			if (preg_match("/^\(((\d{4})(?:-(\d{2})(?:-(\d{2})(?:(?:T|\s)(\d{2})(?:\:(\d{2})(?:\:(\d{2}))?)?)?)?)?)\)$/i", $args['dt'], $m)){
+			# This doesn't always work, specifically when passed
+			# something like '2010-11-19 12'. Punting for now...
+
+			if (preg_match("/^\(((\d{4})(?:-(\d{2})(?:-(\d{2})(?:(?:T|\s)(\d{2})(?:\:(\d{2})(?:\:(\d{2}))?)?)?)?)?)\)$/", $args['dt'], $m)){
 
 				list($ignore, $dt, $year, $month, $day, $hour) = $m;
 
