@@ -21,6 +21,8 @@
 
 <p class="tx1">What we've launched with is the baseline work that's being done to make this stuff internet-native. There's a login and permissions system that pretty much works. Uploading .csv files full of dots works. Each dot has an HTML page of its own, for example, like they do on <a href="http://crimespotting.org/">Crimespotting</a>. Collections of dots (we're calling them <q><a href="http://www.flickr.com/photos/mskaveneyphotography/5002420307/" target="_flickr">sheets</a></q>) work, and you can export them. And there are dots on maps.</p>
 
+<a href="http://www.flickr.com/photos/straup/5192043635/" title="Dotspotting (URL templates) by straup, on Flickr"><img src="http://farm5.static.flickr.com/4133/5192043635_a0a763e9c9_b.jpg" width="901" height="656" alt="Dotspotting (URL templates)" style="border:none;display:block;margin-bottom:40px;margin-top:40px;"/></a>
+
 <p class="tx1">The code also is available for <a href="https://github.com/Citytracking/dotspotting">download on Github</a>, and available for use under the GNU General Public License. We're planning on releasing the code as we work on the project, in the hope that working in this kind of transparent manner from the beginning will both benefit the project and serve as an example of the way we'd like to work with foundations on this kind of work.</p>
 
 <p class="tx1">[1] You can read more about Citytracking & the Knight Foundation <a href="http://content.stamen.com/knight_news_challenge_update">here</a> and <a href="http://www.pbs.org/idealab/2010/11/citytracking-presents-data-on-cities-for-maps-visualizations302.html">here</a>.</p>

@@ -123,6 +123,10 @@ h3 {
 	text-align: left;
 }
 
+pre {
+	margin-bottom:25px;
+}
+
 pre.admin-debug {
 	background: none repeat scroll 0 0 #000000;
 	color: #00FF00;

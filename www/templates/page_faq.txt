@@ -19,17 +19,21 @@
 
 <p class="tx1">At the moment <span class="important">only comma separated values (CSV) files are supported</span>. Once we finish working out a few more of the basic requirements for the site to work we add importers for a variety of other formats including spreadsheets, KML and GPX and GeoJSON files and whatever else people think is useful.</p>
 
+<p class="tx1" style="font-style:italic;">Dotspotting is also <a href="https://github.com/citytracking/dotspotting">an open source project</a> so if there is a particular file format you'd like to see supported we welcome your contributions!</p>
+
 <h4>Can I make my information private?</h4>
 
 <p class="tx1">The short answer is: Yes. The long answer is: Yes, but maybe no.</p>
 
-<p class="tx1"><span class="important">By default all dots are imported in to Dotspotting as publicly viewable.</span> At upload time you can either specify that all, or some, of the dots be made private however there is currently <strong>no way to change privacy settings on a dot</strong> once it's been uploaded. <em>This is not a feature. We'll be adding this functionality shortly.</em></p>
+<p class="tx1"><span class="important">By default all dots are imported in to Dotspotting as publicly viewable.</span> At upload time you can either specify that all, or some, of the dots be made private however there is currently <strong>no way to change privacy settings on a dot</strong> once it's been uploaded.</p>
+
+<p class="tx1"><em>This is not a feature. We'll be adding this functionality shortly.</em></p>
 
 <a name="sheets"></a>
 
 <h4>What are <q>Sheets</q>?</h4>
 
-<p class="tx1">Sheets are the context in which one or more dots were imported in to Dotspotting. At the moment, the only kind of context is the file uploaded to Dotspotting that one or more dots are listed in. They are separate and distinct from other kinds of collections, say a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
+<p class="tx1">A <q>sheet</q> is the set dots that a single dot was imported in to Dotspotting with. Its context, so to speak. At the moment, the only kind of context is a file that you upload to Dotspotting. Sheets are separate and distinct from other kinds of collections, like a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
 
 <a name="csv"></a>
 
@@ -38,19 +42,19 @@
 <p class="tx1">The minimum list of columns you need to define to import a CSV file are:</p>
 
 <ul class="faq_csvfields">
-	<li><code>latitude</code></li>
-	<li><code>longitude</code></li>
+	<li><code>latitude</code> &#8212; <span style="font-style:italic;">A valid <a href="http://en.wikipedia.org/wiki/Latitude" target="_wikipedia">latitude</a> string in decimal format. (All coordinated are trimmed to 6 decimal points.)</li>
+	<li><code>longitude</code>  &#8212; <span style="font-style:italic;">A valid <a href="http://en.wikipedia.org/wiki/Longitude" target="_wikpedia">longitude</a> string in decimal format. (All coordinated are trimmed to 6 decimal points.)</li>
 </ul>
 
 <p class="tx1">Just to be clear, what that means is that your CSV file needs to <em>define</em> those columns even if they are empty. That's because there are a handful of other fields that are treated as <q>special</q> by Dotspotting. They are:</p>
 
 <ul class="faq_csvfields">
 
-	<li><code>address</code> &#8212; <span style="font-style:italic;">if a row is <span class="important">missing values for <code>latitude</code> and <code>longitude</code> but it has an <code>address</code> field</span> defined then, so long as geocoding is enabled, Dotspotting will try to fill in coordinate information by asking one or more geocoding services to resolve the address.</span></li>
+	<li><code>address</code> &#8212; <span style="font-style:italic;">If a row is <span class="important">missing values for <code>latitude</code> and <code>longitude</code> but it has an <code>address</code> field</span> defined then, so long as geocoding is enabled, Dotspotting will try to fill in coordinate information by asking one or more geocoding services to resolve the address.</span></li>
 
-	<li><code>perms</code> &#8212; <span style="font-style:italic;">by default all dots are imported as public however if the value of this field is <code>private</code> then the dot will only be visible by the person who uploaded it.</li>
+	<li><code>perms</code> &#8212; <span style="font-style:italic;">By default all dots are imported as public however if the value of this field is <code>private</code> then the dot will only be visible by the person who uploaded it.</li>
 
-	<li><code>created</code> &#8212; <span style="font-style:italic;">if present then Dotspotting will try to parse and assign this value as the creation date for the corresponding dot/row, otherwise the date the row was imported is assumed.</span></li>
+	<li><code>created</code> &#8212; <span style="font-style:italic;">If present then Dotspotting will try to parse and assign this value as the creation date for the corresponding dot/row, otherwise the date the row was imported is assumed.</span></li>
 
 </ul>
 
@@ -65,9 +69,17 @@ latitude,longitude,perms,created,title,address
 ,,private,October·23·2010,geocoded,"2017·Mission·San·Francisc·CA"
 </pre>
 
-<p class="tx1">Any other fields are stored as <q>extras</q> in Dotspotting.</p>
-
 <p class="tx1"><span class="important"><em>The order of the column headers is up to you.</em></span> In this example <code>latitude</code> is the first column but it could just as easily be the last. You only need to make sure that the values are in the same position as their corresponding header.</p>
+
+<p class="tx1">Dotspotting also looks for two specific fields that it stores in the search <q>bucket</q> and that you can use to look for dots later on. They are:</p>
+
+<ul class="faq_csvfields">
+    <li><code>type</code> &#8212; <span style="font-style:italic;">An arbitrary string (up to 64 characters long) that can be used to assign a category to a dot. These are not <q>tags</q> which Dotspotting doesn't support yet.</span></li>
+
+    <li><code>location</code> &#8212; <span style="font-style:italic;">An artibitrary string (up to 64 characters long) that can be used to assign a <q>place</q> to a dot. This is separate and distinct from any explicit geographic information Dotspotting adds. A location might be <q>home</q> or something like <q>zip:90210</q>. It's entirely up to you.</span></li>
+</ul>
+
+<p class="tx1">Both of the fields are optional. Any other fields that you list in a CSV files are stored as <q>details</q> in Dotspotting.</p>
 
 <a name="magicwords"></a>
 

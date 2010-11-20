@@ -8,7 +8,8 @@
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery-1.4.3.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/latlong.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/utils.js"></script>
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/uri.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/parseuri.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/querystring.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/htmlspecialchars.js"></script>
 {if $cfg.browser.capabilities.polymaps}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.min.js"></script>
@@ -40,7 +41,7 @@ var _maptiles_template_hosts = '{$cfg.maptiles_template_hosts|@join:","|escape}'
 		</div>
 		<div id="login" style="float: right;">
 {if $cfg.user.id}
-			Hello {$cfg.user.username|escape}!
+			Hello <strong>{$cfg.user.username|escape}</strong>!
 			<a href="/u/{$cfg.user.id}/">Dashboard</a>
 			|
 			<a href="/upload/">Upload</a>
