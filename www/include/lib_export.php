@@ -18,8 +18,8 @@
 	# 
 
 	$GLOBALS['export_ignore_columns'] = array(
-		'extras_json',
-		'extras_listview',
+		'details_json',
+		'details_listview',
 	);
 
 	#################################################################
@@ -33,10 +33,10 @@
 		}
 
 		$keys = array_keys($rows[0]);
-		$extras = array();
+		$details = array();
 
-		if (in_array('extras', $keys)){
-			$extras = array_keys($rows[0]['extras']);
+		if (in_array('details', $keys)){
+			$details = array_keys($rows[0]['details']);
 		}
 
 		$count_rows = count($rows);
@@ -54,7 +54,7 @@
 				}
 			}
 
-			foreach ($extras as $k){
+			foreach ($details as $k){
 
 				# assume that the data in Dots trumps all
 
@@ -62,25 +62,27 @@
 					continue;
 				}
 
-				if (isset($row['extras'][$k])){
+				if (isset($row['details'][$k])){
 
 					$values = array();
 
-					foreach ($row['extras'][$k] as $e){
+					foreach ($row['details'][$k] as $e){
 						$values[] = $e['value'];
 
 						# derived from stuff - this should be considered
 						# incomplete (20101111/straup)
 
-						$d = "{$k}:derived_from";
-						$row[$d] = $e['derived_from'];
+						if (isset($e['derived_from'])){
+							$d = "{$k}:derived_from";
+							$row[$d] = $e['derived_from'];
+						}
 					}
 
 					$row[$k] = implode(",", $values);
 				}	
 			}
 
-			unset($row['extras']);
+			unset($row['details']);
 
 			if (isset($row['perms'])){
 				$map = dots_permissions_map();
@@ -88,7 +90,6 @@
 			}
 
 			$timestamps = array(
-				'created',
 				'imported',
 				'last_modified',
 			);

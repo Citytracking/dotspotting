@@ -23,7 +23,7 @@
 		error_404();
 	}
 
-	$sheet = sheets_get_sheet($sheet_id, $GLOBALS['cfg']['user']['id']);
+	$sheet = sheets_get_sheet($sheet_id, $GLOBALS['cfg']['user']['id'], array('load_extent' => 1));
 
 	if (! $sheet){
 		error_404();
