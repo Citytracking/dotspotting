@@ -30,7 +30,7 @@
 
 			html += '</div>';
 
-			var el = document.getElementById("extras_yahoo:woeid");
+			var el = document.getElementById("details_yahoo:woeid");
 			el.innerHTML = html;
 
 		});

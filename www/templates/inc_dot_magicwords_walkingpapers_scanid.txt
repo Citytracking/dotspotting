@@ -59,7 +59,7 @@ function _show_walkingpaper_scan(req){
 		', that was created ' + dt.toDateString() + '.' + 
 		'</div>';
 
-	var el = document.getElementById("extras_walkingpapers:scanid");
+	var el = document.getElementById("details_walkingpapers:scanid");
 	el.innerHTML = html;
 }
 

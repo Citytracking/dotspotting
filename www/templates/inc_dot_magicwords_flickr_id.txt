@@ -61,7 +61,7 @@
 				'<a href="' + ph_page + '" target="_flickr"><img src="' + ph_url + '" /></a>' +
 				'</div>';
 
-			var el = document.getElementById("extras_flickr:id");
+			var el = document.getElementById("details_flickr:id");
 			el.innerHTML = html;
 		};
 

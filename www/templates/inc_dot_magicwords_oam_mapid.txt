@@ -51,7 +51,7 @@ function _show_oam_data(req){
 		' Its area of coverage is ' + bbox.join(', ');
 		'</div>';
 
-	var el = document.getElementById("extras_oam:mapid");
+	var el = document.getElementById("details_oam:mapid");
 	el.innerHTML = html;
 
 }
