@@ -1,11 +1,19 @@
 {capture assign='page_title'}{$owner.username|possess} dots{/capture}
 {include file='inc_head.txt'}
 
+<h2>
 {if $is_own}
-<h2><a href="{$owner|@urls_url_for_user}">Your</a> dots</h2>
+{if $pagination.total_count == 0}
+<a href="{$owner|@urls_url_for_user}">Your</a> dots
+{elseif $pagination.total_count == 1}
+<a href="{$owner|@urls_url_for_user}">Your</a> dots (you've uploaded one so far!)
 {else}
-<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> dots</h2>
+<a href="{$owner|@urls_url_for_user}">Your</a> dots (there are {$pagination.total_count|escape} of them!)
 {/if}
+{else}
+<a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> dots
+{/if}
+</h2>
 
 {if $dots|@count == 0}
 

@@ -1,19 +1,19 @@
 {capture assign="page_title"}
 {if $is_own}
-	{if $dot.extras.title}
-A dot titled "{$dot.extras.title.0.value|escape}", by you!
+	{if $dot.details.title}
+A dot titled "{$dot.details.title.0.value|escape}", by you!
 	{else}
 A dot by you!
 	{/if}
 {else}
-	{if $dot.extras.title}
-A dot titled "{$dot.extras.title.0.value|escape}", by {$owner.username|escape}!
+	{if $dot.details.title}
+A dot titled "{$dot.details.title.0.value|escape}", by {$owner.username|escape}!
 	{else}
 A dot by {$cfg.user.username|escape}
 	{/if}
 {/if}
 {/capture}
-{* open question: should this be inlined directly in inc_dot_extras? (20101111/straup) *}
+{* open question: should this be inlined directly in inc_dot_details? (20101111/straup) *}
 {capture assign="extra_head"}
 {if $cfg.enable_feature_magicwords.flickr.id}
 	{include file="inc_dot_magicwords_flickr_id.txt"}
@@ -90,7 +90,7 @@ A dot by {$cfg.user.username|escape}
 	</tr>
 	{/if}
 
-	{include file="inc_dot_extras.txt"}
+	{include file="inc_dot_details.txt"}
 
 	{if $is_own}
 		{assign var="perms" value=$dot.perms}
@@ -106,14 +106,6 @@ A dot by {$cfg.user.username|escape}
 	<tr>
 		<th>created</th>
 		<td>{$dot.created|escape}</td>
-	</tr>
-	<tr>
-		<th>last modified</th>
-		<td>{$dot.last_modified|date_format:"%Y-%m-%d %H:%M"|escape}</td>
-	</tr>
-	<tr>
-		<th>imported</th>
-		<td>{$dot.imported|date_format:"%Y-%m-%d %H:%M"|escape}</td>
 	</tr>
 
 </table>
