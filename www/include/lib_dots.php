@@ -772,11 +772,17 @@
 			'geohash'
 		);
 
-		foreach ($geo_bits as $what){
+		$searchy_bits = array(
+			'location',
+			'type',
+		);
 
-			if (isset($dot['details'][$what])){
-				$dot[$what] = $dot['details'][$what][0]['value'];
-			}
+		foreach (array_merge($geo_bits, $searchy_bits) as $what){
+
+			# Always just assume the first one or ... ?
+			# Punting for now (20101120/straup)
+
+			$dot[$what] = (isset($dot['details'][$what])) ? $dot['details'][$what][0]['value'] : '';
 		}
 
 		$listview = array();

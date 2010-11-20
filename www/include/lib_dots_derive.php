@@ -94,6 +94,24 @@
 			}
 		}
 
+		#
+		# By default, 'location' is a free-form string assigned
+		# by the user. If we don't already have and we have what
+		# looks to be a valid WOE ID (and eventually others) then
+		# automagically assign the 'location' column using the
+		# SERVICE + ":" + UID syntax and then flag 'location' as
+		# being a derived key (in this derived from $derived_from
+		# which is sussed out above).
+		#
+
+		if ((! $data['location']) && ($data['yahoo:woeid'])){
+
+			$derived_map = dots_derive_derived_from_map('string keys');
+
+			$data['location'] = "woeid:{$data['yahoo:woeid']}";
+			$derived['location'] = $derived_map['dotspotting'];
+		}
+
 		return array($data, $derived);
 	}
 
@@ -134,22 +152,6 @@
 			$derived_keys[] = $extra;
 
 			$data[$extra] = $v;
-		}
-
-		#
-		# By default, 'location' is a free-form string assigned
-		# by the user. If we don't already have and we have what
-		# looks to be a valid WOE ID (and eventually others) then
-		# automagically assign the 'location' column using the
-		# SERVICE + ":" + UID syntax and then flag 'location' as
-		# being a derived key (in this derived from $derived_from
-		# which is sussed out above).
-		#
-
-		if ((! $data['location']) && ($data['yahoo:woeid'])){
-
-			$data['location'] = "woeid:{$data['yahoo:woeid']}";
-			$derived_keys[] = 'location';
 		}
 
 		# Happy happy
