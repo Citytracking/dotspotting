@@ -5,33 +5,71 @@ function utils_tile_provider(){
 
     var template = _maptiles_template_url;
     var hosts = _maptiles_template_hosts;
+    var static_tiles = 0;
 
-    var uri = new info.aaronland.URI();
-    
-    var t = (uri.query.contains('template')) ? uri.query.get('template') : null;
-    var h = (uri.query.contains('hosts')) ? uri.query.get('hosts') : null;
+    // can has URL template?
 
-    // currently only TileStache-style cache tile
-    // URLs are supported (20101111/straup)
+    var qs = (window.location.hash != '') ? window.location.hash.substring(1) : window.location.search.substring(1);
 
-    var s = (uri.query.contains('static')) ? 1 : 0;
+    if (qs){
 
-    // seriously, do some proper validation here...
+	qs = new Querystring(qs);
 
-    if ((t) && (t.indexOf('http') === 0)){
+	var t = (qs.contains('template')) ? qs.get('template') : null;
 
-	    template = t;
+	// currently only TileStache-style cache tile
+	// URLs are supported (20101111/straup)
 
-	    hosts = ((h) && (h.indexOf('{S}') != -1)) ? h : null;
+	// See that? We're redefining 't' on the fly
+
+	if ((t) && (t = ensure_valid_url_template(t))){
+
+		template = t;
+		hosts = null;
+		static_tiles = (qs.contains('static')) ? 1 : 0;
+	}
+
     }
 
     var rsp = {
 	'template' : template,
 	'hosts' : hosts,
-	'static' : s,
+	'static' : static_tiles,
     };	
 
     return rsp;
+}
+
+function ensure_valid_url_template(t){
+
+    uri = parseUri(t);
+
+    if (uri.protocol != 'http'){
+	return null;
+    }
+
+    if (! uri.path.match(/\/{Z}\/{X}\/{Y}\.(?:jpg|png)$/)){
+	return null;
+    }
+
+    var parts = uri.path.split(/\/{Z}\/{X}\/{Y}\.(jpg|png)$/);
+
+    var path = parts[0].split('/');
+    var ext = parts[1];
+
+    var clean = [];
+
+    for (i in path){
+	clean.push(encodeURIComponent(path[i])); 
+    }
+
+    var template = 
+	uri.protocol + '://' + uri.host + 
+	clean.join('/') + 
+	'/{Z}/{X}/{Y}' +
+	'.' + ext;
+
+    return template;
 }
 
 function utils_polymap(map_id, more){
