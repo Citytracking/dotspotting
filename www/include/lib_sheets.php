@@ -392,7 +392,7 @@
 
 	#################################################################
 
-	function sheets_sheets_for_user($user, $viewer_id=0, $args=array()){
+	function sheets_sheets_for_user($user, $viewer_id=0, $more=array()){
 
 		$enc_id = AddSlashes($user['id']);
 
@@ -413,11 +413,12 @@
 
 		$sql .= " ORDER BY {$order_by} {$order_sort}";
 
-		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $args);
+		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);
 		$sheets = array();
 
 		foreach ($rsp['rows'] as $row){
-			sheets_load_details($row, $viewer_id);
+
+			sheets_load_details($row, $viewer_id, array('load_extent' => 1));
 			$sheets[] = $row;
 		}
 
