@@ -91,11 +91,9 @@ function draw_map_modestmaps(sheets){
 	var bbox = utils_adjust_bbox(sheets['bbox']);
 
 	var extent = [
-		new mm.Location(bbox[0]['lat'], bbox[0]['lon']),
-		new mm.Location(bbox[1]['lat'], bbox[1]['lon']),
+		new com.modestmaps.Location(bbox[0]['lat'], bbox[0]['lon']),
+		new com.modestmaps.Location(bbox[1]['lat'], bbox[1]['lon']),
 	];
-
-	var mm = com.modestmaps;
 
 	var map = utils_modestmap('map');
 	map.setExtent(extent);
@@ -135,7 +133,7 @@ function draw_map_modestmaps(sheets){
 		polygons.push(coords);
 	}
 
-	var markers = new mm.Markers(map);
+	var markers = new com.modestmaps.Markers(map);
 	markers.drawPolygons(polygons);
 
 	return;
