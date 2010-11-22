@@ -38,10 +38,6 @@ Feature Flags
 	$GLOBALS['cfg']['enable_feature_account_delete'] = 1;
 	$GLOBALS['cfg']['enable_feature_password_retrieval'] = 0;
 
-	$GLOBALS['cfg']['enable_feature_admin_flags'] = 0;	# Admin flags are a flamework-ism that can be used to
-								# debugging information, like SQL queries and timing,
-								# inline with page requests.
-
 	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
 
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;

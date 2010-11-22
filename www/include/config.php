@@ -33,8 +33,6 @@
 	$GLOBALS['cfg']['enable_feature_account_delete'] = 1;
 	$GLOBALS['cfg']['enable_feature_password_retrieval'] = 0;
 
-	$GLOBALS['cfg']['enable_feature_admin_flags'] = 0;
-
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
 
