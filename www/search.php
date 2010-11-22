@@ -57,6 +57,9 @@
 		$GLOBALS['smarty']->assign("pagination_url", $pagination_url);
 		$GLOBALS['smarty']->assign("pagination_page_as_queryarg", $page_as_queryarg);
 
+		$perms_map = dots_permissions_map();
+		$GLOBALS['smarty']->assign_by_ref('permissions_map', $perms_map);
+
 		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();
 	}
