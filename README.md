@@ -32,7 +32,7 @@ Installation Instructions
 4. `git submodule init`
 5. `git submodule update`
 6. Load the various `*.schema` files in the `schema` directory in to MySQL
-7. In the `config` directory, copy `dotspotting.php.example` to `dotspotting.php` and adjust the values to suit your configuration.
+7. In the `config` directory, copy `dotspotting.php.example` to `dotspotting.php` and adjust the values to suit your configuration. (see below)
 8. Ensure that the `www/templates_c` directory can be written to by your web server.
 9. Ensure that mod_rewrite is enabled in your local Apache configuration.
 
@@ -74,6 +74,8 @@ As far as the PHP config files go, here's what's actually happening when a page 
 3. Load the config file specific to *your* installation of Dotspotting.
 
 The important thing to note here is that each file may override values defined in the previous config file. We are hoping that in most cases the only one of those three files you'll need to worry about is the last one ([dotspotting.php](http://github.com/Citytracking/dotspotting/blob/master/config/dotspotting.php.example)) but both Flamework and Dotspotting have a lot of knobs and this is where they can be tweaked.
+
+*This is not ideal and surely some of this could be made easier but right now that problem looks and smells like a yak, so we'll come back to it in time.*
 
 For a complete list of Dotspotting-specific config options, you should consult the [README.CONFIG.md](http://github.com/citytracking/dotspotting/blob/master/README.CONFIG.md) document.
 

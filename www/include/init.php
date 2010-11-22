@@ -37,6 +37,10 @@
 	include(DOTSPOTTING_WWW_DIR."/include/config.php");
 	include(DOTSPOTTING_CONFIG_DIR . '/dotspotting.php');
 
+	if ($GLOBALS['cfg']['enable_feature_api']){
+		include_once(DOTSPOTTING_WWW_DIR . '/include/config-api.php');
+	}
+
 	# Go, flamework! Go!!
 
 	include_once(DOTSPOTTING_FLAMEWORK_DIR . '/include/init.php');

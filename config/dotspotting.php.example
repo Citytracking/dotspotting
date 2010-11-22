@@ -2,18 +2,15 @@
 
 	#
 	# By default this file contains various database and crypto secrets that
-	# dotspotting expects to be present.
-	#
-	# THIS IS JUST AN EXAMPLE FILE. AS A GENERAL RULE, SENSITIVE DATA LIKE
-	# DATABASE SECRETS SHOULD BE STORED OUTSIDE OF (INSERT YOUR SOURCE CONTROL
-	# SYSTEM HERE).
+	# dotspotting expects to be present. This is not ideal.
 	#
 	# Note that 'dotspotting.php' is explicity blacklisted from being checked
 	# in to git in the '.gitignore' file.
 	#
 
 	#
-	# Any settings you define here will overwrite settings in the dotspotting include/config.php.
+	# Any settings you define here will overwrite settings in the Flamework and Dotspotting
+	# include/config.php files.
 	# 
 	# Which means two things:
 	#
@@ -28,8 +25,8 @@
 	#    b) dotspotting's include/config.php
 	#    c) dotspotting's config/dotspotting.php <-- aka "the file you are reading right now"
 	#
-	# There is a file containing *all* of the configs that dotspotting uses (including those defined
-	# in flamework) in [TBW]
+	# For a complete list of config flags (including feature flags for the site) please consult:
+	# https://github.com/Citytracking/dotspotting/blob/master/README.CONFIG.md
 	#
 
 	#
@@ -43,6 +40,8 @@
 
 	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
 	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
+
+	# The simplest database configs you'll need to get started. 
 
 	$GLOBALS['cfg']['db_main']['host'] = '';
 	$GLOBALS['cfg']['db_main']['name'] = '';	# as in the name of your database

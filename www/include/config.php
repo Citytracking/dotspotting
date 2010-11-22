@@ -26,7 +26,7 @@
 	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
 	$GLOBALS['cfg']['enable_feature_uploads_by_url'] = 1;
 
-	$GLOBALS['cfg']['enable_feature_api'] = 0;
+	$GLOBALS['cfg']['enable_feature_api'] = 1;
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;
 	$GLOBALS['cfg']['enable_feature_signin'] = 1;
@@ -94,7 +94,8 @@
 	# API stuff
 	#
 
-	include_once('config-api.php');
+	# This is defined in config-api.php and gets pulled in Dotspotting's init.php
+	# assuming that 'enable_feature_api' is true.
 
 	#
 	# Templates
