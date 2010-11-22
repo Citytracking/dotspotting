@@ -9,11 +9,11 @@ There are a whole bunch of features slated for a *1.0* release that simply haven
 
 But per the terms of the [Knight News Challenge Grant](http://content.stamen.com/we_got_a_knight_news_grant) that is funding the development of Dotspotting we are committed to working (and hopefully not failing too much) in public so this is the first step in that process.
 
-*We think this is a good thing, by the way :-)*
+*(We think this is a good thing, by the way :-)*
 
 Once a stable baseline for the code and the architecture has been established Dotspotting will follow the conventions established for versioning and changes proposed in the Semantic Versioning specification ([http://semver.org/](http://semver.org/ "Semantic Versioning")).
 
-Right now, the version number for Dotspotting is: *"Super Alpha-Beta Disco-Ball"*.
+Right now, the version number for Dotspotting is: **"Super Alpha-Beta Disco-Ball"**.
 
 Dependencies
 --
