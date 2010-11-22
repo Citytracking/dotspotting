@@ -86,6 +86,8 @@ Known Knowns
 
 + Database indexes and other optimizations are not even close to being considered "done".
 
++ The JavaScript is all over the place. None of it is properly encapsulated or minified yet. It seems a bit soon for those kinds of optimizations, still.
+
 + Dotspotting has proven to be fussy and problematic installing using the default OS X Apache + PHP binaries. We're not sure why but are continuing to poke at the problem. It works fine using tools like [MAMP](http://www.mamp.info/), though.
 
 + Dotspotting still needs to be installed at the root of a domain. It doesn't Just Work (tm) when run out of a user's `public_html` folder, for example. Yet.
