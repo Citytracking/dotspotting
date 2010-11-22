@@ -6,7 +6,7 @@
 
 	#################################################################
 
-	function search_dots(&$args, $viewer_id=0){
+	function search_dots(&$args, $viewer_id=0, $more=array()){
 
 		$where_parts = _search_generate_where_parts($args);
 
@@ -74,11 +74,19 @@
 		# Go!
 		#
 
-		$more = array(
-		      'page' => $args['page'],
+		$search_more = array(
+			'page' => $args['page'],
 		);
 
-		return _search_dots_all($where, $viewer_id, $more);
+		if ($more['do_export']){
+
+			$search_more = array(
+				'page' => 1,
+				'per_page' => $GLOBALS['cfg']['import_max_records'],
+			);
+		}
+
+		return _search_dots_all($where, $viewer_id, $search_more);
 	}
 
 	#################################################################

@@ -18,22 +18,63 @@
 
 	# First, do some basic args munging
 
-	$args = array();
+	$query = array();
 
 	foreach ($_GET as $key => $value){
-		$args[ $key ] = sanitize($value, 'str');
+		$query[ $key ] = sanitize($value, 'str');
 	}
 
 	#################################################################
 
-	if (count($args)){
+	if (count($query)){
 
-		$rsp = search_dots($args, $GLOBALS['cfg']['user']['id']);
+		$do_export = (($GLOBALS['cfg']['enable_feature_search_export']) && (get_str('export'))) ? 1 : 0;
+
+		$more = array(
+			'export_search' => $do_export,
+		);
+
+		# check export format, etc. here
+
+		#
+		# Go!
+		#
+
+		$rsp = search_dots($query, $GLOBALS['cfg']['user']['id'], $more);
 
 		if ((! $rsp['ok']) || (! count($rsp['dots']))){
 			$GLOBALS['smarty']->display('page_search_noresults.txt');
 			exit();
 		}
+
+		#
+		# Export this search?
+		#
+
+		if ($do_export){
+
+			loadlib("export");
+			loadlib("formats");
+
+			$map = formats_valid_export_map('key by extension');
+
+			$format = 'csv';
+			$mimetype = $map[$format];
+
+			$filename = "dotspotting-search.{$format}";
+
+			if (! get_str('inline')){
+				header("Content-Type: " . htmlspecialchars($mimetype));
+				header("Content-Disposition: attachment; filename=\"{$filename}\"");
+			}
+
+			export_dots($rsp['dots'], $format);
+			exit();
+		}
+
+		#
+		# Display inline
+		#
 
 		$smarty->assign_by_ref('dots', $rsp['dots']);
 		$page_as_queryarg = 0;
