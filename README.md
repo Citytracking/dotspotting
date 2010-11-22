@@ -73,11 +73,11 @@ As far as the PHP config files go, here's what's actually happening when a page 
 2. Load the default Dotspotting config file
 3. Load the config file specific to *your* installation of Dotspotting.
 
-Step 3 requires that you copy the Dotspotting `config/dotspotting.php.example` file ([this one](https://github.com/Citytracking/dotspotting/blob/master/config/dotspotting.php.example)) to `config/dotspotting.php` and adjust various site configs for your Dotspotting installation. The example config file is heavily commented and all the various configs are grouped by things you MUST, SHOULD and MAY need to change.
+Step 3 requires that you copy the Dotspotting `config/dotspotting.php.example` file ([this one](https://github.com/Citytracking/dotspotting/blob/master/config/dotspotting.php.example)) to `config/dotspotting.php` and adjust various site configs for your Dotspotting installation. The example file is heavily commented and all the various configs are grouped by things you MUST, SHOULD and MAY need to change.
 
 The important thing to note here is that each file may override values defined in the previous config file. We are hoping that in most cases the only one of those three files you'll need to worry about is the last one ([dotspotting.php](http://github.com/Citytracking/dotspotting/blob/master/config/dotspotting.php.example)) but both Flamework and Dotspotting have a lot of knobs and this is where they can be tweaked.
 
-*This is not ideal and surely some of this could be made easier but right now that problem looks and smells like a yak, so we'll come back to it in time. (Suggestions are welcome and encouraged.)*
+*None of this is ideal and surely some of this could be made easier but right now that problem looks and smells like a yak, so we'll come back to it in time. (Suggestions are welcome and encouraged.)*
 
 For a complete list of Dotspotting-specific config options, you should consult the [README.CONFIG.md](http://github.com/citytracking/dotspotting/blob/master/README.CONFIG.md) document.
 
