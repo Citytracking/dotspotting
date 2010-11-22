@@ -65,6 +65,18 @@ CREATE TABLE `DotsSearch` (
   `imported` int(10) unsigned NOT NULL,
   `type` varchar(255) NOT NULL,
   `location` varchar(255) NOT NULL,
-  KEY `by_user` (`user_id`),
-  KEY `by_sheet` (`sheet_id`)
+  PRIMARY KEY (`dot_id`),
+  KEY `user_by_user` (`user_id`,`geohash`,`created`,`type`,`location`,`perms`),
+  KEY `user_by_created` (`user_id`,`created`,`type`,`location`,`perms`),
+  KEY `user_by_type` (`user_id`,`type`,`location`,`perms`),
+  KEY `user_by_location` (`user_id`,`location`,`perms`),
+  KEY `user_by_perms` (`user_id`,`perms`),
+  KEY `geohash_by_created` (`geohash`,`created`,`type`,`location`,`perms`),
+  KEY `geohash_by_type` (`geohash`,`type`,`location`,`perms`),
+  KEY `geohash_by_location` (`geohash`,`location`,`perms`),
+  KEY `geohash_by_perms` (`geohash`,`perms`),
+  KEY `created_by_type` (`created`,`type`,`location`,`perms`),
+  KEY `created_by_location` (`created`,`location`,`perms`),
+  KEY `created_by_perms` (`created`,`perms`),
+  KEY `location_by_perms` (`location`,`perms`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
