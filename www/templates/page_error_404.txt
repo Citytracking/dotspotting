@@ -2,9 +2,9 @@
 
 <h1>Page not found</h1>
 
-<p>We can't find the page you requested. Sorry :(</p>
+<p>We can't find the page you requested.</p>
 
-{if $cfg.enable_feature_admin_debug}
+{if 'staff'|@auth_has_role}
 <div class="admin-section">
 	<pre class="admin-debug">{$debug_block}</pre>
 </div>
