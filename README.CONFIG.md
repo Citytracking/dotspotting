@@ -87,6 +87,26 @@ App Specific Stuff
 	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
 	$GLOBALS['cfg']['auth_cookie_name'] = 'a';
 
+	#
+	# Poorman's god auth is a bare-bones version of the exflick
+	# GodAuth system: https://github.com/exflickr/GodAuth
+	# 
+	# It works by assigning one or more "roles" to a user and
+	# those roles are checked throughout Dotspotting (Flamework)
+	# to decide whether to display/perform specific actions. At
+	# the moment, poorman's god auth is keyed by a assigning one
+	# or more user IDs (as in db_main:Users:id) in the 'auth_poormans_god_auth'
+	# hash below. Poorman's god auth is disabled by default.
+	#
+	# $GLOBALS['cfg']['auth_enable_poormans_god_auth'] = 0;
+	#
+	# $GLOBALS['cfg']['auth_poormans_god_auth'] = array(
+	# 	xxx => array(
+	# 		'roles' => array( 'staff' ),
+	# 	),
+	# );
+	#
+
 	$GLOBALS['cfg']['crypto_cookie_secret'] = 'READ-FROM-CONFIG';
 	$GLOBALS['cfg']['crypto_password_secret'] = 'READ-FROM-CONFIG';
 
