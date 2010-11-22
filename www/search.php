@@ -7,6 +7,9 @@
 	include("include/init.php");
 	loadlib("search");
 
+	loadlib("export");
+	loadlib("formats");
+
 	#################################################################
 
 	if (! $GLOBALS['cfg']['enable_feature_search']){
@@ -28,13 +31,26 @@
 
 	if (count($query)){
 
-		$do_export = (($GLOBALS['cfg']['enable_feature_search_export']) && (get_str('export'))) ? 1 : 0;
+		# this is experimental
+
+		$do_export = 0;
+
+		if (($GLOBALS['cfg']['enable_feature_search_export']) && (get_str('export'))){
+
+			$format = get_str('format');
+
+			if (! $format){
+				$format = 'csv';
+			}
+
+			$map = formats_valid_export_map('key by extension');
+
+			$do_export = (isset($map[$format])) ? 1 : 0;
+		}
 
 		$more = array(
 			'export_search' => $do_export,
 		);
-
-		# check export format, etc. here
 
 		#
 		# Go!
@@ -53,12 +69,6 @@
 
 		if ($do_export){
 
-			loadlib("export");
-			loadlib("formats");
-
-			$map = formats_valid_export_map('key by extension');
-
-			$format = 'csv';
 			$mimetype = $map[$format];
 
 			$filename = "dotspotting-search.{$format}";
