@@ -43,7 +43,17 @@
 		}
 
 		if (! $is_own){
-			$where[] = "`perms`=0";
+
+			# $where[] = "`perms`=0";
+
+			if ($GLOBALS['cfg']['user']['id']){
+				$enc_id = AddSlashes($GLOBALS['cfg']['user']['id']);
+				$where[] = "(`perms`=0 OR `user_id`='{$enc_id}')";	# glurgh... indexes...
+			}
+
+			else {
+				$where[] = "`perms`=0";
+			}
 		}
 
 		#
