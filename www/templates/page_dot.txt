@@ -46,12 +46,12 @@ A dot by {$cfg.user.username|escape}
 
 	<tr>
 		<th>latitude</th>
-		<td>{if $dot.latitude}{$dot.latitude|escape}{else}&#8212;{/if}</td>
+		<td>{if $dot.latitude}<a href="/search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}">{$dot.latitude|escape}</a>{else}&#8212;{/if}</td>
 	</tr>
 
 	<tr>
 		<th>longitude</th>
-		<td>{if $dot.longitude}{$dot.longitude|escape}{else}&#8212;{/if}</td>
+		<td>{if $dot.longitude}<a href="/search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}">{$dot.longitude|escape}</a>{else}&#8212;{/if}</td>
 	</tr>
 
 	{if $dot.altitude}
@@ -63,17 +63,17 @@ A dot by {$cfg.user.username|escape}
 
 	<tr>
 		<th>geohash</th>
-		<td><a href="/search.php?gh={$dot.geohash|escape}">{$dot.geohash|escape}</a></td>
+		<td>{if $dot.geohash}<a href="/search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}">{$dot.geohash|escape}</a>{else}&#8212;{/if}</td>
 	</tr>
 
 	<tr>
 		<th>location</th>
-		<td>{if $dot.location}{$dot.location|escape}{else}&#8212;{/if}</td>
+		<td>{if $dot.location}<a href="/search/?u={$dot.user_id|escape}&l={$dot.location|escape}">{$dot.location|escape}</a>{else}&#8212;{/if}</td>
 	</tr>
 
 	<tr>
 		<th>type</th>
-		<td>{if $dot.type}{$dot.type|escape}{else}&#8212;{/if}</td>
+		<td>{if $dot.type}<a href="/search/?u={$dot.user_id|escape}&t={$dot.type|escape}">{$dot.type|escape}</a>{else}&#8212;{/if}</td>
 	</tr>
 
 	{if $dot.address}
@@ -105,7 +105,7 @@ A dot by {$cfg.user.username|escape}
 
 	<tr>
 		<th>created</th>
-		<td>{$dot.created|escape}</td>
+		<td><a href="/search/?u={$dot.user_id|escape}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape})">{$dot.created|escape}</a></td>
 	</tr>
 
 </table>
