@@ -44,13 +44,13 @@
 			}
 		}
 
-		$hash = array();
+		$insert = array();
 
 		foreach ($sheet as $k => $v){
-			$hash[$k] = AddSlashes($v);
+			$insert[$k] = AddSlashes($v);
 		}
 
-		$rsp = db_insert_users($user['cluster_id'], 'Sheets', $hash);
+		$rsp = db_insert_users($user['cluster_id'], 'Sheets', $insert);
 
 		if (! $rsp['ok']){
 			return null;

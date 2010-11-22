@@ -265,7 +265,13 @@
 		# Look, we are creating the dot now
 		#
 
-		$rsp = db_insert_users($user['cluster_id'], 'Dots', $dot);
+		$insert = array();
+
+		foreach ($dot as $key => $value){
+			$insert[$key] = AddSlashes($value);
+		}
+
+		$rsp = db_insert_users($user['cluster_id'], 'Dots', $insert);
 
 		if (! $rsp['ok']){
 			return $rsp;
