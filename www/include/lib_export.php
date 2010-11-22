@@ -20,6 +20,11 @@
 	$GLOBALS['export_ignore_columns'] = array(
 		'details_json',
 		'details_listview',
+
+		# for export from search - probably not the
+		# best way to do things (20101122/straup)
+		'user',
+		'sheet',
 	);
 
 	#################################################################
