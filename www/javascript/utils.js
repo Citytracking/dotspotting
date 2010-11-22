@@ -118,17 +118,16 @@ function utils_polymap(map_id, more){
 
 function utils_modestmap(map_id, more){
 
-	var mm = com.modestmaps;
 	var tp = utils_tile_provider();
 
 	var provider = null;
 
 	if (tp['static']){
-	    provider = new mm.TileStacheStaticMapProvider(tp['template'], tp['hosts']);
+	    provider = new com.modestmaps.TileStacheStaticMapProvider(tp['template'], tp['hosts']);
 	}
 
 	else {
-	    provider = new mm.TemplatedMapProvider(tp['template'], tp['hosts']);
+	    provider = new com.modestmaps.TemplatedMapProvider(tp['template'], tp['hosts']);
 	}
 
 	var dims = undefined;
@@ -138,7 +137,7 @@ function utils_modestmap(map_id, more){
 	    handlers = [];
 	}
 
-	var map = new mm.Map(map_id, provider, dims, handlers);
+	var map = new com.modestmaps.Map(map_id, provider, dims, handlers);
 	return map;
 }
 

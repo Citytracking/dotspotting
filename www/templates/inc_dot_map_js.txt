@@ -32,8 +32,7 @@ function draw_map_modestmaps(lat, lon){
 	var more = { 'static' : 1 };	 
 	var map = utils_modestmap('map', more);
 
-	var mm = com.modestmaps;
-	var loc = new mm.Location(lat, lon);
+	var loc = new com.modestmaps.Location(lat, lon);
     	map.setCenterZoom(loc, 14);
 
 	// see how this is different than what we pass
