@@ -68,12 +68,12 @@
 		      'page' => $args['page'],
 		);
 
-		return _search_dots_all($where, $more);
+		return _search_dots_all($where, $viewer_id, $more);
 	}
 
 	#################################################################
 
-	function _search_dots_all($where, $more=array()){
+	function _search_dots_all($where, $viewer_id, $more=array()){
 
 		#
 		# Go!
