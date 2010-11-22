@@ -13,6 +13,8 @@
 
 <p class="tx1">So the first part of this project is to start from scratch, in a 'clean room' environment. We've started from a baseline that's really straightforward, tackling the simplest part: getting dots on maps, without legacy code or any baggage. Just that, to start. Dots on maps.</p>
 
+<a href="http://www.flickr.com/photos/straup/5197457786/" title="Screen shot 2010-11-21 at 7.10.06 PM by straup, on Flickr"><img src="http://farm5.static.flickr.com/4112/5197457786_c65f6e2e22_b.jpg" width="900" height="548" alt="Screen shot 2010-11-21 at 7.10.06 PM" style="border:none;display:block;margin-bottom:40px;margin-top:40px;"/></a>
+
 <p class="tx1">But <q>dots on maps</q> implies a few other things: getting the locations, putting them on there, working with them, and—crucially—getting them out in a format that people can work with.</p>
 
 <p class="tx1">We've had several interactions with different city agencies so far, and while the situation has changed alot in the last few years, we've realized that, for the foreseeable future, people aren't going to stop using Word and Excel and Pages and Numbers to work with their data, or even stop using paper. It's made us think that if this stuff is really going to work out in the long run, we need to focus our thinking on projects that can consume as well as export things that cities and people actually use and use now, and not stick with projects that have to rely on fancy APIs or the latest database flavor.</p>
