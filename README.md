@@ -1,7 +1,7 @@
 Dotspotting
 ==
 
-First things first:** THIS SHOULD NOT BE CONSIDERED STABLE OR PRODUCTION-READY CODE YET.**
+First things first:** THIS IS NOT PRODUCTION-READY CODE YET.**
 
 That said, it works. It probably doesn't work everywhere and there are almost certainly bugs left to be found but more importantly it is still at a stage where *the code and the architecture need to be able to change* without necessarily ensuring backwards compatibility.
 
@@ -52,7 +52,7 @@ Configuring Dotspotting
 
 Flamework (and Dotspotting) try to ensure that all an application's configuration information by defined in two (-ish) places:
 
-1. An `.htaccess` file which, in Dotspotting's case, is located in the `www` directory.
+1. An `.htaccess` file which, in Dotspotting's case, is located in the `www` directory. (we're going to try and remove the need to worry about this, shortly)
 2. One or more PHP files that assign settings to a global `$cfg` hash.
 
 The `.htaccess` file is where the various PHP settings are defined, including this one:

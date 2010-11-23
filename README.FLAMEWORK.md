@@ -60,7 +60,7 @@ Here is a simple bare-bones example of how it all fits together:
 		include("include/init.php");
 		loadlib("example");
 		$foo = example_foo($GLOBALS['cfg']['user']);
-		$GLOBALS['smarty']->assign_by_ref("foo", example_foo());
+		$GLOBALS['smarty']->assign_by_ref("foo", $foo);
 		$GLOBALS['smarty']->display("page_example.txt");
 		exit();
 	?>
@@ -76,7 +76,7 @@ Here is a simple bare-bones example of how it all fits together:
 The only "rules" here are:
 
 1. Making sure you load `include/init.php`
-2. The part where `init.php` handles authentication checking and assigns logged in users to the global `$cfg` variable (it also creates and assigns a global `$smarty` object)
+2. The part where `init.php` (specifically the [Flamework init.php file](https://github.com/Citytracking/flamework/blob/master/include/init.php)) handles authentication checking and assigns logged in users to the global `$cfg` variable (it also creates and assigns a global `$smarty` object)
 3. The naming conventions for shared libraries, specifically: `lib_SOMETHING.php` which is imported as `loadlib("SOMETHING")`.
 4. Functions defined in libraries are essentially "namespaced".
 

@@ -42,6 +42,7 @@ Feature Flags
 
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
+	$GLOBALS['cfg']['enable_feature_search_export'] = 0;	# this is still a work in progress
 
 	#
 	# Toggle the use of Polymaps independent of whether a user's browser supports SVG
