@@ -13,6 +13,9 @@ An unnamed sheet of dots by {$cfg.user.username|escape}
 	{/if}
 {/if}
 {/capture}
+{capture assign="extra_head"}
+<script type="text/javascript" src="{$cfg.abs_root_url}javascript/sheet.js"></script>
+{/capture}
 {include file="inc_head.txt"}
 
 <h2>
@@ -22,7 +25,7 @@ An unnamed sheet of dots by {$cfg.user.username|escape}
 Sheet ID #{$sheet.id|escape}
 {/if}
 
-<span style="font-size:small;">/ <a href="{$sheet|@urls_url_for_sheet}export">export</a></span>
+<span style="font-size:small;">/ <a href="{$sheet|@urls_url_for_sheet}export" onclick="javascript:location.href=sheet_export_url('{$sheet|@urls_url_for_sheet}export');return false;">export</a></span>
 </h2>
 
 {if $is_own}
@@ -52,6 +55,6 @@ Sheet ID #{$sheet.id|escape}
 	</tr>
 </table>
 
-{include file="inc_dots_list.txt" dots=$sheet.dots}
+{include file="inc_dots_list.txt" dots=$sheet.dots is_page=1}
 
 {include file="inc_foot.txt"}

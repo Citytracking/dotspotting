@@ -6,6 +6,7 @@
 	<link rel="stylesheet" type="text/css" media="all" href="{$cfg.abs_root_url}css/main.css" />
 	{* See this: still no JS compression or other smushing *}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery-1.4.3.min.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/latlong.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/utils.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/parseuri.js"></script>

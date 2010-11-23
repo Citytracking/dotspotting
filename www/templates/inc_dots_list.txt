@@ -1,5 +1,5 @@
 {include file="inc_map.txt"}
-<table id="user_dots">
+<table id="user_dots" class="ds_table">
 	<thead>
 		<tr>
 			<th>Dot</th>
@@ -52,4 +52,31 @@
 		{/foreach}
 	</tbody>
 </table>
+
+<script type="text/javascript">
+{if $is_sheet}
+{literal}
+$(document).ready(function(){ 
+
+     $('#user_dots').dataTable({
+	"bPaginate": true,
+	"bFilter": true,
+	"bInfo" : false,
+     });
+});
+{/literal}
+{else}
+{literal}
+$(document).ready(function(){ 
+
+     $('#user_dots').dataTable({
+	"bPaginate": false,
+	"bFilter": true,
+	"bInfo" : false,
+     });
+});
+{/literal}
+{/if}
+</script>
+
 {include file="inc_dots_map_js.txt"}
