@@ -3,7 +3,7 @@
 <head>
 	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="{$cfg.abs_root_url}/css/main.css" />
 	{* See this: still no JS compression or other smushing *}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery-1.4.3.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/latlong.js"></script>
@@ -42,23 +42,23 @@ var _maptiles_template_hosts = '{$cfg.maptiles_template_hosts|@join:","|escape}'
 		<div id="login" style="float: right;">
 {if $cfg.user.id}
 			Hello <strong>{$cfg.user.username|escape}</strong>!
-			<a href="/u/{$cfg.user.id}/">Dashboard</a>
+			<a href="{$cfg.abs_root_url}/u/{$cfg.user.id}/">Dashboard</a>
 			|
-			<a href="/upload/">Upload</a>
+			<a href="{$cfg.abs_root_url}/upload/">Upload</a>
 			|
-			<a href="/account/">Account</a>
+			<a href="{$cfg.abs_root_url}/account/">Account</a>
 			|
-			<a href="/nearby/">Nearby</a>
+			<a href="{$cfg.abs_root_url}/nearby/">Nearby</a>
 			|
-			<a href="/signout/">Logout</a>
+			<a href="{$cfg.abs_root_url}/signout/">Logout</a>
 {else}
-			<a href="/nearby/">Nearby</a>
+			<a href="{$cfg.abs_root_url}/nearby/">Nearby</a>
 			|
 			{if $cfg.enable_feature_signin}
 			{if $cfg.enable_feature_signup}
-			<a href="/signup/">Create New Account</a> | {/if}
+			<a href="{$cfg.abs_root_url}/signup/">Create New Account</a> | {/if}
 
-			<a href="/signin/">Sign In</a>
+			<a href="{$cfg.abs_root_url}/signin/">Sign In</a>
 			{/if}
 {/if}
 		</div>
