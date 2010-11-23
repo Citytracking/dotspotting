@@ -10,6 +10,13 @@
 # for your production deployment. Yeah. Do that.
 #
 
+# First, account for the fiercely restrictive .htaccess at the
+# dotspotting root...
+
+Order Allow,Deny
+Allow from all
+Deny from none
+
 FileETag none
 
 php_value include_path "./include:../flamework/include:."

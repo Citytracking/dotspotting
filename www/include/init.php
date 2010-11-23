@@ -59,11 +59,40 @@
 	# Hey look! Running code goes here!
 	#
 
+	#
+	# First, ensure that 'abs_root_url' is both assigned and properly
+	# set up to run out of user's public_html directory (if need be).
+	# 
+
+	$server_url = $GLOBALS['cfg']['abs_root_url'];
+
+	if (! $server_url){
+		$scheme = ($_SERVER['SERVER_PORT'] == 443) ? "https" : "http";
+		$server_url = "{$scheme}://{$_SERVER['SERVER_NAME']}/";
+	}
+
+	$cwd = '';
+
+        if ($parent_dirname = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/')){
+
+		$parts = explode("/", $parent_dirname);
+		$cwd = implode("/", array_slice($parts, 1));
+	}
+
+	$GLOBALS['cfg']['abs_root_url'] = $server_url . $cwd;
+	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
+
+	#
+	# Other stuff
+	#
+
 	$GLOBALS['cfg']['browser'] = user_agent_info();
 
 	$GLOBALS['cfg']['browser']['capabilities'] = array(
 		'polymaps' => can_use_polymaps(),
 	);
+
+	#################################################################
 
 	# This is a shim in the absence of a saner and
 	# plain-old function-y way to use lib_filter...

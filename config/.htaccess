@@ -1,0 +1,5 @@
+# Just because you're paranoid /
+# Don't mean they're not after you
+Order Allow,Deny
+Allow from none
+Deny from all

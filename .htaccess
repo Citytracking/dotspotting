@@ -1,0 +1,5 @@
+# This is to account for people who might want to run
+# Dotspotting out of a user's public_html directory
+Order Allow,Deny
+Allow from none
+Deny from all

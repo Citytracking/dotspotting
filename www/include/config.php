@@ -109,7 +109,8 @@
 	# App specific stuff
 	#
 
-	$GLOBALS['cfg']['abs_root_url'] = 'READ-FROM-CONFIG';
+	$GLOBALS['cfg']['abs_root_url'] = '';
+	$GLOBALS['cfg']['safe_abs_root_url'] = '';
 
 	$GLOBALS['cfg']['maptiles_template_url'] = 'http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/26490/256/{Z}/{X}/{Y}.png';
 	$GLOBALS['cfg']['maptiles_template_hosts'] = array( 'a.', 'b.', 'c.' );
