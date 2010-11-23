@@ -1,7 +1,7 @@
 Dotspotting
 ==
 
-First things first:** THIS SHOULD NOT BE CONSIDERED STABLE OR PRODUCTION-READY CODE YET.**
+First things first:** THIS IS NOT PRODUCTION-READY CODE YET.**
 
 That said, it works. It probably doesn't work everywhere and there are almost certainly bugs left to be found but more importantly it is still at a stage where *the code and the architecture need to be able to change* without necessarily ensuring backwards compatibility.
 
