@@ -60,7 +60,7 @@ Here is a simple bare-bones example of how it all fits together:
 		include("include/init.php");
 		loadlib("example");
 		$foo = example_foo($GLOBALS['cfg']['user']);
-		$GLOBALS['smarty']->assign_by_ref("foo", example_foo());
+		$GLOBALS['smarty']->assign_by_ref("foo", $foo);
 		$GLOBALS['smarty']->display("page_example.txt");
 		exit();
 	?>
