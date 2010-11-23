@@ -11,7 +11,7 @@
 
 	#################################################################
 
-	$owner = ensure_valid_user_from_url();
+	$owner = users_ensure_valid_user_from_url();
 
 	$args = array(
 		'page' => get_int64('page'),

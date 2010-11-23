@@ -65,20 +65,14 @@
 		'polymaps' => can_use_polymaps(),
 	);
 
-	$GLOBALS['filter'] = new lib_filter();
-
 	# This is a shim in the absence of a saner and
 	# plain-old function-y way to use lib_filter...
 
 	function filter_strict($str){
 
-		$whatevar = $GLOBALS['filter']->allowed;
-
-		$GLOBALS['filter']->allowed = array();
-		$str = $GLOBALS['filter']->go($str);
-
-		$GLOBALS['filter']->allowed = $whatevar;
-		return $str;
+		$filter = new lib_filter();
+		$filter->allowed = array();
+		return $filter->go($str);
 	}
 
 	#################################################################
@@ -88,6 +82,11 @@
 	#
 
 	#################################################################
+
+	# This is a shim. Ultimately the application code shouldn't/doesn't need
+	# to know about Polymaps but it was easier than getting dragged in to a
+	# rabbit-hole of JavaScript-isms at the time. This is on the TO DO list.
+	# (20101123/straup)
 
 	function can_use_polymaps(){
 
@@ -146,36 +145,10 @@
 
 	#################################################################
 
+	# This is called by the Flamework users_delete_user function
+
 	function users_delete_user_callback(&$user){
 		return sheets_delete_sheets_for_user($user);
-	}
-
-	#################################################################
-
-	# Move this in to flamework ?
-	# (20101024/straup)
-
-	function ensure_valid_user_from_url($method=''){
-
-		if (strtolower($method) == 'post'){
-			$user_id = post_int64('user_id');
-		}
-
-		else {
-			$user_id = get_int64('user_id');
-		}
-
-		if (! $user_id){
-			error_404();
-		}
-
-		$user = users_get_by_id($user_id);
-
-		if ((! $user) || ($user['deleted'])){
-			error_404();
-		}
-
-		return $user;
 	}
 
 	#################################################################

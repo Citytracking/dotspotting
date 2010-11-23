@@ -7,7 +7,7 @@
 	include("include/init.php");
 	loadlib("geo_geocode");
 
-	$owner = ensure_valid_user_from_url();
+	$owner = users_ensure_valid_user_from_url();
 
 	$dot_id = get_int64('dot_id');
 

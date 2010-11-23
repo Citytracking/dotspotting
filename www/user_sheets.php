@@ -8,7 +8,7 @@
 
 	#################################################################
 
-	$owner = ensure_valid_user_from_url();
+	$owner = users_ensure_valid_user_from_url();
 	$smarty->assign_by_ref('owner', $owner);
 
 	#################################################################
