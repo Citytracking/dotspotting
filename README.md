@@ -101,7 +101,7 @@ Global Variables
 
 As of this writing, Dotspotting is migrating to a place where it will:
 
-* Only using $GLOBALS['cfg'] and $GLOBALS['smarty'] in its code.
+* Only use *$GLOBALS['cfg']* and *$GLOBALS['smarty']* in its code.
 
 * Not assign any globals of its own.
 
