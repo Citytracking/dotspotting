@@ -82,6 +82,23 @@ The only "rules" here are:
 
 Page template names and all that other stuff is, ultimately, your business.
 
+Global Variables
+--
+
+Flamework uses and assigns global PHP variables on the grounds that it's really just not that big a deal. A non-exhaustive list of global variables that Flameworks assigns is:
+
+* $GLOBALS['cfg'] -- this is a great big hash that contains all the various site configs
+
+* $GLOBALS['smarty'] -- a [Smarty](http://www.smarty.net/) templating object
+
+* $GLOBALS['timings'] -- a hash used to store site performance metrics
+
+* $GLOBALS['loaded_libs'] -- a hash used to store information about libraries that have been loaded
+
+* $GLOBALS['local_cache'] -- a hash used to store locally cached data
+
+* $GLOBALS['error'] -- a (helper) hash used to assign site errors to; this is also automagically assigned to a corresponding Smarty variable
+
 The database model
 --
 

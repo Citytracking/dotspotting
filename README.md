@@ -52,8 +52,7 @@ Configuring Dotspotting
 
 Flamework (and Dotspotting) try to ensure that all an application's configuration information by defined in two (-ish) places:
 
-1. An `.htaccess` file which, in Dotspotting's case, is located in the `www` directory. (we're going to try and remove the need to worry about this, shortly)
-2. One or more PHP files that assign settings to a global `$cfg` hash.
+1. An `.htaccess` file which, in Dotspotting's case, is located in the `www` directory. <-- YOU DON'T NEED TO WORRY ABOUT THIS PART
 
 The `.htaccess` file is where the various PHP settings are defined, including this one:
 
@@ -62,6 +61,8 @@ The `.htaccess` file is where the various PHP settings are defined, including th
 That tells PHP to look for stuff first in Dotspotting's `www/include` directory and then, if nothing is found, in Flamework's `include` directory. That's the "holding hands" part. Note that Dotspotting does not care about any of the "application" files in Flamework (signin.php, etc.) as it uses its own.
 
 *The `.htaccess` file is also where all the mod_rewrite rules for pretty URLs are defined.*
+
+2. One or more PHP files that assign settings to a global `$cfg` hash. <-- YOU DO NEED TO CARE ABOUT THIS
 
 As far as the PHP config files go, here's what's actually happening when a page on Dotspotting is loaded:
 
@@ -81,7 +82,26 @@ The important thing to note here is that each file may override values defined i
 
 For a complete list of Dotspotting-specific config options, you should consult the [README.CONFIG.md](http://github.com/citytracking/dotspotting/blob/master/README.CONFIG.md) document.
 
-Known Knowns
+Global Variables
+--
+
+[Flamework](https://github.com/exflickr/flamework) uses and assigns global PHP variables on the grounds that it's really just not that big a deal. A non-exhaustive list of global variables that Flameworks assigns is:
+
+* $GLOBALS['cfg'] -- this is a great big hash that contains all the various site configs
+
+* $GLOBALS['smarty'] -- a [Smarty](http://www.smarty.net/) templating object
+
+* $GLOBALS['timings'] -- a hash used to store site performance metrics
+
+* $GLOBALS['loaded_libs'] -- a hash used to store information about libraries that have been loaded
+
+* $GLOBALS['local_cache'] -- a hash used to store locally cached data
+
+* $GLOBALS['error'] -- a (helper) hash used to assign site errors to; this is also automagically assigned to a corresponding Smarty variable
+
+As of this writing, Dotspotting is migrating to a place where it will a) only using $GLOBALS['cfg'] and $GLOBALS['smarty'] in its code-base b) not assign any globals of its own.
+
+(Other) Known Knowns
 --
 
 + Database indexes and other optimizations are not even close to being considered "done".
@@ -90,6 +110,6 @@ Known Knowns
 
 + Dotspotting has proven to be fussy and problematic installing using the default OS X Apache + PHP binaries. We're not sure why but are continuing to poke at the problem. It works fine using tools like [MAMP](http://www.mamp.info/), though.
 
-+ Dotspotting still needs to be installed at the root of a domain. It doesn't Just Work (tm) when run out of a user's `public_html` folder, for example. Yet.
++ Dotspotting should Just Work (tm) when run out of a user's `public_html` folder but if you tell me there are bugs I won't be surprised.
 
 + Dotspotting has not been tested on Windows.
