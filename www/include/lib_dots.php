@@ -14,11 +14,6 @@
 
 	#################################################################
 
-	$GLOBALS['dots_lookup_local_cache'] = array();
-	$GLOBALS['dots_local_cache'] = array();
-
-	#################################################################
-
 	function dots_permissions_map($string_keys=0){
 
 		$map = array(
@@ -52,7 +47,7 @@
 		# As in: don't update DotsSearch inline but save
 		# all the inserts and do them at at end. 
 
-		$more['batch_search_update'] = 1;
+		$more['buffer_search_inserts'] = 1;
 
 		foreach ($dots as $dot){
 
@@ -262,7 +257,7 @@
 		$dot['details_json'] = json_encode($details);
 
 		#
-		# Look, we are creating the dot now
+		# Look, we are FINALLY NOW creating the dot
 		#
 
 		$insert = array();
@@ -277,7 +272,7 @@
 			return $rsp;
 		}
 
-		$dot['extras'] = $extras;
+		$dot['details'] = $details;
 
 		#
 		# Update the DotsLookup table
@@ -290,6 +285,8 @@
 			'imported' => $now,
 			'last_modified' => $now,
 		);
+
+		# TO DO: buffer lookup inserts ?
 
 		$lookup_rsp = dots_lookup_create($lookup);
 
@@ -325,7 +322,7 @@
 			}
 		}
 
-		if ($more['batch_search_update']){
+		if ($more['buffer_search_inserts']){
 			$rsp['search'] = &$search;
 		}
 
@@ -361,7 +358,8 @@
 		$rsp = db_update_users($user['cluster_id'], 'Dots', $update, $where);
 
 		if ($rsp['ok']){
-			unset($GLOBALS['dots_local_cache'][$dot['id']]);
+			$cache_key = "dot_{$dot['id']}";
+			cache_unset($cache_key);
 		}
 
 		#
@@ -379,9 +377,7 @@
 			'last_modified' => $now,
 		);
 
-		$lookup_where = "dot_id='{$enc_id}'";
-
-		$lookup_rsp = db_update('DotsLookup', $lookup_update, $lookup_where);
+		$lookup_rsp = dots_lookup_update($dot, $lookup_update);
 
 		if (! $lookup_rsp['ok']){
 			# What?
@@ -445,7 +441,8 @@
 		#
 
 		if ($rsp['ok']){
-			unset($GLOBALS['dots_local_cache'][$dot['id']]);
+			$cache_key = "dot_{$dot['id']}";
+			cache_unset($cache_key);
 		}
 
 		return $rsp;
@@ -470,30 +467,6 @@
 	#################################################################
 
 	#
-	# Grab the sheet from db_main
-	#
-
-	function dots_lookup_dot($dot_id){
-
-		if (isset($GLOBALS['dots_lookup_local_cache'][$dot_id])){
-			return $GLOBALS['dots_lookup_local_cache'][$dot_id];
-		}
-
-		$enc_id = AddSlashes($dot_id);
-
-		$sql = "SELECT * FROM DotsLookup WHERE dot_id='{$enc_id}'";
-		$rsp = db_fetch($sql);
-
-		if ($rsp['ok']){
-			$GLOBALS['dots_lookup_local_cache'][$dot_id] = $rsp;
-		}
-
-		return db_single($rsp);
-	}
-
-	#################################################################
-
-	#
 	# Fetch the dot from the shards
 	#	
 
@@ -503,8 +476,11 @@
 		# from the Dots table and that 'details' get loaded
 		# below.
 
-		if (isset($GLOBALS['dots_local_cache'][$dot_id])){
-			$dot = $GLOBALS['dots_local_cache'][$sot_id];
+		$cache_key = "dot_{$dot_id}";
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			$dot = $cache['data'];
 		}
 
 		else {
@@ -549,7 +525,7 @@
 			$dot = db_single($rsp);
 
 			if ($rsp['ok']){
-				$GLOBALS['dots_local_cache'][$dot_id] = $dot;
+				cache_set($cache_set, $dot, 'cache locally');
 			}
 		}
 

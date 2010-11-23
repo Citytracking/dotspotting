@@ -6,8 +6,7 @@
 
 	#################################################################
 
-	$GLOBALS['sheets_lookup_local_cache'] = array();
-	$GLOBALS['sheets_local_cache'] = array();
+	loadlib("sheets_lookup");
 
 	#################################################################
 
@@ -66,7 +65,7 @@
 			'created' => AddSlashes($now),
 		);
 
-		$lookup_rsp = db_insert('SheetsLookup', $lookup);
+		$lookup_rsp = sheets_lookup_create($lookup);
 
 		if (! $lookup_rsp['ok']){
 			# What ?
@@ -152,6 +151,9 @@
 		$sql = "DELETE FROM Sheets WHERE id='{$enc_id}'";
 		$rsp = db_write_users($user['cluster_id'], $sql);
 
+		$cache_key = "sheet_{$sheet['id']}";
+		cache_unset($cache_key);
+
 		#
 		# Update the lookup table
 		#
@@ -160,9 +162,7 @@
 			'deleted' => time(),
 		);
 
-		$where = "sheet_id='{$enc_id}'";
-
-		$lookup_rsp = db_update('SheetsLookup', $update, $where);
+		$lookup_rsp = sheets_lookup_date($sheet, $update);
 
 		if (! $lookup_rsp['ok']){
 			# what?
@@ -191,7 +191,6 @@
 
 		$enc_id = AddSlashes($user['id']);
 		$sql = "SELECT * FROM Sheets WHERE user_id='{$enc_id}'";
-
 	
 		$more = array(
 			'page' => 1,
@@ -269,37 +268,16 @@
 	#################################################################
 
 	#
-	# Grab the sheet from db_main
-	#
-
-	function sheets_lookup_sheet($sheet_id){
-
-		if (isset($GLOBALS['sheets_lookup_local_cache'][$sheet_id])){
-			return $GLOBALS['sheets_lookup_local_cache'][$sheet_id];
-		}
-
-		$enc_id = AddSlashes($sheet_id);
-
-		$sql = "SELECT * FROM SheetsLookup WHERE sheet_id='{$enc_id}'";
-		$rsp = db_fetch($sql);
-
-		if ($rsp['ok']){
-			$GLOBALS['sheets_lookup_local_cache'][$sheet_id] = $rsp;
-		}
-
-		return db_single($rsp);
-	}
-
-	#################################################################
-
-	#
 	# Grab the sheet from the shards
 	#
 
 	function sheets_get_sheet($sheet_id, $viewer_id=0, $more=array()){
 
-		if (isset($GLOBALS['sheets_local_cache'][$sheet_id])){
-			$sheet = $GLOBALS['sheets_local_cache'][$sheet_id];
+		$cache_key = "sheet_{$sheet_id}";
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			$sheet = $cache['data'];
 		}
 
 		else {
@@ -340,12 +318,12 @@
 
 			$rsp = db_fetch_users($user['cluster_id'], $sql);
 			$sheet = db_single($rsp);
+
+			cache_set($cache_key, $sheet, 'cache locally');
 		}
 
 		if ($sheet){
-
 			sheets_load_details($sheet, $viewer_id, $more);
-			$GLOBALS['sheets_local_cache'][$sheet_id] = $sheet;
 		}
 
 		return $sheet;
@@ -384,7 +362,8 @@
 		$rsp = db_update_users($user['cluster_id'], 'Sheets', $update, $where);
 
 		if ($rsp['ok']){
-			unset($GLOBALS['sheets_local_cache'][$sheet['id']]);
+			$cache_key = "sheet_{$sheet['id']}";
+			cache_unset($cache_key);
 		}
 
 		return $rsp;

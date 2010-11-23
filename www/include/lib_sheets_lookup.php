@@ -6,18 +6,18 @@
 
 	#################################################################
 
-	function dots_lookup_dot($dot_id){
+	function sheets_lookup_sheet($sheet_id){
 
-		$cache_key = "dots_lookup_{$dot_id}";
+		$cache_key = "sheets_lookup_{$sheet_id}";
 		$cache = cache_get($cache_key);
 
 		if ($cache['ok']){
 			return $cache['data'];
 		}
 
-		$enc_id = AddSlashes($dot_id);
+		$enc_id = AddSlashes($sheet_id);
 
-		$sql = "SELECT * FROM DotsLookup WHERE dot_id='{$enc_id}'";
+		$sql = "SELECT * FROM SheetsLookup WHERE sheet_id='{$enc_id}'";
 		$rsp = db_fetch($sql);
 
 		if ($rsp['ok']){
@@ -30,7 +30,7 @@
 
 	#################################################################
 
-	function dots_lookup_create(&$lookup){
+	function sheets_lookup_create(&$lookup){
 
 		$hash = array();
 
@@ -38,14 +38,14 @@
 			$hash[$key] = AddSlashes($value);
 		}
 
-		return db_insert('DotsLookup', $hash);
+		return db_insert('SheetsLookup', $hash);
 	}
 
 	#################################################################
 
-	function dots_lookup_update(&$dot, &$update){
+	function sheets_lookup_update(&$sheet, &$update){
 
-		$cache_key = "dots_lookup_{$dot['id']}";
+		$cache_key = "sheets_lookup_{$sheet['id']}";
 		cache_unset($cache_key);
 
 		$hash = array();
@@ -54,10 +54,10 @@
 			$hash[$key] = AddSlashes($value);
 		}
 
-		$enc_id = AddSlashes($dot['id']);
-		$where = "dot_id={$enc_id}";
+		$enc_id = AddSlashes($sheet['id']);
+		$where = "sheet_id={$enc_id}";
 
-		return db_update('DotsLookup', $update, $where);
+		return db_update('SheetsLookup', $update, $where);
 	}
 
 	#################################################################
