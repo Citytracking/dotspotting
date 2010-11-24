@@ -297,7 +297,7 @@ table.ds_table thead tr th, table.ds_table tfoot tr th {
     background-color: #cdcdcd;
     border: 1px solid #cdcdcd;
     font-size: 8pt;
-    padding: 4px;
+    padding: 8px;
 }
 
 table.ds_table thead tr .header {
