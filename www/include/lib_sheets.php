@@ -162,7 +162,7 @@
 			'deleted' => time(),
 		);
 
-		$lookup_rsp = sheets_lookup_date($sheet, $update);
+		$lookup_rsp = sheets_lookup_update($sheet, $update);
 
 		if (! $lookup_rsp['ok']){
 			# what?
