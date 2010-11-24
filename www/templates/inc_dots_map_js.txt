@@ -47,7 +47,11 @@ function collect_dots(){
 function calculate_extents(dots){
 
 	if (dots['locations'].length == 0){
-		return;
+
+		return {
+			'bbox': [ { 'lat': -85, 'lon': -180 },	{ 'lat': 85, 'lon': 180 } ],
+			'center': { 'lat': 37.764862, 'lon': -122.419431 },
+		}
 	}
 
 	// figure out the extent and center point
