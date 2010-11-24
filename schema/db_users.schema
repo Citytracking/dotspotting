@@ -18,6 +18,7 @@ CREATE TABLE `Dots` (
   `id` int(20) unsigned NOT NULL PRIMARY KEY,
   `sheet_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
+  `created` int(10) unsigned NOT NULL,
   `perms` tinyint(3) unsigned NOT NULL,
   `details_json` text NOT NULL,
   `location` varchar(255) NOT NULL,

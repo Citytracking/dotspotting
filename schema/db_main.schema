@@ -65,7 +65,6 @@ CREATE TABLE `DotsSearch` (
   `imported` int(10) unsigned NOT NULL,
   `type` varchar(64) NOT NULL,
   `location` varchar(64) NOT NULL,
-  PRIMARY KEY (`dot_id`),
   KEY `user_by_user` (`user_id`,`geohash`,`created`,`type`,`location`,`perms`),
   KEY `user_by_created` (`user_id`,`created`,`type`,`location`,`perms`),
   KEY `user_by_type` (`user_id`,`type`,`location`,`perms`),
