@@ -286,7 +286,7 @@ li code {
 
 table.ds_table {
     font-family:arial;
-    background-color: #CDCDCD;
+    background-color: #f3f3f3;
     margin:10px 0pt 15px;
     font-size: 8pt;
     width: 100%;
@@ -294,8 +294,8 @@ table.ds_table {
 }
 
 table.ds_table thead tr th, table.ds_table tfoot tr th {
-    background-color: #cdcdcd;
-    border: 1px solid #cdcdcd;
+    background-color: #f3f3f3;
+    border: 1px solid #f3f3f3;
     font-size: 8pt;
     padding: 8px;
 }
