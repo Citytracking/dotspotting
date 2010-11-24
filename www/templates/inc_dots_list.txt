@@ -7,7 +7,7 @@
 			<th nowrap>Sheet</th>
 			<th nowrap>Latitude</th>
 			<th nowrap>Longitude</th>
-			<th>Altitude</th>
+			{if 0}<th>Altitude</th>{/if}
 			<th>Location</th>
 			<th>Type</th>
 			<th>Created</th>
@@ -39,7 +39,7 @@
 
 				<td nowrap>{if $dot.latitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.latitude|escape}</a>{else}&#8212;{/if}</td>
 				<td nowrap>{if $dot.longitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.longitude|escape}</a>{else}&#8212;{/if}</td>
-				<td nowrap>{if $dot.altitude}{$dot.altitude|escape}{else}&#8212;{/if}</td>
+				{if 0}<td nowrap>{if $dot.altitude}{$dot.altitude|escape}{else}&#8212;{/if}</td>{/if}
 				<td nowrap>{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&l={$dot.location|escape:'url'}">{$dot.location|escape}</a>{else}&#8212;{/if}</td>
 				<td nowrap>{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&t={$dot.type|escape:'url'}">{$dot.type|truncate:15:"..."|escape}</a>{else}&#8212;{/if}</td>
 				<td nowrap>{if $dot.created}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape:'url'})">{$dot.created|date_format:"%Y-%m-%d"|escape}{else}&#8212;{/if}</td>
@@ -59,7 +59,7 @@
 $(document).ready(function(){ 
 
      $('#user_dots').dataTable({
-	"bPaginate": true,
+	"bPaginate": false,
 	"bFilter": true,
 	"bInfo" : false,
      });
@@ -71,7 +71,8 @@ $(document).ready(function(){
 
      $('#user_dots').dataTable({
 	"bPaginate": false,
-	"bFilter": true,
+	"bFilter": false,
+	"bSort": false,
 	"bInfo" : false,
      });
 });

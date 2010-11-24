@@ -19,17 +19,7 @@
 
 	#################################################################
 
-	# First, do some basic args munging
-
-	$query = array();
-
-	foreach ($_GET as $key => $value){
-		$query[ $key ] = sanitize($value, 'str');
-	}
-
-	#################################################################
-
-	if (count($query)){
+	if (count($_GET)){
 
 		# this is experimental
 
@@ -56,7 +46,7 @@
 		# Go!
 		#
 
-		$rsp = search_dots($query, $GLOBALS['cfg']['user']['id'], $more);
+		$rsp = search_dots($_GET, $GLOBALS['cfg']['user']['id'], $more);
 
 		if ((! $rsp['ok']) || (! count($rsp['dots']))){
 			$GLOBALS['smarty']->display('page_search_noresults.txt');

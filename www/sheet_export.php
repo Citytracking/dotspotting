@@ -57,6 +57,8 @@
 
 	$more = array(
 		'per_page' => $GLOBALS['cfg']['import_max_records'],
+		'sort' => request_str('_sort'),
+		'order' => request_str('_order'),
 	);
 
 	$sheet['dots'] = dots_get_dots_for_sheet($sheet, $GLOBALS['cfg']['user']['id'], $more);

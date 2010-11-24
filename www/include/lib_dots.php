@@ -652,7 +652,15 @@
 		$order_by = 'id';
 		$order_sort = 'ASC';
 
-		# check $args here for additioning sorting
+		# check $more here for additioning sorting
+
+		if ($more['sort']){
+			$order_by = $more['sort'];
+		}
+
+		if (strtolower($more['order']) == 'desc'){
+			$order_sort = 'DESC';
+		}
 
 		$order_by = AddSlashes($order_by);
 		$order_sort = AddSlashes($order_sort);
@@ -660,6 +668,9 @@
 		$sql .= " ORDER BY {$order_by} {$order_sort}";
 
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);
+
+		#
+
 		$dots = array();
 
 		foreach ($rsp['rows'] as $dot){
@@ -750,7 +761,7 @@
 		$geo_bits = array(
 			'latitude',
 			'longitude',
-			'altitude',
+			# 'altitude',
 			'geohash'
 		);
 

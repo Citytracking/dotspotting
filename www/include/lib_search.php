@@ -13,11 +13,12 @@
 		$where = array();
 
 		#
-		# Note that order of these keys is important. They are dictated by
-		# the indexes on DotsSearch.
+		# Note that order of these keys is^H^H will be important.
+		# They are dictated by the indexes on DotsSearch which have
+		# been thrown into disarray again (20101123/straup)
 		#
 
-		foreach (array('user', 'geo', 'time', 'type', 'location') as $what){
+		foreach (array('sheet', 'user', 'geo', 'time', 'type', 'location') as $what){
 
 			if (isset($where_parts[$what])){
 				$where = array_merge($where, $where_parts[$what]);
@@ -86,6 +87,10 @@
 			);
 		}
 
+		if (isset($where_parts['order'])){
+			$search_more['order'] = $where_parts['order'];
+		}
+
 		return _search_dots_all($where, $viewer_id, $search_more);
 	}
 
@@ -98,6 +103,12 @@
 		#
 
 		$sql = "SELECT * FROM DotsSearch WHERE " . implode(" AND ", $where);
+
+		if (isset($more['order'])){
+
+			$sql .= " ORDER BY `{$more['order']['by']}` {$more['order']['sort']}";
+		}
+
 		$rsp = db_fetch_paginated($sql, $more);
 
 		if (! $rsp['ok']){
@@ -125,33 +136,67 @@
 
 	function _search_generate_where_parts(&$args){
 
+		$search_params = array(
+			'b' => 'bbox',
+			'dt' => 'created',		# change to be 'c' ?
+			'gh' => 'geohash',
+			'l' => 'location',
+			'la' => 'latitude',
+			'ln' => 'longitude',
+			's' => 'sheet_id',
+			't' => 'type',
+			'u' => 'user_id',
+		);
+
+		$b = sanitize($args['b'], 'str');		# bounding box
+		$dt = sanitize($args['dt'], 'str');		# datetime
+		$gh = sanitize($args['gh'], 'str');		# geohash
+		$l = sanitize($args['l'], 'str');		# 'location'
+		$s = '';		# sanitize($args['s'], 'int32');		# sheetid
+		$t = sanitize($args['t'], 'str');		# 'type'
+		$u = sanitize($args['u'], 'int32');		# userid
+
+		$sortby = '';		# sanitize($args['_s'], 'str');		# sort by
+		$sortorder = '';	# sanitize($args['_o'], 'str');	# sort order
+
 		$where_parts = array();
+
+		if ($s){
+
+			$sheet = sheets_get_sheet($s);
+
+			if ($sheet['id']){
+				$where_parts['sheet'] = array(
+					"`sheet_id` = " . AddSlashes($sheet['id']),
+				);
+			}
+		}
 
 		#
 		# Geo
 		#
 
-		if ($args['b']){
+		if ($b){
 
 			# TO DO: convert to a geohash of (n) length
 			# dumper(geo_geohash_encode($swlat, $swlon));
 			# dumper(geo_geohash_encode($nelat, $nelon));
 
-			list($swlat, $swlon, $nelat, $nelon) = explode(",", $args['b'], 4);
+			list($swlat, $swlon, $nelat, $nelon) = explode(",", $b, 4);
 
 			$where_parts['geo'] = array(
-				"`latitude` >= " . AddSlashes(trim($swlat)),
-				"`longitude` >= " . AddSlashes(trim($swlon)),
-				"`latitude` <= " . AddSlashes(trim($nelat)),
-				"`longitude` <= " . AddSlashes(trim($nelon)),
+				"`latitude` >= " . AddSlashes(floatval($swlat)),
+				"`longitude` >= " . AddSlashes(floatval($swlon)),
+				"`latitude` <= " . AddSlashes(floatval($nelat)),
+				"`longitude` <= " . AddSlashes(floatval($nelon)),
 			);
 
 			$where_parts['geo_query'] = 'bbox';
 		}
 
-		else if ($args['gh']){
+		else if ($gh){
 
-			$geohash = substr($args['gh'], 0, 5);
+			$geohash = substr($gh, 0, 5);
 
 			$where_parts['geo'] = array(
 				"`geohash` LIKE '" . AddSlashes($geohash) . "%'",
@@ -166,10 +211,10 @@
 		# type (or poorman's "what")
 		#
 
-		if ($args['t']){
+		if ($t){
 
 			$where_parts['type'] = array(
-				"`type`='" . AddSlashes($args['t']) . "'",
+				"`type`='" . AddSlashes($t) . "'",
 			);
 		}
 
@@ -177,10 +222,10 @@
 		# location (or poorman's "where")
 		#
 
-		if ($args['l']){
+		if ($l){
 
 			$where_parts['location'] = array(
-				"`location`='" . AddSlashes($args['l']) . "'",
+				"`location`='" . AddSlashes($l) . "'",
 			);
 		}
 
@@ -188,7 +233,7 @@
 		# Time
 		#
 
-		if ($args['dt']){
+		if ($dt){
 
 			$date_start = null;
 			$date_end = null;
@@ -199,7 +244,7 @@
 			# This doesn't always work, specifically when passed
 			# something like '2010-11-19 12'. Punting for now...
 
-			if (preg_match("/^\(((\d{4})(?:-(\d{2})(?:-(\d{2})(?:(?:T|\s)(\d{2})(?:\:(\d{2})(?:\:(\d{2}))?)?)?)?)?)\)$/", $args['dt'], $m)){
+			if (preg_match("/^\(((\d{4})(?:-(\d{2})(?:-(\d{2})(?:(?:T|\s)(\d{2})(?:\:(\d{2})(?:\:(\d{2}))?)?)?)?)?)\)$/", $dt, $m)){
 
 				list($ignore, $dt, $year, $month, $day, $hour) = $m;
 
@@ -228,7 +273,7 @@
 			}
 
 			else {
-				$parts = explode("/", $args['dt'], 2);
+				$parts = explode("/", $dt, 2);
 				$date_start = strtotime($parts[0]);
 
 				if (count($parts) == 2){
@@ -257,9 +302,9 @@
 		# User stuff 
 		#
 
-		if ($args['u']){
+		if ($u){
 
-			$user = users_get_by_id($args['u']);
+			$user = users_get_by_id($u);
 
 			if (($user) && (! $user['deleted'])){
 
@@ -268,6 +313,34 @@
 				);
 
 				$where_parts['user_row'] = $user;
+			}
+		}
+
+		#
+		# Sorting
+		#
+
+		if ($sortby){
+
+			if (in_array($sortby, array_values($search_params))){
+				# pass
+			}
+
+			else if (in_array($sortby, array_keys($search_params))){
+				$sortby = $search_params[ $sortby ];
+			}
+
+			else {
+				$sortby = null;
+			}
+
+			if ($sortby){
+				$sortorder = (strtolower($sortorder) == 'desc') ? 'DESC' : 'ASC';
+
+				$where_parts['order'] = array(
+					'by' => $sortby,
+					'sort' => $sortorder,
+				);
 			}
 		}
 
