@@ -25,7 +25,7 @@
 
 <img src="{$cfg.abs_root_url}images/stanford-prettymaps.jpg" width="889" height="352" />
 
-<p class="tx1">What's up with the funny <a href="http://prettymaps.stamen.com/" target="_prettymaps">map</a>, above, you ask? That's an undocumented Easter egg that allows you to <em>change the default base map for Dotspotting</em> on the fly using a <a href="https://github.com/Citytracking/dotspotting/blob/master/www/javascript/utils.js#L4" target="_github">templated URL</a>. If that last sentence sounds like gibberish, just think: Fun! And a bit dorky. But fun!</p>
+<p class="tx1">What's up with the funny <a href="http://prettymaps.stamen.com/" target="_prettymaps">map</a>, above, you ask? That's an undocumented Easter egg that allows you to <em>change the default base map for Dotspotting</em> on the fly using a <a href="{literal}http://dotspotting.stamen.com/u/12/sheets/191/?template=http://prettymaps.stamen.com/201008/tiles/isola/{Z}/{X}/{Y}.png&static=1{/literal}">templated URL</a>. If that last sentence sounds like gibberish, just think: Fun! And a bit dorky. But fun!</p>
 
 <p class="tx1">Speaking of which, the code for Dotspotting is available for <a href="https://github.com/Citytracking/dotspotting">download on Github</a>, and licensed for use under the GNU General Public License. We're planning on releasing the code as we work on the project, in the hope that working in this kind of transparent manner from the beginning will both benefit the project and serve as an example of the way we'd like to work with foundations on this kind of work.</p>
 

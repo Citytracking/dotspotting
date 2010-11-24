@@ -7,9 +7,9 @@ An unnamed sheet of dots by you!
 	{/if}
 {else}
 	{if $sheet.label}
-"{$sheet.label|escape}", a sheet of dots by {$cfg.user.username|escape}
+"{$sheet.label|escape}", a sheet of dots by {$owner.username|escape}
 	{else}
-An unnamed sheet of dots by {$cfg.user.username|escape}
+An unnamed sheet of dots by {$owner.username|escape}
 	{/if}
 {/if}
 {/capture}
