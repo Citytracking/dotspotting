@@ -128,8 +128,10 @@ function draw_map_modestmaps(dots){
 		points.push([ loc.lat, loc.lon ]);
 	}
 
+	var more = { 'globalAlpha' : .6 };
+
 	var markers = new mm.Markers(map);
-	markers.drawPoints(points);
+	markers.drawPoints(points, more);
 
 	return;
 }
@@ -168,6 +170,15 @@ function draw_map_polymaps(dots){
 }
 	
 function draw_map(){
+
+	// just blow away the map (if a datatable is filtered)
+
+	var mom = $("#map");
+	var kids = mom.children();
+
+	if (kids.length){
+		kids.remove();
+	}
 
 	var dots = collect_dots();
 

@@ -1,6 +1,5 @@
 <div id="map_wrapper">
-	<div id="map">
-		<div id="map_license" style="">Map data <a href="http://creativecommons.org/licenses/by-sa/3.0/">CCBYSA</a> 2010 <a href="http://openstreetmap.org/">OpenStreetMap.org</a> contributors</div>
-	</div>
+	<div id="map">{* don't put anything in here *}</div>
+	<div id="map_license" style="">Map data <a href="http://creativecommons.org/licenses/by-sa/3.0/">CCBYSA</a> 2010 <a href="http://openstreetmap.org/">OpenStreetMap.org</a> contributors</div>
 	<div class="caveat">It's true: Nothing is clickable or interactive. Yet! It is early days in the project still but <a href="{$cfg.abs_root_url}about/">we'll get there</a>, we promise</div>
 </div>

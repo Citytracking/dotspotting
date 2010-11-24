@@ -36,9 +36,9 @@ a {
 	margin-top:5px;
 	text-align:right;
 	font-size:11px;
-	position:absolute;
-	bottom:5px;
-	right:5px;
+	position:relative;
+	bottom:27px;
+	right:12px;
 }
 
 #nav {

@@ -54,33 +54,5 @@
 	</tbody>
 </table>
 
-<script type="text/javascript">
-{if $is_sheet}
-{literal}
-$(document).ready(function(){ 
-
-     $('#user_dots').dataTable({
-	"bPaginate": false,
-	"bFilter": true,
-	"bInfo" : false,
-	"bProcessing": true,
-     });
-});
-{/literal}
-{else}
-{literal}
-$(document).ready(function(){ 
-
-     $('#user_dots').dataTable({
-	"bPaginate": false,
-	"bFilter": false,
-	"bSort": false,
-	"bInfo" : false,
-	"bProcessing": true,
-     });
-});
-{/literal}
-{/if}
-</script>
-
+{include file="inc_dots_datatables_js.txt"}
 {include file="inc_dots_map_js.txt"}
