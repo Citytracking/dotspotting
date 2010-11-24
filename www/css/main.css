@@ -286,7 +286,7 @@ li code {
 
 table.ds_table {
     font-family:arial;
-    background-color: #CDCDCD;
+    background-color: #eeeeee;
     margin:10px 0pt 15px;
     font-size: 8pt;
     width: 100%;
@@ -294,10 +294,10 @@ table.ds_table {
 }
 
 table.ds_table thead tr th, table.ds_table tfoot tr th {
-    background-color: #e6EEEE;
-    border: 1px solid #FFF;
+    background-color: #eeeeee;
+    border: 1px solid #eeeeee;
     font-size: 8pt;
-    padding: 4px;
+    padding: 8px;
 }
 
 table.ds_table thead tr .header {
@@ -309,13 +309,13 @@ table.ds_table thead tr .header {
 
 table.ds_table tbody td {
     color: #3D3D3D;
-    padding: 4px;
-    background-color: #FFF;
+    padding: 8px;
+    background-color: #eeeeee;
     vertical-align: top;
 }
 
 table.ds_table tbody tr.odd td {
-    background-color:#F0F0F6;
+    background-color:#ffffff;
 }
 
 table.ds_table thead tr .headerSortUp {
