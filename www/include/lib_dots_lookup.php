@@ -61,4 +61,25 @@
 	}
 
 	#################################################################
+
+	function dots_lookup_add_lots_of_dots(&$dots, $add_offline=0){
+
+		$_dots = array();
+
+		foreach ($dots as $d){
+
+			$hash = array();
+
+			foreach ($d as $key => $value){
+				$hash[$key] = AddSlashes($value);
+			}
+
+			$_dots[] = $hash;
+		}
+
+		return db_insert_many('DotsLookup', $_dots);
+	}
+
+	#################################################################
+
 ?>

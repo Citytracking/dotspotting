@@ -36,7 +36,9 @@
 		$processed = 0;
 
 		$errors = array();
+
 		$search = array();
+		$lookup = array();
 
 		$timings = array(
 			0 => 0
@@ -48,6 +50,7 @@
 		# all the inserts and do them at at end. 
 
 		$more['buffer_search_inserts'] = 1;
+		$more['buffer_lookup_inserts'] = 1;
 
 		foreach ($dots as $dot){
 
@@ -72,10 +75,26 @@
 				$search[] = $rsp['search'];
 			}
 
+			if (isset($rsp['lookup'])){
+				$lookup[] = $rsp['lookup'];
+			}
+
 			$processed ++;
 		}
 
 		#
+		# Buffered inserts (at some point this might/should
+		# be handed to an offline tasks system)
+		#
+
+		if (count($lookup)){
+
+			$lookup_rsp = dots_lookup_add_lots_of_dots($lookup);
+
+			if (! $lookup_rsp){
+				# What then ?
+			}
+		}
 
 		if (count($search)){
 
@@ -286,12 +305,16 @@
 			'last_modified' => $now,
 		);
 
-		# TO DO: buffer lookup inserts ?
+		if ($more['buffer_lookup_inserts']){
+			$rsp['lookup'] = $lookup;
+		}
 
-		$lookup_rsp = dots_lookup_create($lookup);
+		else {
+			$lookup_rsp = dots_lookup_create($lookup);
 
-		if (! $lookup_rsp['ok']){
-			# What then...
+			if (! $lookup_rsp['ok']){
+				# What then...
+			}
 		}
 
 		#
