@@ -9,6 +9,8 @@
 <p>{$owner.username|escape} has not uploaded any dots yet.</p>
 {/if}
 {else}
+
+<div id="user_sheets_processing" class="dataTables_processing"></div>
 <table id="user_sheets" class="ds_table">
 	<thead>
 		<tr>
@@ -65,6 +67,7 @@ $(document).ready(function(){
 	"bFilter": true,
 	"bSort": true,
 	"bInfo" : false,
+	"bProcessing": true,
      });
 });
 {/literal}

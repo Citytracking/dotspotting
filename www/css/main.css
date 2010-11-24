@@ -330,6 +330,20 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
     background-color: #8dbdd8;
 }
 
+.dataTables_wrapper {
+    margin-top: 25px;
+}
+
+.dataTables_filter {
+    margin-bottom: 15px;
+}
+
+.dataTables_processing {
+    font-style: italic;
+    font-weight: 700;
+    text-align: right;
+}
+
 /* cribbed from the datatables examples */
 
 .sorting_asc {

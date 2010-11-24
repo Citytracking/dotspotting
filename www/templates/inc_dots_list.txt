@@ -1,5 +1,5 @@
 {include file="inc_map.txt"}
-<div id="dataTables_processing"></div>
+<div id="user_dots_processing" class="dataTables_processing"></div>
 <table id="user_dots" class="ds_table">
 	<thead>
 		<tr>
@@ -63,6 +63,7 @@ $(document).ready(function(){
 	"bPaginate": false,
 	"bFilter": true,
 	"bInfo" : false,
+	"bProcessing": true,
      });
 });
 {/literal}
@@ -75,6 +76,7 @@ $(document).ready(function(){
 	"bFilter": false,
 	"bSort": false,
 	"bInfo" : false,
+	"bProcessing": true,
      });
 });
 {/literal}
