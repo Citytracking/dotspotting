@@ -294,8 +294,8 @@ table.ds_table {
 }
 
 table.ds_table thead tr th, table.ds_table tfoot tr th {
-    background-color: #eaeaea;
-    border: 1px solid #FFF;
+    background-color: #cdcdcd;
+    border: 1px solid #cdcdcd;
     font-size: 8pt;
     padding: 4px;
 }
