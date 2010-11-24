@@ -62,8 +62,8 @@ $(document).ready(function(){
 
      $('#user_sheets').dataTable({
 	"bPaginate": false,
-	"bFilter": false,
-	"bSort": false,
+	"bFilter": true,
+	"bSort": true,
 	"bInfo" : false,
      });
 });
