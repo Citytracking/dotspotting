@@ -26,6 +26,10 @@
 		exit;
 	}
 
+	if ($dot['user_id'] != $owner['id']){
+		error_404();
+	}
+
 	if (! dots_can_view_dot($dot, $GLOBALS['cfg']['user']['id'])){
 		error_403();
 	}

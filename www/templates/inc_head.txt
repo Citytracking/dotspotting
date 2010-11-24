@@ -41,6 +41,7 @@ var _abs_root_url = '{$cfg.abs_root_url}';
 		<div id="logo" style="float: left;">
 			<a href="/" style=""><img src="{$cfg.abs_root_url}images/dotspotting.png" height="68" width="324" alt="Dotspotting" class="logo" /></a>
 		</div>
+{if ! $cfg.site_disabled}
 		<div id="login" style="float: right;">
 {if $cfg.user.id}
 			Hello <strong>{$cfg.user.username|escape}</strong>!
@@ -64,6 +65,7 @@ var _abs_root_url = '{$cfg.abs_root_url}';
 			{/if}
 {/if}
 		</div>
+{/if}
 		<br clear="all" />
 		&nbsp;
 	</div>

@@ -41,22 +41,9 @@
 		include_once(DOTSPOTTING_WWW_DIR . '/include/config-api.php');
 	}
 
-	# Go, flamework! Go!!
-
-	include_once(DOTSPOTTING_FLAMEWORK_DIR . '/include/init.php');
-
-	#################################################################
-
-	loadlib("dots");
-	loadlib("sheets");
-	loadlib("urls");
-	loadlib("user_agent");
-	loadlib("filter");
-
-	#################################################################
-
 	#
-	# Hey look! Running code goes here!
+	# Hey look! Running code. (We do this here so that paths/URLs will
+	# still work if the site has been disabled.)
 	#
 
 	#
@@ -81,6 +68,23 @@
 
 	$GLOBALS['cfg']['abs_root_url'] = $server_url . $cwd;
 	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
+
+	#
+	# Go, flamework! Go!!
+	#
+
+	include_once(DOTSPOTTING_FLAMEWORK_DIR . '/include/init.php');
+
+	#################################################################
+
+	loadlib("dots");
+	loadlib("sheets");
+	loadlib("urls");
+	loadlib("user_agent");
+	loadlib("filter");
+
+	#################################################################
+
 
 	#
 	# Other stuff

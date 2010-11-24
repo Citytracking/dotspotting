@@ -25,6 +25,15 @@
 		error_404();
 	}
 
+	if ($sheet['deleted']){
+		$GLOBALS['smarty']->display("page_sheet_deleted.txt");
+		exit();		
+	}
+
+	if ($sheet['user_id'] != $owner['id']){
+		error_404();
+	}
+
 	if (! sheets_can_view_sheet($sheet, $GLOBALS['cfg']['user']['id'])){
 		error_403();
 	}
