@@ -1,5 +1,5 @@
 {include file="inc_map.txt"}
-
+<div id="dataTables_processing"></div>
 <table id="user_dots" class="ds_table">
 	<thead>
 		<tr>

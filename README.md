@@ -52,7 +52,7 @@ Configuring Dotspotting
 
 Flamework (and Dotspotting) try to ensure that all an application's configuration information by defined in two (-ish) places:
 
-1. An `.htaccess` file which, in Dotspotting's case, is located in the `www` directory. <-- YOU DON'T NEED TO WORRY ABOUT THIS PART
+* **An `.htaccess` file** which, in Dotspotting's case, is located in the `www` directory. <-- YOU DON'T NEED TO WORRY ABOUT THIS PART
 
 The `.htaccess` file is where the various PHP settings are defined, including this one:
 
@@ -62,7 +62,7 @@ That tells PHP to look for stuff first in Dotspotting's `www/include` directory 
 
 *The `.htaccess` file is also where all the mod_rewrite rules for pretty URLs are defined.*
 
-2. One or more PHP files that assign settings to a global `$cfg` hash. <-- YOU DO NEED TO CARE ABOUT THIS
+* **One or more PHP files that assign settings** to a global `$cfg` hash. <-- YOU DO NEED TO CARE ABOUT THIS
 
 As far as the PHP config files go, here's what's actually happening when a page on Dotspotting is loaded:
 
