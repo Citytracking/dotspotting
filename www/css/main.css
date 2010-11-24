@@ -294,7 +294,7 @@ table.ds_table {
 }
 
 table.ds_table thead tr th, table.ds_table tfoot tr th {
-    background-color: #e6EEEE;
+    background-color: #eaeaea;
     border: 1px solid #FFF;
     font-size: 8pt;
     padding: 4px;
@@ -315,7 +315,7 @@ table.ds_table tbody td {
 }
 
 table.ds_table tbody tr.odd td {
-    background-color:#F0F0F6;
+    background-color:#f3f3f3;
 }
 
 table.ds_table thead tr .headerSortUp {
