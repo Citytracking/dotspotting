@@ -309,7 +309,7 @@ table.ds_table thead tr .header {
 
 table.ds_table tbody td {
     color: #3D3D3D;
-    padding: 4px;
+    padding: 8px;
     background-color: #FFF;
     vertical-align: top;
 }
