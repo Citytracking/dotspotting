@@ -6,7 +6,7 @@
 {if ! $import.ok}
 <p class="error">Hrmph! There was a problem importing your file.</p>
 {else}
-Yay!
+{include file="inc_upload_success.txt" upload=$import}
 {/if}
 
 {else}

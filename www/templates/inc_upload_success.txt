@@ -1,0 +1,19 @@
+<h2>Hooray!</h2>
+
+{if $upload.sheet.label}
+<p>Your dots ({$upload.dots_processed|escape} of them) have been uploaded in to a sheet labeled <a href="{$upload.sheet|@urls_url_for_sheet}">{$upload.sheet.label|escape}</a>.</p>
+{else}
+<p>Your dots ({$upload.dots_processed|escape} of them) have been uploaded in to a new <a href="{$upload.sheet|@urls_url_for_sheet}">sheet</a>.</p>
+{/if}
+
+{if $upload.dots_received != $upload.dots_processed}
+
+<p><strong>But!</strong> Not all of the dots you uploaded could be processed. Of the {$upload.dots_received|escape} dots you uploaded only {$upload.dots_processed|escape} were able to be imported in to dotspotting. The following errors were reported:</p> 
+
+<ul>
+{foreach from=$upload.errors item="row"}
+<li>Record number <strong>{$row.record|escape}</strong>: <q>{$row.error|escape}</q></li>
+{/foreach}
+</ul>
+
+{/if}
