@@ -63,8 +63,6 @@
 		#
 		# Write the file to disk
 		#
-	
-		$type = $http_rsp['headers']['content-type'];
 
 		$fname = tempnam("/tmp", $user['username']);
 		$fh = fopen($fname, "w");
@@ -81,13 +79,37 @@
 		fclose($fh);
 
 		#
+		# Ima Viking!
+		#
+
+		$type = $http_rsp['headers']['content-type'];
+		$type_map = formats_valid_import_map();
+
+		if (! isset($type_map[$type])){
+
+			# glurgh...
+			# $finfo = new finfo(FILEINFO_MIME, "/usr/share/misc/magic");
+			# $finfo->file($fname);
+
+			if (preg_match("/\.([^.*]+)$/", basename($uri), $m)){
+
+				$ext = $m[1];
+				$ext_map = formats_valid_import_map('key by extension');
+
+				if (isset($ext_map[$ext])){
+					$type = $ext_map[$ext];
+				}		
+			}
+		}
+
+		#
 		# Okay, now hand off to the regular process
 		# file uploads functionality
 		#
 
 		$upload = array(
 			'type' => $type,
-			'tmp_name' => $fname,
+			'path' => $fname,
 		);
 
 		return import_import_file($user, $upload, $more);
