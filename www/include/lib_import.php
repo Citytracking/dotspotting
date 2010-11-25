@@ -91,7 +91,7 @@
 			# $finfo = new finfo(FILEINFO_MIME, "/usr/share/misc/magic");
 			# $finfo->file($fname);
 
-			if (preg_match("/\.([^.*]+)$/", basename($uri), $m)){
+			if (preg_match("/\.([a-z0-9]+)$/", basename($uri), $m)){
 
 				$ext = $m[1];
 				$ext_map = formats_valid_import_map('key by extension');
