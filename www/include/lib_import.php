@@ -52,13 +52,34 @@
 
 		# QUESTION: do a HEAD here to check the content-type and file-size ?
 
-		# TO DO: http://www.php.net/manual/en/faq.using.php#faq.using.shorthandbytes
+		$max_filesize = ini_get("upload_max_filesize");
 
-		# $max_filesize = ini_get("upload_max_filesize");
-		# $max_bytes = $max_filesize * 1024 * 1024;
+		# http://www.php.net/manual/en/faq.using.php#faq.using.shorthandbytes
+
+		if (preg_match("/^(\d+)(K|M|G)$/", $max_filesize, $m)){
+
+			$unit = $m[1];
+			$measure = $m[2];
+
+			if ($measure == 'G'){
+				$max_bytes = $unit * 1024 * 1024 * 1024; 
+			}
+
+			else if ($measure == 'M'){
+				$max_bytes = $unit * 1024 * 1024; 
+			}
+
+			else {
+				$max_bytes = $unit * 1024;
+			}			
+		}
+
+		else {
+			$max_bytes = $max_filesize;
+		}
 
 		$headers = array(
-			# 'Range' => "0-{$max_bytes}",
+			'Range' => "bytes=0-{$max_bytes}",
 		);
 
 		$http_rsp = http_get($uri, $headers);
@@ -67,6 +88,14 @@
 			return $http_rsp;
 		}
 
+		#
+		# Am I partial content?
+		#
+
+		if ($http_rsp['headers']['content-length'] > $max_bytes){
+			# throw an error ?
+		}
+		
 		#
 		# Write the file to disk
 		#
