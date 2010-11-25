@@ -52,9 +52,16 @@
 
 		# QUESTION: do a HEAD here to check the content-type and file-size ?
 
-		# TO DO: pass range headers here (also patch flamework to allow headers)
+		# TO DO: http://www.php.net/manual/en/faq.using.php#faq.using.shorthandbytes
 
-		$http_rsp = http_get($uri);
+		# $max_filesize = ini_get("upload_max_filesize");
+		# $max_bytes = $max_filesize * 1024 * 1024;
+
+		$headers = array(
+			# 'Range' => "0-{$max_bytes}",
+		);
+
+		$http_rsp = http_get($uri, $headers);
 
 		if (! $http_rsp['ok']){
 			return $http_rsp;
