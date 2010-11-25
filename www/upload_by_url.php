@@ -29,16 +29,6 @@
 		exit();
 	}
 
-	#
-	# Ensure there's a URL and that the user is logged in
-	#
-
-	$url = request_str('url');
-
-	if (! $url){
-		error_404();
-	}
-
 	login_ensure_loggedin("/upload/url/?url=" . urlencode($url));
 
 	#
@@ -49,24 +39,50 @@
 	$smarty->assign("crumb_key", $crumb_key);
 
 	#
-	# Validate $url here
+	# Ensure there's a URL and that the user is logged in
 	#
 
-	$smarty->assign('url', $url);
+	$url = request_str('url');
 
-	#
-	# Okay, now fetch the file here
-	#
-
-	if ((post_isset('confirm')) && (crumb_check($crumb_key))){
-
-		$rsp = import_import_uri($GLOBALS['cfg']['user'], $url);
-		$smarty->assign_by_ref('import', $rsp);
+	if (! $url){
+		$GLOBALS['smarty']->display('page_upload_by_url_form.txt');
+		exit();
 	}
 
 	#
-	# Happy happy!
+	# Validate $url here
 	#
+
+	$parsed = dotspotting_parse_url($url);
+	$ok = $parsed['ok'];
+
+	if (($ok) && (! in_array($parsed['scheme'], array('http', 'https')))){
+		$ok = 0;
+	}
+
+	if (($ok) && (! $parsed['host'])){
+		$ok = 0;
+	}
+
+	# ensure a path ?
+
+	if (! $ok){
+		$GLOBALS['error']['invalid_url'] = 1;
+		$GLOBALS['smarty']->display('page_upload_by_url_form.txt');
+		exit();
+	}
+
+	#
+	# Confirmation and/or remote fetching
+	#
+
+	$smarty->assign_by_ref('parsed_url', $parsed);
+	$smarty->assign('url', $url);
+
+	if ((post_isset('confirm')) && (crumb_check($crumb_key))){
+		$rsp = import_import_uri($GLOBALS['cfg']['user'], $url);
+		$smarty->assign_by_ref('import', $rsp);
+	}
 
 	$smarty->display("page_upload_by_url.txt");
 	exit();
