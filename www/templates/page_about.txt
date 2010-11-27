@@ -13,7 +13,7 @@
 
 <p class="tx1">So the first part of this project is to start from scratch, in a 'clean room' environment. We've started from a baseline that's really straightforward, tackling the simplest part: getting dots on maps, without legacy code or any baggage. Just that, to start. Dots on maps.</p>
 
-<img src="{$cfg.abs_root_url}images/lisbon.jpg" width="903" height="356" />
+<img src="{$cfg.abs_root_url}/images/lisbon.jpg" width="903" height="356" />
 
 <p class="tx1">But <q>dots on maps</q> implies a few other things: getting the locations, putting them on there, working with them, and—crucially—getting them out in a format that people can work with.</p>
 
@@ -23,14 +23,14 @@
 
 <p class="tx1">What we've launched with is the baseline work that's being done to make this stuff internet-native. There's a login and permissions system that pretty much works. Uploading .csv files full of dots works. Each dot has an HTML page of its own, for example, like they do on <a href="http://crimespotting.org/">Crimespotting</a>. Collections of dots (we're calling them <q><a href="http://www.flickr.com/photos/mskaveneyphotography/5002420307/" target="_flickr">sheets</a></q>) work, and you can export them. And there are dots on maps.</p>
 
-<img src="{$cfg.abs_root_url}images/stanford-prettymaps.jpg" width="889" height="352" />
+<img src="{$cfg.abs_root_url}/images/stanford-prettymaps.jpg" width="889" height="352" />
 
 <p class="tx1">What's up with the funny <a href="http://prettymaps.stamen.com/" target="_prettymaps">map</a>, above, you ask? That's an undocumented Easter egg that allows you to <em>change the default base map for Dotspotting</em> on the fly using a <a href="{literal}http://dotspotting.stamen.com/u/12/sheets/191/?template=http://prettymaps.stamen.com/201008/tiles/isola/{Z}/{X}/{Y}.png&static=1{/literal}">templated URL</a>. If that last sentence sounds like gibberish, just think: Fun! And a bit dorky. But fun!</p>
 
 <p class="tx1">Speaking of which, the code for Dotspotting is available for <a href="https://github.com/Citytracking/dotspotting">download on Github</a>, and licensed for use under the GNU General Public License. We're planning on releasing the code as we work on the project, in the hope that working in this kind of transparent manner from the beginning will both benefit the project and serve as an example of the way we'd like to work with foundations on this kind of work.</p>
 
 {if 0}
-<img src="{$cfg.abs_root_url}images/lisbon-uni.jpg" style="margin-left:20%;border:1px solid #ccc;" height="530" width="574" />
+<img src="{$cfg.abs_root_url}/images/lisbon-uni.jpg" style="margin-left:20%;border:1px solid #ccc;" height="530" width="574" />
 {/if}
 
 <p class="tx1" style="font-size:11px;">[1] You can read more about Citytracking & the Knight Foundation <a href="http://content.stamen.com/knight_news_challenge_update">here</a> and <a href="http://www.pbs.org/idealab/2010/11/citytracking-presents-data-on-cities-for-maps-visualizations302.html">here</a>.</p>

@@ -30,10 +30,11 @@
 	#
 
 	#
-	# You MUST change these
+	# If abs_root_url is left blank here, it will be guessed in www/include/init.php.
+	# This value should not have a trailing slash.
 	#
 
-	$GLOBALS['cfg']['abs_root_url'] = '';
+	$GLOBALS['cfg']['abs_root_url'] = rtrim('', '/');
 
 	# Look carefully - unless you're doing something special you can probably
 	# leave these two assuming you've set 'abs_root_url' above.
