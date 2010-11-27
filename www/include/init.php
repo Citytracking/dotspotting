@@ -55,7 +55,7 @@
 
 	if (! $server_url){
 		$scheme = ($_SERVER['SERVER_PORT'] == 443) ? "https" : "http";
-		$server_url = "{$scheme}://{$_SERVER['SERVER_NAME']}/";
+		$server_url = "{$scheme}://{$_SERVER['SERVER_NAME']}";
 	}
 
 	$cwd = '';
@@ -63,10 +63,10 @@
         if ($parent_dirname = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/')){
 
 		$parts = explode("/", $parent_dirname);
-		$cwd = implode("/", array_slice($parts, 1));
+		$cwd = '/'.implode("/", array_slice($parts, 1));
 	}
 
-	$GLOBALS['cfg']['abs_root_url'] = $server_url . $cwd;
+	$GLOBALS['cfg']['abs_root_url'] = rtrim($cwd, '/');
 	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
 
 	#
