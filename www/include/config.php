@@ -24,7 +24,8 @@
 	#
 
 	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
-	$GLOBALS['cfg']['enable_feature_uploads_by_url'] = 1;
+
+	$GLOBALS['cfg']['enable_feature_uploads_by_url'] = 0;
 
 	$GLOBALS['cfg']['enable_feature_api'] = 1;
 
@@ -125,6 +126,7 @@
 	$GLOBALS['cfg']['crypto_password_secret'] = 'READ-FROM-CONFIG';
 
 	$GLOBALS['cfg']['import_max_records'] = 1000;
+	$GLOBALS['cfg']['import_remoteurls_do_head'] = 1;
 
 	$GLOBALS['cfg']['show_show_header_message'] = 0;
 

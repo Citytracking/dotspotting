@@ -78,8 +78,14 @@ App Specific Stuff
 	# As in: Where your installation of Dotspotting lives on the Internets.
 	#
 
-	$GLOBALS['cfg']['abs_root_url'] = 'READ-FROM-CONFIG';
-	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
+	# Strictly speaking you don't have to set this. If it's empty Dotspotting
+	# will try to work out what the correct root URL is based on PHP's SERVER_NAME
+	# setting and some extra hoop-jumping to determine what the directory root
+	# is (for people running Dotspotting out of a public_html directory). If you
+	# want to be explicit about the server name assign it here.
+
+	# $GLOBALS['cfg']['abs_root_url'] = 'http://dotspotting.example.com/';
+	# $GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
 
 	#
 	# Basic cookie stuff
@@ -117,6 +123,11 @@ App Specific Stuff
 	#
 
 	$GLOBALS['cfg']['import_max_records'] = 1000;
+
+	# If you've enable uploads by URL this determines whether Dotspotting will do an initial HEAD request
+	# to check stuff like download length(s) and file type.
+
+	$GLOBALS['cfg']['import_remoteurls_do_head'] = 1;
 
 	#
 	# This flag controls whether or not to include the inc_header_message.txt template at the top of every

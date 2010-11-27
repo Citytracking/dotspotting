@@ -78,9 +78,49 @@
 			$max_bytes = $max_filesize;
 		}
 
+		# This is mostly just to try...
+		#
+		# "If no Accept header field is present, then it is assumed that the client accepts all media types.
+		# If an Accept header field is present, and if the server cannot send a response which is acceptable
+		# according to the combined Accept field value, then the server SHOULD send a 406 (not acceptable)
+		# response." (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)
+
+		$map = formats_valid_import_map();
+		$accept = array_keys($map);
+
+		if (! isset($map['text/plain'])){
+			$accept[] = 'text/plain';
+		}
+
 		$headers = array(
 			'Range' => "bytes=0-{$max_bytes}",
+			'Accept' => implode(", ", $accept),
 		);
+
+		#
+		# Try to do some basic anity checking before we suck in the entire file
+		#
+
+		if ($GLOBALS['cfg']['import_remoteurls_do_head']){
+
+			$head_rsp = http_head($uri, $headers);
+
+			if (! $head_rsp['ok']){
+				return $head_rsp;
+			}
+
+			if ($head_rsp['info']['download_content_length'] > $max_bytes){
+
+				return array(
+					'ok' => 0,
+					'error' => 'Remote file is too large',					
+				);
+			}
+		}
+
+		#
+		# Go!
+		#
 
 		$http_rsp = http_get($uri, $headers);
 

@@ -69,6 +69,8 @@
 	$GLOBALS['cfg']['abs_root_url'] = $server_url . $cwd;
 	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
 
+	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
+
 	#
 	# Go, flamework! Go!!
 	#
