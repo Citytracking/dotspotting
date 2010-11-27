@@ -109,6 +109,10 @@
 	# App specific stuff
 	#
 
+	# Just blow away whatever Flamework says for abs_root_url. The user has the chance to reset these in
+	# config/dotspotting.php and we want to ensure that if they don't the code in include/init.php for
+	# wrangling hostnames and directory roots has a clean start. (20101127/straup)
+
 	$GLOBALS['cfg']['abs_root_url'] = '';
 	$GLOBALS['cfg']['safe_abs_root_url'] = '';
 
