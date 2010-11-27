@@ -23,8 +23,8 @@
 	# See also: http://code.flickr.com/blog/2009/12/02/flipping-out/
 	#
 
-	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
-	$GLOBALS['cfg']['enable_feature_uploads_by_url'] = 1;
+	$GLOBALS['cfg']['enable_feature_import'] = 1;
+	$GLOBALS['cfg']['enable_feature_import_by_url'] = 0;
 
 	$GLOBALS['cfg']['enable_feature_api'] = 1;
 
@@ -109,6 +109,10 @@
 	# App specific stuff
 	#
 
+	# Just blow away whatever Flamework says for abs_root_url. The user has the chance to reset these in
+	# config/dotspotting.php and we want to ensure that if they don't the code in include/init.php for
+	# wrangling hostnames and directory roots has a clean start. (20101127/straup)
+
 	$GLOBALS['cfg']['abs_root_url'] = '';
 	$GLOBALS['cfg']['safe_abs_root_url'] = '';
 
@@ -125,6 +129,7 @@
 	$GLOBALS['cfg']['crypto_password_secret'] = 'READ-FROM-CONFIG';
 
 	$GLOBALS['cfg']['import_max_records'] = 1000;
+	$GLOBALS['cfg']['import_remoteurls_do_head'] = 1;
 
 	$GLOBALS['cfg']['show_show_header_message'] = 0;
 

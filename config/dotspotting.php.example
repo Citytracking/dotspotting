@@ -29,19 +29,6 @@
 	# https://github.com/Citytracking/dotspotting/blob/master/README.CONFIG.md
 	#
 
-	#
-	# If abs_root_url is left blank here, it will be guessed in www/include/init.php.
-	# This value should not have a trailing slash.
-	#
-
-	$GLOBALS['cfg']['abs_root_url'] = rtrim('', '/');
-
-	# Look carefully - unless you're doing something special you can probably
-	# leave these two assuming you've set 'abs_root_url' above.
-
-	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
-	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
-
 	# The simplest database configs you'll need to get started. 
 
 	$GLOBALS['cfg']['db_main']['host'] = '';
@@ -84,6 +71,12 @@
 
 	# $GLOBALS['cfg']['show_header_message'] = 0;		# this displays the contents of inc_header_message.txt
 								# at the top of every page
+
+	# See notes in README.CONFIG.md for these three:
+
+	# $GLOBALS['cfg']['abs_root_url'] = '';
+	# $GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
+	# $GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
 	
 	# $GLOBALS['cfg']['auth_cookie_name'] = 'a';
 

@@ -1,0 +1,24 @@
+{assign var="page_title" value="Upload by URL"}
+{include file="inc_head.txt"}
+
+{if $error|@count}
+
+<p class="error">
+{if $error.invalid_url}
+The URL you asking to retrieve is invalid.
+{else}
+INVISIBLE ERROR CAT HISSES AT YOU!
+{/if}
+</p>
+
+{/if}
+
+<p class="tx1">Please enter you URL of the file you would like to import into Dotspotting</p>
+
+<form method="POST" action="{$cfg.abs_root_url}upload/url/">
+	{$crumb_key|crumb_input}
+	<input type="text" name="url" value="{$url|escape}" size="40" />
+	<input type="submit" value="UPLOAD" />
+</form>
+
+{include file="inc_foot.txt"}

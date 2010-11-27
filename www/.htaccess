@@ -19,7 +19,7 @@ Deny from none
 
 FileETag none
 
-php_value include_path "./include:../flamework/include:."
+php_value include_path "./include:../ext/flamework/include:."
 php_flag display_errors on
 
 # See Cal's awesome comments in flamework/.htaccess

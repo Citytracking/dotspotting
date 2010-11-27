@@ -3,17 +3,23 @@
 
 {if $import}
 
-{if $import['ok']}OK{else}NOT OK{/if}
+{if ! $import.ok}
+<p class="error">Hrmph! There was a problem importing your file.</p>
+{else}
+{include file="inc_upload_success.txt" upload=$import}
+{/if}
 
 {else}
 
-{$url|escape}
+<p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from the website <q class="important">{$parsed_url.host|escape}</q> into Dotspotting?</p>
+
+<p class="tx1"><span style="font-style:italic;">The complete URL of the file you are about to import is: <code>{$url|escape}</code></span></p>
 
 <form method="POST" action="{$cfg.abs_root_url}/upload/url/">
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="confirm" value="1" />
 	<input type="hidden" name="url" value="{$url|escape}" />
-	<input type="submit" value="UPLOAD" />
+	<input type="submit" value="YES, PLEASE TO IMPORT" />
 </form>
 
 {/if}

@@ -1,4 +1,4 @@
-{if !$cfg.enable_feature_uploads}
+{if !$cfg.enable_feature_import}
 	{* display something here? *}
 {else}
 

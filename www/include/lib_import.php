@@ -52,19 +52,93 @@
 
 		# QUESTION: do a HEAD here to check the content-type and file-size ?
 
-		# TO DO: pass range headers here (also patch flamework to allow headers)
+		$max_filesize = ini_get("upload_max_filesize");
 
-		$http_rsp = http_get($uri);
+		# http://www.php.net/manual/en/faq.using.php#faq.using.shorthandbytes
+
+		if (preg_match("/^(\d+)(K|M|G)$/", $max_filesize, $m)){
+
+			$unit = $m[1];
+			$measure = $m[2];
+
+			if ($measure == 'G'){
+				$max_bytes = $unit * 1024 * 1024 * 1024; 
+			}
+
+			else if ($measure == 'M'){
+				$max_bytes = $unit * 1024 * 1024; 
+			}
+
+			else {
+				$max_bytes = $unit * 1024;
+			}			
+		}
+
+		else {
+			$max_bytes = $max_filesize;
+		}
+
+		# This is mostly just to try...
+		#
+		# "If no Accept header field is present, then it is assumed that the client accepts all media types.
+		# If an Accept header field is present, and if the server cannot send a response which is acceptable
+		# according to the combined Accept field value, then the server SHOULD send a 406 (not acceptable)
+		# response." (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)
+
+		$map = formats_valid_import_map();
+		$accept = array_keys($map);
+
+		if (! isset($map['text/plain'])){
+			$accept[] = 'text/plain';
+		}
+
+		$headers = array(
+			'Range' => "bytes=0-{$max_bytes}",
+			'Accept' => implode(", ", $accept),
+		);
+
+		#
+		# Try to do some basic anity checking before we suck in the entire file
+		#
+
+		if ($GLOBALS['cfg']['import_remoteurls_do_head']){
+
+			$head_rsp = http_head($uri, $headers);
+
+			if (! $head_rsp['ok']){
+				return $head_rsp;
+			}
+
+			if ($head_rsp['info']['download_content_length'] > $max_bytes){
+
+				return array(
+					'ok' => 0,
+					'error' => 'Remote file is too large',					
+				);
+			}
+		}
+
+		#
+		# Go!
+		#
+
+		$http_rsp = http_get($uri, $headers);
 
 		if (! $http_rsp['ok']){
 			return $http_rsp;
 		}
 
 		#
+		# Am I partial content?
+		#
+
+		if ($http_rsp['headers']['content-length'] > $max_bytes){
+			# throw an error ?
+		}
+		
+		#
 		# Write the file to disk
 		#
-	
-		$type = $http_rsp['headers']['content-type'];
 
 		$fname = tempnam("/tmp", $user['username']);
 		$fh = fopen($fname, "w");
@@ -81,13 +155,37 @@
 		fclose($fh);
 
 		#
+		# Ima Viking!
+		#
+
+		$type = $http_rsp['headers']['content-type'];
+		$type_map = formats_valid_import_map();
+
+		if (! isset($type_map[$type])){
+
+			# glurgh...
+			# $finfo = new finfo(FILEINFO_MIME, "/usr/share/misc/magic");
+			# $finfo->file($fname);
+
+			if (preg_match("/\.([a-z0-9]+)$/", basename($uri), $m)){
+
+				$ext = $m[1];
+				$ext_map = formats_valid_import_map('key by extension');
+
+				if (isset($ext_map[$ext])){
+					$type = $ext_map[$ext];
+				}		
+			}
+		}
+
+		#
 		# Okay, now hand off to the regular process
 		# file uploads functionality
 		#
 
 		$upload = array(
 			'type' => $type,
-			'tmp_name' => $fname,
+			'path' => $fname,
 		);
 
 		return import_import_file($user, $upload, $more);
