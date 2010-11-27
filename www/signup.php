@@ -89,7 +89,7 @@
 
 			if ($user['id']){
 
-				$redir = ($redir) ? $redir : '/';
+				$redir = ($redir) ? $redir : "{$GLOBALS['cfg']['abs_root_url']}/";
 
 				login_do_login($user, $redir);
 				exit;
