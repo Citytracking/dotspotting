@@ -12,7 +12,7 @@
 
 	login_ensure_loggedin("/upload");
 
-	if (! $GLOBALS['cfg']['enable_feature_uploads']){
+	if (! $GLOBALS['cfg']['enable_feature_import']){
 
 		$GLOBALS['error']['uploads_disabled'] = 1;
 		$smarty->display("page_upload.txt");

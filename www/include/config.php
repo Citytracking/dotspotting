@@ -23,9 +23,8 @@
 	# See also: http://code.flickr.com/blog/2009/12/02/flipping-out/
 	#
 
-	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
-
-	$GLOBALS['cfg']['enable_feature_uploads_by_url'] = 0;
+	$GLOBALS['cfg']['enable_feature_import'] = 1;
+	$GLOBALS['cfg']['enable_feature_import_by_url'] = 0;
 
 	$GLOBALS['cfg']['enable_feature_api'] = 1;
 

@@ -38,7 +38,8 @@ Feature Flags
 	$GLOBALS['cfg']['enable_feature_account_delete'] = 1;
 	$GLOBALS['cfg']['enable_feature_password_retrieval'] = 0;
 
-	$GLOBALS['cfg']['enable_feature_uploads'] = 1;
+	$GLOBALS['cfg']['enable_feature_import'] = 1;
+	$GLOBALS['cfg']['enable_feature_import_by_url'] = 0;	# experimental; don't enable this yet
 
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
