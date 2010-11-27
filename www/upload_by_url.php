@@ -39,7 +39,7 @@
 		error_404();
 	}
 
-	login_ensure_loggedin("/upload/url/?url=" . urlencode($url));
+	login_ensure_loggedin("{$GLOBALS['cfg']['abs_root_url']}/upload/url/?url=" . urlencode($url));
 
 	#
 	# Start setting things up...

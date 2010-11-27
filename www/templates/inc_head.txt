@@ -39,7 +39,7 @@ var _abs_root_url = '{$cfg.abs_root_url}';
 
 	<div id="nav">
 		<div id="logo" style="float: left;">
-			<a href="/" style=""><img src="{$cfg.abs_root_url}/images/dotspotting.png" height="68" width="324" alt="Dotspotting" class="logo" /></a>
+			<a href="{$cfg.abs_root_url}/" style=""><img src="{$cfg.abs_root_url}/images/dotspotting.png" height="68" width="324" alt="Dotspotting" class="logo" /></a>
 		</div>
 {if ! $cfg.site_disabled}
 		<div id="login" style="float: right;">

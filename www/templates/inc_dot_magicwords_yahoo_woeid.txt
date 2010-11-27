@@ -1,6 +1,6 @@
 	{* this is a patched version of christian's yqlgeo library *}
 	{* I need to send him a patch... (20101104/straup) *}
-	<script type="text/javascript" src="/javascript/yqlgeo.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}/javascript/yqlgeo.js"></script>
 	<script type="text/javascript">
 	{literal}
 	function display_woeid(woeid){

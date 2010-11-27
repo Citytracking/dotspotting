@@ -1,7 +1,7 @@
 {assign var="page_title" value="Find nearby dots"}
 {capture assign="extra_head"}
-<script type="text/javascript" src="/javascript/geolocation.js"></script>
-<script type="text/javascript" src="/javascript/geohash.js"></script>
+<script type="text/javascript" src="{$cfg.abs_root_url}/javascript/geolocation.js"></script>
+<script type="text/javascript" src="{$cfg.abs_root_url}/javascript/geohash.js"></script>
 {/capture}
 {include file="inc_head.txt"}
 
@@ -29,7 +29,7 @@
 		};
 
 		var doThisIfNot = function(error_msg){
-			fb.innerHTML = '<p class="error">Ack! There was a problem finding your location. Would you like to <a href="/nearby/">try again</a>?</p>';
+			fb.innerHTML = '<p class="error">Ack! There was a problem finding your location. Would you like to <a href="{$cfg.abs_root_url}/nearby/">try again</a>?</p>';
 			return;
 		};
 

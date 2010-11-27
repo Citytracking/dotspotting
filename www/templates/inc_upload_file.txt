@@ -11,7 +11,7 @@
 
 <br />
 
-<form action="/upload" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
+<form action="{$cfg.abs_root_url}/upload" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
 	{$crumb_key|crumb_input}
 
 	<input type="file" size="40" name="upload" />

@@ -3,7 +3,7 @@
 
 <p>Are you <strong>really sure</strong> you want to delete your account?</p>
 
-<form action="/account/delete/" method="post">
+<form action="{$cfg.abs_root_url}/account/delete/" method="post">
 	<input type="checkbox" name="confirm" /><label for="confirm">Yes, I want to delete my account.</label><br />
 	<input type="hidden" name="delete" value="1" />
 	{$crumb_key|crumb_input}
