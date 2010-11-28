@@ -8,7 +8,7 @@
 
 	function urls_url_for_user(&$user){
 
-		return 	$GLOBALS['cfg']['abs_root_url'] . "u/{$user['id']}/";
+		return 	$GLOBALS['cfg']['abs_root_url'] . "/u/{$user['id']}/";
 	}
 
 	#################################################################
