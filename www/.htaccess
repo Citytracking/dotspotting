@@ -38,54 +38,55 @@ ErrorDocument 403 /403.php
 ErrorDocument 500 /500.php
 
 RewriteEngine on
+RewriteBase /
 
 # API
 
-RewriteRule	^rest/?$		/api_rest.php?%{QUERY_STRING} [P,L]
+RewriteRule	^rest/?$		api_rest.php?%{QUERY_STRING} [L]
 
 # Login stuff
 	
-RewriteRule  ^signup/?$			/signup.php?%{QUERY_STRING} [P,L]
-RewriteRule  ^signin/?$			/signin.php?%{QUERY_STRING} [P,L]
-RewriteRule  ^signout/?$		/signout.php?%{QUERY_STRING} [P,L]
-RewriteRule  ^checkcookie/?$		/checkcookie.php?%{QUERY_STRING} [P,L]
+RewriteRule  ^signup/?$			signup.php?%{QUERY_STRING} [L]
+RewriteRule  ^signin/?$			signin.php?%{QUERY_STRING} [L]
+RewriteRule  ^signout/?$		signout.php?%{QUERY_STRING} [L]
+RewriteRule  ^checkcookie/?$		checkcookie.php?%{QUERY_STRING} [L]
 
 # Password retrieval stuff
 
-RewriteRule ^password/forgot/?$				/forgot.php?%{QUERY_STRING} [P,L]
-RewriteRule ^password/reset/([a-zA-Z0-9]+)/?$		/reset.php?reset=$1&%{QUERY_STRING} [P,L]
+RewriteRule ^password/forgot/?$				forgot.php?%{QUERY_STRING} [L]
+RewriteRule ^password/reset/([a-zA-Z0-9]+)/?$		reset.php?reset=$1&%{QUERY_STRING} [L]
 
 # Account stuff
 
-RewriteRule  ^account/?$			/account.php?%{QUERY_STRING} [P,L]
-RewriteRule  ^account/password/?$		/account_password.php?%{QUERY_STRING} [P,L]
-RewriteRule  ^account/delete/?$			/account_delete.php?%{QUERY_STRING} [P,L]
+RewriteRule  ^account/?$			account.php?%{QUERY_STRING} [L]
+RewriteRule  ^account/password/?$		account_password.php?%{QUERY_STRING} [L]
+RewriteRule  ^account/delete/?$			account_delete.php?%{QUERY_STRING} [L]
 
 # Uploads
 
-RewriteRule ^upload/?$				/upload.php?%{QUERY_STRING} [P,L]
-RewriteRule ^upload/url/?$			/upload_by_url.php?%{QUERY_STRING} [P,L]
+RewriteRule ^upload/?$				upload.php?%{QUERY_STRING} [L]
+RewriteRule ^upload/url/?$			upload_by_url.php?%{QUERY_STRING} [L]
 
 # User stuff
 
-RewriteRule ^u/([0-9]+)/?$				/user.php?user_id=$1&%{QUERY_STRING} [P,L]
+RewriteRule ^u/([0-9]+)/?$				user.php?user_id=$1&%{QUERY_STRING} [L]
 
-RewriteRule ^u/([0-9]+)/dots/([0-9]+)/?$		/dot.php?user_id=$1&dot_id=$2&%{QUERY_STRING} [P,L]
-RewriteRule ^u/([0-9]+)/sheets/([0-9]+)/?$		/sheet.php?user_id=$1&sheet_id=$2&&%{QUERY_STRING} [P,L]
-RewriteRule ^u/([0-9]+)/sheets/([0-9]+)/export(/([a-z]+))?/?$	/sheet_export.php?user_id=$1&sheet_id=$2&format=$4&%{QUERY_STRING} [P,L]
+RewriteRule ^u/([0-9]+)/dots/([0-9]+)/?$		dot.php?user_id=$1&dot_id=$2&%{QUERY_STRING} [L]
+RewriteRule ^u/([0-9]+)/sheets/([0-9]+)/?$		sheet.php?user_id=$1&sheet_id=$2&&%{QUERY_STRING} [L]
+RewriteRule ^u/([0-9]+)/sheets/([0-9]+)/export(/([a-z]+))?/?$	sheet_export.php?user_id=$1&sheet_id=$2&format=$4&%{QUERY_STRING} [L]
 
-RewriteRule ^u/([0-9]+)/dots(/page([0-9]+))?/?$		/user_dots.php?user_id=$1&page=$3&%{QUERY_STRING} [P,L]
-RewriteRule ^u/([0-9]+)/sheets(/page([0-9]+))?/?$	/user_sheets.php?user_id=$1&page=$3&%{QUERY_STRING} [P,L]
+RewriteRule ^u/([0-9]+)/dots(/page([0-9]+))?/?$		user_dots.php?user_id=$1&page=$3&%{QUERY_STRING} [L]
+RewriteRule ^u/([0-9]+)/sheets(/page([0-9]+))?/?$	user_sheets.php?user_id=$1&page=$3&%{QUERY_STRING} [L]
 
 # Search
 
-RewriteRule ^recent/?$				/recent.php?%{QUERY_STRING}	[P,L]
-RewriteRule ^search/?$				/search.php?%{QUERY_STRING}	[P,L]
+RewriteRule ^recent/?$				recent.php?%{QUERY_STRING} [L]
+RewriteRule ^search/?$				search.php?%{QUERY_STRING} [L]
 
-RewriteRule ^nearby/?$						/nearby.php?%{QUERY_STRING} [P,L]
-RewriteRule ^nearby/([a-z0-9]+)(/page([0-9]+))?/?$		/search.php?gh=$1&nearby=1&page=$3&%{QUERY_STRING}	[P,L]
+RewriteRule ^nearby/?$						nearby.php?%{QUERY_STRING} [L]
+RewriteRule ^nearby/([a-z0-9]+)(/page([0-9]+))?/?$		search.php?gh=$1&nearby=1&page=$3&%{QUERY_STRING} [L]
 
 # Misc.
 
-RewriteRule ^about/?$					/about.php?%{QUERY_STRING} [P,L]
-RewriteRule ^faq/?$					/faq.php?%{QUERY_STRING} [P,L]
+RewriteRule ^about/?$					about.php?%{QUERY_STRING} [L]
+RewriteRule ^faq/?$					faq.php?%{QUERY_STRING} [L]
