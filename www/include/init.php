@@ -63,11 +63,22 @@
         if ($parent_dirname = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/')){
 
 		$parts = explode("/", $parent_dirname);
-		$cwd = '/'.implode("/", array_slice($parts, 1));
+		$cwd = implode("/", array_slice($parts, 1));
+
+		# see below
+		$cwd = rtrim($cwd, '/');
 	}
 
-	$GLOBALS['cfg']['abs_root_url'] = rtrim($cwd, '/');
-	$GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
+	# See this? We expect that abs_root_url always have a trailing slash.
+	# Really it's just about being consistent. It doesn't really matter which
+	# one you choose because either way it's going to be pain or a nuisance
+	# at some point or another. So we choose trailing slashes.
+
+	$GLOBALS['cfg']['abs_root_url'] = rtrim($server_url, '/') . "/";
+
+	if ($cwd){
+		$GLOBALS['cfg']['abs_root_url'] .= $cwd . "/";
+	}
 
 	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
 

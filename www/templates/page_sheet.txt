@@ -14,7 +14,7 @@ An unnamed sheet of dots by {$owner.username|escape}
 {/if}
 {/capture}
 {capture assign="extra_head"}
-<script type="text/javascript" src="{$cfg.abs_root_url}/javascript/sheet.js"></script>
+<script type="text/javascript" src="{$cfg.abs_root_url}javascript/sheet.js"></script>
 {/capture}
 {include file="inc_head.txt"}
 

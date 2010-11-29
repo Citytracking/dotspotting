@@ -2,7 +2,7 @@
 
 	<div id="footer">
 		{include file="inc_discoball.txt"}
-		<strong>Dotspotting is a thing by <a href="http://www.stamen.com/" class="stamen">Stamen Design</a> / it also has a <a href="{$cfg.abs_root_url}/faq/">FAQ</a></strong>
+		<strong>Dotspotting is a thing by <a href="http://www.stamen.com/" class="stamen">Stamen Design</a> / it also has a <a href="{$cfg.abs_root_url}faq/">FAQ</a></strong>
 	</div>
 
 {if 'staff'|@auth_has_role && $cfg.admin_flags_show_notices}

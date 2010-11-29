@@ -4,7 +4,7 @@
 
 {if !$sheets|@count}
 {if $is_own}
-<p>You haven't uploaded any dots yet. <a href="{$cfg.abs_root_url}/upload">Would you like to upload some now?</a></p>
+<p>You haven't uploaded any dots yet. <a href="{$cfg.abs_root_url}upload">Would you like to upload some now?</a></p>
 {else}
 <p>{$owner.username|escape} has not uploaded any dots yet.</p>
 {/if}

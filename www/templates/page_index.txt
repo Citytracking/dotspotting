@@ -14,9 +14,9 @@
 	{if $cfg.enable_feature_import}
 	
 <h2>Welcome to Dotspotting!</h2>
-<p><a href="{$cfg.abs_root_url}/upload">Get started and upload some dots</a> or find out more by reading the Dotspotting <a href="{$cfg.abs_root_url}/about">About</a> and <a href="{$cfg.abs_root_url}/faq">FAQ</a> pages.</p>
+<p><a href="{$cfg.abs_root_url}upload">Get started and upload some dots</a> or find out more by reading the Dotspotting <a href="{$cfg.abs_root_url}about">About</a> and <a href="{$cfg.abs_root_url}faq">FAQ</a> pages.</p>
 
-<p>You can also see <a href="{$cfg.abs_root_url}/recent/">recently uploaded dots</a>!</p>
+<p>You can also see <a href="{$cfg.abs_root_url}recent/">recently uploaded dots</a>!</p>
 	{/if}
 
 {/if}
