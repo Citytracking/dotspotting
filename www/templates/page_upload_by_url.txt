@@ -19,6 +19,18 @@
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="confirm" value="1" />
 	<input type="hidden" name="url" value="{$url|escape}" />
+
+	<br />
+
+	<input type="text" value="" size="40" name="label" />
+	<br />
+	<label for="label">Give your upload a name (optional)</label>
+	<br /><br />
+
+	<input type="checkbox" name="private" />
+	<label for="private">make all these dots private</label>
+	<br /><br />
+
 	<input type="submit" value="YES, PLEASE TO IMPORT" />
 </form>
 

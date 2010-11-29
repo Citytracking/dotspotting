@@ -80,7 +80,17 @@
 	$smarty->assign('url', $url);
 
 	if ((post_isset('confirm')) && (crumb_check($crumb_key))){
-		$rsp = import_import_uri($GLOBALS['cfg']['user'], $url);
+
+		$label = filter_strict(post_str('label'));
+		$private = (post_str('private')) ? 1 : 0;
+
+		$more = array(
+			'label' => $label,
+			'mark_all_private' => $private,
+			'return_dots' => 0,
+		);
+
+		$rsp = import_import_uri($GLOBALS['cfg']['user'], $url, $more);
 		$smarty->assign_by_ref('import', $rsp);
 	}
 
