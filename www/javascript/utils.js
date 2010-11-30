@@ -201,6 +201,11 @@ function utils_modestmap(map_id, more){
 	return map;
 }
 
+function utils_modestmaps_add_compass(map){
+
+    com.modestmaps.Compass(map);
+}
+
 // quick and dirty function to tweak the extents of a bounding
 // box so that dots don't get cropped by the edge of the map.
 // this will undoubtedly require finesse-ing over time...

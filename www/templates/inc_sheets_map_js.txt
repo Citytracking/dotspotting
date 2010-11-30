@@ -138,6 +138,7 @@ function draw_map_modestmaps(sheets){
 	var markers = new com.modestmaps.Markers(map);
 	markers.drawPolygons(polygons);
 
+	utils_modestmaps_add_compass(map);
 	return;
 }
 

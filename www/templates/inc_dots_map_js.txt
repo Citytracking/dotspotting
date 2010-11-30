@@ -136,6 +136,7 @@ function draw_map_modestmaps(dots){
 	var markers = new mm.Markers(map);
 	markers.drawPoints(points, more);
 
+	utils_modestmaps_add_compass(map);	
 	return;
 }
 

@@ -16,8 +16,10 @@
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.tilestache.js"></script>
 {else}
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/raphael-0.7.3.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.markers.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.compass.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.tilestache.js"></script>
 {/if}
 	<script type="text/javascript">
