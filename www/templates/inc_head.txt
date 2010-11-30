@@ -49,18 +49,6 @@
        });
     }
 
-    function load_map(){
-
-	 if (_dotspotting.js_loadlib == true){
-	 	draw_map();
-		return;
-	 }
-
-	 setTimeout(function(){
-		load_map();
-	 }, 500);
-    }
-
 {/literal}
 	</script>
 	{$extra_head}

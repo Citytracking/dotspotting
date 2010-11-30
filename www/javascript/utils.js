@@ -1,6 +1,21 @@
 // This is probably (hopefully?) just a temporary place-holder for
 // shared/common functions (20101101/straup) 
 
+// a bare-bones helper function that assumes you've defined a 
+// 'draw_map' function before you call it.
+
+function utils_load_map(args){
+
+	 if (_dotspotting.js_loadlib == true){
+	 	draw_map(args);
+		return;
+	 }
+
+	 setTimeout(function(){
+		utils_load_map(args);
+	 }, 500);
+}
+
 function utils_tile_provider(){
 
     var template = _dotspotting.maptiles_template_url;

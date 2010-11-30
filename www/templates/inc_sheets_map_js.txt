@@ -173,7 +173,7 @@ function draw_map(){
 	draw_map_modestmaps(sheets);
 }
 	
-load_map();
+utils_load_map();
 
 </script>
 {/literal}

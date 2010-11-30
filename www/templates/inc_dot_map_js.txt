@@ -68,6 +68,6 @@ var dot = {
 };
 {/literal}
 
-load_map(dot);
+utils_load_map(dot);
 
 </script>
