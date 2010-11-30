@@ -5,7 +5,7 @@
 
 <p class="error">
 {if $error.invalid_url}
-The URL you asking to retrieve is invalid.
+The URL you asking to retrieve is invalid.{if $error.details} The robot monkeys reported the following: {$error.details|escape}{/if}
 {else}
 INVISIBLE ERROR CAT HISSES AT YOU!
 {/if}

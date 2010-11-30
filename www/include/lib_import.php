@@ -101,7 +101,7 @@
 		# Try to do some basic anity checking before we suck in the entire file
 		#
 
-		if ($GLOBALS['cfg']['import_remoteurls_do_head']){
+		if ($GLOBALS['cfg']['import_by_url_do_head']){
 
 			$head_rsp = http_head($uri, $headers);
 

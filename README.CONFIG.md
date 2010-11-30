@@ -128,7 +128,15 @@ App Specific Stuff
 	# If you've enable uploads by URL this determines whether Dotspotting will do an initial HEAD request
 	# to check stuff like download length(s) and file type.
 
-	$GLOBALS['cfg']['import_remoteurls_do_head'] = 1;
+	$GLOBALS['cfg']['import_by_url_do_head'] = 1;
+
+	#
+	# If these two are arrays they will be checked in the upload by URL code. They are expected to be lists
+	# of hostnames.
+	#
+
+	$GLOBALS['cfg']['import_by_url_blacklist'] = '';
+	$GLOBALS['cfg']['import_by_url_whitelist'] = '';
 
 	#
 	# This flag controls whether or not to include the inc_header_message.txt template at the top of every

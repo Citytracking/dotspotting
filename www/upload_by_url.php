@@ -56,18 +56,49 @@
 	$parsed = dotspotting_parse_url($url);
 	$ok = $parsed['ok'];
 
+	$error_details = '';
+
 	if (($ok) && (! in_array($parsed['scheme'], array('http', 'https')))){
+		$error_details = 'Invalid scheme. Only http and https are currently supported.';
 		$ok = 0;
 	}
 
 	if (($ok) && (! $parsed['host'])){
+		$error_details = 'Missing or invalid hostname.';
 		$ok = 0;
 	}
 
-	# ensure a path ?
+	# Check to make sure there is a path ?
+
+	#
+	# Check to make sure that 
+	#
+
+	if (($ok) && (is_array($GLOBALS['cfg']['import_by_url_blacklist']))){
+
+		if (in_array($parsed['host'], $GLOBALS['cfg']['import_by_url_blacklist'])){
+			$error_details = 'Uploads not allowed from host.';
+			$ok = 0;
+		}
+	}
+
+	else if (is_array($GLOBALS['cfg']['import_by_url_whitelist'])){
+
+		if (! in_array($parsed['host'], $GLOBALS['cfg']['import_by_url_whitelist'])){
+			$error_details = 'Uploads not allowed from host.';
+			$ok = 0;
+		}		
+	}
+
+	else {} 
+
+	#
+	# Okay, you buy?
+	#
 
 	if (! $ok){
 		$GLOBALS['error']['invalid_url'] = 1;
+		$GLOBALS['error']['details'] = $error_details;
 		$GLOBALS['smarty']->display('page_upload_by_url_form.txt');
 		exit();
 	}
