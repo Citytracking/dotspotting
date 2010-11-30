@@ -161,16 +161,15 @@ function draw_map_polymaps(dots){
 
 	map.zoom(Math.floor(map.zoom()));
 
-	// TO DO:
-	// colour the dots based on privacy
-	// make the dots click-able
-
 	var po = org.polymaps;
 	var points = po.geoJson();
 	points.features(dots['features']);
-	points.on("load", po.stylist().attr("r", 5));
+	points.on("load", utils_polymaps_assign_dot_properties);
 
 	map.add(points);
+
+	utils_polymaps_add_compass(map);
+	return 1;
 }
 	
 function draw_map(){

@@ -181,20 +181,6 @@ th {
 	font-style:italic;
 }
 
-circle {
-    fill: #00a308;
-    stroke: #ccff99;
-    stroke-width: 2;	
-    opacity: 1;
-}
-
-path {
-    fill: #00a308;
-    stroke: #ccff99;
-    stroke-width: 2;	
-    opacity: .25;
-}
-
 .caveat {
 	font-size:11px;
 /*	font-style:italic;*/
@@ -364,4 +350,64 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 
 .sorting_desc_disabled {
 	background: url('../images/sort_desc_disabled.png') no-repeat center right;
+}
+
+/* polymaps and modestmaps stuff */
+
+.dot {
+    fill: #00a308;
+    stroke: #ccff99;
+    stroke-width: 2;	
+    opacity: 1;
+}
+
+.dot_private {
+    fill: red !important;
+}
+
+.sheet {
+    fill: #00a308;
+    stroke: #ccff99;
+    stroke-width: 2;	
+    opacity: .25;
+}
+
+.compass .back {
+  fill: #fff;
+  fill-opacity: 1;
+}
+
+.compass .fore {
+  stroke: #999;
+  stroke-width: 1.5px;
+}
+
+.compass rect.back.fore {
+  fill: #999;
+  fill-opacity: 1;
+  stroke: #eee;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+
+.compass .direction {
+  fill: none;
+}
+
+.compass .chevron {
+  fill: none;
+  stroke: #999;
+  stroke-width: 5px;
+}
+
+.compass .zoom .chevron {
+  stroke-width: 4px;
+}
+
+.compass .active .chevron, .compass .chevron.active {
+  stroke: #fff;
+}
+
+.compass.active .active .direction {
+  fill: #999;
 }

@@ -9,12 +9,10 @@ function draw_map_polymaps(lat, lon){
 	map.center({lat: lat, lon: lon});
 	map.zoom(14);
 
-	// TO DO:
-	// colour the dots based on privacy
-	// make the dots click-able
-
 	var po = org.polymaps;
 	var points = po.geoJson();
+
+console.log(lat + ',' + lon);
 
 	points.features([{
 		'geometry': {
@@ -23,7 +21,8 @@ function draw_map_polymaps(lat, lon){
 		}
 	}]);
 
-	points.on("load", po.stylist().attr("r", 5));
+	points.on("load", utils_polymaps_assign_dot_properties);
+
 	map.add(points);
 }
 

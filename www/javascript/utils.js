@@ -98,7 +98,6 @@ function utils_polymap(map_id, more){
 		// add hash control here? anecdotally it seems
 		// to be more hassle/confusing than not...
 		// (2010111/straup)
-
 	}
 
 	var tp = utils_tile_provider();
@@ -113,7 +112,61 @@ function utils_polymap(map_id, more){
 	tileset.url(url);
 
 	map.add(tileset);
+
+	// we add the map compass on a case-by-case 
 	return map;
+}
+
+function utils_polymaps_add_compass(map){
+
+	var compass = org.polymaps.compass();
+	compass.pan('none');
+	compass.zoom('small');
+	map.add(compass);
+}
+
+function utils_polymaps_assign_dot_properties(e){
+
+	var count = e.features.length;
+
+	if (! count){
+		return;
+	}
+
+	for (var i=0; i < count; i++){
+
+		var f = e.features[i];
+		var data = f.data;
+		console.log(data);
+		var classes = ['dot'];
+
+		if (data.properties && data.properties.permissions){
+		    classes.push('dot_' + data.properties.permissions);
+		}
+
+		f.element.setAttribute('class', classes.join(' '));
+		// f.element.setAttribute('id', 'dot_');
+
+		f.element.setAttribute('r', 8);
+	}
+
+}
+
+function utils_polymaps_assign_sheet_properties (e){
+
+	var count = e.features.length;
+
+	if (! count){
+		return;
+	}
+
+	for (var i=0; i < count; i++){
+		var f = e.features[i];
+		f.element.setAttribute('class', 'sheet');
+
+		// f.element.setAttribute('id', 'sheet_');
+	}
+
 }
 
 function utils_modestmap(map_id, more){

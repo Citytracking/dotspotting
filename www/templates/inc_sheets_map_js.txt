@@ -151,9 +151,12 @@ function draw_map_polymaps(sheets){
 
 	var boxes = po.geoJson();
 	boxes.features(sheets['features']);
-	boxes.on("load", po.stylist());
+	boxes.on("load", utils_polymaps_assign_sheet_properties);
 
 	map.add(boxes);
+
+	utils_polymaps_add_compass(map);
+	return 1;
 }
 
 function draw_map(){
