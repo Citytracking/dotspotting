@@ -5,6 +5,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" type="text/css" media="all" href="{$cfg.abs_root_url}css/main.css" />
 	{* See this: still no JS compression or other smushing *}
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/LAB.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery-1.4.3.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/latlong.js"></script>
@@ -12,23 +14,54 @@
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/parseuri.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/querystring.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/htmlspecialchars.js"></script>
-{if $cfg.browser.capabilities.polymaps}
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.min.js"></script>
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/polymaps.tilestache.js"></script>
-{else}
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/raphael-0.7.3.js"></script>
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.min.js"></script>
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.markers.js"></script>
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.compass.js"></script>
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modestmaps.tilestache.js"></script>
-{/if}
 	<script type="text/javascript">
-{* I don't actually know how we want to handle JS globals in a *}
-{* dotspotting context so for now this will do *}
-var canhas_polymaps = {$cfg.browser.capabilities.polymaps|escape};
-var _maptiles_template_url = '{$cfg.maptiles_template_url|escape}';
-var _maptiles_template_hosts = '{$cfg.maptiles_template_hosts|@join:","|escape}'.split(',');
-var _abs_root_url = '{$cfg.abs_root_url}';
+
+		{literal}var _dotspotting = {{/literal}
+		    'abs_root_url' : '{$cfg.abs_root_url}',
+		    'maptiles_template_url' : '{$cfg.maptiles_template_url|escape}',
+		    'maptiles_template_hosts' : '{$cfg.maptiles_template_hosts|@join:","|escape}'.split(','),
+		    'use_polymaps' : Modernizr.svg,
+		    'js_loadlib' : false,
+		{literal}};{/literal}
+
+{literal}
+
+    if (_dotspotting.use_polymaps){
+
+       $LAB
+       .script(_dotspotting.abs_root_url + 'javascript/polymaps.min.js')
+       .script(_dotspotting.abs_root_url + 'javascript/polymaps.tilestache.js')
+       .wait(function(){
+		_dotspotting.js_loadlib = true;
+       });
+    }   
+
+    else {
+
+       $LAB
+       .script(_dotspotting.abs_root_url + 'javascript/raphael-0.7.3.js')
+       .script(_dotspotting.abs_root_url + 'javascript/modestmaps.min.js')
+       .script(_dotspotting.abs_root_url + 'javascript/modestmaps.markers.js')
+       .script(_dotspotting.abs_root_url + 'javascript/modestmaps.compass.js')
+       .script(_dotspotting.abs_root_url + 'javascript/modestmaps.tilestache.js')
+       .wait(function(){
+		_dotspotting.js_loadlib = true;
+       });
+    }
+
+    function load_map(){
+
+	 if (_dotspotting.js_loadlib == true){
+	 	draw_map();
+		return;
+	 }
+
+	 setTimeout(function(){
+		load_map();
+	 }, 500);
+    }
+
+{/literal}
 	</script>
 	{$extra_head}
 </head>

@@ -3,8 +3,9 @@
 
 function utils_tile_provider(){
 
-    var template = _maptiles_template_url;
-    var hosts = _maptiles_template_hosts;
+    var template = _dotspotting.maptiles_template_url;
+    var hosts = _dotspotting.maptiles_template_hosts;
+
     var static_tiles = 0;
 
     // can has URL template?
@@ -74,25 +75,24 @@ function ensure_valid_url_template(t){
 
 function utils_polymap(map_id, more){
 
-	var po = org.polymaps;
-	var svg = po.svg("svg");
+	var svg = org.polymaps.svg("svg");
 
 	var div = document.getElementById(map_id);
 	div.appendChild(svg);
 
-	var map = po.map();
+	var map = org.polymaps.map();
 	map.container(svg);
 
 	if ((! more) || (! more['static'])){
 
-		var wheel = po.wheel();
+		var wheel = org.polymaps.wheel();
 		wheel.smooth(false);
 		map.add(wheel);
 
-		var drag = po.drag();
+		var drag = org.polymaps.drag();
 		map.add(drag);
 
-		var dblclick = po.dblclick();	
+		var dblclick = org.polymaps.dblclick();	
 		map.add(dblclick);
 
 		// add hash control here? anecdotally it seems
@@ -102,13 +102,13 @@ function utils_polymap(map_id, more){
 
 	var tp = utils_tile_provider();
 
-	var url = (tp['static']) ? tilestache(tp['template']) : po.url(tp['template']);
+	var url = (tp['static']) ? tilestache(tp['template']) : org.polymaps.url(tp['template']);
 
 	if (tp['hosts']){
 		url.hosts(tp['hosts']);
 	}
 
-	var tileset = po.image();
+	var tileset = org.polymaps.image();
 	tileset.url(url);
 
 	map.add(tileset);

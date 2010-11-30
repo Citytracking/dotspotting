@@ -144,7 +144,6 @@ function draw_map_modestmaps(sheets){
 
 function draw_map_polymaps(sheets){
 
-	var po = org.polymaps;
 	var map = utils_polymap('map');
 
 	var bbox = utils_adjust_bbox(sheets['bbox']);
@@ -152,7 +151,7 @@ function draw_map_polymaps(sheets){
 	map.extent(bbox);
 	map.zoom(Math.floor(map.zoom()));
 
-	var boxes = po.geoJson();
+	var boxes = org.polymaps.geoJson();
 	boxes.features(sheets['features']);
 	boxes.on("load", utils_polymaps_assign_sheet_properties);
 
@@ -166,7 +165,7 @@ function draw_map(){
 
 	var sheets = collect_sheets();
 
-	if (canhas_polymaps){	
+	if (_dotspotting.use_polymaps){	
 		draw_map_polymaps(sheets);
 		return;
 	}
@@ -174,7 +173,7 @@ function draw_map(){
 	draw_map_modestmaps(sheets);
 }
 	
-draw_map();
+load_map();
 
 </script>
 {/literal}

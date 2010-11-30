@@ -49,7 +49,7 @@ function draw_map_modestmaps(dot){
 
 function draw_map (dot){
 
-	if (canhas_polymaps){
+	if (_dotspotting.use_polymaps){
 		draw_map_polymaps(dot);
 		return;
 	}
@@ -68,6 +68,6 @@ var dot = {
 };
 {/literal}
 
-draw_map(dot);
+load_map(dot);
 
 </script>

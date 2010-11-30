@@ -185,7 +185,7 @@ function draw_map(){
 
 	var dots = collect_dots();
 
-	if (canhas_polymaps){	
+	if (_dotspotting.use_polymaps){	
 		draw_map_polymaps(dots);
 		return;
 	}
@@ -193,7 +193,7 @@ function draw_map(){
 	draw_map_modestmaps(dots);
 }
 	
-draw_map();
+load_map();
   
 </script>
 {/literal}
