@@ -27,6 +27,8 @@ function collect_sheets(){
 		// account for public vs. private...
 		// see above... urgh...
 
+		var id = values[0];
+
 		var _extent = values[3].split(' ');
 
 		if (_extent.length != 4){
@@ -69,7 +71,7 @@ function collect_sheets(){
 				]],
 			},
 			properties: {
-				'foo': 'bar',
+				'id': id,
 			},
 		};
 	});

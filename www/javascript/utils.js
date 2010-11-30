@@ -137,7 +137,7 @@ function utils_polymaps_assign_dot_properties(e){
 
 		var f = e.features[i];
 		var data = f.data;
-		console.log(data);
+
 		var classes = ['dot'];
 
 		if (data.properties && data.properties.permissions){
@@ -145,7 +145,10 @@ function utils_polymaps_assign_dot_properties(e){
 		}
 
 		f.element.setAttribute('class', classes.join(' '));
-		// f.element.setAttribute('id', 'dot_');
+
+		if (data.properties && data.properties.id){
+		    f.element.setAttribute('id', 'dot_' + data.properties.id);
+		}
 
 		f.element.setAttribute('r', 8);
 	}
@@ -162,9 +165,13 @@ function utils_polymaps_assign_sheet_properties (e){
 
 	for (var i=0; i < count; i++){
 		var f = e.features[i];
+		var data = f.data;
+
 		f.element.setAttribute('class', 'sheet');
 
-		// f.element.setAttribute('id', 'sheet_');
+		if (data.properties && data.properties.id){
+		    f.element.setAttribute('id', 'sheet_' + data.properties.id);
+		}
 	}
 
 }

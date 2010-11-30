@@ -34,8 +34,7 @@ function collect_dots(){
 				coordinates: [loc.lon, loc.lat]
 			},
 			properties: {
-				created: values[6],
-				imported: values[7],
+				id: values[0],
 				permissions: values[8]
 			}
 		};
@@ -132,7 +131,7 @@ function draw_map_modestmaps(dots){
 		points.push([ loc.lat, loc.lon ]);
 	}
 
-	var more = { 'globalAlpha' : .6 };
+	var more = { 'globalAlpha' : 1, 'r': 8 };
 
 	var markers = new mm.Markers(map);
 	markers.drawPoints(points, more);

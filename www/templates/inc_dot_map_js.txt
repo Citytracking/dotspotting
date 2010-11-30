@@ -1,37 +1,38 @@
 <script type="text/javascript">
 {literal}
 
-function draw_map_polymaps(lat, lon){
+function draw_map_polymaps(dot){
 
 	var more = { 'static': 1 };
 	var map = utils_polymap('map', more);
 
-	map.center({lat: lat, lon: lon});
+	map.center({lat: dot.latitude, lon: dot.longitude});
 	map.zoom(14);
 
 	var po = org.polymaps;
 	var points = po.geoJson();
 
-console.log(lat + ',' + lon);
-
 	points.features([{
 		'geometry': {
 			'type': 'Point',
-			'coordinates': [ lon, lat ],
+			'coordinates': [ dot.longitude, dot.latitude ],
+		},
+		'properties': {
+			'id': dot.id,
+			'permissions': dot.permissions,
 		}
 	}]);
 
 	points.on("load", utils_polymaps_assign_dot_properties);
-
 	map.add(points);
 }
 
-function draw_map_modestmaps(lat, lon){
+function draw_map_modestmaps(dot){
 
 	var more = { 'static' : 1 };	 
 	var map = utils_modestmap('map', more);
 
-	var loc = new com.modestmaps.Location(lat, lon);
+	var loc = new com.modestmaps.Location(dot.latitude, dot.longitude);
     	map.setCenterZoom(loc, 14);
 
 	// see how this is different than what we pass
@@ -40,27 +41,33 @@ function draw_map_modestmaps(lat, lon){
 	// clothes...it should be sorted out though.
 	// (20101028/straup)
 
-	var more = { 'globalAlpha' : .6 };
+	var more = { 'globalAlpha' : 1, 'r': 8 };
 
-	var markers = new mm.Markers(map);
-	markers.drawPoints([[lat, lon]], more);
+	var markers = new com.modestmaps.Markers(map);
+	markers.drawPoints([[ dot.latitude, dot.longitude ]], more);
 }
 
-function draw_map (lat, lon){
+function draw_map (dot){
 
 	if (canhas_polymaps){
-		draw_map_polymaps(lat, lon);
+		draw_map_polymaps(dot);
 		return;
 	}
 
-	draw_map_modestmaps(lat, lon);
+	draw_map_modestmaps(dot);
 }
 
+var dot = {
+{/literal}
+{assign var='perms' value=$dot.perms}
+	'latitude' : {$dot.latitude|escape},
+	'longitude' : {$dot.longitude|escape},
+	'id' : {$dot.id|escape},
+	'permissions' : '{$permissions_map.$perms|escape}',
+{literal}
+};
 {/literal}
 
-var lat = {$dot.latitude|escape};
-var lon = {$dot.longitude|escape};
-
-draw_map(lat, lon);
+draw_map(dot);
 
 </script>
