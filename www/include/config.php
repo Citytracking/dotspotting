@@ -38,8 +38,6 @@
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
 	$GLOBALS['cfg']['enable_feature_search_export'] = 0;
 
-	$GLOBALS['cfg']['enable_feature_polymaps'] = 1;		# independent of whether the browser supports SVG
-
 	$GLOBALS['cfg']['enable_feature_magicwords'] = array(
 
 		'flickr' => array(

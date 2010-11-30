@@ -46,12 +46,6 @@ Feature Flags
 	$GLOBALS['cfg']['enable_feature_search_export'] = 0;	# this is still a work in progress
 
 	#
-	# Toggle the use of Polymaps independent of whether a user's browser supports SVG
-	#
-
-	$GLOBALS['cfg']['enable_feature_polymaps'] = 1;
-
-	#
 	# Magic words are a runtime display feature to hook in to third-party APIs and services in order
 	# to display dynamic content. You can read more about then in the FAQ:
 	# http://your-dotspotting.example.com/faq/#magicwords

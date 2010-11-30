@@ -105,10 +105,6 @@
 
 	$GLOBALS['cfg']['browser'] = user_agent_info();
 
-	$GLOBALS['cfg']['browser']['capabilities'] = array(
-		'polymaps' => can_use_polymaps(),
-	);
-
 	#################################################################
 
 	# This is a shim in the absence of a saner and
@@ -119,57 +115,6 @@
 		$filter = new lib_filter();
 		$filter->allowed = array();
 		return $filter->go($str);
-	}
-
-	#################################################################
-
-	#
-	# Dotspotting specific functions and utils go here
-	#
-
-	#################################################################
-
-	# This is a shim. Ultimately the application code shouldn't/doesn't need
-	# to know about Polymaps but it was easier than getting dragged in to a
-	# rabbit-hole of JavaScript-isms at the time. This is on the TO DO list.
-	# (20101123/straup)
-
-	function can_use_polymaps(){
-
-		if (! $GLOBALS['cfg']['enable_feature_polymaps']){
-			return 0;
-		}
-
-		$ok_browsers = array(
-			'safari' => 5,
-			'chrome' => 6,
-			'firefox' => 3.5,
-			'opera' => 10,
-		);
-
-		$browser = null;
-		$version = null;
-
-		foreach (array_keys($ok_browsers) as $browser){
-
-			if ($version = $GLOBALS['cfg']['browser'][$browser]){
-
-				# Check to see if we managed to get an actual
-				# version number from lib_user_agent.php
-
-				if ($GLOBALS['cfg']['browser']['version']){
-					$version = $GLOBALS['cfg']['browser']['version'];
-				}
-
-				break;
-			}
-		}
-
-		if ((! $version) || ($version < $ok_browsers[$browser])){
-			return 0;
-		}
-
-		return 1;
 	}
 
 	#################################################################
