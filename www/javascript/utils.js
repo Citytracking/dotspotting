@@ -100,10 +100,6 @@ function utils_polymap(map_id, more){
 
 	if ((! more) || (! more['static'])){
 
-		var wheel = org.polymaps.wheel();
-		wheel.smooth(false);
-		map.add(wheel);
-
 		var drag = org.polymaps.drag();
 		map.add(drag);
 
@@ -206,11 +202,11 @@ function utils_modestmap(map_id, more){
 	}
 
 	var dims = undefined;
-	var handlers = undefined;
 
-	if ((more) && (more['static'])){
-	    handlers = [];
-	}
+	var handlers = [
+			// how to disable the scroll wheel ?
+			new com.modestmaps.MouseHandler(),
+			]
 
 	var map = new com.modestmaps.Map(map_id, provider, dims, handlers);
 	return map;
