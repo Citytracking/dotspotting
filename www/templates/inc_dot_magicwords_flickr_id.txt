@@ -1,22 +1,3 @@
-	{* waiting on flickr to add support for photo.gne?id=999 support to the oembed endpoint *}
-	{if 0}
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/oembed.js"></script>
-	<script type="text/javascript">
-	{literal}
-	function display_flickr_photo(photo_id){
-		var oembed = new info.aaronland.oEmbed({
-			'service': 'http://www.flickr.com/services/oembed/',
-			'enable_logging': true
-		});
-
-		oembed.fetch('http://www.flickr.com/photo.gne?id=' + photo_id, {'maxwidth': 240}, function(rsp){ 
-			// see below
-		});
-	}
-	{/literal}
-	</script>
-	{/if}
-	{* just call the API for now... *}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/flickr-api.js"></script>
 	<script type="text/javascript">
 	var apikey = '{$cfg.flickr_apikey|escape}';
