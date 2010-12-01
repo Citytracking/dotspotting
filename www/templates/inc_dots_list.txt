@@ -8,7 +8,6 @@
 			<th nowrap>Sheet</th>
 			<th nowrap>Latitude</th>
 			<th nowrap>Longitude</th>
-			{if 0}<th>Altitude</th>{/if}
 			<th>Location</th>
 			<th>Type</th>
 			<th>Created</th>
@@ -23,32 +22,41 @@
 		{assign var="perms" value=$dot.perms}
 		{assign var="geocoded_by" value=$dot.geocoded_by}
 			<tr class="dot dot_{$permissions_map.$perms|escape}" id="dot_{$dot.id|escape}">
-				<td><strong><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></strong></td>
-				<td>
+
+				<td class="dotslist_id" ds:dot_id="{$dot.id|escape}">
+					<strong><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></strong>
+				</td>
+
+				<td class="dotslist_owner" ds:owner_id="{$owner.id|escape}">
 			{if $owner}
-				<a href="{$owner|@urls_url_for_user}">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
+					<a href="{$owner|@urls_url_for_user}">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
 			{else}
-				<a href="{$dot.user|@urls_url_for_user}">{if $dot.user.id == $cfg.user.id}You{else}{$dot.user.username|escape}{/if}</a>
+					<a href="{$dot.user|@urls_url_for_user}">{if $dot.user.id == $cfg.user.id}You{else}{$dot.user.username|escape}{/if}</a>
 			{/if}
 				</td>
 
+				<td class="dotslist_label" nowrap>
 			{if $sheet}
-				<td nowrap><a href="{$sheet|@urls_url_for_sheet}">{if $sheet.label}{$sheet.label|truncate:20:"..."|escape}{else}<span style="font-style:italic;">untitled</span>{/if}</a></td>
+					<a href="{$sheet|@urls_url_for_sheet}">{if $sheet.label}{$sheet.label|truncate:20:"..."|escape}{else}<span style="font-style:italic;">untitled</span>{/if}</a>
 			{else}
-				<td nowrap><a href="{$dot.sheet|@urls_url_for_sheet}">{if $dot.sheet.label}{$dot.sheet.label|truncate:20:"..."|escape}{else}<span class="untitled">untitled</span>{/if}</a></td>
+					<a href="{$dot.sheet|@urls_url_for_sheet}">{if $dot.sheet.label}{$dot.sheet.label|truncate:20:"..."|escape}{else}<span class="untitled">untitled</span>{/if}</a>
 			{/if}
+				</td>
 
-				<td nowrap>{if $dot.latitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.latitude|escape}</a>{else}&#8212;{/if}</td>
-				<td nowrap>{if $dot.longitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.longitude|escape}</a>{else}&#8212;{/if}</td>
-				{if 0}<td nowrap>{if $dot.altitude}{$dot.altitude|escape}{else}&#8212;{/if}</td>{/if}
-				<td nowrap>{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&l={$dot.location|escape:'url'}">{$dot.location|escape}</a>{else}&#8212;{/if}</td>
-				<td nowrap>{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&t={$dot.type|escape:'url'}">{$dot.type|truncate:15:"..."|escape}</a>{else}&#8212;{/if}</td>
-				<td nowrap>{if $dot.created}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape:'url'})">{$dot.created|date_format:"%Y-%m-%d"|escape}{else}&#8212;{/if}</td>
+				<td class="dotslist_latitude" nowrap>{if $dot.latitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.latitude|escape}</a>{else}&#8212;{/if}</td>
+
+				<td class="dotslist_longitude" nowrap>{if $dot.longitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.longitude|escape}</a>{else}&#8212;{/if}</td>
+
+				<td class="dotslist_location" nowrap>{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&l={$dot.location|escape:'url'}">{$dot.location|escape}</a>{else}&#8212;{/if}</td>
+
+				<td class="dotslist_type" nowrap>{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&t={$dot.type|escape:'url'}">{$dot.type|truncate:15:"..."|escape}</a>{else}&#8212;{/if}</td>
+
+				<td class="dotslist_created" nowrap>{if $dot.created}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape:'url'})">{$dot.created|date_format:"%Y-%m-%d"|escape}{else}&#8212;{/if}</td>
 
 			{if $is_own}
-				<td>{$permissions_map.$perms|escape}</td>
+				<td class="dotslist_permissions">{$permissions_map.$perms|escape}</td>
 			{/if}
-				<td style="font-size:11px;">{if $dot.details_listview}{$dot.details_listview|escape}{else}&#8212;{/if}</td>
+				<td class="dotslist_details" style="font-size:11px;">{if $dot.details_listview}{$dot.details_listview|escape}{else}&#8212;{/if}</td>
 			</tr>
 		{/foreach}
 	</tbody>

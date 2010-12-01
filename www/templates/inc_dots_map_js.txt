@@ -3,28 +3,74 @@
 
 function collect_dots(){
 
-	// read the table looking for dots
-
-	var selector = "#user_dots tbody tr";
 	var locations = [];
 
-	var features = $(selector).map(function(i, row) {
-		var values = {};
+	var headers = $("#user_dots thead tr").map(function(i, row){
+
+		var _headers = [];
+
+		$(row).find("th").each(function(col, th){
+			_headers.push($(th).text().toLowerCase());
+		});
+
+		return _headers;
+	});
+
+	var features = $("#user_dots tbody tr").map(function(i, row){
+
+		var dot = {};
 
 		// this is pretty brittle and should be updated
 		// to check for class names instead of offsets
 		// (20101027/straup)
 
-		$(row).find("td").each(function(col, td) {
-			values[col] = $(td).text();
+		$(row).find("td").each(function(col, td){
+
+			var classes = $(td).attr("class");
+			var key = headers[col];
+
+			if (classes){
+
+				var match = classes.match(/\bdotslist_([a-z_]+)\b/);
+
+				if (match){
+					key = match[1];
+				}
+			}
+
+			var value = $(td).text()
+			value = value.replace(/^\s+/, '');
+			value = value.replace(/\s+$/, '');
+
+			if (key == 'dotid'){
+				value = Number(value);
+			}
+
+			else if (key.match(/(?:latitude|longitude)/)){
+				value = parseFloat(value);
+			}
+
+			else if (key.match(/(?:details|other)/)){
+				value = value.split(',');
+			}
+
+			else if (key.match(/(?:location|type)/)){
+				value = (value == '-') ? null : value;
+			}
+
+			// parse 'created' date here?
+
+			else {}
+
+			dot[key] = value;
 		});
 
 		var loc = {
-			lat: parseFloat(values[3]),
-			lon: parseFloat(values[4])
+			lat: dot.latitude,
+			lon: dot.longitude,
 		};
 
-		if (!isNaN(loc.lat) && !isNaN(loc.lon)) {
+		if (! isNaN(loc.lat) && ! isNaN(loc.lon)){
 			locations.push(loc);
 		}
 
@@ -33,10 +79,8 @@ function collect_dots(){
 				type: "Point",
 				coordinates: [loc.lon, loc.lat]
 			},
-			properties: {
-				id: values[0],
-				permissions: values[8]
-			}
+
+			properties: dot
 		};
 	});
 
