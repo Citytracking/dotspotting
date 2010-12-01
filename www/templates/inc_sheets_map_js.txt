@@ -3,9 +3,17 @@
 
 function collect_sheets(){
 
-	// read the table looking for sheets
+	var headers = $("#user_sheets thead tr").map(function(i, row){
 
-	var selector = "#user_sheets tbody tr";
+		var _headers = [];
+
+		$(row).find("th").each(function(col, th){
+			_headers.push($(th).text().toLowerCase());
+		});
+
+		return _headers;
+	});
+
 	var sheets = [];
 
 	var swlat = null;
@@ -13,40 +21,48 @@ function collect_sheets(){
 	var nelat = null;
 	var nelon = null;
 
-	var features = $(selector).map(function(i, row) {
-		var values = {};
+	var features = $("#user_sheets tbody tr").map(function(i, row) {
 
-		// this is pretty brittle and should be updated
-		// to check for class names instead of offsets
-		// (20101027/straup)
+		var sheet = {};
 
 		$(row).find("td").each(function(col, td) {
-			values[col] = $(td).text();
+
+			var classes = $(td).attr("class");
+			var key = headers[col].toLowerCase();
+
+			if (classes){
+
+				var match = classes.match(/\bsheetslist_([a-z_]+)\b/);
+
+				if (match){
+					key = match[1];
+				}
+			}
+
+			var value = $(td).text();
+			value = value.replace(/^\s+/, '');
+			value = value.replace(/\s+$/, '');
+
+			if (key == 'extent'){
+				var _extent = value.split(' ');
+				value = (_extent.length == 4) ? _extent : null;
+			}
+
+			sheet[ key ] = value;
 		});
 
-		// account for public vs. private...
-		// see above... urgh...
-
-		var id = values[0];
-
-		var _extent = values[3].split(' ');
-
-		if (_extent.length != 4){
-			_extent = values[4].split(' ');
-		}
-
-		if (_extent.length != 4){
+		if (! sheet['extent']){
 			return;
 		}
 
 		var sw = {
-			lat: parseFloat(_extent[0]),
-			lon: parseFloat(_extent[1])
+			lat: parseFloat(sheet.extent[0]),
+			lon: parseFloat(sheet.extent[1])
 		};
 
 		var ne = {
-			lat: parseFloat(_extent[2]),
-			lon: parseFloat(_extent[3])
+			lat: parseFloat(sheet.extent[2]),
+			lon: parseFloat(sheet.extent[3])
 		};
 
 		sheets.push([sw, ne]);
@@ -70,9 +86,7 @@ function collect_sheets(){
 					[sw['lon'], sw['lat']]
 				]],
 			},
-			properties: {
-				'id': id,
-			},
+			properties: sheet,
 		};
 	});
 

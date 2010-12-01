@@ -20,10 +20,6 @@ function collect_dots(){
 
 		var dot = {};
 
-		// this is pretty brittle and should be updated
-		// to check for class names instead of offsets
-		// (20101027/straup)
-
 		$(row).find("td").each(function(col, td){
 
 			var classes = $(td).attr("class");

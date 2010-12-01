@@ -36,19 +36,19 @@
 {foreach from=$sheets item='sheet'}
 
 		<tr{if $sheet.count_dots_public==0} class="sheet_private"{/if}>
-			<td><a href="{$sheet|@urls_url_for_sheet}">{$sheet.id|escape}</a></td>
-			<td>{if $sheet.label}<a href="{$sheet|@urls_url_for_sheet}">{$sheet.label|escape}</a>{else}&#8212;{/if}</td>
+			<td class="sheetslist sheetslist_id"><a href="{$sheet|@urls_url_for_sheet}">{$sheet.id|escape}</a></td>
+			<td class="sheetslist sheetslist_label">{if $sheet.label}<a href="{$sheet|@urls_url_for_sheet}">{$sheet.label|escape}</a>{else}&#8212;{/if}</td>
 			{if $is_own}
-			<td>{$sheet.count_dots|escape}</td>
-			<td>{$sheet.count_dots_public|escape}</td>
+			<td class="sheetslist sheetslist_countdots">{$sheet.count_dots|escape}</td>
+			<td class="sheetslist sheetslist_countdots_public">{$sheet.count_dots_public|escape}</td>
 			{else}
-			<td>{$sheet.count_dots_public|escape}</td>
+			<td class="sheetslist sheetslist_countdots_public">{$sheet.count_dots_public|escape}</td>
 			{/if}
-			<td>{$sheet.extent.swlat|escape} {$sheet.extent.swlon|escape} {$sheet.extent.nelat|escape} {$sheet.extent.nelon|escape}</td>
-			<td>{$sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}</td>
+			<td class="sheetslist sheetslist_extent">{$sheet.extent.swlat|escape} {$sheet.extent.swlon|escape} {$sheet.extent.nelat|escape} {$sheet.extent.nelon|escape}</td>
+			<td class="sheetslist sheetslist_created">{$sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}</td>
 			{if $is_own}
-			<td>{$sheet.last_modified|date_format:"%Y-%m-%d %H:%M"|escape}</td>
-			<td>{$sheet.mime_type|escape}</td>
+			<td class="sheetslist sheetslist_modified">{$sheet.last_modified|date_format:"%Y-%m-%d %H:%M"|escape}</td>
+			<td class="sheetslist sheetslist_mimetype">{$sheet.mime_type|escape}</td>
 			{* delete links - see above inre: crumbs *}
 			{/if}
 		</tr>
