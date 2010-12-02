@@ -26,6 +26,9 @@
 
 					// ok! now we get into dotspotting stuff!
 
+					// Dunno... maybe... it's kind of weird (20101202/straup)
+					// (sPreviousSearch == '') ? $("#headline").show() : $("#headline").hide();
+
 					draw_map();
 				}, iDelay);
 			}

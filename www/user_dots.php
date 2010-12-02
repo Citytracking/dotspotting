@@ -13,11 +13,11 @@
 
 	$owner = users_ensure_valid_user_from_url();
 
-	$args = array(
+	$more = array(
 		'page' => get_int64('page'),
 	);
 
-	$dots = dots_get_dots_for_user($owner, $GLOBALS['cfg']['user']['id'], $args);
+	$dots = dots_get_dots_for_user($owner, $GLOBALS['cfg']['user']['id'], $more);
 
 	$smarty->assign_by_ref('owner', $owner);
 	$smarty->assign_by_ref('dots', $dots);

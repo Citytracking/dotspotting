@@ -27,7 +27,7 @@
 					<strong><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></strong>
 				</td>
 
-				<td class="dotslist_owner" ds:owner_id="{$dot.user.id|escape}">
+				<td class="dotslist_owner" ds:owner_id="{$dot.user_id|escape}">
 			{if $owner}
 					<a href="{$owner|@urls_url_for_user}">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
 			{else}

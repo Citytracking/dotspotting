@@ -57,7 +57,7 @@ $(document).ready(function(){
 
      $('#user_dots').dataTable({
 	"bPaginate": false,
-	"bFilter": false,
+	"bFilter": false,	// figure out how best to enable this
 	"bSort": false,
 	"bInfo" : false,
 	"bProcessing": true,

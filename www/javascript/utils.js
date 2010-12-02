@@ -202,7 +202,8 @@ function utils_polymaps_assign_sheet_properties (e){
 
 		    f.element.setAttribute('onmouseover', 'sheet_onmouseover(' + enc_id + ');return false');
 		    f.element.setAttribute('onmouseout', 'sheet_onmouseout(' + enc_id + ');return false');
-		    f.element.setAttribute('onclick', 'sheet_onclick(' + enc_id + ');return false');
+
+		    // f.element.setAttribute('onclick', 'sheet_onclick(' + enc_id + ');return false');
 		}
 	}
 
