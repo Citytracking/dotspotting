@@ -156,9 +156,11 @@ function utils_polymaps_assign_dot_properties(e){
 		if (data.properties && data.properties.id){
 		    f.element.setAttribute('id', 'dot_' + data.properties.id);
 
-		    f.element.setAttribute('onmouseover', 'show_dot_info(' + data.properties.id + ');return false');
-		    f.element.setAttribute('onmouseout', 'hide_dot_info(' + data.properties.id + ');return false');
-		    f.element.setAttribute('onclick', 'goto_dot(' + data.properties.id + ');return false');
+		    var enc_id = encodeURIComponent(data.properties.id);
+
+		    f.element.setAttribute('onmouseover', 'mouseover_dot(' + enc_id + ');return false');
+		    f.element.setAttribute('onmouseout', 'mouseout_dot(' + enc_id + ');return false');
+		    f.element.setAttribute('onclick', 'click_dot(' + enc_id + ');return false');
 		}
 
 		f.element.setAttribute('r', 8);

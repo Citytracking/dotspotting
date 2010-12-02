@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery-1.4.3.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/latlong.js"></script>
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/geohash.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/utils.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/parseuri.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/querystring.js"></script>
@@ -18,10 +19,16 @@
 
 		{literal}var _dotspotting = {{/literal}
 		    'abs_root_url' : '{$cfg.abs_root_url}',
+		    'user' : {literal}{{/literal} id : {$cfg.user.id|escape}, {literal}}{/literal},
 		    'maptiles_template_url' : '{$cfg.maptiles_template_url|escape}',
 		    'maptiles_template_hosts' : '{$cfg.maptiles_template_hosts|@join:","|escape}'.split(','),
 		    'use_polymaps' : Modernizr.svg,
 		    'js_loadlib' : false,
+
+		    'dots_list_clicked' : null,
+		    'dots_list_mouseout_timers' : [],
+		    'dots_list_dots' : {literal}{}{/literal},
+
 		{literal}};{/literal}
 
 {literal}
