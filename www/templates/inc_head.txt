@@ -19,7 +19,7 @@
 
 		{literal}var _dotspotting = {{/literal}
 		    'abs_root_url' : '{$cfg.abs_root_url}',
-		    'user' : {literal}{{/literal} id : {$cfg.user.id|escape}, {literal}}{/literal},
+		    'user' : {literal}{{/literal} id : {if $cfg.user.id}{$cfg.user.id|escape}{else}null{/if}, {literal}}{/literal},
 		    'maptiles_template_url' : '{$cfg.maptiles_template_url|escape}',
 		    'maptiles_template_hosts' : '{$cfg.maptiles_template_hosts|@join:","|escape}'.split(','),
 		    'use_polymaps' : Modernizr.svg,
