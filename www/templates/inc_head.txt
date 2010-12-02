@@ -57,6 +57,17 @@
        });
     }
 
+    // display the map caveat for people who aren't using polymaps
+    // proper map interaction is waiting on porting MM.markers to
+    // use raphael which also means making the MM.compass code work
+    // with current versions of raphael... (20101202/straup)
+
+    $(document).ready(function(){
+	if (! _dotspotting.use_polymaps){	
+		$("#map_caveat").show();
+	}
+    });
+
 {/literal}
 	</script>
 	{$extra_head}

@@ -38,6 +38,20 @@ com.modestmaps.Markers = function(mm){
 		_self._redrawMarkers();
 	});
 
+	/*
+
+	this.surface.addEventListener('click', function(e){
+		var x = e.clientX - _self.surface.offsetLeft;
+		var y = e.clientY - _self.surface.offsetTop;
+	}, false);
+
+	this.surface.addEventListener('mousemove', function(e){
+		var x = e.clientX - _self.surface.offsetLeft;
+		var y = e.clientY - _self.surface.offsetTop;
+        }, false);
+
+	*/
+
 };
 
 com.modestmaps.Markers.prototype.registerMarker = function(data){
