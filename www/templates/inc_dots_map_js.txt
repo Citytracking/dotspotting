@@ -327,14 +327,7 @@ function draw_map_polymaps(dots){
 	
 function draw_map(){
 
-	// just blow away the map (if a datatable is filtered)
-
-	var mom = $("#map");
-	var kids = mom.children();
-
-	if (kids.length){
-		kids.remove();
-	}
+	utils_scrub_map();
 
 	var dots = collect_dots();
 

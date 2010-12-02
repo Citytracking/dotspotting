@@ -16,6 +16,18 @@ function utils_load_map(args){
 	 }, 500);
 }
 
+function utils_scrub_map(){
+
+	// just blow away the map (if a datatable is filtered)
+
+	var mom = $("#map");
+	var kids = mom.children();
+
+	if (kids.length){
+		kids.remove();
+	}
+}
+
 function utils_tile_provider(){
 
     var template = _dotspotting.maptiles_template_url;
