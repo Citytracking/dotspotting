@@ -20,8 +20,10 @@
 		$GLOBALS['cfg']['user']['counts'] = $counts;
 
 		$recent_dots = dots_get_dots_recently_imported();
-		$smarty->assign_by_ref('recent_dots', $recent_dots);
+		$GLOBALS['smarty']->assign_by_ref('recent_dots', $recent_dots);
 
+		$perms_map = dots_permissions_map();
+		$GLOBALS['smarty']->assign_by_ref("permissions_map", $perms_map);
 	}
 
 	#################################################################
