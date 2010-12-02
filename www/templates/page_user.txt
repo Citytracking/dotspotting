@@ -1,6 +1,7 @@
 {capture assign='page_title'}{$owner.username|possess} dots and sheets{/capture}
 {include file='inc_head.txt'}
 
+{* seriously... put all of this in a capture block... (so I can assign a single class/id to the h2 el) *}
 {if $cfg.user.id == $owner.id}
 
 {if $owner.counts.count_sheets == 0}
@@ -10,14 +11,14 @@
 {elseif $owner.counts.count_sheets == 1}
 
 	{if $owner.counts.count_dots == 1}
-	<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">1 dot</a> (as part of a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>) so far</h2>
+	<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">1 dot</a> (as part of a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>) so far.</h2>
 	{else}
-	<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (as part of a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>) so far</h2>
+	<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (as part of a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>) so far.</h2>
 	{/if}
 
 {else}
 
-<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (that are part of <a href="{$owner|@urls_sheets_for_user}">{$owner.counts.count_sheets|escape} sheets</a>) so far</h2>
+<h2><a href="{$owner|@urls_url_for_user}">You</a> have uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (that are part of <a href="{$owner|@urls_sheets_for_user}">{$owner.counts.count_sheets|escape} sheets</a>) so far.</h2>
 
 {/if}
 
@@ -30,14 +31,14 @@
 {elseif $owner.counts.count_sheets == 1}
 
 	{if $owner.counts.count_dots == 1}
-	<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">1 dot</a> (as part of a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>)</h2>
+	<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">1 dot</a> (as part of a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>).</h2>
 	{else}
-	<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (as part of a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>)</h2>
+	<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (as part of a <a href="{$owner|@urls_sheets_for_user}">single sheet</a>).</h2>
 	{/if}
 
 {else}
 
-<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (that are part of <a href="{$owner|@urls_sheets_for_user}">{$owner.counts.count_sheets|escape} sheets</a>)</h2>
+<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a> has uploaded <a href="{$owner|@urls_dots_for_user}">{$owner.counts.count_dots|escape} dots</a> (that are part of <a href="{$owner|@urls_sheets_for_user}">{$owner.counts.count_sheets|escape} sheets</a>).</h2>
 
 {/if}
 {/if}
