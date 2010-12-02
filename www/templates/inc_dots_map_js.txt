@@ -1,9 +1,108 @@
 {literal}
 <script type="text/javascript">
 
-function collect_dots(){
+function goto_dot(dotid){
 
-	var locations = [];
+	 var dot = dot_getinfo(dotid);
+	 location.href = dot.url;
+}
+
+// hide and show aren't being called until we work
+// out what exactly should happen...
+
+function show_dot_info(dotid){
+	var dot = dot_getinfo(dotid);
+
+	var html = 'This is dot #<a href="">' + dot.id + '</a>.';
+
+	if (dot.latitude && dot.longitude){
+		html += ' It is located at <a href="">' + dot.latitude + ',' + dot.longitude + '</a>.';
+	}
+
+	$("#map_info").html(html);
+	$("#map_info").show();
+}
+
+function hide_dot_info(dotid){
+	$("#map_info").hide();
+	$("#map_info").html('');
+}
+
+function dot_getinfo(dotid){
+
+    // please to be caching me
+    	 
+    var row = $("#dotslist_dot_" + dotid);
+    var dot = row2dot(row);
+
+    return dot;
+}
+
+function row2dot(row, headers){
+
+	var dot = {};
+
+	$(row).find("td").each(function(col, td){
+
+		var classes = $(td).attr("class");
+		var key = (headers) ? headers[col] : null;
+
+		if (classes){
+
+			var match = classes.match(/\bdotslist_([a-z_]+)\b/);
+
+			if (match){
+				key = match[1];
+			}
+		}
+
+		if (! key){
+			return {};
+		}
+
+		var value = $(td).text()
+		value = value.replace(/^\s+/, '');
+		value = value.replace(/\s+$/, '');
+
+		if (key == 'dotid'){
+			value = Number(value);
+		}
+
+		else if (key.match(/(?:latitude|longitude)/)){
+			value = parseFloat(value);
+		}
+
+		else if (key.match(/(?:details|other)/)){
+			value = value.split(',');
+		}
+
+		else if (key.match(/(?:location|type)/)){
+			value = (value == '-') ? null : value;
+		}
+
+		else if (key == 'owner'){
+
+			// I am not convinced this is the right way to do this...
+
+			var ownerid = $(td).attr("ds:owner_id");
+
+			if (ownerid){
+				dot['ownerid'] = Number(ownerid);
+			}
+		}
+
+		// parse 'created' date here?
+
+		else {}
+
+		dot[key] = value;
+	});
+
+	dot['url'] = _dotspotting.abs_root_url + 'u/' + dot['ownerid'] + '/dots/' + dot.id + '/';
+	return dot;
+}
+
+function collect_headers(){
 
 	var headers = $("#user_dots thead tr").map(function(i, row){
 
@@ -16,50 +115,18 @@ function collect_dots(){
 		return _headers;
 	});
 
+	return headers;
+}
+
+function collect_dots(){
+
+	var locations = [];
+
+	var headers = collect_headers();
+
 	var features = $("#user_dots tbody tr").map(function(i, row){
 
-		var dot = {};
-
-		$(row).find("td").each(function(col, td){
-
-			var classes = $(td).attr("class");
-			var key = headers[col];
-
-			if (classes){
-
-				var match = classes.match(/\bdotslist_([a-z_]+)\b/);
-
-				if (match){
-					key = match[1];
-				}
-			}
-
-			var value = $(td).text()
-			value = value.replace(/^\s+/, '');
-			value = value.replace(/\s+$/, '');
-
-			if (key == 'dotid'){
-				value = Number(value);
-			}
-
-			else if (key.match(/(?:latitude|longitude)/)){
-				value = parseFloat(value);
-			}
-
-			else if (key.match(/(?:details|other)/)){
-				value = value.split(',');
-			}
-
-			else if (key.match(/(?:location|type)/)){
-				value = (value == '-') ? null : value;
-			}
-
-			// parse 'created' date here?
-
-			else {}
-
-			dot[key] = value;
-		});
+		var dot = row2dot(row);
 
 		var loc = {
 			lat: dot.latitude,

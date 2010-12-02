@@ -105,10 +105,6 @@ function utils_polymap(map_id, more){
 
 		var dblclick = org.polymaps.dblclick();	
 		map.add(dblclick);
-
-		// add hash control here? anecdotally it seems
-		// to be more hassle/confusing than not...
-		// (2010111/straup)
 	}
 
 	var tp = utils_tile_provider();
@@ -160,9 +156,9 @@ function utils_polymaps_assign_dot_properties(e){
 		if (data.properties && data.properties.id){
 		    f.element.setAttribute('id', 'dot_' + data.properties.id);
 
-		    // f.element.setAttribute('onmouseover', 'show_dot(' + data.properties.id + ');return false');
-		    // f.element.setAttribute('onmouseout', 'hide_dot(' + data.properties.id + ');return false');
-		    // f.element.setAttribute('onclick', 'javascript: alert(' + data.properties.id + ');return false');
+		    f.element.setAttribute('onmouseover', 'show_dot_info(' + data.properties.id + ');return false');
+		    f.element.setAttribute('onmouseout', 'hide_dot_info(' + data.properties.id + ');return false');
+		    f.element.setAttribute('onclick', 'goto_dot(' + data.properties.id + ');return false');
 		}
 
 		f.element.setAttribute('r', 8);

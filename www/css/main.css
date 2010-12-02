@@ -31,6 +31,16 @@ a {
 	margin-bottom: 20px;
 }
 
+#map_info {
+    border: none;
+    background-color: #fff;
+    display:none;
+    text-align:right;
+    font-size:1.5em;
+    font-weight:600;
+    margin-bottom:15px;
+}
+
 #map_license {
 	color:#666;
 	margin-top:5px;
