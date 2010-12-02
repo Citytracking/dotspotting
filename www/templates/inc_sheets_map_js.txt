@@ -1,7 +1,7 @@
 {literal}
 <script type="text/javascript">
 
-function collect_sheets(){
+function collect_headers(){
 
 	var headers = $("#user_sheets thead tr").map(function(i, row){
 
@@ -14,6 +14,153 @@ function collect_sheets(){
 		return _headers;
 	});
 
+	return headers;
+}
+
+function sheet_onclick(sheetid){
+
+	var sheet = sheet_getinfo(sheetid);
+
+	if (sheet){		
+		location.href = sheet.url;
+	}
+}
+
+function sheet_onmouseover(sheetid){
+
+	var sheet = sheet_getinfo(sheetid);
+
+	if (! sheet['id']){
+		return;
+	}	
+
+	var tlen = _dotspotting.sheets_list_mouseout_timers.length;
+
+	for (var i = 0; i < tlen; i++){
+		clearTimeout(_dotspotting.sheets_list_mouseout_timers.pop());
+	}
+
+	var html = 'This is sheet #<a href="' + sheet['url'] + '">' + htmlspecialchars(sheet['id']) + '</a>';
+
+	if ((sheet.ownerid) && (sheet.ownerid != _dotspotting.user.id)){
+		html += ', by ' + htmlspecialchars(sheet.owner);
+	}
+
+	html += '.';
+
+	if (sheet['label']){
+		html += ' It is labeled <q>' + htmlspecialchars(sheet['label']) + '</q>.';
+	}
+
+	var count_dots = sheet['countdots_public'];
+
+	if (count_dots){
+
+		if (count_dots > 1){
+			html += ' It has ' + htmlspecialchars(count_dots) + ' dots.';
+		}
+
+		else {
+			html += ' It has ' + htmlspecialchars(count_dots) + ' dot.';
+		}
+	}
+
+	$("#map_info").html(html);
+	$("#map_info").show();
+}
+
+function sheet_onmouseout(sheetid){
+
+	var html = $("#map_info").html();
+	html = html.replace(/^This is/, 'That was');
+
+	$("#map_info").html(html);
+
+	var tid = setTimeout(function(){
+
+		$("#map_info").fadeOut('slow', function(){
+			$("#map_info").html('');
+		});
+
+	}, 8000);
+
+	_dotspotting.sheets_list_mouseout_timers.push(tid);
+}
+
+function sheet_getinfo(sheetid){
+
+    if (_dotspotting.sheets_list_sheets[sheetid]){	
+       return _dotspotting.sheets_list_sheets[sheetid];
+    }      
+
+    var row = $("#sheetslist_sheet_" + sheetid);
+    var sheet = row2sheet(row);
+
+    _dotspotting.sheets_list_sheets[sheetid] = sheet;
+    return sheet;
+}
+
+function row2sheet(row, headers){
+
+	var sheet = {};
+
+	$(row).find("td").each(function(col, td){
+
+		var classes = $(td).attr("class");
+		var key = (headers) ? headers[col].toLowerCase() : null;
+
+		if (classes){
+
+			var match = classes.match(/\bsheetslist_([a-z_]+)\b/);
+
+			if (match){
+				key = match[1];
+			}
+		}
+
+		if (! key){
+			return {};
+		}
+
+		var value = $(td).text();
+		value = value.replace(/^\s+/, '');
+		value = value.replace(/\s+$/, '');
+		
+		if (key == 'extent'){
+			var _extent = value.split(' ');
+			value = (_extent.length == 4) ? _extent : null;
+		}
+
+		else if (key == 'label'){
+			value = (value == '—') ? null : value;
+		}
+
+		else if (key == 'owner'){
+
+			// I am not convinced this is the right way to do this...
+
+			var ownerid = $(td).attr("ds:owner_id");
+
+			if (ownerid){
+				sheet['ownerid'] = Number(ownerid);
+			}
+		}
+
+		else {}
+
+		sheet[ key ] = value;
+	});
+
+	if (sheet['id']){
+		sheet['url'] = _dotspotting.abs_root_url + 'u/' + encodeURIComponent(sheet['ownerid']) + '/sheets/' + encodeURIComponent(sheet['id']) + '/';
+	}
+
+	return sheet;
+}
+
+function collect_sheets(){
+
+	var headers = collect_headers();
 	var sheets = [];
 
 	var swlat = null;
@@ -23,35 +170,9 @@ function collect_sheets(){
 
 	var features = $("#user_sheets tbody tr").map(function(i, row) {
 
-		var sheet = {};
+		var sheet = row2sheet(row, headers);
 
-		$(row).find("td").each(function(col, td) {
-
-			var classes = $(td).attr("class");
-			var key = headers[col].toLowerCase();
-
-			if (classes){
-
-				var match = classes.match(/\bsheetslist_([a-z_]+)\b/);
-
-				if (match){
-					key = match[1];
-				}
-			}
-
-			var value = $(td).text();
-			value = value.replace(/^\s+/, '');
-			value = value.replace(/\s+$/, '');
-
-			if (key == 'extent'){
-				var _extent = value.split(' ');
-				value = (_extent.length == 4) ? _extent : null;
-			}
-
-			sheet[ key ] = value;
-		});
-
-		if (! sheet['extent']){
+		if ((! sheet['id']) || (! sheet['extent'])){
 			return;
 		}
 

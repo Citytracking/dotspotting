@@ -158,9 +158,9 @@ function utils_polymaps_assign_dot_properties(e){
 
 		    var enc_id = encodeURIComponent(data.properties.id);
 
-		    f.element.setAttribute('onmouseover', 'mouseover_dot(' + enc_id + ');return false');
-		    f.element.setAttribute('onmouseout', 'mouseout_dot(' + enc_id + ');return false');
-		    f.element.setAttribute('onclick', 'click_dot(' + enc_id + ');return false');
+		    f.element.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
+		    f.element.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
+		    f.element.setAttribute('onclick', 'dot_onclick(' + enc_id + ');return false');
 		}
 
 		f.element.setAttribute('r', 8);
@@ -185,6 +185,12 @@ function utils_polymaps_assign_sheet_properties (e){
 
 		if (data.properties && data.properties.id){
 		    f.element.setAttribute('id', 'sheet_' + data.properties.id);
+
+		    var enc_id = encodeURIComponent(data.properties.id);
+
+		    f.element.setAttribute('onmouseover', 'sheet_onmouseover(' + enc_id + ');return false');
+		    f.element.setAttribute('onmouseout', 'sheet_onmouseout(' + enc_id + ');return false');
+		    f.element.setAttribute('onclick', 'sheet_onclick(' + enc_id + ');return false');
 		}
 	}
 

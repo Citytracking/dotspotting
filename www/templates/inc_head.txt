@@ -25,10 +25,11 @@
 		    'use_polymaps' : Modernizr.svg,
 		    'js_loadlib' : false,
 
-		    'dots_list_clicked' : null,
 		    'dots_list_mouseout_timers' : [],
 		    'dots_list_dots' : {literal}{}{/literal},
 
+		    'sheets_list_mouseout_timers' : [],
+		    'sheets_list_sheets' : {literal}{}{/literal},
 		{literal}};{/literal}
 
 {literal}

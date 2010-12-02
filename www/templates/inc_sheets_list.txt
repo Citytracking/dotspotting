@@ -15,6 +15,7 @@
 	<thead>
 		<tr>
 			<th>ID</th>
+			<th>Owner</th>
 			<th>Label</th>
 			{if $is_own}
 			<th>Dots</th>
@@ -35,13 +36,28 @@
 
 {foreach from=$sheets item='sheet'}
 
-		<tr{if $sheet.count_dots_public==0} class="sheet_private"{/if}>
-			<td class="sheetslist sheetslist_id"><a href="{$sheet|@urls_url_for_sheet}">{$sheet.id|escape}</a></td>
+		<tr id="sheetslist_sheet_{$sheet.id|escape}" class="{if $sheet.count_dots_public==0}sheet_private{/if}">
+
+			<td class="sheetslist sheetslist_id">
+				<a href="{$sheet|@urls_url_for_sheet}">{$sheet.id|escape}</a>
+			</td>
+
+			<td class="sheetslist_owner" ds:owner_id="{$sheet.user_id|escape}">
+			{if $owner}
+				<a href="{$owner|@urls_sheets_for_user}">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
+			{else}
+				<a href="{$dot.user|@urls_sheets_for_user}">{if $dot.user.id == $cfg.user.id}You{else}{$dot.user.username|escape}{/if}</a>
+			{/if}
+			</td>
+
 			<td class="sheetslist sheetslist_label">{if $sheet.label}<a href="{$sheet|@urls_url_for_sheet}">{$sheet.label|escape}</a>{else}&#8212;{/if}</td>
 			{if $is_own}
+
 			<td class="sheetslist sheetslist_countdots">{$sheet.count_dots|escape}</td>
+
 			<td class="sheetslist sheetslist_countdots_public">{$sheet.count_dots_public|escape}</td>
 			{else}
+
 			<td class="sheetslist sheetslist_countdots_public">{$sheet.count_dots_public|escape}</td>
 			{/if}
 			<td class="sheetslist sheetslist_extent">{$sheet.extent.swlat|escape} {$sheet.extent.swlon|escape} {$sheet.extent.nelat|escape} {$sheet.extent.nelon|escape}</td>

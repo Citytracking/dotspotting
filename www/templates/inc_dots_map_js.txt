@@ -1,25 +1,20 @@
 {literal}
 <script type="text/javascript">
 
-function click_dot(dotid){
-
-	 /*
-	 if ((! _dotspotting.dots_list_clicked) || (_dotspotting.dots_list_clicked != dotid)){
-	 	_dotspotting.dots_list_clicked = dotid;
-		mouseover_dot(dotid);
-		return;
-	 }
-	 */
-
-	 var dot = dot_getinfo(dotid);
-	 location.href = dot.url;
-}
-
-function mouseover_dot(dotid){
+function dot_onclick(dotid){
 
 	var dot = dot_getinfo(dotid);
 
-	if (! dot){
+	if (dot['id']){
+		location.href = dot.url;
+	}
+}
+
+function dot_onmouseover(dotid){
+
+	var dot = dot_getinfo(dotid);
+
+	if (! dot['id']){
 		return;
 	}
 
@@ -58,7 +53,7 @@ function mouseover_dot(dotid){
 	$("#map_info").show();
 }
 
-function mouseout_dot(dotid){
+function dot_onmouseout(dotid){
 
 	var html = $("#map_info").html();
 	html = html.replace(/^This is/, 'That was');
@@ -68,7 +63,6 @@ function mouseout_dot(dotid){
 	var tid = setTimeout(function(){
 
 		$("#map_info").fadeOut('slow', function(){
-	 		_dotspotting.dot_list_clicked = null;
 			$("#map_info").html('');
 		});
 
