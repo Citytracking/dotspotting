@@ -29,7 +29,7 @@ function mouseover_dot(dotid){
 		clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
 	}
 
-	var html = 'This is dot #<a href="">' + dot.id + '</a>';
+	var html = 'This is dot #<a href="' + dot.url + '">' + dot.id + '</a>';
 
 	if ((dot.ownerid) && (dot.ownerid != _dotspotting.user.id)){
 		html += ', by ' + htmlspecialchars(dot.owner);
@@ -39,15 +39,20 @@ function mouseover_dot(dotid){
 
 	if (dot.location){
 		var search_url = _dotspotting.abs_root_url + 'search?l=' + encodeURIComponent(dot.location);
-		html += ' It\'s at <a href="' + search_url + '">' + htmlspecialchars(dot.location) + '</a>.';
+		html += ' It\'s located at <a href="' + search_url + '">' + htmlspecialchars(dot.location) + '</a>.';
 	}
 
 	else if (dot.latitude && dot.longitude){
 		var search_url = _dotspotting.abs_root_url + 'search?gh=' + encodeGeoHash(dot.latitude, dot.longitude);
-		html += ' It is located at <a href="' + search_url + '">' + dot.latitude + ',' + dot.longitude + '</a>.';
+		html += ' It\'s located at <a href="' + search_url + '">' + dot.latitude + ',' + dot.longitude + '</a>.';
 	}
 
 	else {} 
+
+	if (dot.type){
+		var search_url = _dotspotting.abs_root_url + 'search?t=' + encodeURIComponent(dot.type);
+		html += ' It\'s a <q><a href="' + search_url + '">' + htmlspecialchars(dot.type) + '</a></q>.';
+	}
 
 	$("#map_info").html(html);
 	$("#map_info").show();
