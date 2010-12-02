@@ -1,0 +1,52 @@
+<script type="text/javascript">
+{literal}
+    $.fn.dataTableExt.oApi.fnSetFilteringHooks = function (oSettings){
+
+	var _that = this;
+	
+	this.each( function (i){
+		$.fn.dataTableExt.iApiIndex = i;
+
+		var iDelay = 250;
+		var $this = this;
+		var oTimerId = null;
+		var sPreviousSearch = null;
+		var anControl = $('input', _that.fnSettings().aanFeatures.f);
+		
+		anControl.unbind('keyup').bind( 'keyup', function(){
+			var $$this = $this;
+
+			if (sPreviousSearch === null || sPreviousSearch != anControl.val()) {
+				window.clearTimeout(oTimerId);
+				sPreviousSearch = anControl.val();
+	
+				oTimerId = window.setTimeout(function() {
+					$.fn.dataTableExt.iApiIndex = i;
+					_that.fnFilter( anControl.val() );
+
+					// ok! now we get into dotspotting stuff!
+
+					draw_map();
+				}, iDelay);
+			}
+		});
+		
+		return this;
+	});
+
+	return this;
+    }
+$(document).ready(function(){ 
+
+     $('#user_sheets').dataTable({
+	"bPaginate": false,
+	"bFilter": true,
+	"bSort": false,
+	"bInfo" : false,
+	"bProcessing": true,
+     }).fnSetFilteringHooks();
+
+});
+{/literal}
+
+</script>

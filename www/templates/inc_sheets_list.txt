@@ -74,19 +74,5 @@
 </table>
 {/if}
 
-<script type="text/javascript">
-{literal}
-$(document).ready(function(){ 
-
-     $('#user_sheets').dataTable({
-	"bPaginate": false,
-	"bFilter": true,
-	"bSort": true,
-	"bInfo" : false,
-	"bProcessing": true,
-     });
-});
-{/literal}
-</script>
-
+{include file="inc_sheets_datatables_js.txt" is_sheet=1}
 {include file="inc_sheets_map_js.txt"}
