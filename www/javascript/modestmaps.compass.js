@@ -16,6 +16,7 @@ com.modestmaps.Compass = function(map){
     // get your div on
     
     this.div = document.createElement('div');
+    this.div.setAttribute('id', 'modestmaps_compass');
     this.div.style.position = 'absolute';
     this.div.style.left = '0px';
     this.div.style.top = '0px';

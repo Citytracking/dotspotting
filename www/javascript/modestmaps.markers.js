@@ -17,14 +17,16 @@ com.modestmaps.Markers = function(mm){
 	this.modestmap = mm;
 	this.container = mm.parent;
 
-	this.surface = document.createElement('canvas');
-	this.surface.style.position = 'absolute';
-	this.surface.style.left = '0px';
-	this.surface.style.top = '0px';
-	this.surface.setAttribute('width', this.container.offsetWidth);
-	this.surface.setAttribute('height', this.container.offsetHeight);
+	this.div = document.createElement('div');
+	this.div.setAttribute('id', 'modestmaps_markers');
+	this.div.style.position = 'absolute';
+	this.div.style.left = '0px';
+	this.div.style.top = '0px';
+	this.div.style.zIndex = '200';
 
-	this.container.appendChild(this.surface);
+	this.container.appendChild(this.div);
+
+	this.canvas = Raphael(this.div, this.container.offsetWidth, this.container.offsetHeight);
 
 	var _self = this;
 
@@ -37,21 +39,6 @@ com.modestmaps.Markers = function(mm){
 		_self.surface.height = _self.container.offsetHeight;
 		_self._redrawMarkers();
 	});
-
-	/*
-
-	this.surface.addEventListener('click', function(e){
-		var x = e.clientX - _self.surface.offsetLeft;
-		var y = e.clientY - _self.surface.offsetTop;
-	}, false);
-
-	this.surface.addEventListener('mousemove', function(e){
-		var x = e.clientX - _self.surface.offsetLeft;
-		var y = e.clientY - _self.surface.offsetTop;
-        }, false);
-
-	*/
-
 };
 
 com.modestmaps.Markers.prototype.registerMarker = function(data){
@@ -165,10 +152,6 @@ com.modestmaps.Markers.prototype.drawPolygons = function(latlons, more){
 	this._actuallyDrawPolygons(locations, extent, more);
 };
 
-com.modestmaps.Markers.prototype.drawSequence = function(seq){
-	// TODO: write me...
-};
-
 com.modestmaps.Markers.prototype.calculateDrawExtent = function(local_extent, more){
 
 	// Figure out the extent of the viewport for the stuff we're going to draw.
@@ -210,11 +193,7 @@ com.modestmaps.Markers.prototype.locatifyLatLons = function(latlons){
 };
 
 com.modestmaps.Markers.prototype._scrubSurface = function(){
-
-	// Prepare the canvas/surface for re-drawing
-
-	var ctx = this.surface.getContext('2d');
-	ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
+    this.canvas.clear();
 };
 
 com.modestmaps.Markers.prototype._redrawMarkers = function(){
@@ -257,24 +236,24 @@ com.modestmaps.Markers.prototype._actuallyDrawLines = function(locations, extent
     // Convert our Location objects in to Points and then pass the x,y
     // coordinates off to the appropriate canvas method/primitive.
 
-    var lines = this.enpointifyByExtent(locations, extent)
+	var lines = this.enpointifyByExtent(locations, extent)
 
-    for (var i in lines){
+	for (var i in lines){
 
-        var coords = new Array();
-        var ln = lines[i];
+		var coords = new Array();
+		var ln = lines[i];
 
-        for (var j in ln){
+		for (var j in ln){
 
-            var pt = ln[j];
-            var x = parseInt(pt.x)
-            var y = parseInt(pt.y)
+			var pt = ln[j];
+			var x = parseInt(pt.x)
+			var y = parseInt(pt.y)
 
-            coords.push({ 'x': x, 'y': y });
-        }
+			coords.push({ 'x': x, 'y': y });
+		}
 
-        this.line(coords, more);
-    }
+		this.line(coords, more);
+	}
 
 };
 
@@ -306,6 +285,10 @@ com.modestmaps.Markers.prototype._actuallyDrawPolygons = function(locations, ext
 
 com.modestmaps.Markers.prototype._actuallyDrawPoints = function(locations, extent, more){
 
+    // once this is all working, please to be using
+    // the 'set' method (20101202/straup)
+    // http://raphaeljs.com/reference.html#set
+
     var points = this.enpointifyByExtent(locations, extent)
 
     for (i in points){
@@ -321,6 +304,7 @@ com.modestmaps.Markers.prototype._actuallyDrawPoints = function(locations, exten
 };
 
 com.modestmaps.Markers.prototype._radiusByZoomLevel = function(){
+
 	// TO DO: apply math shapes
 	// var zoom = this.modestmap.getZoom();
 
@@ -440,85 +424,40 @@ com.modestmaps.Markers.prototype.isContainedBy = function(loc, extent){
 
 com.modestmaps.Markers.prototype.polygon = function(coords, more){
 
-    var fill_style = ((more) && (more['fillStyle'])) ? more['fillStyle'] : '#00A308';
-    var stroke_style = ((more) && (more['strokeStyle'])) ? more['strokeStyle'] : '#ccff99';
-    var line_width = ((more) && (more['lineWidth'])) ? more['lineWidth'] : 1;
-    var line_join = ((more) && (more['lineJoin'])) ? more['lineJoin'] : 'miter';
-    var line_cap = ((more) && (more['lineCap'])) ? more['lineCap'] : 'butt';
-    var alpha = ((more) && (more['globalAlpha'])) ? more['globalAlpha'] : 0.25;
+    var count = coords.length;
 
-    var ctx = this.surface.getContext('2d');
+    var path = [ "M" + coords[0]['x'] + " " + coords[0]['y'] ];
 
-    ctx.strokeStyle = stroke_style;
-    ctx.fillStyle = fill_style;
-    ctx.lineWidth = line_width;
-    ctx.lineJoin = line_join;
-    ctx.lineCap = line_cap;
-    ctx.globalAlpha = alpha;
-	
-    ctx.beginPath();
+    for (var i=1; i < count; i++){
 
-    for (i in coords){
-
-        var c = coords[i];
-
-        if (i == 0){
-            ctx.moveTo(c['x'], c['y']);
-            continue;
-        }
-
-        ctx.lineTo(c['x'], c['y']);
+	path.push("L" + coords[i]['x'] + " " + coords[i]['y']);
     }
 
-    ctx.stroke();
+    path.push("Z");
 
-    if ((more) && (more['is_line'])){
-        return;
-    }
-
-    ctx.closePath();
-    ctx.fill();
+    var ln = this.canvas.path(path.join(""));
+    return ln;
 };
 
 com.modestmaps.Markers.prototype.line = function(coords, more){
 
-    if (! more){
-	more = {};
-    }       
+    var count = coords.length;
 
-    more['is_line'] = 1;
-    this.polygon(coords, more);
+    var path = [ "M" + coords[0]['x'] + " " + coords[0]['y'] ];
+
+    for (var i=1; i < count; i++){
+
+	path.push("L" + coords[i]['x'] + " " + coords[i]['y']);
+    }
+
+    var ln = this.canvas.path(path.join(""));
+    return ln;
 };
 
 com.modestmaps.Markers.prototype.circle = function(coords, more){
 
-    var r = ((more) && (more['r'])) ? more['r'] : this._radiusByZoomLevel();
+    var r = 8;
 
-    var fill_style = ((more) && (more['fillStyle'])) ? more['fillStyle'] : '#00A308';
-    var stroke_style = ((more) && (more['strokeStyle'])) ? more['strokeStyle'] : '#ccff99';
-    var line_width = ((more) && (more['lineWidth'])) ? more['lineWidth'] : 2;
-    var line_join = ((more) && (more['lineJoin'])) ? more['lineJoin'] : 'miter';
-    var line_cap = ((more) && (more['lineCap'])) ? More['lineCap'] : 'butt';
-    var alpha = ((more) && (more['globalAlpha'])) ? more['globalAlpha'] : 0.25;
-
-    var ctx = this.surface.getContext('2d');
-
-    ctx.strokeStyle = stroke_style;
-    ctx.fillStyle = fill_style;
-    ctx.lineWidth = line_width;
-    ctx.lineJoin = line_join;
-    ctx.lineCap = line_cap;
-    ctx.globalAlpha = alpha;
-
-    ctx.beginPath();
-    ctx.arc(coords['x'], coords['y'], r, 0, Math.PI * 2, true);
-    ctx.closePath();
-
-    if ((! more) || (! more['no_fill'])){
-        ctx.fill();
-    }
-
-    if ((! more) || (! more['no_stroke'])){
-        ctx.stroke();
-    }
+    var c = this.canvas.circle(coords['x'], coords['y'], r);
+    return c;
 };

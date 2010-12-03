@@ -235,7 +235,6 @@ function utils_modestmap(map_id, more){
 }
 
 function utils_modestmaps_add_compass(map){
-
     com.modestmaps.Compass(map);
 }
 
