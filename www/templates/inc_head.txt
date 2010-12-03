@@ -47,7 +47,7 @@
     else {
 
        $LAB
-       .script(_dotspotting.abs_root_url + 'javascript/raphael-0.7.3.js')
+       .script(_dotspotting.abs_root_url + 'javascript/raphael-min.js')
        .script(_dotspotting.abs_root_url + 'javascript/modestmaps.min.js')
        .script(_dotspotting.abs_root_url + 'javascript/modestmaps.markers.js')
        .script(_dotspotting.abs_root_url + 'javascript/modestmaps.compass.js')
