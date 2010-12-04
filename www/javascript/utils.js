@@ -206,7 +206,6 @@ function utils_polymaps_assign_sheet_properties (e){
 		    // f.element.setAttribute('onclick', 'sheet_onclick(' + enc_id + ');return false');
 		}
 	}
-
 }
 
 function utils_modestmap(map_id, more){
