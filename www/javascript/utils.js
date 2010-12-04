@@ -189,22 +189,51 @@ function utils_polymaps_assign_sheet_properties (e){
 		return;
 	}
 
-	for (var i=0; i < count; i++){
-		var f = e.features[i];
-		var data = f.data;
+	var tile = e.tile;
 
-		f.element.setAttribute('class', 'sheet');
+	for (var i=0; i < count; i++){
+
+		var ftr = e.features[i];
+		var el = ftr.element;
+
+		var data = ftr.data;
+		var geom = data.geometry;
+
+		el.setAttribute('class', 'sheet');
+
+		// this is who I am. who are you?
 
 		if (data.properties && data.properties.id){
-		    f.element.setAttribute('id', 'sheet_' + data.properties.id);
 
 		    var enc_id = encodeURIComponent(data.properties.id);
 
-		    f.element.setAttribute('onmouseover', 'sheet_onmouseover(' + enc_id + ');return false');
-		    f.element.setAttribute('onmouseout', 'sheet_onmouseout(' + enc_id + ');return false');
-
-		    // f.element.setAttribute('onclick', 'sheet_onclick(' + enc_id + ');return false');
+		    el.setAttribute('id', 'sheet_' + data.properties.id);
+		    el.setAttribute('onmouseover', 'sheet_onmouseover(' + enc_id + ');return false');
+		    el.setAttribute('onmouseout', 'sheet_onmouseout(' + enc_id + ');return false');
 		}
+
+		// account for multigeometries
+
+		if (geom.geometries){
+
+		    for (var j=0; j < geom.geometries.length; j++){
+			var g = geom.geometries[j];
+
+			if (g.ima){
+
+			    if ((g.ima == 'magicpony') && (tile.zoom > 10)){
+			    	el.childNodes[j].setAttribute("style", "display:none;");
+			    }
+
+			    else {
+			    	el.childNodes[j].setAttribute("class", g.ima);
+			    }
+			}
+
+		    }
+		}
+
+		// happy happy
 	}
 }
 

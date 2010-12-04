@@ -30,6 +30,8 @@
 
 		    'sheets_list_mouseout_timers' : [],
 		    'sheets_list_sheets' : {literal}{}{/literal},
+
+		    'magicpony' : false,
 		{literal}};{/literal}
 
 {literal}
