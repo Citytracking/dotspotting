@@ -21,9 +21,9 @@
 
 {/if}
 
-{if $recent_dots|@count}
+{if $recent_sheets|@count}
 	<h3>Recent Dots added to Dotspotting:</h3>
-	{include file="inc_dots_list.txt" dots=$recent_dots}
+	{include file="inc_sheets_list.txt" sheets=$recent_sheets}
 {/if}
 
 {include file='inc_foot.txt'}
