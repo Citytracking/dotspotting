@@ -46,6 +46,10 @@ function sheet_onmouseover(sheetid){
 		html += ', by ' + htmlspecialchars(sheet.owner);
 	}
 
+	else {
+		html += ', by you';
+	}
+
 	html += '.';
 
 	if (sheet['label']){
