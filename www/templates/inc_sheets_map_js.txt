@@ -208,12 +208,11 @@ function collect_sheets(){
 			geometry: {
 				"type": "GeometryCollection",
 				"geometries" : [
-					{ type: "Polygon", coordinates: bbox },
+					{ type: "Polygon", coordinates: bbox, ima: 'sheet' },
 				],
 			},
 			properties: sheet,
 			bbox: [ sw, ne ],	// this is a hack
-			ima: 'sheet',
 		};
 	});
 
@@ -318,11 +317,17 @@ function draw_map_polymaps(sheets){
 			var _lat = sw['lat'] + ((ne['lat'] - sw['lat']) / 2);
 			var _lon = sw['lon'] + ((ne['lon'] - sw['lon']) / 2);
 
+			// this needs to reflect the map being zoomed in or out
+			// rather than just being a fixed pair of values....
+
+			var _x = parseInt((80 / map.zoom() / 2));
+			var _y = parseInt((100 / map.zoom()) / 2);
+
 			var _pt = map.locationPoint({ lat: _lat, lon: _lon });
-			var _sw = map.pointLocation({ x: _pt.x - 7, y: _pt.y - 12 });
-			var _nw = map.pointLocation({ x: _pt.x - 7, y: _pt.y + 12 });
-			var _ne = map.pointLocation({ x: _pt.x + 7, y: _pt.y + 12 });
-			var _se = map.pointLocation({ x: _pt.x + 7, y: _pt.y - 12 });
+			var _sw = map.pointLocation({ x: _pt.x - _x, y: _pt.y - _y });
+			var _nw = map.pointLocation({ x: _pt.x - _x, y: _pt.y + _y });
+			var _ne = map.pointLocation({ x: _pt.x + _x, y: _pt.y + _y });
+			var _se = map.pointLocation({ x: _pt.x + _x, y: _pt.y - _y });
 
 			var coords = [[
 				[ _sw['lon'], _sw['lat'] ],
@@ -335,7 +340,7 @@ function draw_map_polymaps(sheets){
 			_geom['geometries'].push({
 				type : "Polygon",
 				coordinates: coords,
-				class: 'magicpony',
+				ima: 'magicpony',
 			});
 		}
 

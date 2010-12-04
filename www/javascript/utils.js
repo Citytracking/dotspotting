@@ -221,7 +221,11 @@ function utils_polymaps_assign_sheet_properties (e){
 
 			if (g.ima){
 
-			    if ((g.ima == 'magicpony') && (tile.zoom > 10)){
+			    if ((g.ima == 'magicpony') && (tile.zoom > 9)){
+			    	el.childNodes[j].setAttribute("style", "display:none;");
+			    }
+
+			    else if ((g.ima == 'sheet') && (tile.zoom < 10)){
 			    	el.childNodes[j].setAttribute("style", "display:none;");
 			    }
 

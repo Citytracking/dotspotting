@@ -436,7 +436,7 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 }
 
 .magicpony {
-    fill: #fff;
+    fill: yellow;
     opacity: 1 !important;
     stroke: #000;
     stroke-width: 2px;
