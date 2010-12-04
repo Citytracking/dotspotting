@@ -50,7 +50,11 @@
 			{/if}
 			</td>
 
-			<td class="sheetslist sheetslist_label">{if $sheet.label}<a href="{$sheet|@urls_url_for_sheet}">{$sheet.label|escape}</a>{else}&#8212;{/if}</td>
+			<td class="sheetslist sheetslist_label">
+			{if $sheet.label}
+				<a href="{$sheet|@urls_url_for_sheet}">{$sheet.label|escape}</a>{else}<span class="untitled">untitled</span>{/if}
+			</td>
+
 			{if $is_own}
 
 			<td class="sheetslist sheetslist_countdots">{$sheet.count_dots|escape}</td>
