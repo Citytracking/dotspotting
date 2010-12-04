@@ -371,15 +371,28 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
     opacity: 1;
 }
 
+.dot:hover {
+    fill: orange;
+}
+
 .dot_private {
     fill: red !important;
 }
 
 .sheet {
-    fill: #00a308;
-    stroke: #ccff99;
+    fill: #fff;
+    stroke: #000;
+    stroke-opacity: 1;
     stroke-width: 2;	
-    opacity: .25;
+    fill-opacity: .6;
+}
+
+.sheet:hover {
+    stroke:darkslategray;
+    stroke-width: 5;
+    stroke-opacity: 1;	
+    fill-opacity: .2;
+    fill: #333;
 }
 
 .compass .back {
@@ -420,4 +433,11 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 
 .compass.active .active .direction {
   fill: #999;
+}
+
+.magicpony {
+    fill: yellow;
+    opacity: 1 !important;
+    stroke: #000;
+    stroke-width: 2px;
 }

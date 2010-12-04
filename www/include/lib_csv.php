@@ -25,7 +25,11 @@
 			}
 
 			if (($ln === 1) && (! $field_names)){
-				$field_names = $row;
+
+				foreach ($row as $col){
+					$field_names[] = strtolower($col);
+				}
+
 				continue;
 			}
 

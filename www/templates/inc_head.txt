@@ -30,6 +30,8 @@
 
 		    'sheets_list_mouseout_timers' : [],
 		    'sheets_list_sheets' : {literal}{}{/literal},
+
+		    'magicpony' : {if $cfg.enable_feature_magicpony}true{else}false{/if},
 		{literal}};{/literal}
 
 {literal}
