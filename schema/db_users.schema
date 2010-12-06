@@ -9,7 +9,8 @@ CREATE TABLE `Sheets` (
   `label` varchar(255) NOT NULL,
   `count_dots_public` int(11) unsigned NOT NULL,
   `mime_type` varchar(24) NOT NULL,
-  KEY `by_user` (`user_id`,`count_dots_public`)
+  KEY `by_user` (`user_id`,`count_dots_public`),
+  KEY `backfill` (`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `Dots`;
@@ -25,5 +26,6 @@ CREATE TABLE `Dots` (
   KEY `by_user` (`user_id`, `perms`),
   KEY `by_user_created` (`user_id`, `perms`, `created`),
   KEY `by_sheet` (`sheet_id`, `perms`),
-  KEY `by_sheet_created` (`sheet_id`, `perms`, `created`)
+  KEY `by_sheet_created` (`sheet_id`, `perms`, `created`),
+  KEY `backfill` (`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
