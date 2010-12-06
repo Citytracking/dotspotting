@@ -375,7 +375,9 @@
 
 	#################################################################
 
-	function sheets_recently_created($viewer_id=0){
+	function sheets_recently_created($viewer_id=0, $limit=50){
+
+		$enc_limit = AddSlashes($limit);
 
 		/*
 		$sql = "SELECT * FROM SheetsLookup WHERE";
@@ -390,10 +392,10 @@
 		}
 
 		$sql .= " AND deleted=0";
-		$sql .= " ORDER BY created DESC LIMIT 20";
+		$sql .= " ORDER BY created DESC LIMIT {$enc_limit}";
 		*/
 
-		$sql = "SELECT * FROM SheetsLookup WHERE deleted=0 ORDER BY created DESC LIMIT 20";
+		$sql = "SELECT * FROM SheetsLookup WHERE deleted=0 ORDER BY created DESC LIMIT {$limit}";
 		$rsp = db_fetch($sql);
 
 		if (! $rsp['ok']){
