@@ -440,12 +440,11 @@ com.modestmaps.Markers.prototype.isContainedBy = function(loc, extent){
 
 com.modestmaps.Markers.prototype.polygon = function(coords, more){
 
-    var fill_style = ((more) && (more['fillStyle'])) ? more['fillStyle'] : '#00A308';
-    var stroke_style = ((more) && (more['strokeStyle'])) ? more['strokeStyle'] : '#ccff99';
-    var line_width = ((more) && (more['lineWidth'])) ? more['lineWidth'] : 1;
+    var fill_style = ((more) && (more['fillStyle'])) ? more['fillStyle'] : 'rgba(0, 17, 45, .5)';
+    var stroke_style = ((more) && (more['strokeStyle'])) ? more['strokeStyle'] : 'rgba(153, 204, 0, 1)';
+    var line_width = ((more) && (more['lineWidth'])) ? more['lineWidth'] : 4;
     var line_join = ((more) && (more['lineJoin'])) ? more['lineJoin'] : 'miter';
     var line_cap = ((more) && (more['lineCap'])) ? more['lineCap'] : 'butt';
-    var alpha = ((more) && (more['globalAlpha'])) ? more['globalAlpha'] : 0.25;
 
     var ctx = this.surface.getContext('2d');
 
@@ -454,7 +453,6 @@ com.modestmaps.Markers.prototype.polygon = function(coords, more){
     ctx.lineWidth = line_width;
     ctx.lineJoin = line_join;
     ctx.lineCap = line_cap;
-    ctx.globalAlpha = alpha;
 	
     ctx.beginPath();
 
@@ -470,14 +468,14 @@ com.modestmaps.Markers.prototype.polygon = function(coords, more){
         ctx.lineTo(c['x'], c['y']);
     }
 
-    ctx.stroke();
-
     if ((more) && (more['is_line'])){
         return;
     }
 
     ctx.closePath();
     ctx.fill();
+
+    ctx.stroke();
 };
 
 com.modestmaps.Markers.prototype.line = function(coords, more){
@@ -494,12 +492,11 @@ com.modestmaps.Markers.prototype.circle = function(coords, more){
 
     var r = ((more) && (more['r'])) ? more['r'] : this._radiusByZoomLevel();
 
-    var fill_style = ((more) && (more['fillStyle'])) ? more['fillStyle'] : '#00A308';
-    var stroke_style = ((more) && (more['strokeStyle'])) ? more['strokeStyle'] : '#ccff99';
-    var line_width = ((more) && (more['lineWidth'])) ? more['lineWidth'] : 2;
+    var fill_style = ((more) && (more['fillStyle'])) ? more['fillStyle'] : 'rgba(0, 17, 45, .5)';
+    var stroke_style = ((more) && (more['strokeStyle'])) ? more['strokeStyle'] : 'rgba(153, 204, 0, 1)';
+    var line_width = ((more) && (more['lineWidth'])) ? more['lineWidth'] : 3;
     var line_join = ((more) && (more['lineJoin'])) ? more['lineJoin'] : 'miter';
     var line_cap = ((more) && (more['lineCap'])) ? More['lineCap'] : 'butt';
-    var alpha = ((more) && (more['globalAlpha'])) ? more['globalAlpha'] : 0.25;
 
     var ctx = this.surface.getContext('2d');
 
@@ -508,7 +505,6 @@ com.modestmaps.Markers.prototype.circle = function(coords, more){
     ctx.lineWidth = line_width;
     ctx.lineJoin = line_join;
     ctx.lineCap = line_cap;
-    ctx.globalAlpha = alpha;
 
     ctx.beginPath();
     ctx.arc(coords['x'], coords['y'], r, 0, Math.PI * 2, true);

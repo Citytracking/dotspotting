@@ -365,8 +365,6 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 /* polymaps and modestmaps stuff */
 
 .dot {
-    // fill: #00a308;
-    // stroke: #ccff99;
     fill: #00112d;
     fill-opacity: .5;
     stroke: #99cc00;

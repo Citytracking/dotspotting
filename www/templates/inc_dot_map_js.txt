@@ -41,7 +41,9 @@ function draw_map_modestmaps(dot){
 	// clothes...it should be sorted out though.
 	// (20101028/straup)
 
-	var more = { 'globalAlpha' : 1, 'r': 8 };
+	var more = {
+		'r': 8
+	};
 
 	var markers = new com.modestmaps.Markers(map);
 	markers.drawPoints([[ dot.latitude, dot.longitude ]], more);
