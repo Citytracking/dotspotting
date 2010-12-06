@@ -82,7 +82,9 @@ RewriteRule ^u/([0-9]+)/sheets(/page([0-9]+))?/?$	user_sheets.php?user_id=$1&pag
 
 # Search
 
-RewriteRule ^recent/?$				recent.php?%{QUERY_STRING} [L]
+RewriteRule ^recent(/sheets)?/?$		recent_sheets.php?%{QUERY_STRING} [L]
+RewriteRule ^recent/dots/?$			recent_dots.php?%{QUERY_STRING} [L]
+
 RewriteRule ^search/?$				search.php?%{QUERY_STRING} [L]
 
 RewriteRule ^nearby/?$						nearby.php?%{QUERY_STRING} [L]

@@ -22,7 +22,7 @@
 {/if}
 
 {if $recent_sheets|@count}
-	<h3>Recent Dots added to Dotspotting:</h3>
+	<h3>Sheets that have been added to Dotspotting recently:</h3>
 	{include file="inc_sheets_list.txt" sheets=$recent_sheets}
 {/if}
 
