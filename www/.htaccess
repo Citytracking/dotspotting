@@ -69,6 +69,8 @@ RewriteRule ^upload/url/?$			upload_by_url.php?%{QUERY_STRING} [L]
 
 # User stuff
 
+RewriteRule ^me(.*)/?$		                        me.php?url=$1&%{QUERY_STRING} [L]
+
 RewriteRule ^u/([0-9]+)/?$				user.php?user_id=$1&%{QUERY_STRING} [L]
 
 RewriteRule ^u/([0-9]+)/dots/([0-9]+)/?$		dot.php?user_id=$1&dot_id=$2&%{QUERY_STRING} [L]
@@ -80,7 +82,9 @@ RewriteRule ^u/([0-9]+)/sheets(/page([0-9]+))?/?$	user_sheets.php?user_id=$1&pag
 
 # Search
 
-RewriteRule ^recent/?$				recent.php?%{QUERY_STRING} [L]
+RewriteRule ^recent(/sheets)?/?$		recent_sheets.php?%{QUERY_STRING} [L]
+RewriteRule ^recent/dots/?$			recent_dots.php?%{QUERY_STRING} [L]
+
 RewriteRule ^search/?$				search.php?%{QUERY_STRING} [L]
 
 RewriteRule ^nearby/?$						nearby.php?%{QUERY_STRING} [L]

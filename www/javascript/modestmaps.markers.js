@@ -446,7 +446,6 @@ com.modestmaps.Markers.prototype.line = function(coords, more){
     var path = [ "M" + coords[0]['x'] + " " + coords[0]['y'] ];
 
     for (var i=1; i < count; i++){
-
 	path.push("L" + coords[i]['x'] + " " + coords[i]['y']);
     }
 

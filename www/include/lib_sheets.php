@@ -263,6 +263,10 @@
 		if ($more['load_dots']){
 			$sheet['dots'] = dots_get_dots_for_sheet($sheet, $viewer_id);
 		}
+
+		if ($more['load_user']){
+			$sheet['user'] = users_get_by_id($sheet['user_id']);
+		}
 	}
 
 	#################################################################
@@ -367,6 +371,56 @@
 		}
 
 		return $rsp;
+	}
+
+	#################################################################
+
+	function sheets_recently_created($viewer_id=0){
+
+		/*
+		$sql = "SELECT * FROM SheetsLookup WHERE";
+
+		if ($viewer_id){
+			$enc_viewer = AddSlashes($viewer_id);
+			$sql .= " (user_id='{$enc_viewer}' OR counts_dots_public > 0)";
+		}
+
+		else {
+			$sql .= " counts_dots_public > 0";
+		}
+
+		$sql .= " AND deleted=0";
+		$sql .= " ORDER BY created DESC LIMIT 20";
+		*/
+
+		$sql = "SELECT * FROM SheetsLookup WHERE deleted=0 ORDER BY created DESC LIMIT 20";
+		$rsp = db_fetch($sql);
+
+		if (! $rsp['ok']){
+			return $rsp;
+		}
+
+		$sheets = array();
+
+		foreach ($rsp['rows'] as $row){
+
+			$more = array(
+				'sheet_user_id' => $row['user_id'],
+				'load_extent' => 1,
+				'load_user' => 1,
+			);
+
+			if ($sheet = sheets_get_sheet($row['sheet_id'], $viewer_id, $more)){
+				$sheets[] = $sheet;
+			}
+		}
+
+		$ok = (count($sheets)) ? 1 : 0;
+
+		return array(
+			'ok' => $ok,
+			'sheets' => &$sheets,
+		);
 	}
 
 	#################################################################

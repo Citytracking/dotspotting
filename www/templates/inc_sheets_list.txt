@@ -46,11 +46,15 @@
 			{if $owner}
 				<a href="{$owner|@urls_sheets_for_user}">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
 			{else}
-				<a href="{$dot.user|@urls_sheets_for_user}">{if $dot.user.id == $cfg.user.id}You{else}{$dot.user.username|escape}{/if}</a>
+				<a href="{$sheet.user|@urls_sheets_for_user}">{if $sheet.user.id == $cfg.user.id}You{else}{$sheet.user.username|escape}{/if}</a>
 			{/if}
 			</td>
 
-			<td class="sheetslist sheetslist_label">{if $sheet.label}<a href="{$sheet|@urls_url_for_sheet}">{$sheet.label|escape}</a>{else}&#8212;{/if}</td>
+			<td class="sheetslist sheetslist_label">
+			{if $sheet.label}
+				<a href="{$sheet|@urls_url_for_sheet}">{$sheet.label|escape}</a>{else}<span class="untitled">untitled</span>{/if}
+			</td>
+
 			{if $is_own}
 
 			<td class="sheetslist sheetslist_countdots">{$sheet.count_dots|escape}</td>

@@ -12,7 +12,8 @@ CREATE TABLE `Users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
   UNIQUE KEY `by_email` (`email`,`deleted`),
-  UNIQUE KEY `by_username` (`username`,`deleted`)
+  UNIQUE KEY `by_username` (`username`,`deleted`),
+  KEY `backfill` (`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `UsersPasswordReset`;

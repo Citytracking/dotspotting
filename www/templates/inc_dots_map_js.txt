@@ -30,6 +30,10 @@ function dot_onmouseover(dotid){
 		html += ', by ' + htmlspecialchars(dot.owner);
 	}
 
+	else {
+		html += ', by you';
+	}
+
 	html += '.';
 
 	if (dot.location){
@@ -284,7 +288,9 @@ function draw_map_modestmaps(dots){
 		points.push([ loc.lat, loc.lon ]);
 	}
 
-	var more = { 'globalAlpha' : 1, 'r': 8 };
+	var more = {
+		'r': 8
+	};
 
 	var markers = new mm.Markers(map);
 	markers.drawPoints(points, more);

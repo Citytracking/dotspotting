@@ -1,0 +1,7 @@
+{assign var="page_title" value="Recently created sheets"}
+{include file="inc_head.txt"}
+
+<h3>{$page_title|escape}</h3>
+{include file="inc_sheets_list.txt" sheets=$recent_sheets}
+
+{include file="inc_foot.txt"}

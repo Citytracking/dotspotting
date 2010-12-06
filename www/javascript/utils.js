@@ -219,7 +219,7 @@ function utils_polymaps_assign_sheet_properties (e){
 		    for (var j=0; j < geom.geometries.length; j++){
 			var g = geom.geometries[j];
 
-			if (g.ima){
+			if ((g.ima) && (_dotspotting.magicpony)){
 
 			    if ((g.ima == 'magicpony') && (tile.zoom > 9)){
 			    	el.childNodes[j].setAttribute("style", "display:none;");
