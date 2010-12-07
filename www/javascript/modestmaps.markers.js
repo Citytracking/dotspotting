@@ -1,7 +1,3 @@
-// question: should this be updated to use or expect bags of geojson
-// features to work more easily alongside polymaps? probably, but not
-// today (20101028/straup)
-
 if (! com){
 	var com = {};
 }
@@ -23,10 +19,11 @@ com.modestmaps.Markers = function(mm){
 	this.div.style.left = '0px';
 	this.div.style.top = '0px';
 	this.div.style.zIndex = '200';
-
 	this.container.appendChild(this.div);
 
 	this.canvas = Raphael(this.div, this.container.offsetWidth, this.container.offsetHeight);
+
+	//
 
 	var _self = this;
 
@@ -41,62 +38,55 @@ com.modestmaps.Markers = function(mm){
 	});
 };
 
-com.modestmaps.Markers.prototype.registerMarker = function(data){
-	var uuid = 'fixme';
-	this.drawn.push(data);
-	return uuid;
-};
-
-com.modestmaps.Markers.prototype.purgeMarkers = function(to_preserve){
-
-	if (to_preserve){
-
-		if (to_preserve >= this.drawn.length){
-			return;
-		}
-
-		this.drawn = this.drawn.slice(0, to_preserve);
-	}
-
-	else{
-		this.drawn = new Array();
-	}
-
-	this._redrawMarkers();
-};
-
 com.modestmaps.Markers.prototype.drawPoints = function(latlons, more){
 
-	var prepped = this.locatifyLatLons(latlons);
+	var prepped = this._locatifyLatLons(latlons);
 	var locations = prepped[0];
 	var extent = prepped[1];
 
-	this.registerMarker({
+	this._registerMarker({
 		'type': 'point',
 		'locations': locations,
 		'extent': extent,
 		'more': more,
 	});
 
-	var draw_extent = this.calculateDrawExtent(extent, more);
-	this._actuallyDrawPoints(locations, draw_extent, more);
-}
+	var drawn = this._actuallyDrawPoints(locations, extent, more);
+	return drawn;
+};
 
 com.modestmaps.Markers.prototype.drawLines = function(latlons, more){
 
-	var prepped = this.locatifyLatLons(latlons);
+	var prepped = this._locatifyLatLons(latlons);
 	var locations = prepped[0];
 	var extent = prepped[1];
 
-	this.registerMarker({
+	this._registerMarker({
 		'type': 'line',
 		'locations': locations,
 		'extent': extent,
 		'more': more,
 	});
 
-	var draw_extent = this.calculateDrawExtent(extent, more);
-	this._actuallyDrawLines(locations, draw_extent, more);
+	var drawn = this._actuallyDrawLines(locations, draw_extent, more);
+	return drawn;
+};
+
+com.modestmaps.Markers.prototype.drawPolygons = function(latlons, more){
+
+	var prepped = this._locatifyLatLons(latlons);
+	var locations = prepped[0];
+	var extent = prepped[1];
+
+	var uuid = this._registerMarker({
+		'type': 'polygon',
+		'locations': locations,
+		'extent': extent,
+		'more': more,
+	});
+
+	var drawn = this._actuallyDrawPolygons(locations, extent, more);
+	return drawn;
 };
 
 // This is just a helper function that hands off to drawPolygons
@@ -133,43 +123,37 @@ com.modestmaps.Markers.prototype.drawBoundingBoxes = function(bboxes, more){
 		polygons.push(coords);
 	}
 
-	return this.drawPolygons(polygons, more);
+	var drawn = this.drawPolygons(polygons, more);
+	return drawn;
 };
 
-com.modestmaps.Markers.prototype.drawPolygons = function(latlons, more){
-
-	var prepped = this.locatifyLatLons(latlons);
-	var locations = prepped[0];
-	var extent = prepped[1];
-
-	this.registerMarker({
-		'type': 'polygon',
-		'locations': locations,
-		'extent': extent,
-		'more': more,
-	});
-
-	this._actuallyDrawPolygons(locations, extent, more);
+com.modestmaps.Markers.prototype.drawGeoJSON = function(json, more){
+    // please write me...
 };
 
-com.modestmaps.Markers.prototype.calculateDrawExtent = function(local_extent, more){
+// things you may want to care about
 
-	// Figure out the extent of the viewport for the stuff we're going to draw.
+com.modestmaps.Markers.prototype.purgeMarkers = function(to_preserve){
 
-    	if (typeof(more) === 'undefined'){
-		return this.modestmap.getExtent();
+	if (to_preserve){
+
+		if (to_preserve >= this.drawn.length){
+			return;
+		}
+
+		this.drawn = this.drawn.slice(0, to_preserve);
 	}
 
-	var draw_extent = (more['extentify_all']) ? this.extentForDrawnPoints() : local_extent;
-
-	if (more['extentify_redraw']){
-		this.modestmap.setExtent(draw_extent);
+	else {
+		this.drawn = new Array();
 	}
 
-	return draw_extent;
+	this._redrawMarkers();
 };
 
-com.modestmaps.Markers.prototype.locatifyLatLons = function(latlons){
+// things you don't need to care about
+
+com.modestmaps.Markers.prototype._locatifyLatLons = function(latlons){
 
 	// Convert a bunch of latlon arrays in to lists of ModestMaps
 	// Location objects and calculate the extent for the set.
@@ -179,7 +163,7 @@ com.modestmaps.Markers.prototype.locatifyLatLons = function(latlons){
 	for (i in latlons){
 
 		if (typeof(latlons[i][0]) === 'object'){
-			var prepped = this.locatifyLatLons(latlons[i]);
+			var prepped = this._locatifyLatLons(latlons[i]);
 			prepared.push(prepped[0]);
 			continue;
 		}
@@ -188,8 +172,29 @@ com.modestmaps.Markers.prototype.locatifyLatLons = function(latlons){
 		prepared.push(loc);
 	}
 
-	var extent = this.extentForPoints(prepared);
+	var extent = this._extentForPoints(prepared);
 	return new Array(prepared, extent);
+};
+
+com.modestmaps.Markers.prototype._registerMarker = function(data){
+
+	// http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/2117523#2117523
+	// http://www.broofa.com/2008/09/javascript-uuid-function/
+
+	var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+		return v.toString(16);
+	}).toUpperCase();
+
+	uuid = 'marker-' + uuid;
+
+	// so that (eventually) we have IDs we can assign to elements (or wrapper
+	// elements) for mucking with in JS and CSS
+
+	data['id'] = uuid;
+
+	this.drawn.push(data);
+	return uuid;
 };
 
 com.modestmaps.Markers.prototype._scrubSurface = function(){
@@ -229,14 +234,13 @@ com.modestmaps.Markers.prototype._redrawMarkers = function(){
 	}
 };
 
-// TO DO: please to finish fixing formatting...
+com.modestmaps.Markers.prototype._actuallyDrawLines = function(lines, extent, more){
 
-com.modestmaps.Markers.prototype._actuallyDrawLines = function(locations, extent, more){
+	// sudo make this work
+	// var draw_extent = this._calculateDrawExtent(extent, more);
+	// lines = this._enpointifyByExtent(lines, extent)
 
-    // Convert our Location objects in to Points and then pass the x,y
-    // coordinates off to the appropriate canvas method/primitive.
-
-	var lines = this.enpointifyByExtent(locations, extent)
+	var drawn = new Array();
 
 	for (var i in lines){
 
@@ -245,62 +249,65 @@ com.modestmaps.Markers.prototype._actuallyDrawLines = function(locations, extent
 
 		for (var j in ln){
 
-			var pt = ln[j];
-			var x = parseInt(pt.x)
-			var y = parseInt(pt.y)
-
-			coords.push({ 'x': x, 'y': y });
+			var pt = this.modestmap.locationPoint(ln[j]);
+			coords.push({ 'x': pt.x, 'y': pt.y });
 		}
 
-		this.line(coords, more);
+		var line = this._line(coords, more);
+		drawn.push(line);
 	}
 
+	return line;
 };
 
-com.modestmaps.Markers.prototype._actuallyDrawPolygons = function(locations, extent, more){
+com.modestmaps.Markers.prototype._actuallyDrawPolygons = function(polygons, extent, more){
 
-    // Convert our Location objects in to Points and then pass the x,y
-    // coordinates off to the appropriate canvas method/primitive.
+	// sudo make this work
+	// var draw_extent = this._calculateDrawExtent(extent, more);
+	// polygons = this._enpointifyByExtent(polygons, extent)
 
-    var lines = this.enpointifyByExtent(locations, extent)
+	var drawn = new Array();
 
-    for (var i in lines){
+	for (var i in polygons){
 
-        var coords = new Array();
-        var ln = lines[i];
+		var coords = new Array();
+		var ln = polygons[i];
 
-        for (var j in ln){
+		for (var j in ln){
 
-            var pt = ln[j];
-            var x = parseInt(pt.x)
-            var y = parseInt(pt.y)
+			var pt = this.modestmap.locationPoint(ln[j]);
+			coords.push({ 'x': pt.x, 'y': pt.y });
+		}
 
-            coords.push({ 'x': x, 'y': y });
-        }
+		var poly = this._polygon(coords, more);
+		drawn.push(poly);
+	}
 
-        this.polygon(coords, more);
-    }
-
+	return drawn;
 };
 
-com.modestmaps.Markers.prototype._actuallyDrawPoints = function(locations, extent, more){
+com.modestmaps.Markers.prototype._actuallyDrawPoints = function(points, extent, more){
 
-    // once this is all working, please to be using
-    // the 'set' method (20101202/straup)
-    // http://raphaeljs.com/reference.html#set
+	// sudo make these work
+	// var draw_extent = this._calculateDrawExtent(extent, more);
+	// points = this._enpointifyByExtent(points, extent)
 
-    var points = this.enpointifyByExtent(locations, extent)
+	// once this is all working, please to be using
+	// the 'set' method (20101202/straup)
+	// http://raphaeljs.com/reference.html#set
 
-    for (i in points){
+	var drawn = new Array();
 
-        var pt = points[i];
-        var x = parseInt(pt.x)
-        var y = parseInt(pt.y)
+	for (i in points){
 
-        coords = { 'x': x, 'y': y };
-        this.circle(coords, more);
-    }
+		var pt = this.modestmap.locationPoint(points[i]);
+		var coords = { 'x': pt.x, 'y': pt.y };
 
+		var circle = this._circle(coords, more)
+		drawn.push(circle);
+	}
+
+	return drawn;
 };
 
 com.modestmaps.Markers.prototype._radiusByZoomLevel = function(){
@@ -311,152 +318,182 @@ com.modestmaps.Markers.prototype._radiusByZoomLevel = function(){
 	return 5;
 };
 
-com.modestmaps.Markers.prototype.extentForDrawnPoints = function(){
+com.modestmaps.Markers.prototype._extentForDrawnPoints = function(){
 
-    var swlat = undefined;
-    var swlon = undefined;
-    var nelat = undefined;
-    var nelon = undefined;
+	var swlat = undefined;
+	var swlon = undefined;
+	var nelat = undefined;
+	var nelon = undefined;
 
-    for (i in this.drawn){
+	for (i in this.drawn){
 
-        var sw = this.drawn[i]['extent'][0];
-        var ne = this.drawn[i]['extent'][1];
+		var sw = this.drawn[i]['extent'][0];
+		var ne = this.drawn[i]['extent'][1];
 
-        swlat = (swlat === undefined) ? sw.lat : Math.min(swlat, sw.lat);
-        swlon = (swlon === undefined) ? sw.lon : Math.min(swlon, sw.lon);
-        nelat = (nelat === undefined) ? ne.lat : Math.max(nelat, ne.lat);
-        nelon = (nelon === undefined) ? ne.lon : Math.max(nelon, ne.lon);
-    }
+		swlat = (swlat === undefined) ? sw.lat : Math.min(swlat, sw.lat);
+		swlon = (swlon === undefined) ? sw.lon : Math.min(swlon, sw.lon);
+		nelat = (nelat === undefined) ? ne.lat : Math.max(nelat, ne.lat);
+		nelon = (nelon === undefined) ? ne.lon : Math.max(nelon, ne.lon);
+	}
 
-    var sw = new com.modestmaps.Location(swlat, swlon);
-    var ne = new com.modestmaps.Location(nelat, nelon);
+	var sw = new com.modestmaps.Location(swlat, swlon);
+	var ne = new com.modestmaps.Location(nelat, nelon);
 
-    return new Array(sw, ne);
-
+	return new Array(sw, ne);
 };
 
-com.modestmaps.Markers.prototype.extentForPoints = function(points){
+com.modestmaps.Markers.prototype._extentForPoints = function(points){
 
-    // ensure we don't fuck up the copy of points being
-    // passed in if we're dealing with multiple polygons
-    // or lines
+	// ensure we don't mangle the copy of points being
+	// passed in if we're dealing with multiple polygons
+	// or lines
 
-    var _points = points;
+	var _points = points;
 
-    var swlat = undefined;
-    var swlon = undefined;
-    var nelat = undefined;
-    var nelon = undefined;
+	var swlat = undefined;
+	var swlon = undefined;
+	var nelat = undefined;
+	var nelon = undefined;
 
-    // polylines and polygons...
+	// polylines and polygons...
 
-    if (typeof(_points[0].lat) === 'undefined'){
-        var tmp = new Array();
+	if (typeof(_points[0].lat) === 'undefined'){
 
-        for (i in _points){
+		var tmp = new Array();
 
-            for (j in _points[i]){
-                tmp.push(_points[i][j]);
-            }
-        }
+		for (i in _points){
 
-        _points = tmp;
-    }
+			for (j in _points[i]){
+				tmp.push(_points[i][j]);
+			}
+		}
 
-    for (i in _points){
+		_points = tmp;
+	}
 
-        swlat = (swlat === undefined) ? _points[i].lat : Math.min(swlat, _points[i].lat);
-        swlon = (swlon === undefined) ? _points[i].lon : Math.min(swlon, _points[i].lon);
-        nelat = (nelat === undefined) ? _points[i].lat : Math.max(nelat, _points[i].lat);
-        nelon = (nelon === undefined) ? _points[i].lon : Math.max(nelon, _points[i].lon);
-    }
+	for (i in _points){
 
-    var sw = new com.modestmaps.Location(swlat, swlon);
-    var ne = new com.modestmaps.Location(nelat, nelon);
+		swlat = (swlat === undefined) ? _points[i].lat : Math.min(swlat, _points[i].lat);
+		swlon = (swlon === undefined) ? _points[i].lon : Math.min(swlon, _points[i].lon);
+		nelat = (nelat === undefined) ? _points[i].lat : Math.max(nelat, _points[i].lat);
+		nelon = (nelon === undefined) ? _points[i].lon : Math.max(nelon, _points[i].lon);
+	}
 
-    return new Array(sw, ne);
+	var sw = new com.modestmaps.Location(swlat, swlon);
+	var ne = new com.modestmaps.Location(nelat, nelon);
+
+	return new Array(sw, ne);
 };
 
-com.modestmaps.Markers.prototype.enpointifyByExtent = function(locations, extent){
+com.modestmaps.Markers.prototype._calculateDrawExtent = function(local_extent, more){
 
-    var map_extent = this.modestmap.getExtent();
-    var points = new Array();
+	// Figure out the extent of the viewport for the stuff we're going to draw.
 
-    for (i in locations){
+    	if (typeof(more) === 'undefined'){
+		return this.modestmap.getExtent();
+	}
 
-        var loc = locations[i];
+	var draw_extent = (more['extentify_all']) ? this.extentForDrawnPoints() : local_extent;
 
-        // polylines and polygons
+	if (more['extentify_redraw']){
+		this.modestmap.setExtent(draw_extent);
+	}
 
-        if (typeof(loc.lat) !== 'number'){
-            var tmp = this.enpointifyByExtent(loc, extent);
-            points.push(tmp);
-            continue;
-        }
-
-        if (! this.isContainedBy(loc, extent)){
-            continue;
-        }
-
-        if (! this.isContainedBy(loc, map_extent)){
-            continue;
-        }
-
-        var pt = this.modestmap.locationPoint(loc);
-        points.push(pt);
-    }
-
-    return points;
+	return draw_extent;
 };
 
-com.modestmaps.Markers.prototype.isContainedBy = function(loc, extent){
+com.modestmaps.Markers.prototype._enpointifyByExtent = function(locations, extent){
 
-    var sw = extent[0];
-    var ne = extent[1];
+	var map_extent = this.modestmap.getExtent();
+	var points = new Array();
 
-    // TODO: write me...
+	for (i in locations){
 
-    return true;
+		var loc = locations[i];
+
+		// polylines and polygons
+
+		if (typeof(loc.lat) !== 'number'){
+			var tmp = this._enpointifyByExtent(loc, extent);
+			points.push(tmp);
+			continue;
+		}
+
+		if (! this._isContainedBy(loc, extent)){
+			continue;
+		}
+
+		if (! this._isContainedBy(loc, map_extent)){
+			continue;
+		}
+
+		var pt = this.modestmap.locationPoint(loc);
+		points.push(pt);
+	}
+
+	return points;
 };
 
-// canned primitives
+com.modestmaps.Markers.prototype._isContainedBy = function(loc, extent){
 
-com.modestmaps.Markers.prototype.polygon = function(coords, more){
+	var sw = extent[0];
+	var ne = extent[1];
 
-    var count = coords.length;
+	// TODO: write me...
 
-    var path = [ "M" + coords[0]['x'] + " " + coords[0]['y'] ];
-
-    for (var i=1; i < count; i++){
-
-	path.push("L" + coords[i]['x'] + " " + coords[i]['y']);
-    }
-
-    path.push("Z");
-
-    var ln = this.canvas.path(path.join(""));
-    return ln;
+	return true;
 };
 
-com.modestmaps.Markers.prototype.line = function(coords, more){
+// canned primitives (hey look! actual drawing and not just number crunching!!)
 
-    var count = coords.length;
+com.modestmaps.Markers.prototype._polygon = function(coords, more){
 
-    var path = [ "M" + coords[0]['x'] + " " + coords[0]['y'] ];
+	var count = coords.length;
 
-    for (var i=1; i < count; i++){
-	path.push("L" + coords[i]['x'] + " " + coords[i]['y']);
-    }
+	var path = [ "M" + coords[0]['x'] + " " + coords[0]['y'] ];
 
-    var ln = this.canvas.path(path.join(""));
-    return ln;
+	for (var i=1; i < count; i++){
+		path.push("L" + coords[i]['x'] + " " + coords[i]['y']);
+	}
+
+	path.push("Z");
+
+	var ln = this.canvas.path(path.join(""));
+	return this._enstylify(ln, more);
 };
 
-com.modestmaps.Markers.prototype.circle = function(coords, more){
+com.modestmaps.Markers.prototype._line = function(coords, more){
 
-    var r = 8;
+	var count = coords.length;
 
-    var c = this.canvas.circle(coords['x'], coords['y'], r);
-    return c;
+	var path = [ "M" + coords[0]['x'] + " " + coords[0]['y'] ];
+
+	for (var i=1; i < count; i++){
+		path.push("L" + coords[i]['x'] + " " + coords[i]['y']);
+	}
+
+	var ln = this.canvas.path(path.join(""));
+	return this._enstylify(ln, more);
+};
+
+com.modestmaps.Markers.prototype._circle = function(coords, more){
+
+	var r = ((more) && (more['radius'])) ? more['radius'] : 8;
+
+	var c = this.canvas.circle(coords['x'], coords['y'], r);
+	return this._enstylify(c, more);
+};
+
+com.modestmaps.Markers.prototype._enstylify = function(el, more){
+
+	if ((more) && (more['attrs'])){
+
+		// http://raphaeljs.com/reference.html#attr
+
+		for (prop in more['attrs']){
+			el.attr(prop, more['attrs'][prop]);
+		}
+	}
+
+	return el;
 };
