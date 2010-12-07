@@ -35,6 +35,17 @@ function draw_map_modestmaps(dot){
 	var loc = new com.modestmaps.Location(dot.latitude, dot.longitude);
     	map.setCenterZoom(loc, 14);
 
+	var features = [{
+		'geometry': {
+			'type': 'Point',
+			'coordinates': [ dot.longitude, dot.latitude ],
+		},
+		'properties': {
+			'id': dot.id,
+			'permissions': dot.permissions,
+		}
+	}];
+
 	var attrs = {
 		'fill' : '#00112d',
 		'fill-opacity' : .5,
@@ -48,7 +59,8 @@ function draw_map_modestmaps(dot){
 	};
 
 	var markers = new com.modestmaps.Markers(map);
-	markers.drawPoints([[ dot.latitude, dot.longitude ]], more);
+	markers.drawGeoJson(features, more);
+
 }
 
 function draw_map (dot){

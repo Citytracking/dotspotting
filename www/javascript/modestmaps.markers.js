@@ -151,6 +151,8 @@ com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 			var type = geom[j]['type'];
 			var coords = geom[j]['coordinates'];
 
+			coords = this._lonlat2latlon(coords);
+
 			// reverse coords here
 
 			if (type == 'Point'){
@@ -159,8 +161,8 @@ com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 			}
 
 			else if (type == 'Polygon'){
-				// var d = this.drawPolygons(coords, more);
-				// drawn.push(d);
+				var d = this.drawPolygons(coords, more);
+				drawn.push(d);
 			}
 		}
 
@@ -190,6 +192,22 @@ com.modestmaps.Markers.prototype.purgeMarkers = function(to_preserve){
 };
 
 // things you don't need to care about
+
+com.modestmaps.Markers.prototype._lonlat2latlon = function(coords, reversed){
+
+	if (typeof(coords[0]) == 'number'){
+		return [ coords[1], coords[0] ];
+	}
+
+	var reversed = new Array();
+	var count = coords.length;
+
+	for (var i = 0; i < count; i++){
+		reversed.push(this._lonlat2latlon(coords[i]));
+	}
+
+	return reversed;
+};
 
 com.modestmaps.Markers.prototype._locatifyLatLons = function(latlons){
 

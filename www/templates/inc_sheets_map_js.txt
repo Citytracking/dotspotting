@@ -244,41 +244,6 @@ function draw_map_modestmaps(sheets){
 	var map = utils_modestmap('map');
 	map.setExtent(extent);
 
-	// see how this is different than what we pass
-	// to polymaps? that's a known-known and today
-	// it is a problem that is dressed in hairy yak
-	// clothes...it should be sorted out though.
-	// (20101028/straup)
-
-	var polygons = [];
-
-	count_sheets = sheets['sheets'].length;
-
-	for (var i = 0; i < count_sheets; i++){
-
-		var corners = sheets['sheets'][i];
-		var sw = corners[0];
-		var ne = corners[1];
-
-		// this is seriously silly... we need to figure
-		// out some common ground between modestmaps, polymaps,
-		// modestmaps.markers and so on. for now this will
-		// have to do... (20101029/straup)
-
-		var nw = { 'lat': ne['lat'], 'lon': sw['lon'] };
-		var se = { 'lat': sw['lat'], 'lon': ne['lon'] };
-
-		var coords = [
-			[sw['lat'], sw['lon']],
-			[nw['lat'], nw['lon']],
-			[ne['lat'], ne['lon']],
-			[se['lat'], se['lon']],
-			[sw['lat'], sw['lon']]
-		];
-
-		polygons.push(coords);
-	}
-
 	var attrs = {
 		'fill' : '#00112d',
 		'fill-opacity' : .5,
@@ -292,8 +257,7 @@ function draw_map_modestmaps(sheets){
 	};
 
 	var markers = new com.modestmaps.Markers(map);
-	// markers.drawGeoJson(sheets['features']);
-	markers.drawPolygons(polygons, more);
+	markers.drawGeoJson(sheets['features']);
 
 	utils_modestmaps_add_compass(map);
 	return;

@@ -275,19 +275,6 @@ function draw_map_modestmaps(dots){
 		map.setExtent(extent);
 	}
 
-	// see how this is different than what we pass
-	// to polymaps? that's a known-known and today
-	// it is a problem that is dressed in hairy yak
-	// clothes...it should be sorted out though.
-	// (20101028/straup)
-
-	var points = []
-
-	for (var i = 0; i < count; i++){
-		var loc = dots['locations'][i];
-		points.push([ loc.lat, loc.lon ]);
-	}
-
 	var attrs = {
 		'fill' : '#00112d',
 		'fill-opacity' : .5,
@@ -301,7 +288,7 @@ function draw_map_modestmaps(dots){
 	};
 
 	var markers = new mm.Markers(map);
-	markers.drawPoints(points, more);
+	markers.drawGeoJson(dots['features'], more);
 
 	utils_modestmaps_add_compass(map);	
 	return;
