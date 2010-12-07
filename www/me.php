@@ -8,9 +8,13 @@
 
 	if (! $GLOBALS['cfg']['user']['id']){
 
-		header("location: {$GLOBALS['cfg']['abs_root_url']}");
+		$url = $_SERVER['REQUEST_URI'];
+		$signin = $GLOBALS['cfg']['abs_root_url'] . "signin/?redir=" . urlencode($url);
+
+		header("location: {$signin}");
 		exit();
 	}
+
 	$url = get_str('url');
 	$url = rtrim($url, '/');
 
