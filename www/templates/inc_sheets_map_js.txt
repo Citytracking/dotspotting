@@ -292,6 +292,7 @@ function draw_map_modestmaps(sheets){
 	};
 
 	var markers = new com.modestmaps.Markers(map);
+	// markers.drawGeoJson(sheets['features']);
 	markers.drawPolygons(polygons, more);
 
 	utils_modestmaps_add_compass(map);

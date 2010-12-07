@@ -127,8 +127,46 @@ com.modestmaps.Markers.prototype.drawBoundingBoxes = function(bboxes, more){
 	return drawn;
 };
 
-com.modestmaps.Markers.prototype.drawGeoJSON = function(json, more){
-    // please write me...
+com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
+
+	if (! more){
+		more = {};
+	}
+
+	var drawn = new Array();
+
+	var count = features.length;
+
+	for (var i=0; i < count; i++){
+
+		var f = features[i];
+
+		more['properties'] = f['properties'];
+
+		var geom = (f.geometry.type == 'GeometryCollection') ? f.geometry.geometries : [ f.geometry ];
+		var count_geom = geom.length;
+	
+		for (var j = 0; j < count_geom; j++){
+
+			var type = geom[j]['type'];
+			var coords = geom[j]['coordinates'];
+
+			// reverse coords here
+
+			if (type == 'Point'){
+				var d = this.drawPoints([ coords ], more);
+				drawn.push(d);
+			}
+
+			else if (type == 'Polygon'){
+				// var d = this.drawPolygons(coords, more);
+				// drawn.push(d);
+			}
+		}
+
+	}
+
+	return drawn;
 };
 
 // things you may want to care about
