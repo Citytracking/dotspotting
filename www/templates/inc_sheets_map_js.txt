@@ -279,8 +279,20 @@ function draw_map_modestmaps(sheets){
 		polygons.push(coords);
 	}
 
+	var attrs = {
+		'fill' : '#00112d',
+		'fill-opacity' : .5,
+		'stroke' : '#99cc00',
+		'stroke-width' : 4,
+		'stroke-opacity' : 1,
+	};
+
+	var more = {
+		'attrs' : attrs,
+	};
+
 	var markers = new com.modestmaps.Markers(map);
-	markers.drawPolygons(polygons);
+	markers.drawPolygons(polygons, more);
 
 	utils_modestmaps_add_compass(map);
 	return;

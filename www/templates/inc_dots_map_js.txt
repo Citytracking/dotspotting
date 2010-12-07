@@ -288,8 +288,16 @@ function draw_map_modestmaps(dots){
 		points.push([ loc.lat, loc.lon ]);
 	}
 
+	var attrs = {
+		'fill' : '#00112d',
+		'fill-opacity' : .5,
+		'stroke' : '#99cc00',
+		'stroke-width' : 3,
+		'stroke-opacity' : 1,
+	};
+
 	var more = {
-		'r': 8
+		'attrs' : attrs,
 	};
 
 	var markers = new mm.Markers(map);

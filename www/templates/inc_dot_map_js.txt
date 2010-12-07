@@ -35,14 +35,16 @@ function draw_map_modestmaps(dot){
 	var loc = new com.modestmaps.Location(dot.latitude, dot.longitude);
     	map.setCenterZoom(loc, 14);
 
-	// see how this is different than what we pass
-	// to polymaps? that's a known-known and today
-	// it is a problem that is dressed in hairy yak
-	// clothes...it should be sorted out though.
-	// (20101028/straup)
+	var attrs = {
+		'fill' : '#00112d',
+		'fill-opacity' : .5,
+		'stroke' : '#99cc00',
+		'stroke-width' : 3,
+		'stroke-opacity' : 1,
+	};
 
 	var more = {
-		'r': 8
+		'attrs' : attrs,
 	};
 
 	var markers = new com.modestmaps.Markers(map);
