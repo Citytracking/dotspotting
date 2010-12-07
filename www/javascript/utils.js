@@ -216,6 +216,13 @@ function utils_polymaps_assign_dot_properties(e){
 
 }
 
+// http://raphaeljs.com/reference.html#events
+
+function utils_modestmaps_assign_dot_properties(el, props){
+
+
+}
+
 function utils_polymaps_assign_sheet_properties (e){
 
 	var count = e.features.length;

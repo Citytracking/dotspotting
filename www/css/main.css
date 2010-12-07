@@ -373,8 +373,8 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 }
 
 .dot:hover {
-    fill-opacity: .8;
     fill: #00ddee;
+    fill-opacity: .8;
     stroke: #00112d;
     stroke-width: 5;
     stroke-opacity: 1;	

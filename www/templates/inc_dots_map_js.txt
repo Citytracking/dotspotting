@@ -286,6 +286,11 @@ function draw_map_modestmaps(dots){
 		map.setExtent(extent);
 	}
 
+	// This is not awesome but in the absence of a reliable way to
+	// read CSS declaration in JS (does one exist now?) it's just
+	// what we're going to do for now. See also: main.css .dot and
+	// .dot:hover (20101207/straup)
+
 	var attrs = {
 		'fill' : '#00112d',
 		'fill-opacity' : .5,
@@ -294,8 +299,37 @@ function draw_map_modestmaps(dots){
 		'stroke-opacity' : 1,
 	};
 
+	var attrs_hover = {
+		'fill' : '#00ddee',
+		'fill-opacity' : .8,
+		'stroke' : '#00112d',
+		'stroke-width' : 5,
+		'stroke-opacity' : 1,
+	};
+
 	var more = {
 		'attrs' : attrs,
+
+		// just inline the function mostly so that we don't
+		// have to redeclare the attrs_* hashes again
+		// (20101207/straup)
+
+		'onload' : function(el, props){
+
+			el.mouseout(function (evt) {
+				this.attr(attrs);
+				dot_onmouseout(props.id);
+			});
+
+			el.mouseover(function (evt) {
+				this.attr(attrs_hover);
+				dot_onmouseover(props.id);
+			});
+
+			el.click(function(evt){
+				dot_onclick(props.id);
+			});
+		},
 	};
 
 	var markers = new mm.Markers(map);
