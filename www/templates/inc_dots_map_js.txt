@@ -174,7 +174,10 @@ function collect_dots(){
 
 	var headers = collect_headers();
 
-	var features = $("#user_dots tbody tr").map(function(i, row){
+	var points = new Array();	// geojson coordinates
+	var dots = new Array();		// geojson properties
+
+	$("#user_dots tbody tr").map(function(i, row){
 
 		var dot = row2dot(row);
 
@@ -187,15 +190,23 @@ function collect_dots(){
 			locations.push(loc);
 		}
 
-		return {
-			geometry: {
-				type: "Point",
-				coordinates: [loc.lon, loc.lat]
-			},
-
-			properties: dot
-		};
+		points.push([ loc.lon, loc.lat ]);
+		dots.push(dot);
 	});
+
+	// We are collecting and storing all the dots in the
+	// properties key so that we can find and match their
+	// corresponding elements in the 'coordinates' bucket
+	// for doing onload events, etc.
+
+	var features = [{
+		'geometry' : {
+			'type' : 'MultiPoint',
+			'coordinates' : points,
+		},
+
+		'properties' : dots,
+	}];
 
 	return { 'locations': locations, 'features': features };
 }

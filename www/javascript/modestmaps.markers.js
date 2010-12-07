@@ -129,6 +129,8 @@ com.modestmaps.Markers.prototype.drawBoundingBoxes = function(bboxes, more){
 
 com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 
+	// http://geojson.org/geojson-spec.html
+
 	if (! more){
 		more = {};
 	}
@@ -153,17 +155,32 @@ com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 
 			coords = this._lonlat2latlon(coords);
 
-			// reverse coords here
+			if ((type == 'Point') || (type == 'MultiPoint')){
 
-			if (type == 'Point'){
-				var d = this.drawPoints([ coords ], more);
+				if (type == 'Point'){
+					coords = [ coords ];
+				}
+
+				var d = this.drawPoints(coords, more);
 				drawn.push(d);
 			}
 
-			else if (type == 'Polygon'){
+			else if ((type == 'Polygon') || (type == 'MultiPolyon')){
 				var d = this.drawPolygons(coords, more);
 				drawn.push(d);
 			}
+
+			else if ((type == 'LineString') || (type == 'MultiLineString')){
+
+				if (type == 'LineString'){
+					coords = [ coords ];
+				}
+
+				var d = this.drawLines(coords, more);
+				drawn.push(d);
+			}
+
+			else { }
 		}
 
 	}

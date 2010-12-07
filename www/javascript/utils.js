@@ -157,26 +157,61 @@ function utils_polymaps_assign_dot_properties(e){
 		var f = e.features[i];
 		var data = f.data;
 
-		var classes = ['dot'];
+		// See this? We pass a around a single MultiPoint
+		// geoJSON blob when listing the dots for a sheet
+		// and a single Point blob otherwise. So the first
+		// thing we need to do is collect the elements and
+		// their corresponding (geoJSON) properties that
+		// need to be processed.
 
-		if (data.properties && data.properties.permissions){
-		    classes.push('dot_' + data.properties.permissions);
+		var to_process = new Array();
+
+		var multi_point = f.element.childElementCount;
+
+		if (multi_point){
+
+			for (var j = 0; j < multi_point; j++){
+				var el = f.element.children[j];
+				var props = data.properties[j];
+				to_process.push([ el, props ]);
+			}
 		}
 
-		f.element.setAttribute('class', classes.join(' '));
-
-		if (data.properties && data.properties.id){
-		    f.element.setAttribute('id', 'dot_' + data.properties.id);
-
-		    var enc_id = encodeURIComponent(data.properties.id);
-
-		    f.element.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
-		    f.element.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
-		    f.element.setAttribute('onclick', 'dot_onclick(' + enc_id + ');return false');
+		else {
+			to_process.push([ f.element, data.properties ]);
 		}
 
-		f.element.setAttribute('r', 8);
+		// Okay! Go!!
 
+		var count_process = to_process.length;
+
+		for (var k = 0; k < count_process; k ++){
+
+			var el = to_process[k][0];
+			var props = to_process[k][1];
+
+			var classes = ['dot'];
+
+			if (props && props.permissions){
+				classes.push('dot_' + props.permissions);
+			}
+
+			el.setAttribute('class', classes.join(' '));
+			el.setAttribute('r', 8);
+
+			if (props && props.id){
+		    		el.setAttribute('id', 'dot_' + props.id);
+
+		    		var enc_id = encodeURIComponent(props.id);
+
+				if (multi_point){
+		    			el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
+		    			el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
+		    			el.setAttribute('onclick', 'dot_onclick(' + enc_id + ');return false');
+				}
+			}
+
+		}
 	}
 
 }
