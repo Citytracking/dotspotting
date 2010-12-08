@@ -55,6 +55,8 @@ function dot_onmouseover(dotid){
 
 	$("#map_info").html(html);
 	$("#map_info").show();
+
+	dot_highlight_tr(dotid);
 }
 
 function dot_onmouseout(dotid){
@@ -70,9 +72,43 @@ function dot_onmouseout(dotid){
 			$("#map_info").html('');
 		});
 
+		dot_restore_tr();
+
 	}, 8000);
 
 	_dotspotting.dots_list_mouseout_timers.push(tid);
+}
+
+function dot_highlight_tr(dotid){
+
+	dot_restore_tr();
+
+	var selector = "#dotslist_dot_" + dotid + " td";
+
+	_dotspotting['highlighted'] = dotid;
+
+	$(selector).map(function(i, el) {
+		var new_classes = el.getAttribute("class") + " highlighted";
+		el.setAttribute("class", new_classes);	
+	});
+}
+
+function dot_restore_tr(){
+
+	var current = _dotspotting['highlighted'];
+
+	if (! current){
+		return;
+	}
+
+	var selector = "#dotslist_dot_" + current + " td";
+
+	$(selector).map(function(i, el){
+		var new_classes = el.getAttribute("class").replace(" highlighted", "");
+		el.setAttribute("class", new_classes);
+	});
+
+	_dotspotting['highlighted'] = null;
 }
 
 function dot_getinfo(dotid){
