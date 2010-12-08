@@ -165,14 +165,16 @@ function row2sheet(row, headers){
 function collect_sheets(){
 
 	var headers = collect_headers();
-	var sheets = [];
 
 	var swlat = null;
 	var swlon = null;
 	var nelat = null;
 	var nelon = null;
 
-	var features = $("#user_sheets tbody tr").map(function(i, row) {
+	var polys = new Array();
+	var sheets = new Array();
+
+	$("#user_sheets tbody tr").map(function(i, row){
 
 		var sheet = row2sheet(row, headers);
 
@@ -190,8 +192,6 @@ function collect_sheets(){
 			lon: parseFloat(sheet.extent[3])
 		};
 
-		sheets.push([sw, ne]);
-
 		swlat = (swlat) ? Math.min(swlat, sw.lat) : sw.lat;
 		swlon = (swlon) ? Math.min(swlon, sw.lon) : sw.lon;
 		nelat = (nelat) ? Math.max(nelat, ne.lat) : ne.lat;
@@ -200,7 +200,7 @@ function collect_sheets(){
 		var nw = { 'lat': ne['lat'], 'lon': sw['lon'] };
 		var se = { 'lat': sw['lat'], 'lon': ne['lon'] };
 
-		var bbox = [[
+		var poly = [[
 			[sw['lon'], sw['lat']],
 			[nw['lon'], nw['lat']],
 			[ne['lon'], ne['lat']],
@@ -208,17 +208,19 @@ function collect_sheets(){
 			[sw['lon'], sw['lat']]
 		]];
 
-		return {
-			geometry: {
-				"type": "GeometryCollection",
-				"geometries" : [
-					{ type: "Polygon", coordinates: bbox, ima: 'sheet' },
-				],
-			},
-			properties: sheet,
-			bbox: [ sw, ne ],	// this is a hack
-		};
+		polys.push(poly);
+		sheets.push(sheet);
+		return;
 	});
+
+	var features  = [{
+		'geometry' : {
+			'type' : 'MultiPolygon',
+			'coordinates' : polys,
+		},
+
+		'properties' : sheets,
+	}];
 
 	var extent = [
 		{ lat: swlat, lon: swlon },
@@ -244,6 +246,11 @@ function draw_map_modestmaps(sheets){
 	var map = utils_modestmap('map');
 	map.setExtent(extent);
 
+	// This is not awesome but in the absence of a reliable way to
+	// read CSS declaration in JS (does one exist now?) it's just
+	// what we're going to do for now. See also: main.css .dot and
+	// .dot:hover (20101207/straup)
+
 	var attrs = {
 		'fill' : '#00112d',
 		'fill-opacity' : .5,
@@ -252,12 +259,37 @@ function draw_map_modestmaps(sheets){
 		'stroke-opacity' : 1,
 	};
 
+	var attrs_hover = {
+		'fill' : '#00ddee',
+		'fill-opacity' : .1,
+		'stroke' : '#00112d',
+		'stroke-width' : 4,
+		'stroke-opacity' : 1,
+	};
+
 	var more = {
 		'attrs' : attrs,
+
+		// just inline the function mostly so that we don't
+		// have to redeclare the attrs_* hashes again
+		// (20101207/straup)
+
+		'onload' : function(el, props){
+
+			el.mouseout(function (evt) {
+				this.attr(attrs);
+				sheet_onmouseout(props.id);
+			});
+
+			el.mouseover(function (evt) {
+				this.attr(attrs_hover);
+				sheet_onmouseover(props.id);
+			});
+		},
 	};
 
 	var markers = new com.modestmaps.Markers(map);
-	markers.drawGeoJson(sheets['features']);
+	markers.drawGeoJson(sheets['features'], more);
 
 	utils_modestmaps_add_compass(map);
 	return;

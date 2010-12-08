@@ -394,8 +394,8 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 }
 
 .sheet:hover {
-    fill-opacity: .1;
     fill: #00ddee;
+    fill-opacity: .1;
     stroke: #00112d;
     stroke-width: 4;
     stroke-opacity: 1;	

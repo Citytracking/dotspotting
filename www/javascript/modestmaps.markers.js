@@ -21,9 +21,10 @@ com.modestmaps.Markers = function(mm){
 	this.div.style.zIndex = '200';
 	this.container.appendChild(this.div);
 
-	this.canvas = Raphael(this.div, this.container.offsetWidth, this.container.offsetHeight);
+	// the thing that does the actual drawing
+	// http://raphaeljs.com/
 
-	//
+	this.canvas = Raphael(this.div, this.container.offsetWidth, this.container.offsetHeight);
 
 	var _self = this;
 
@@ -137,9 +138,9 @@ com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 
 	var drawn = new Array();
 
-	var count = features.length;
+	var count_features = features.length;
 
-	for (var i=0; i < count; i++){
+	for (var i = 0; i < count_features; i++){
 
 		var f = features[i];
 
@@ -162,6 +163,8 @@ com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 
 			coords = this._lonlat2latlon(coords);
 
+			// to do: GeometryCollections
+
 			if ((type == 'Point') || (type == 'MultiPoint')){
 
 				if (type == 'Point'){
@@ -172,7 +175,7 @@ com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 				drawn.push(d);
 			}
 
-			else if ((type == 'Polygon') || (type == 'MultiPolyon')){
+			else if ((type == 'Polygon') || (type == 'MultiPolygon')){
 				var d = this.drawPolygons(coords, more);
 				drawn.push(d);
 			}
@@ -327,6 +330,12 @@ com.modestmaps.Markers.prototype._actuallyDrawLines = function(lines, extent, mo
 		var coords = new Array();
 		var ln = lines[i];
 
+		// quick and dirty hack to account for GeoJSON MultiLines...
+
+		if (ln.length == 1){
+			ln = ln[0];
+		}
+
 		for (var j in ln){
 
 			var pt = this.modestmap.locationPoint(ln[j]);
@@ -355,8 +364,13 @@ com.modestmaps.Markers.prototype._actuallyDrawPolygons = function(polygons, exte
 		var coords = new Array();
 		var ln = polygons[i];
 
-		for (var j in ln){
+		// quick and dirty hack to account for GeoJSON MultiPolygons...
 
+		if (ln.length == 1){
+			ln = ln[0];
+		}
+
+		for (var j in ln){
 			var pt = this.modestmap.locationPoint(ln[j]);
 			coords.push({ 'x': pt.x, 'y': pt.y });
 		}
