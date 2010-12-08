@@ -71,6 +71,8 @@ function sheet_onmouseover(sheetid){
 
 	$("#map_info").html(html);
 	$("#map_info").show();
+
+	sheet_highlight_tr(sheetid);
 }
 
 function sheet_onmouseout(sheetid){
@@ -86,9 +88,55 @@ function sheet_onmouseout(sheetid){
 			$("#map_info").html('');
 		});
 
+		sheet_restore_tr();
+
 	}, 8000);
 
-	_dotspotting.sheets_list_mouseout_timers.push(tid);
+}
+
+function sheet_highlight_tr(sheetid){
+
+	sheet_restore_tr();
+
+	var selector = "#sheetslist_sheet_" + sheetid + " td";
+
+	// to do - just swap out CSS class names instead of hard-coding
+	// values here (20101207/straup)
+
+	var old_css = {
+		'background-color' : $(selector).css('background-color'),
+	};
+
+	var new_css = {
+		'background-color' : 'red',
+	};
+
+	_dotspotting['highlighted'] = {
+		'sheetid' : sheetid,
+		'css' : old_css,
+	};
+
+	$(selector).map(function(i, el){
+		$(el).css(new_css);
+	});
+}
+
+function sheet_restore_tr(){
+
+	var current = _dotspotting['highlighted'];
+
+	if (! current){
+		return;
+	}
+
+	var selector = "#sheetslist_sheet_" + current['sheetid'] + " td";
+
+	$(selector).map(function(i, el){
+
+		$(el).css(current['css']);
+	});
+
+	_dotspotting['highlighted'] = null;
 }
 
 function sheet_getinfo(sheetid){
