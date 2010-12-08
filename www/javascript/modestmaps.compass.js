@@ -20,6 +20,7 @@ com.modestmaps.Compass = function(map){
     this.div.style.position = 'absolute';
     this.div.style.left = '0px';
     this.div.style.top = '0px';
+    this.div.style.zIndex = '500';	// it's like numbering lines in a BASIC program...
     map.parent.appendChild(this.div);
 
     this.canvas = Raphael(this.div, 200, 100);
@@ -37,17 +38,31 @@ com.modestmaps.Compass = function(map){
 
     // zoom out (background and "-" symbol)
 
-    var zout = this.canvas.path("M-12,0V-12A12,12 0 1,1 12,-12V0Z").translate(25, 65).rotate(180);
+    var zout = this.canvas.path("M-12,0V-12A12,12 0 1,1 12,-12V0Z").translate(25, 60).rotate(180);
     zout.attr("fill", "#ccc");
     zout.attr("stroke", "#fff");
     zout.attr("stroke-width", 3);
 
-    var zouta = this.canvas.path("M -5 0 L 5 0").translate(25, 52);
+    var zouta = this.canvas.path("M -5 0 L 5 0").translate(25, 47);
     zouta.attr("stroke", "#fff");
     zouta.attr("stroke-width", 2);
 
-    zina.node.onclick = zin.node.onclick = function() { map.zoomIn() };
-    zouta.node.onclick = zout.node.onclick = function() { map.zoomOut() };
+    zin.click(function(){
+	    map.zoomIn();
+    });
+
+    zina.click(function(){
+	    map.zoomIn();
+    });
+
+    zout.click(function(){
+	    map.zoomOut();
+    });
+
+    zouta.click(function(){
+	    map.zoomOut();
+    });
+
 };
 
 com.modestmaps.Compass.prototype = {
