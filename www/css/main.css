@@ -447,3 +447,8 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
     stroke: #000;
     stroke-width: 2px;
 }
+
+.highlighted {
+    font-weight: 700 !important;
+    background-color: #ccffff !important;
+}

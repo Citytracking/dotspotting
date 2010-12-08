@@ -100,24 +100,11 @@ function sheet_highlight_tr(sheetid){
 
 	var selector = "#sheetslist_sheet_" + sheetid + " td";
 
-	// to do - just swap out CSS class names instead of hard-coding
-	// values here (20101207/straup)
+	_dotspotting['highlighted'] = sheetid;
 
-	var old_css = {
-		'background-color' : $(selector).css('background-color'),
-	};
-
-	var new_css = {
-		'background-color' : 'red',
-	};
-
-	_dotspotting['highlighted'] = {
-		'sheetid' : sheetid,
-		'css' : old_css,
-	};
-
-	$(selector).map(function(i, el){
-		$(el).css(new_css);
+	$(selector).map(function(i, el) {
+		var new_classes = el.getAttribute("class") + " highlighted";
+		el.setAttribute("class", new_classes);
 	});
 }
 
@@ -129,11 +116,11 @@ function sheet_restore_tr(){
 		return;
 	}
 
-	var selector = "#sheetslist_sheet_" + current['sheetid'] + " td";
+	var selector = "#sheetslist_sheet_" + current + " td";
 
 	$(selector).map(function(i, el){
-
-		$(el).css(current['css']);
+		var new_classes = el.getAttribute("class").replace(" highlighted", "");
+		el.setAttribute("class", new_classes);
 	});
 
 	_dotspotting['highlighted'] = null;
