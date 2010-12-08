@@ -171,10 +171,9 @@ function collect_sheets(){
 	var nelat = null;
 	var nelon = null;
 
-	var polys = new Array();
 	var sheets = new Array();
 
-	$("#user_sheets tbody tr").map(function(i, row){
+	var features = $("#user_sheets tbody tr").map(function(i, row){
 
 		var sheet = row2sheet(row, headers);
 
@@ -208,19 +207,18 @@ function collect_sheets(){
 			[sw['lon'], sw['lat']]
 		]];
 
-		polys.push(poly);
 		sheets.push(sheet);
-		return;
+
+		return {
+			'geometry' : {
+				'type' : 'Polygon',
+				'coordinates' : poly,
+			},
+
+			'properties' : sheet,
+		};
+
 	});
-
-	var features  = [{
-		'geometry' : {
-			'type' : 'MultiPolygon',
-			'coordinates' : polys,
-		},
-
-		'properties' : sheets,
-	}];
 
 	var extent = [
 		{ lat: swlat, lon: swlon },
@@ -228,19 +226,18 @@ function collect_sheets(){
 	];
 
 	return {
-		'sheets': sheets,
-		'bbox': extent,
+		'extent': extent,
 		'features': features
 	};
 }
 
 function draw_map_modestmaps(sheets){
 
-	var bbox = utils_adjust_bbox(sheets['bbox']);
+	var _extent = utils_adjust_bbox(sheets['extent']);
 
 	var extent = [
-		new com.modestmaps.Location(bbox[0]['lat'], bbox[0]['lon']),
-		new com.modestmaps.Location(bbox[1]['lat'], bbox[1]['lon']),
+		new com.modestmaps.Location(_extent[0]['lat'], _extent[0]['lon']),
+		new com.modestmaps.Location(_extent[1]['lat'], _extent[1]['lon']),
 	];
 
 	var map = utils_modestmap('map');
@@ -299,65 +296,10 @@ function draw_map_polymaps(sheets){
 
 	var map = utils_polymap('map');
 
-	var bbox = utils_adjust_bbox(sheets['bbox']);
+	var extent = utils_adjust_bbox(sheets['extent']);
 	
-	map.extent(bbox);
+	map.extent(extent);
 	map.zoom(Math.floor(map.zoom()));
-
-	// tweak sheets['features'] here to add an abstract 
-	// "sheet" thing-y at higher zoome levels positioned
-	// at the center point of the sheet. at the moment we're
-	// doing this in geojson when we could also just pass
-	// some magic flag to have the SVG/etc. load an image
-	// instead (20101203/straup)
-
-	if ((_dotspotting.magicpony) && (map.zoom() <= 10)){
-
-		var count = sheets['features'].length;
-
-		for (var i=0; i < count; i++){
-
-			var _geom = sheets['features'][i]['geometry'];
-			var _bbox = sheets['features'][i]['bbox'];
-
-			if ((! _bbox) || (! _geom['geometries'])){
-				continue;
-			}
-
-			var sw = _bbox[0]; 
-			var ne = _bbox[1];
-
-			var _lat = sw['lat'] + ((ne['lat'] - sw['lat']) / 2);
-			var _lon = sw['lon'] + ((ne['lon'] - sw['lon']) / 2);
-
-			// this needs to reflect the map being zoomed in or out
-			// rather than just being a fixed pair of values....
-
-			var _x = parseInt((80 / map.zoom() / 2));
-			var _y = parseInt((100 / map.zoom()) / 2);
-
-			var _pt = map.locationPoint({ lat: _lat, lon: _lon });
-			var _sw = map.pointLocation({ x: _pt.x - _x, y: _pt.y - _y });
-			var _nw = map.pointLocation({ x: _pt.x - _x, y: _pt.y + _y });
-			var _ne = map.pointLocation({ x: _pt.x + _x, y: _pt.y + _y });
-			var _se = map.pointLocation({ x: _pt.x + _x, y: _pt.y - _y });
-
-			var coords = [[
-				[ _sw['lon'], _sw['lat'] ],
-				[ _nw['lon'], _nw['lat'] ],
-				[ _ne['lon'], _ne['lat'] ],
-				[ _se['lon'], _se['lat'] ],
-				[ _sw['lon'], _sw['lat'] ]
-			]];
-
-			_geom['geometries'].push({
-				type : "Polygon",
-				coordinates: coords,
-				ima: 'magicpony',
-			});
-		}
-
-	}
 
 	// ok go!
 

@@ -170,14 +170,14 @@ function collect_headers(){
 
 function collect_dots(){
 
-	var locations = [];
-
 	var headers = collect_headers();
 
-	var points = new Array();	// geojson coordinates
-	var dots = new Array();		// geojson properties
+	var swlat = null;
+	var swlon = null;
+	var nelat = null;
+	var nelon = null;
 
-	$("#user_dots tbody tr").map(function(i, row){
+	var features = $("#user_dots tbody tr").map(function(i, row){
 
 		var dot = row2dot(row);
 
@@ -186,88 +186,49 @@ function collect_dots(){
 			lon: dot.longitude,
 		};
 
-		if (! isNaN(loc.lat) && ! isNaN(loc.lon)){
-			locations.push(loc);
-		}
-
-		points.push([ loc.lon, loc.lat ]);
-		dots.push(dot);
-	});
-
-	// We are collecting and storing all the dots in the
-	// properties key so that we can find and match their
-	// corresponding elements in the 'coordinates' bucket
-	// for doing onload events, etc.
-
-	var features = [{
-		'geometry' : {
-			'type' : 'MultiPoint',
-			'coordinates' : points,
-		},
-
-		'properties' : dots,
-	}];
-
-	return { 'locations': locations, 'features': features };
-}
-
-function calculate_extents(dots){
-
-	if (dots['locations'].length == 0){
-
-		return {
-			'bbox': [ { 'lat': -85, 'lon': -180 },	{ 'lat': 85, 'lon': 180 } ],
-			'center': { 'lat': 37.764862, 'lon': -122.419431 },
-		}
-	}
-
-	// figure out the extent and center point
-
-	var center = {lat: 0, lon: 0};
-
-	var swlat = null;
-	var swlon = null;
-	var nelat = null;
-	var nelon = null;
-
-	for (var i = 0; i < dots['locations'].length; i++){
-		var loc = dots['locations'][i];
-		center.lat += loc.lat;
-		center.lon += loc.lon;
-
 		swlat = (swlat) ? Math.min(swlat, loc.lat) : loc.lat;
 		swlon = (swlon) ? Math.min(swlon, loc.lon) : loc.lon;
 		nelat = (nelat) ? Math.max(nelat, loc.lat) : loc.lat;
 		nelon = (nelon) ? Math.max(nelon, loc.lon) : loc.lon;
-	}
 
-	var bbox = [
+		dot.is_interactive = true;
+
+		return {
+			'geometry' : {
+				'type' : 'Point',
+				'coordinates' : [ loc.lon, loc.lat ],
+			},
+
+			'properties' : dot,
+		};
+
+	});
+
+	var extent = [
 		{ lat: swlat, lon: swlon },
 		{ lat: nelat, lon: nelon },
 	];
 
-	center.lat /= dots['locations'].length;
-	center.lon /= dots['locations'].length;
+	var center = {
+		'lat' : swlat + ((nelat - swlat) / 2),
+		'lon' : swlon + ((nelon - swlon) / 2),
+	};
 
-	return { 'bbox': bbox, 'center': center };
+	return {
+		'features': features,
+		'extent' : extent,
+		'center' : center,
+	};
 }
 
 function draw_map_modestmaps(dots){
 
-	var extents = calculate_extents(dots);
-
-	if (! extents){
-		return;
-	}
-
-	var count = dots['locations'].length;
-
 	var mm = com.modestmaps;
 	var map = utils_modestmap('map');
 
-	if (count == 1){
+	if (dots.features.length == 1){
 
-		var center = extents['center'];
+		var center = dots['center'];
 		var zoom = 14;
 
 		var loc = new mm.Location(center['lat'], center['lon']);
@@ -276,11 +237,11 @@ function draw_map_modestmaps(dots){
 	}
 
 	else {
-		var bbox = utils_adjust_bbox(extents['bbox']);
+		var _extent = utils_adjust_bbox(dots['extent']);
 
 		var extent = [
-			new mm.Location(bbox[0]['lat'], bbox[0]['lon']),
-			new mm.Location(bbox[1]['lat'], bbox[1]['lon']),
+			new mm.Location(_extent[0]['lat'], _extent[0]['lon']),
+			new mm.Location(_extent[1]['lat'], _extent[1]['lon']),
 		];
 
 		map.setExtent(extent);
@@ -341,21 +302,15 @@ function draw_map_modestmaps(dots){
 
 function draw_map_polymaps(dots){
 
-	var extents = calculate_extents(dots);
-
-	if (! extents){
-		return;
-	}
-
 	var map = utils_polymap('map');
 
-	if (dots['locations'].length == 1){
-		map.center(extents['center']);
+	if (dots.features.length == 1){
+		map.center(dots.center);
 	}
 
 	else {
-		var bbox = utils_adjust_bbox(extents['bbox']);
-		map.extent(bbox);
+		var extent = utils_adjust_bbox(dots.extent);
+		map.extent(extent);
 	}
 
 	map.zoom(Math.floor(map.zoom()));

@@ -144,14 +144,13 @@ com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 
 		var f = features[i];
 
-		// Store these away for later use by the _circle, _line, etc.
-		// primitives that will try to pull out the corresponding data
-		// blob based on the index of the coordinate thing-y they're
-		// trying to render. At the moment this may still be a bit too
-		// dotspotting-specific an approach but let's start here and
-		// see what breaks! (20101207/straup)
+		var _more = {};
 
-		more['_properties'] = f['properties'];
+		for (key in more){
+		    _more[ key ] = more[ key ];
+		}
+
+		_more['properties'] = f['properties'];
 
 		var geom = (f.geometry.type == 'GeometryCollection') ? f.geometry.geometries : [ f.geometry ];
 		var count_geom = geom.length;
@@ -171,12 +170,12 @@ com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 					coords = [ coords ];
 				}
 
-				var d = this.drawPoints(coords, more);
+				var d = this.drawPoints(coords, _more);
 				drawn.push(d);
 			}
 
 			else if ((type == 'Polygon') || (type == 'MultiPolygon')){
-				var d = this.drawPolygons(coords, more);
+				var d = this.drawPolygons(coords, _more);
 				drawn.push(d);
 			}
 
@@ -186,7 +185,7 @@ com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 					coords = [ coords ];
 				}
 
-				var d = this.drawLines(coords, more);
+				var d = this.drawLines(coords, _more);
 				drawn.push(d);
 			}
 
@@ -342,9 +341,7 @@ com.modestmaps.Markers.prototype._actuallyDrawLines = function(lines, extent, mo
 			coords.push({ 'x': pt.x, 'y': pt.y });
 		}
 
-		var properties = (more['_properties'].length) ? more['_properties'][i] : more['_properties'];
-
-		var line = this._line(coords, properties, more);
+		var line = this._line(coords, more);
 		drawn.push(line);
 	}
 
@@ -375,9 +372,7 @@ com.modestmaps.Markers.prototype._actuallyDrawPolygons = function(polygons, exte
 			coords.push({ 'x': pt.x, 'y': pt.y });
 		}
 
-		var properties = (more['_properties'].length) ? more['_properties'][i] : more['_properties'];
-
-		var poly = this._polygon(coords, properties, more);
+		var poly = this._polygon(coords, more);
 		drawn.push(poly);
 	}
 
@@ -401,9 +396,7 @@ com.modestmaps.Markers.prototype._actuallyDrawPoints = function(points, extent, 
 		var pt = this.modestmap.locationPoint(points[i]);
 		var coords = { 'x': pt.x, 'y': pt.y };
 
-		var properties = (more['_properties'].length) ? more['_properties'][i] : more['_properties'];
-
-		var circle = this._circle(coords, properties, more)
+		var circle = this._circle(coords, more)
 		drawn.push(circle);
 	}
 
@@ -546,7 +539,7 @@ com.modestmaps.Markers.prototype._isContainedBy = function(loc, extent){
 
 // canned primitives (hey look! actual drawing and not just number crunching!!)
 
-com.modestmaps.Markers.prototype._polygon = function(coords, properties, more){
+com.modestmaps.Markers.prototype._polygon = function(coords, more){
 
 	var count = coords.length;
 
@@ -559,10 +552,10 @@ com.modestmaps.Markers.prototype._polygon = function(coords, properties, more){
 	path.push("Z");
 
 	var ln = this.canvas.path(path.join(""));
-	return this._decorate(ln, properties, more);
+	return this._decorate(ln, more);
 };
 
-com.modestmaps.Markers.prototype._line = function(coords, properties, more){
+com.modestmaps.Markers.prototype._line = function(coords, more){
 
 	var count = coords.length;
 
@@ -573,18 +566,18 @@ com.modestmaps.Markers.prototype._line = function(coords, properties, more){
 	}
 
 	var ln = this.canvas.path(path.join(""));
-	return this._decorate(ln, properties, more);
+	return this._decorate(ln, more);
 };
 
-com.modestmaps.Markers.prototype._circle = function(coords, properties, more){
+com.modestmaps.Markers.prototype._circle = function(coords, more){
 
 	var r = ((more) && (more['radius'])) ? more['radius'] : 8;
 
 	var c = this.canvas.circle(coords['x'], coords['y'], r);
-	return this._decorate(c, properties, more);
+	return this._decorate(c, more);
 };
 
-com.modestmaps.Markers.prototype._decorate = function(el, properties, more){
+com.modestmaps.Markers.prototype._decorate = function(el, more){
 
 	if ((more) && (more['attrs'])){
 
@@ -593,7 +586,7 @@ com.modestmaps.Markers.prototype._decorate = function(el, properties, more){
 	}
 
 	if ((more) && (more['onload'])){
-		more['onload'](el, properties);
+		more['onload'](el, more['properties']);
 	}
 
 	return el;

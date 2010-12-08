@@ -157,29 +157,9 @@ function utils_polymaps_assign_dot_properties(e){
 		var f = e.features[i];
 		var data = f.data;
 
-		// See this? We pass a around a single MultiPoint
-		// geoJSON blob when listing the dots for a sheet
-		// and a single Point blob otherwise. So the first
-		// thing we need to do is collect the elements and
-		// their corresponding (geoJSON) properties that
-		// need to be processed.
-
-		var to_process = new Array();
-
-		var multi_point = f.element.childElementCount;
-
-		if (multi_point){
-
-			for (var j = 0; j < multi_point; j++){
-				var el = f.element.children[j];
-				var props = data.properties[j];
-				to_process.push([ el, props ]);
-			}
-		}
-
-		else {
-			to_process.push([ f.element, data.properties ]);
-		}
+		var to_process = new Array(
+			[ f.element, data.properties ]
+		);
 
 		// Okay! Go!!
 
@@ -200,14 +180,15 @@ function utils_polymaps_assign_dot_properties(e){
 			el.setAttribute('r', 8);
 
 			if (props && props.id){
+
 		    		el.setAttribute('id', 'dot_' + props.id);
 
-		    		var enc_id = encodeURIComponent(props.id);
+				if (props.is_interactive){
+		    			var enc_id = encodeURIComponent(props.id);
 
-				if (multi_point){
-		    			el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
-		    			el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
-		    			el.setAttribute('onclick', 'dot_onclick(' + enc_id + ');return false');
+	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
+	    				el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
+	    				el.setAttribute('onclick', 'dot_onclick(' + enc_id + ');return false');
 				}
 			}
 
@@ -231,55 +212,36 @@ function utils_polymaps_assign_sheet_properties (e){
 		return;
 	}
 
-	var tile = e.tile;
-
 	for (var i=0; i < count; i++){
 
-		var ftr = e.features[i];
-		var el = ftr.element;
+		var f = e.features[i];
+		var data = f.data;
 
-		var data = ftr.data;
-		var geom = data.geometry;
+		var to_process = new Array(
+			[ f.element, data.properties ]
+		);
 
-		el.setAttribute('class', 'sheet');
+		// Okay! Go!!
 
-		// this is who I am. who are you?
+		var count_process = to_process.length;
 
-		if (data.properties && data.properties.id){
+		for (var k = 0; k < count_process; k ++){
 
-		    var enc_id = encodeURIComponent(data.properties.id);
+			var el = to_process[k][0];
+			var props = to_process[k][1];
 
-		    el.setAttribute('id', 'sheet_' + data.properties.id);
-		    el.setAttribute('onmouseover', 'sheet_onmouseover(' + enc_id + ');return false');
-		    el.setAttribute('onmouseout', 'sheet_onmouseout(' + enc_id + ');return false');
-		}
+			el.setAttribute('class', 'sheet');
 
-		// account for multigeometries
+			if (props && props.id){
 
-		if (geom.geometries){
+				var enc_id = encodeURIComponent(props.id);
 
-		    for (var j=0; j < geom.geometries.length; j++){
-			var g = geom.geometries[j];
-
-			if ((g.ima) && (_dotspotting.magicpony)){
-
-			    if ((g.ima == 'magicpony') && (tile.zoom > 9)){
-			    	el.childNodes[j].setAttribute("style", "display:none;");
-			    }
-
-			    else if ((g.ima == 'sheet') && (tile.zoom < 10)){
-			    	el.childNodes[j].setAttribute("style", "display:none;");
-			    }
-
-			    else {
-			    	el.childNodes[j].setAttribute("class", g.ima);
-			    }
+				el.setAttribute('id', 'sheet_' + data.properties.id);
+				el.setAttribute('onmouseover', 'sheet_onmouseover(' + enc_id + ');return false');
+				el.setAttribute('onmouseout', 'sheet_onmouseout(' + enc_id + ');return false');
 			}
 
-		    }
 		}
-
-		// happy happy
 	}
 }
 
