@@ -52,7 +52,7 @@
 
 			<td class="sheetslist sheetslist_label">
 			{if $sheet.label}
-				<a href="{$sheet|@urls_url_for_sheet}">{$sheet.label|escape}</a>{else}<span class="untitled">untitled</span>{/if}
+				<a href="{$sheet|@urls_url_for_sheet}">{$sheet.label|escape}</a>{else}<span class="untitled"><a href="{$sheet|@urls_url_for_sheet}">untitled</a></span>{/if}
 			</td>
 
 			{if $is_own}
