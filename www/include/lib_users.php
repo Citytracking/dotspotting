@@ -113,17 +113,10 @@
 			return $rsp;
 		}
 
-		#
-		# check to see if the application (outside of
-		# flamework) has defined a callback function
-		# to run once the user has been 'deleted' in
-		# the database.
-		#
+		# Hey look! A Dotspotting-ism !
 
-		if (function_exists('users_delete_user_callback')){
-			users_reload_user($user);
-			$rsp['callback'] = users_delete_user_callback($user);
-		}
+		users_reload_user($user);
+		$sheets_rsp = sheets_delete_sheets_for_user($user);
 
 		return $rsp;
 	}
@@ -318,4 +311,5 @@
 	}
 
 	#################################################################
+
 ?>

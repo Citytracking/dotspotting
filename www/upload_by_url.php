@@ -4,10 +4,9 @@
 	# $Id$
 	#
 
-	# HEY LOOK! THIS STILL DOESN'T HAVE ANY KIND OF SANE INPUT VALIDATION.
-
 	include("include/init.php");
 	loadlib("import");
+	loadlib("utils");
 
 	#################################################################
 
@@ -53,7 +52,7 @@
 	# Validate $url here
 	#
 
-	$parsed = dotspotting_parse_url($url);
+	$parsed = utils_parse_url($url);
 	$ok = $parsed['ok'];
 
 	$error_details = '';
