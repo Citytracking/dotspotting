@@ -395,7 +395,7 @@
 		$sql .= " ORDER BY created DESC LIMIT {$enc_limit}";
 		*/
 
-		$sql = "SELECT * FROM SheetsLookup WHERE deleted=0 ORDER BY created DESC LIMIT {$limit}";
+		$sql = "SELECT * FROM SheetsLookup WHERE deleted=0 AND count_dots_public > 0 ORDER BY created DESC LIMIT {$limit}";
 		$rsp = db_fetch($sql);
 
 		if (! $rsp['ok']){
@@ -451,10 +451,12 @@
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);
 		$sheets = array();
 
-		foreach ($rsp['rows'] as $row){
+		if ($rsp['ok']){
 
-			sheets_load_details($row, $viewer_id, array('load_extent' => 1));
-			$sheets[] = $row;
+			foreach ($rsp['rows'] as $row){
+				sheets_load_details($row, $viewer_id, array('load_extent' => 1));
+				$sheets[] = $row;
+			}
 		}
 
 		return $sheets;
@@ -466,12 +468,23 @@
 
 		$counts = dots_count_dots_for_sheet($sheet);
 
-		$update = array(
+		$sheet_update = array(
 			'count_dots' => $counts['total'],
 			'count_dots_public' => $counts['public'],
 		);
 
-		return sheets_update_sheet($sheet, $update);
+		$lookup_update = array(
+			'count_dots_public' => $counts['public'],
+		);
+
+		$sheet_rsp = sheets_update_sheet($sheet, $sheet_update);
+		$lookup_rsp = sheets_lookup_update($sheet, $lookup_update);
+
+		$ok = ($sheet_rsp['ok'] && $lookup_rsp['ok']) ? 1 : 0;
+
+		return array(
+			'ok' => $ok,
+		);
 	}
 
 	#################################################################

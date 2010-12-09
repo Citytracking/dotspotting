@@ -1,0 +1,6 @@
+{capture assign="page_title"}This sheet has been deleted{/capture}
+{include file="inc_head.txt"}
+
+<h2>This sheet has been deleted.</h2>
+
+{include file="inc_foot.txt"}
