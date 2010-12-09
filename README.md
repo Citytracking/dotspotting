@@ -15,7 +15,7 @@ Once a stable baseline for the code and the architecture has been established Do
 
 Right now, the version number for Dotspotting is: **"Super Alpha-Beta Disco-Ball"**.
 
-Also, if you haven't already read the [the introductory blog post at Dotspotting](http://content.stamen.com/working_on_the_knight_moves) you should do that now.
+Also, if you haven't already read the [the introductory blog post about Dotspotting](http://content.stamen.com/working_on_the_knight_moves) you should do that now.
 
 Dependencies
 --
@@ -51,7 +51,7 @@ Dotspotting does not so much piggyback on a traditional framework as it does hol
 
 Flamework is the mythical ("mythical") PHP framework developed and used by [the engineering team at Flickr](http://code.flickr.com). It is gradually being rewritten, f om scratch, as an open-source project by [former Flickr engineers](http://github.com/exflickr).
 
-**We use our own fork of Flamework**, but pull and push changes to the main repository as appropriate. The Citytracking fork of Flamework is then copied directly in to the Dotspotting include directory. Earlier versions of the (Dotspotting) source code would load Flamework as [Git submodule](http://speirs.org/blog/2009/5/11/understanding-git-submodules.html) but the nuisance and hoop-jumping factor required to set this up eventually outweighed any imagined benefits. The plan is to continue to track changes on the exflickr branch of Flamework and update Dotspotting accordingly and to do the same in the other direction as well. 
+**We use our own fork of Flamework**, but pull and push changes to the main repository as appropriate. The Citytracking fork of Flamework is then copied directly in to the Dotspotting include directory. Earlier versions of Dotspotting would load Flamework as [Git submodule](http://speirs.org/blog/2009/5/11/understanding-git-submodules.html) but the nuisance and hoop-jumping factor required to set this up eventually outweighed any imagined benefits. The plan is to continue to track changes on the exflickr branch of Flamework and update Dotspotting accordingly (and to do the same in the other direction as well).
 
 If you just want to run Dotspotting that's really all you need to know, right now. If you want to get a better understanding of what's going on under the hood and to glean the relationship between Dotspotting and Flamework you should look at the [README.FLAMEWORK.md](http://github.com/citytracking/dotspotting/blob/master/README.FLAMEWORK.md) document.
 
