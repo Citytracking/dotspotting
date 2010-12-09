@@ -10,6 +10,7 @@
 
 		$map = array(
 			'text/csv' => 'csv',
+			'application/vnd.google-earth.kml+xml' => 'kml',
 		);
 
 		if ($key_by_extension){

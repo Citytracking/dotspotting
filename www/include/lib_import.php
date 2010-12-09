@@ -36,9 +36,11 @@
 		# store the data
 		#
 
+		$label = ($more['label']) ? $more['label'] : $process_rsp['label'];
+
 		$import_more = array(
 			'return_dots' => $more['return_dots'],
-			'label' => $more['label'],
+			'label' => $label,
 			'mark_all_private' => $more['mark_all_private'],
 			'mime_type' => $file['type'],
 		);
@@ -246,6 +248,14 @@
 				'error' => 'failed to open file'
 			);
 		}
+
+		#
+		# Store the $file hash we're passing around. It may be the case
+		# that some import related libraries do not have functions for
+		# working with filehandles (DOMDocument for example...wtf?)
+		#
+
+		$more['file'] = $file;
 
 		#
 		# Okay, now figure what we need to load and call. We
