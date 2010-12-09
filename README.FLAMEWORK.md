@@ -76,7 +76,7 @@ Here is a simple bare-bones example of how it all fits together:
 The only "rules" here are:
 
 1. Making sure you load `include/init.php`
-2. The part where `init.php` (specifically the [Flamework init.php file](https://github.com/Citytracking/flamework/blob/master/include/init.php)) handles authentication checking and assigns logged in users to the global `$cfg` variable (it also creates and assigns a global `$smarty` object)
+2. The part where `init.php` handles authentication checking and assigns logged in users to the global `$cfg` variable (it also creates and assigns a global `$smarty` object)
 3. The naming conventions for shared libraries, specifically: `lib_SOMETHING.php` which is imported as `loadlib("SOMETHING")`.
 4. Functions defined in libraries are essentially "namespaced".
 
@@ -153,18 +153,3 @@ Solr is a open source document indexer written in Java and is principally used a
 + **[PostGIS](http://postgis.refractions.net/)**
 
 PostGIS a "proper" spatial database that can do amazing things so it's a no-brainer in so far as Dotspotting is concerned. It is also not always the easiest tool to install and maintain and in many cases is probably overkill for the problems people are trying to use Dotspotting to solve which is why, for the time being, it is not the default choice.
-
-Making Changes to Flamework
---
-
-**We use our own fork of Flamework**, but pull and push changes to the main repository as appropriate. For the time being, our fork of Flamework sits in `/ext/flamework` as a submodule (hence the submodule lines in the installation instructions).
-
-Sometimes you might have to make some changes to Flamework. Making changes to git submodules can be a bit strange, so let's explain:
-
-1. Change into the `/ext/flamework` directory.
-2. Submodules aren't attached to any branch - they just point to a specific revision - so we need to change onto a branch to stage our commits. `git checkout -b master`
-3. Commit your changes.
-4. Push them up to Github - make sure you're doing this from the /ext/flamework directory.
-5. Now we need to point the Dotspotting to the new revision of the Flamework submodule that we just committed. Change back into the root Dotspotting directory and commit the change to /ext/flamework that you see.
-6. Push that up to master.
-7. Now everyone is happy and no-one has any detached heads.
