@@ -1,18 +1,4 @@
-{capture assign="page_title"}
-{if $is_own}
-	{if $sheet.label}
-"{$sheet.label|escape}", a sheet of dots by you!
-	{else}
-An unnamed sheet of dots by you!
-	{/if}
-{else}
-	{if $sheet.label}
-"{$sheet.label|escape}", a sheet of dots by {$owner.username|escape}
-	{else}
-An unnamed sheet of dots by {$owner.username|escape}
-	{/if}
-{/if}
-{/capture}
+{capture assign="page_title"}This sheet has been deleted{/capture}
 {include file="inc_head.txt"}
 
 <h2>This sheet has been deleted.</h2>
