@@ -1,22 +1,29 @@
 <?php
 
+	# This file has been copied from the Citytracking fork of flamework.
+	# It has not been forked, or cloned or otherwise jiggery-poked, but
+	# copied: https://github.com/Citytracking/flamework
 	#
-	# HEY LOOK! THESE ARE THE *DEFAULT* CONFIG SETTINGS FOR 
-	# DOTSPOTTING. IF YOU NEED TO CHANGE THINGS YOU SHOULD DO
-	# IT OVER IN: dotspotting/config/dotspotting.php
-	#
-	# SEE ALSO: dotspotting/README.CONFIG.md
-	#
+	# It has also been *modified* to include Dotspotting specific stuff.
+
+	#############################################################
 
 	#
-	# We assume this is declared in flamework/include/config.php
-	# $GLOBALS['cfg'] = array();
+	# You should NOT be editing this file. You should instead be editing
+	# the config file found in dotspotting/config/dotspotting.php. See also:
+	# https://github.com/Citytracking/dotspotting/blob/master/README.CONFIG.md
 	#
+
+	$GLOBALS['cfg'] = array();
 
 	$GLOBALS['cfg']['dotspotting_version'] = '0.0.0';	# see also: http://semver.org/
-	$GLOBALS['cfg']['flamework_skip_init_config'] = 1;
 
-	$GLOBALS['cfg']['site_disabled'] = 0;
+	#
+	# Things you might want to do quickly
+	#
+
+	$GLOBALS['cfg']['disable_site'] = 0;
+	$GLOBALS['cfg']['show_show_header_message'] = 0;
 
 	#
 	# Feature flags
@@ -37,6 +44,8 @@
 
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
 	$GLOBALS['cfg']['enable_feature_search_export'] = 0;
+
+	$GLOBALS['cfg']['enable_feature_http_prefetch'] = 0;
 
 	$GLOBALS['cfg']['enable_feature_magicwords'] = array(
 
@@ -62,6 +71,26 @@
 	);
 
 	#
+	# God auth
+	#
+
+	$GLOBALS['cfg']['auth_enable_poormans_god_auth'] = 0;
+
+	# $GLOBALS['cfg']['auth_poormans_god_auth'] = array(
+	# 	xxx => array(
+	# 		'roles' => array( 'staff' ),
+	# 	),
+	# );
+
+	#
+	# Crypto stuff
+	#
+
+	$GLOBALS['cfg']['crypto_cookie_secret'] = 'READ-FROM-CONFIG';
+	$GLOBALS['cfg']['crypto_password_secret'] = 'READ-FROM-CONFIG';
+	$GLOBALS['cfg']['crypto_crumb_secret'] = 'READ-FROM-CONFIG';
+
+	#
 	# Database stuff
 	#
 
@@ -76,17 +105,6 @@
 	$GLOBALS['cfg']['db_enable_poormans_slaves'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_ticketing'] = 1;
 	$GLOBALS['cfg']['db_enable_poormans_federation'] = 1;
-
-	#
-	# See also: lib_dots_derive.php
-	#
-
-	$GLOBALS['cfg']['dots_derived_from'] = array(
-		0 => 'user',
-		1 => 'dotspotting',
-		2 => 'geocoded (yahoo)',
-		3 => 'geohash',
-	);
 
 	#
 	# API stuff
@@ -114,17 +132,15 @@
 	$GLOBALS['cfg']['abs_root_url'] = '';
 	$GLOBALS['cfg']['safe_abs_root_url'] = '';
 
+	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
+	$GLOBALS['cfg']['auth_cookie_name'] = 'a';
+
 	$GLOBALS['cfg']['maptiles_template_url'] = 'http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/26490/256/{Z}/{X}/{Y}.png';
 	$GLOBALS['cfg']['maptiles_template_hosts'] = array( 'a.', 'b.', 'c.' );
 
 	$GLOBALS['cfg']['pagination_per_page'] = 25;
 	$GLOBALS['cfg']['pagination_spill'] = 5;
-
-	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
-	$GLOBALS['cfg']['auth_cookie_name'] = 'a';
-
-	$GLOBALS['cfg']['crypto_cookie_secret'] = 'READ-FROM-CONFIG';
-	$GLOBALS['cfg']['crypto_password_secret'] = 'READ-FROM-CONFIG';
+	$GLOBALS['cfg']['pagination_assign_smarty_variable'] = 1;
 
 	$GLOBALS['cfg']['import_max_records'] = 1000;
 	$GLOBALS['cfg']['import_by_url_do_head'] = 1;
@@ -135,8 +151,6 @@
 	$GLOBALS['cfg']['import_by_url_blacklist'] = '';
 	$GLOBALS['cfg']['import_by_url_whitelist'] = '';
 
-	$GLOBALS['cfg']['show_show_header_message'] = 0;
-
 	#
 	# Email
 	#
@@ -146,9 +160,39 @@
 	$GLOBALS['cfg']['auto_email_args']	= 'READ-FROM-CONFIG';
 
 	#
+	# Geo
+	#
+
+	$GLOBALS['cfg']['geo_geocoding_service'] = 'yahoo';
+	$GLOBALS['cfg']['geo_geocoding_yahoo_apikey'] = '';
+
+	# See also: lib_dots_derive.php
+
+	$GLOBALS['cfg']['dots_derived_from'] = array(
+		0 => 'user',
+		1 => 'dotspotting',
+		2 => 'geocoded (yahoo)',
+		3 => 'geohash',
+	);
+
+	#
 	# Third-party API keys
 	#
 
 	$GLOBALS['cfg']['flickr_apikey'] = 'READ-FROM-CONFIG';
+
+	#
+	# Things you can probably not worry about
+	#
+
+	$GLOBALS['cfg']['user'] = null;
+
+	$GLOBALS['cfg']['smarty_compile'] = 1;
+
+	$GLOBALS['cfg']['http_timeout'] = 3;
+
+	$GLOBALS['cfg']['check_notices'] = 1;
+
+	$GLOBALS['cfg']['db_profiling'] = 0;
 
 ?>

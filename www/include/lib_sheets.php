@@ -451,10 +451,12 @@
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);
 		$sheets = array();
 
-		foreach ($rsp['rows'] as $row){
+		if ($rsp['ok']){
 
-			sheets_load_details($row, $viewer_id, array('load_extent' => 1));
-			$sheets[] = $row;
+			foreach ($rsp['rows'] as $row){
+				sheets_load_details($row, $viewer_id, array('load_extent' => 1));
+				$sheets[] = $row;
+			}
 		}
 
 		return $sheets;
