@@ -48,6 +48,7 @@ CREATE TABLE `SheetsLookup` (
   `created` int(10) unsigned NOT NULL,
   `last_modified` int(10) unsigned NOT NULL,
   `deleted` int(10) unsigned NOT NULL,
+  `count_dots_public` int(11) unsigned NOT NULL,
   KEY `by_id` (`sheet_id`),
   KEY `by_deleted` (`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
