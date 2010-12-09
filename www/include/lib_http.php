@@ -5,7 +5,7 @@
 
 	# This file has been copied from the Citytracking fork of flamework.
 	# It has not been forked, or cloned or otherwise jiggery-poked, but
-	# copied: https://github.com/Citytracking/flamework
+	# copied: https://github.com/Citytracking/flamework (20101209/straup)
 
 	########################################################################
 
@@ -35,15 +35,12 @@
 		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 		curl_setopt($ch, CURLOPT_HEADER, true);
 
-		$method = 'GET';
-
 		if ($more['head']){
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
 			curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-			$method = 'HEAD';
 		}
 
-		return _http_request($method, $url, $ch);
+		return _http_request($ch, $url, $more);
 	}
 
 	########################################################################
@@ -65,12 +62,12 @@
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
 
-		return _http_request('POST', $url, $ch);
+		return _http_request($ch, $url, $more);
 	}
 
 	########################################################################
 
-	function _http_request($method, $url, $ch){
+	function _http_request($ch, $url, $more=array()){
 
 		#
 		# execute request
@@ -100,6 +97,9 @@
 		$headers_in = http_parse_headers($head, '_status');
 		$headers_out = http_parse_headers($head_out, '_request');
 
+		preg_match("/^([A-Z]+)\s/", $headers_out['_request'], $m);
+		$method = $m[1];
+
 		log_notice("http", "{$method} {$url}", $end-$start);
 
 		#
@@ -108,7 +108,7 @@
 
 		$status = $info['http_code'];
 
-		if ($method != 'POST' && $more['follow_redirects'] && ($status == 301 || $status == 302)){
+		if (in_array($method, array('GET', 'POST')) && $more['follow_redirects'] && ($status == 301 || $status == 302)){
 
 			$more['follow_redirects'] ++;	# should we check to see that we're not trapped in a loop?
 
