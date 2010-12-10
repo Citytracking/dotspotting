@@ -43,6 +43,8 @@ RewriteBase /
 
 RewriteRule	^rest/?$		api_rest.php?%{QUERY_STRING} [L]
 
+RewriteRule	^slimjim/?$		slimjim.php?%{QUERY_STRING} [L]
+
 # Login stuff
 	
 RewriteRule  ^signup/?$			signup.php?%{QUERY_STRING} [L]

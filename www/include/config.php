@@ -53,6 +53,10 @@
 			'id' => 1,
 		),
 
+		'foursquare' => array(
+			'venue' => 1,
+		),
+
 		'geonames' => array(
 			'id' => 0,
 		),

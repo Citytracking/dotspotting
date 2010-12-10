@@ -209,6 +209,12 @@ th {
     font-style:italic;
 }
 
+.foursquare_venue {
+    margin-top: 10px;
+    font-size:small;
+    font-style:italic;
+}
+
 .oam_map {
     margin-top: 10px;
     font-size:small;

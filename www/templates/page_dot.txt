@@ -27,6 +27,9 @@ A dot by {$cfg.user.username|escape}
 {if $cfg.enable_feature_magicwords.yahoo.woeid}
 	{include file="inc_dot_magicwords_yahoo_woeid.txt"}
 {/if}
+{if $cfg.enable_feature_magicwords.foursquare.venue}
+	{include file="inc_dot_magicwords_foursquare_venue.txt"}
+{/if}
 {/capture}
 {include file="inc_head.txt"}
 
