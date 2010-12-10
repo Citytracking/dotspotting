@@ -12,6 +12,8 @@
 		fclose($fh);
 
 		$doc = new DOMDocument();
+		$doc->preserveWhiteSpace = false;
+
 		$doc->load($more['file']['path']);
 
 		$xpath = new DOMXpath($doc);
@@ -23,10 +25,12 @@
 			$label = sanitize($name->item(0)->nodeValue, 'str');
 		}
 
-		# Grnn.... why does this work in Perl and not in magic happy PHP ?
-		# Do not want to write a state parser... (20101209/straup)
+		# Grnn, why does this work in Perl and not in magic happy PHP ?
 		#
 		# 110 ->perl -MXML::XPath -e 'my $xp = XML::XPath->new("filename" => "flickr.kml"); my $n = 0; map { $n++ } $xp->findnodes("*//Placemark");';
+		#
+		# It turns out to be namespace nonsense... stopping here and
+		# gearing up to just write a state parser... (20101209/straup)
 
 		$nodes = $xpath->query("*//Placemark");
 
@@ -202,4 +206,5 @@
 	}
 
 	#################################################################
+
 ?>
