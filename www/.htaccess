@@ -95,3 +95,4 @@ RewriteRule ^nearby/([a-z0-9]+)(/page([0-9]+))?/?$		search.php?gh=$1&nearby=1&pa
 
 RewriteRule ^about/?$					about.php?%{QUERY_STRING} [L]
 RewriteRule ^faq/?$					faq.php?%{QUERY_STRING} [L]
+RewriteRule ^magicwords/?$				magicwords.php?%{QUERY_STRING} [L]

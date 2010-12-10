@@ -91,15 +91,7 @@ latitude,longitude,perms,created,title,address
 
 <p class="tx1">At the moment, support is available for the following magic word keys:</p>
 
-<ul class="faq_magicwords">
-
-	<li><code>flickr:id</code> &#8212; to lookup photo information (including thumbnails) from <a href="http://www.flickr.com/">Flickr</a>.</li>
-
-	<li><code>yahoo:woeid</code> &#8212; to lookup place names using the <a href="http://developer.yahoo.com/geo/geoplanet/">Yahoo! GeoPlanet</a> service. <span style="font-style:italic;">We plan to add similar functionality for <code><a href="http://www.geonames.org/">geonames:id</a></code> and other location services shortly.</span></li>
-
-	<li><code>walkingpapers:scanid</code> &#8212; to lookup map information (including thumbnails) from <a href="http://www.walking-papers.org/">Walking Papers</a>.</li>
-
-</ul>
+{include file="inc_magicwords_enabled.txt"}
 
 <a name="source"></a>
 
