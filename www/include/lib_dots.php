@@ -876,19 +876,19 @@
 		else {
 
 			if (! isset($data['latitude'])){
-				return array( 'ok' => 0, 'error' => 'missing latitude' );
+				return array( 'ok' => 0, 'error' => 'Missing latitude.' );
 			}
 
 			if (! isset($data['longitude'])){
-				return array( 'ok' => 0, 'error' => 'missing longitude' );
+				return array( 'ok' => 0, 'error' => 'Missing longitude.' );
 			}
 
 			if (! geo_utils_is_valid_latitude($data['latitude'])){
-				return array( 'ok' => 0, 'error' => 'invalid latitude' );
+				return array( 'ok' => 0, 'error' => "Invalid latitude: '{$data['latitude']}'" );
 			}
 
 			if (! geo_utils_is_valid_longitude($data['longitude'])){
-				return array( 'ok' => 0, 'error' => 'invalid longitude' );
+				return array( 'ok' => 0, 'error' => "Invalid longitude: '{$data['longitude']}'" );
 			}
 		}
 

@@ -16,15 +16,33 @@
 		$field_names = (is_array($more['field_names'])) ? $more['field_names'] : null;
 
 		$errors = array();
-		$ln = 1;
+		$record = 0;
 
-		while ($row = fgetcsv($fh)){
+		while (! feof($fh)){
+
+			$record ++;
+
+			if (($more['max_records']) && ($record > $more['max_records'])){
+				break;
+			}
+
+			$ln = trim(fgets($fh));
+
+			if (! $ln){
+				continue;
+			}
+
+			if (preg_match("/^#/", $ln)){
+				continue;
+			}
+
+			$row = str_getcsv($ln);
 
 			if (! $row){
 				continue;
 			}
 
-			if (($ln === 1) && (! $field_names)){
+			if (($record === 1) && (! $field_names)){
 
 				foreach ($row as $col){
 					$field_names[] = strtolower($col);
@@ -51,7 +69,7 @@
 
 						return array(
 							'ok' => 0,
-							'error' => 'one of more field names failed validation',
+							'error' => "the field name '{$raw}' failed validation",
 						);
 					}
 
@@ -77,22 +95,13 @@
 				if (($raw) && (! $clean)){
 
 					$errors[] = array(
-						'record' => $ln,
-						'error' => "invalid input for the {$field_names[$i]} column",
+						'record' => $record,
+						'error' => "invalid input for the '{$field_names[$i]}' column",
 					);
 				}
 			}
 
 			$data[] = $tmp;
-
-			#
-
-			$ln ++;
-
-			if (($more['max_records']) && ($ln > $more['max_records'])){
-				break;
-			}
-
 		}
 
 		fclose($fh);

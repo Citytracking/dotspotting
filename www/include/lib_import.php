@@ -318,7 +318,7 @@
 					'errors' => array(array(
 						'error' => $rsp['error'],
 						'record' => $record,
-					))
+					)),
 				);
 			}
 
