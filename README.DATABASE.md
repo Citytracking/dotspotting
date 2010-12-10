@@ -1,7 +1,7 @@
 The database model
 --
 
-**By default Dotspotting does not require that it be run under a fully-federated database system.** It takes advantage of Flamework's ability to run in "poor man's federated" mode which causes the database libraries to act as though there are multiple database clusters when there's only really on. Specifically, all the various databases are treated as though they live in the `db_main` cluster. The goal is to enable (and ensure) that when a given installation of Dotspotting outgrows a simple one or two machine setup that it can easily be migrated to a more robust system with a minimum of fuss.
+**By default Dotspotting does not require that it be run under a fully-federated database system.** It takes advantage of Flamework's ability to run in "poor man's federated" mode which causes the database libraries to act as though there are multiple database clusters when there's only really one. Specifically, all the various databases are treated as though they live in the `db_main` cluster. The goal is to enable (and ensure) that when a given installation of Dotspotting outgrows a simple one or two machine setup that it can easily be migrated to a more robust system with a minimum of fuss.
 
 Examples of both a fully federated and "poorman's" database setup are included below. These are the clusters that Flamework (and by extension Dotspotting) defines:
 

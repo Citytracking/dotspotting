@@ -53,12 +53,12 @@ Feature Flags
 
 	$GLOBALS['cfg']['enable_feature_magicwords'] = array(
 
-		'geonames' => array(
-			'id' => 0,
-		),
-
 		'flickr' => array(
 			'id' => 1,
+		),
+
+		'geonames' => array(
+			'id' => 0,
 		),
 
 		'yahoo' => array(

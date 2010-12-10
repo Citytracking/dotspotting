@@ -104,7 +104,7 @@ The database model
 
 Flamework assumes a federated model with all the various user data spread across a series of databases, or "clusters". For each cluster there are a series of corresponding helper functions defined in `lib_db.php`.
 
-**By default Dotspotting does not require that it be run under a fully-federated database system.** It takes advantage of Flamework's ability to run in "poor man's federated" mode which causes the database libraries to act as though there are multiple database clusters when there's only really on. Specifically, all the various databases are treated as though they live in the `db_main` cluster. The goal is to enable (and ensure) that when a given installation of Dotspotting outgrows a simple one or two machine setup that it can easily be migrated to a more robust system with a minimum of fuss.
+**By default Dotspotting does not require that it be run under a fully-federated database system.** It takes advantage of Flamework's ability to run in "poor man's federated" mode which causes the database libraries to act as though there are multiple database clusters when there's only really one. Specifically, all the various databases are treated as though they live in the `db_main` cluster. The goal is to enable (and ensure) that when a given installation of Dotspotting outgrows a simple one or two machine setup that it can easily be migrated to a more robust system with a minimum of fuss.
 
 For complete details on how to set up and configure your database(s) for Dotspotting please consult the [README.DATABASE.md](https://github.com/Citytracking/dotspotting/blob/master/README.DATABASE.md) document.
 
