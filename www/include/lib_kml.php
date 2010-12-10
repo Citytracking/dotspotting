@@ -23,7 +23,16 @@
 			$label = sanitize($name->item(0)->nodeValue, 'str');
 		}
 
-		$nodes = $xpath->query("/kml/Folder/Placemark");
+		# Grnn.... why does this work in Perl and not in magic happy PHP ?
+		# Do not want to write a state parser... (20101209/straup)
+		#
+		# 110 ->perl -MXML::XPath -e 'my $xp = XML::XPath->new("filename" => "flickr.kml"); my $n = 0; map { $n++ } $xp->findnodes("*//Placemark");';
+
+		$nodes = $xpath->query("*//Placemark");
+
+		if (! $nodes->length){
+			return array( 'ok' => 0, 'error' => 'Unable to locate any places' );
+		}
 
 		$data = array();
 		$record = 1;
