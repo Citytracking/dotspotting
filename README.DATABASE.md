@@ -1,7 +1,9 @@
 The database model
 --
 
-Dotspotting (read: Flamework) assumes a federated model with all the various user data spread across a series of databases, or "clusters". For each cluster there are a series of corresponding helper functions defined in `lib_db.php`. As of this writing the following clusters are defined:
+**By default Dotspotting does not require that it be run under a fully-federated database system.** It takes advantage of Flamework's ability to run in "poor man's federated" mode which causes the database libraries to act as though there are multiple database clusters when there's only really on. Specifically, all the various databases are treated as though they live in the `db_main` cluster. The goal is to enable (and ensure) that when a given installation of Dotspotting outgrows a simple one or two machine setup that it can easily be migrated to a more robust system with a minimum of fuss.
+
+Examples of both a fully federated and "poorman's" database setup are included below. These are the clusters that Flamework (and by extension Dotspotting) defines:
 
 + **db_main**
 
@@ -58,7 +60,7 @@ Example Setup (simple)
 Example Setup (fancy)
 --
 
-**It is worth noting that Flamework is still not actually set up for multiple shards. Specifically, the code for hashing a user to more than a single shard hasn't been written yet. Patches are welcome :D**
+**It is worth noting that Flamework is still not actually set up for multiple shards. Specifically, the code for hashing a user to more than a single shard hasn't been written yet. [Patches are welcome](https://github.com/Citytracking/dotspotting/blob/master/www/include/lib_users.php) :D**
 
 	#
 	# Here's an example of a 'properly' federated system. This just means any set of MySQL databases segregated
