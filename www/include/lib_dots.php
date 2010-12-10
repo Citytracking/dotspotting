@@ -9,6 +9,7 @@
 	loadlib("dots_derive");
 	loadlib("dots_lookup");
 	loadlib("dots_search");
+	loadlib("dots_extras");
 
 	loadlib("geo_utils");
 
@@ -143,6 +144,7 @@
 		$id = dbtickets_create(64);
 
 		if (! $id){
+
 			return array(
 				'ok' => 0,
 				'error' => 'Ticket server failed',
@@ -209,15 +211,13 @@
 			'sheet_id' => $sheet['id'],
 			'perms' => $perms,
 		);
-					
+
+		# Always store created date in the user Sheets table; it's
+		# not clear how this relates/works with the dots extras
+		# stuff yet (20101210/straup)
+
 		$to_denormalize = array(
 			'created',
-
-			# Maybe on these but not. Maybe, as in
-			# for sorting but that might be easier
-			# in JS? (20101120/straup)
-			# 'location',
-			# 'type',
 		);
 
 		foreach ($to_denormalize as $key){
@@ -228,7 +228,27 @@
 		}
 
 		#
-		# Add any "extras"
+		# Dots extras
+		#
+
+		if (($GLOBALS['cfg']['enable_feature_dots_extras']) && ($more['dots_extras'])){
+
+			$extras = explode(",", $more['dots_extras'], $GLOBALS['cfg']['dots_extras_max_extras']);
+
+			foreach ($extras as $field){
+
+				$field = trim($field);
+
+				if (! isset($data[$field])){
+					continue;
+				}
+
+				$extras_rsp = dots_extras_create($dot, $field, $extras[$field]);
+			}
+		}
+
+		#
+		# Store any remaining fields in a big old JSON blob
 		#
 
 		$details = array();

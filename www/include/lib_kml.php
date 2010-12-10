@@ -47,8 +47,12 @@
 		$data = array();
 		$record = 1;
 
+		# How to recoginize, store and index these as internal fields without
+		# a) destroying user data b) conveying to the user that these will
+		# automagically index (read: don't worry about listing them as dots_extras)
+		# (20101210/straup)
+
 		$labels_map = array(
-			'name' => 'title',
 			'published' => 'created',
 			'visibility' => 'perms',
 		);
@@ -125,10 +129,6 @@
 
 				else {
 					$value = $value['#text'];
-				}
-
-				if (isset($labels_map[$key])){
-					$key = $labels_map[$key];
 				}
 
 				$rsp = _kml_sanitize($key, $value);

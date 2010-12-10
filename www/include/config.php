@@ -33,6 +33,8 @@
 	$GLOBALS['cfg']['enable_feature_import'] = 1;
 	$GLOBALS['cfg']['enable_feature_import_by_url'] = 0;
 
+	$GLOBALS['cfg']['enable_feature_dots_extras'] = 0;
+
 	$GLOBALS['cfg']['enable_feature_api'] = 1;
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;
@@ -148,6 +150,8 @@
 
 	$GLOBALS['cfg']['import_max_records'] = 1000;
 	$GLOBALS['cfg']['import_by_url_do_head'] = 1;
+
+	$GLOBALS['cfg']['dots_extras_max_extras'] = 2;
 
 	# If these two are arrays they will be checked by the upload_by_url.php
 	# code. They are expected to be lists of hostnames
