@@ -4,9 +4,22 @@
 	# $Id$
 	#
 
+	# WARNING: Sausage below. This works for foursquare which was the
+	# initial test case but then started failing in a twisty maze of
+	# XML/namespaces gotchas that, right now, spell "yak". The whole
+	# thing is slated for re-imagining. (20101210/straup)
+
 	#################################################################
 
 	function kml_parse_fh($fh, $more=array()){
+
+		# Note: One possible brute force solution (see above) is simply
+		# read $fh long enough to see if it has namespaces in the root
+		# <kml> element and if it is does, rewind and write $fh to disk
+		# stripping it of xmlns declarations. This is probably evil but
+		# might also have the advantage of being a 95/5 solution, as
+		# opposed to one where I need to declare namespaces for every
+		# version of KML under the sun... (20101210/straup)
 
 		# Why is there no loadFH method?
 		fclose($fh);
@@ -24,13 +37,6 @@
 		if ($name->length){
 			$label = sanitize($name->item(0)->nodeValue, 'str');
 		}
-
-		# Grnn, why does this work in Perl and not in magic happy PHP ?
-		#
-		# 110 ->perl -MXML::XPath -e 'my $xp = XML::XPath->new("filename" => "flickr.kml"); my $n = 0; map { $n++ } $xp->findnodes("*//Placemark");';
-		#
-		# It turns out to be namespace nonsense... stopping here and
-		# gearing up to just write a state parser... (20101209/straup)
 
 		$nodes = $xpath->query("*//Placemark");
 
