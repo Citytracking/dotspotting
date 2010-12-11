@@ -4,12 +4,18 @@
 	<thead>
 		<tr>
 			<th>Dot</th>
-			<th nowrap>Owner</th>
-			<th nowrap>Sheet</th>
-			<th nowrap>Latitude</th>
-			<th nowrap>Longitude</th>
+			<th>Owner</th>
+			<th>Sheet</th>
+			<th>Latitude</th>
+			<th>Longitude</th>
+{if $cfg.enable_feature_dots_indexing}
+	{foreach from=$dots.0.index_on item="label"}
+			<th>{$label|escape}</th>
+	{/foreach}
+{else}
 			<th>Location</th>
 			<th>Type</th>
+{/if}
 			<th>Created</th>
 			{if $is_own}
 			<th>Permissions</th>
@@ -23,11 +29,11 @@
 		{assign var="geocoded_by" value=$dot.geocoded_by}
 			<tr class="dot dot_{$permissions_map.$perms|escape}" id="dotslist_dot_{$dot.id|escape}">
 
-				<td class="dotslist_id">
+				<td class="dotslist_id" nowrap>
 					<strong><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></strong>
 				</td>
 
-				<td class="dotslist_owner" ds:owner_id="{$dot.user_id|escape}">
+				<td class="dotslist_owner" ds:owner_id="{$dot.user_id|escape}" nowrap>
 			{if $owner}
 					<a href="{$owner|@urls_url_for_user}">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
 			{else}
@@ -43,15 +49,32 @@
 			{/if}
 				</td>
 
-				<td class="dotslist_latitude" nowrap>{if $dot.latitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.latitude|escape}</a>{else}&#8212;{/if}</td>
+				<td class="dotslist_latitude" nowrap>
+{if $dot.latitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.latitude|escape}</a>{else}&#8212;{/if}
+				</td>
 
-				<td class="dotslist_longitude" nowrap>{if $dot.longitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.longitude|escape}</a>{else}&#8212;{/if}</td>
+				<td class="dotslist_longitude" nowrap>
+{if $dot.longitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.longitude|escape}</a>{else}&#8212;{/if}
+				</td>
 
-				<td class="dotslist_location" nowrap>{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&l={$dot.location|escape:'url'}">{$dot.location|escape}</a>{else}&#8212;{/if}</td>
+{if $cfg.enable_feature_dots_indexing}
+	{foreach from=$dot.index_on item="label"}
+				<td class="dotlist_{$label|escape}">{$dot.$label|escape}</th>
+	{/foreach}
 
-				<td class="dotslist_type" nowrap>{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&t={$dot.type|escape:'url'}">{$dot.type|truncate:15:"..."|escape}</a>{else}&#8212;{/if}</td>
+{else}
+				<td class="dotslist_location" nowrap>
+{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&l={$dot.location|escape:'url'}">{$dot.location|escape}</a>{else}&#8212;{/if}
+				</td>
 
-				<td class="dotslist_created" nowrap>{if $dot.created}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape:'url'})">{$dot.created|date_format:"%Y-%m-%d"|escape}{else}&#8212;{/if}</td>
+				<td class="dotslist_type" nowrap>
+{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&t={$dot.type|escape:'url'}">{$dot.type|truncate:15:"..."|escape}</a>{else}&#8212;{/if}
+				</td>
+{/if}
+
+				<td class="dotslist_created" nowrap>
+{if $dot.created}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape:'url'})">{$dot.created|date_format:"%Y-%m-%d"|escape}{else}&#8212;{/if}
+				</td>
 
 			{if $is_own}
 				<td class="dotslist_permissions">{$permissions_map.$perms|escape}</td>

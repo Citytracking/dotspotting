@@ -228,14 +228,16 @@
 		}
 
 		#
-		# Dots extras
+		# Dots extras (as in: extra things you can search for)
 		#
 
-		if (($GLOBALS['cfg']['enable_feature_dots_extras']) && ($more['dots_extras'])){
+		if (($GLOBALS['cfg']['enable_feature_dots_indexing']) && ($more['dots_index_on'])){
 
-			$extras = explode(",", $more['dots_extras'], $GLOBALS['cfg']['dots_extras_max_extras']);
+			$index_on = array();
 
-			foreach ($extras as $field){
+			$tmp = explode(",", $more['dots_index_on'], $GLOBALS['cfg']['dots_indexing_max_cols']);
+
+			foreach ($tmp as $field){
 
 				$field = trim($field);
 
@@ -243,8 +245,10 @@
 					continue;
 				}
 
-				$extras_rsp = dots_extras_create($dot, $field, $extras[$field]);
+				$index_on[] = AddSlashes($field);
 			}
+
+			$dot['index_on'] = implode(",", $index_on);
 		}
 
 		#
@@ -282,7 +286,6 @@
 			);
 
 			if (isset($derived[$label])){
-
 				$extra['derived_from'] = $derived[$label];
 			}
 
@@ -340,6 +343,8 @@
 		#
 		# Now the searching
 		#
+
+		# TO DO: what about dots extras ?
 
 		$search = array(
 			'dot_id' => $id,
@@ -799,25 +804,36 @@
 
 	function dots_load_details(&$dot, $viewer_id=0, $more=array()){
 
+		$index_on = array();
+
+		if ($GLOBALS['cfg']['enable_feature_dots_indexing']){
+
+			if ($dot['index_on']){
+				$index_on = explode(",", $dot['index_on']);
+			}
+
+			$dot['index_on'] = $index_on;
+		}
+
+		# This bit is more than deprecated - I'm just keeping
+		# it around while the _dots_indexing stuff is worked
+		# out (20101201/straup)
+
+		else {
+			$index_on = array( 'location', 'type' );
+		}
+
+		#
+
 		$dot['details'] = json_decode($dot['details_json'], 1);
 
 		$geo_bits = array(
 			'latitude',
 			'longitude',
-			# 'altitude',
 			'geohash'
 		);
 
-		$searchy_bits = array(
-			'location',
-			'type',
-		);
-
-		foreach (array_merge($geo_bits, $searchy_bits) as $what){
-
-			# Always just assume the first one or ... ?
-			# Punting for now (20101120/straup)
-
+		foreach (array_merge($geo_bits, $index_on) as $what){
 			$dot[$what] = (isset($dot['details'][$what])) ? $dot['details'][$what][0]['value'] : '';
 		}
 

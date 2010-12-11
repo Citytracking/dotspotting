@@ -22,7 +22,7 @@ CREATE TABLE `Dots` (
   `created` int(10) unsigned NOT NULL,
   `perms` tinyint(3) unsigned NOT NULL,
   `details_json` text NOT NULL,
-  `location` varchar(255) NOT NULL,
+  `index_on` varchar(255) NOT NULL,
   KEY `by_user` (`user_id`, `perms`),
   KEY `by_user_created` (`user_id`, `perms`, `created`),
   KEY `by_sheet` (`sheet_id`, `perms`),

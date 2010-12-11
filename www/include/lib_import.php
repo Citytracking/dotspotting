@@ -40,7 +40,7 @@
 
 		$import_more = array(
 			'return_dots' => $more['return_dots'],
-			'extras' => $more['extras'],
+			'dots_index_on' => $more['dots_index_on'],
 			'label' => $label,
 			'mark_all_private' => $more['mark_all_private'],
 			'mime_type' => $file['type'],

@@ -29,18 +29,14 @@
 		if (! $_FILES['upload']['error']){
 
 			$label = filter_strict(post_str('label'));
-			$dots_extras = filter_strict(post_str('dots_extras'));
+			$dots_index_on = filter_strict(post_str('dots_index_on'));
 
 			$private = (post_str('private')) ? 1 : 0;
 		
-			# dots_extras will just get passed around until they reach
-			# dots_create_dot() where the 'enable_feature_' config flag
-			# will be checked.
-
 			$more = array(
 				'return_dots' => 0,
 				'label' => $label,
-				'dots_extras' => $dots_extras,
+				'dots_index_on' => $dots_index_on,
 				'mime_type' => $_FILES['upload']['type'],
 				'mark_all_private' => $private,
 			);

@@ -69,6 +69,14 @@ A dot by {$cfg.user.username|escape}
 		<td>{if $dot.geohash}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}">{$dot.geohash|escape}</a>{else}&#8212;{/if}</td>
 	</tr>
 
+{if $cfg.enable_feature_dots_indexing}
+	{foreach from=$dot.index_on item="label"}
+	<tr>
+		<th>{$label|escape}</th>
+		<td>{$dot.$label|escape}</td>
+	</tr>
+	{/foreach}
+{else}
 	<tr>
 		<th>location</th>
 		<td>{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&l={$dot.location|escape}">{$dot.location|escape}</a>{else}&#8212;{/if}</td>
@@ -78,6 +86,7 @@ A dot by {$cfg.user.username|escape}
 		<th>type</th>
 		<td>{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&t={$dot.type|escape}">{$dot.type|escape}</a>{else}&#8212;{/if}</td>
 	</tr>
+{/if}
 
 	{if $dot.address}
 	<tr>
