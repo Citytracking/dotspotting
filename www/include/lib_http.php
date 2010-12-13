@@ -5,7 +5,7 @@
 
 	# This file has been copied from the Citytracking fork of flamework.
 	# It has not been forked, or cloned or otherwise jiggery-poked, but
-	# copied: https://github.com/Citytracking/flamework (20101209/straup)
+	# copied: https://github.com/Citytracking/flamework (straup/20101213)
 
 	########################################################################
 
@@ -112,7 +112,14 @@
 
 			$more['follow_redirects'] ++;	# should we check to see that we're not trapped in a loop?
 
-			$redirect = $headers_out['host'] . $headers_in['location'];
+			if (preg_match("/^http\:\/\//", $headers_in['location'])){
+				$redirect = $headers_in['location'];
+			}
+
+			else {
+				$redirect = $headers_out['host'] . $headers_in['location'];
+			}
+
 			return http_get($redirect, $headers, $more);
 		}
 

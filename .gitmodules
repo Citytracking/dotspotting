@@ -1,3 +1,6 @@
 [submodule "ext/flamework"]
 	path = ext/flamework
 	url = git@github.com:Citytracking/flamework.git
+[submodule "ext/php-lib-enplacify"]
+	path = ext/php-lib-enplacify
+	url = git@github.com:Citytracking/php-lib-enplacify.git

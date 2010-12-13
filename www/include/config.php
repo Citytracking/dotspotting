@@ -35,6 +35,9 @@
 
 	$GLOBALS['cfg']['enable_feature_dots_indexing'] = 0;
 
+	# Don't turn this on until there is a working offline tasks system
+	# $GLOBALS['cfg']['enable_feature_enplacify'] = 0;
+
 	$GLOBALS['cfg']['enable_feature_api'] = 1;
 
 	$GLOBALS['cfg']['enable_feature_signup'] = 1;
@@ -181,6 +184,70 @@
 		1 => 'dotspotting',
 		2 => 'geocoded (yahoo)',
 		3 => 'geohash',
+	);
+
+	#
+	# Enplacification
+	#
+
+	# This requires that 'enable_feature_enplacify' be enabled (see above)
+
+	$GLOBALS['cfg']['enplacify'] = array(
+
+		'chowhound' => array(
+			'uris' => array(
+				"/chow\.com\/restaurants\/([^\/]+)/",
+			),
+		),
+
+		'dopplr' => array(
+			'uris' => array(
+				"/dplr\.it\/(eat|stay|explore)\/([^\/]+)/",
+				"/dopplr\:(eat|stay|explore)=(.+)$/",
+			),
+		),
+
+		'flickr' => array(
+			'uris' => array(
+				"/flickr\.com\/photos\/(?:[^\/]+)\/(\d+)/",
+				# flickr short Uris
+			),
+			'machinetags' => array(
+				'dopplr' => array('eat', 'explore', 'stay'),
+				'foodspotting' => array('place'),
+				'foursquare' => array('venue'),
+				'osm' => array('node', 'way'),
+				'yelp' => array('biz'),
+			),
+		),
+
+		'foodspotting' => array(
+			'uris' => array(
+				"/foodspotting\.com\/places\/(\d+)/",
+				"/foodspotting\:place=(.+)$/",
+			),
+		),
+
+		'foursquare' => array(
+			'uris' => array(
+				"/foursquare\.com\/venue\/(\d+)/",
+				"/foursquare\:venue=(\d+)$/",
+			),
+		),
+
+		'openstreetmap' => array(
+			'uris' => array(
+				"/openstreetmap.org\/browse\/(node)\/(\d+)/",
+				"/osm\:(node)=(\d+)$/",
+			),
+		),
+
+		'yelp' => array(
+			'uris' => array(
+				"/yelp\.com\/biz\/([^\/]+)/",
+				"/yelp\:biz=([^\/]+)/",
+			),
+		),
 	);
 
 	#
