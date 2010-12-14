@@ -4,14 +4,9 @@
 	# $Id$
 	#
 
-	# THIS IS VERY MUCH STILL A WORK IN PROGRESS.
-	# IT IS NOT READY FOR ACTUAL USE.
-	#
-	# (20101210/straup)
-
 	#################################################################
 
-	function dots_extras_add_lots_of_extras(&$extras, $add_offline=0){
+	function dots_search_extras_add_lots_of_extras(&$extras, $add_offline=0){
 
 		$_extras = array();
 
@@ -26,12 +21,12 @@
 			$_extras[] = $hash;
 		}
 
-		return db_insert_many('DotsExtras', $_extras);
+		return db_insert_many('DotsSearchExtras', $_extras);
 	}
 
 	#################################################################
 
-	function dots_extras_create($data){
+	function dots_search_extras_create($data){
 
 		# unique ID/key is (dot_id, name, value)
 
@@ -43,7 +38,7 @@
 			$hash[ $key ] = AddSlashes($value);
 		}
 
-		$rsp = db_insert_users($user['cluster_id'], 'DotsExtras', $hash);
+		$rsp = db_insert('DotsSearchExtras', $hash);
 
 		if ($rsp['ok']){
 			$rsp['data'] = $data;
@@ -54,14 +49,14 @@
 
 	#################################################################
 
-	function dots_extras_remove_dot(&$dot){
+	function dots_search_extras_remove_dot(&$dot){
 
 		$user = users_get_by_id($dot['user_id']);
 
 		$enc_id = AddSlashes($dot['id']);
 
-		$sql = "DELETE FROM DotsExtras WHERE dot_id='{$enc_id}'";
-		return db_write_users($user['cluster_id'], $sql);
+		$sql = "DELETE FROM DotsSearchExtras WHERE dot_id='{$enc_id}'";
+		return db_write($sql);
 	}
 
 	#################################################################

@@ -9,7 +9,7 @@
 	loadlib("dots_derive");
 	loadlib("dots_lookup");
 	loadlib("dots_search");
-	loadlib("dots_extras");
+	loadlib("dots_search_extras");
 
 	loadlib("geo_utils");
 
@@ -102,20 +102,20 @@
 			}
 		}
 
-		if (count($extras)){
-
-			$extras_rsp = dots_extras_add_lots_of_extras($extras);
-
-			if (! $extras_rsp){
-				# What then ?
-			}
-		}
-
 		if (count($search)){
 
 			$search_rsp = dots_search_add_lots_of_dots($search);
 
 			if (! $search_rsp){
+				# What then ?
+			}
+		}
+
+		if (count($extras)){
+
+			$extras_rsp = dots_search_extras_add_lots_of_extras($extras);
+
+			if (! $extras_rsp){
 				# What then ?
 			}
 		}
@@ -367,20 +367,8 @@
 		}
 
 		#
-		# Now the searching (first user 'extras' then global 'search')
+		# Now the searching (first the basics then any 'extras' specific to this dot)
 		#
-
-		if ($more['buffer_extras_inserts']){
-			$rsp['extras'] = $extras;
-		}
-
-		else {
-			$extras_rsp = dots_extras_add_lots_of_extras($extras);
-
-			if (! $extras_rsp['ok']){
-				# What then...
-			}
-		}
 
 		$search = array(
 			'dot_id' => $id,
@@ -412,6 +400,20 @@
 			$search_rsp = dots_search_add_dot($search);
 
 			if (! $search_rsp['ok']){
+				# What then...
+			}
+		}
+
+		# extras
+
+		if ($more['buffer_extras_inserts']){
+			$rsp['extras'] = $extras;
+		}
+
+		else {
+			$extras_rsp = dots_search_extras_add_lots_of_extras($extras);
+
+			if (! $extras_rsp['ok']){
 				# What then...
 			}
 		}

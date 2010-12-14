@@ -4,6 +4,8 @@
 	# $Id$
 	#
 
+	# /?u=14&debug=0&e=recommendation:i%20want%20to%20go%20there
+
 	#################################################################
 
 	function search_dots(&$args, $viewer_id=0, $more=array()){
@@ -18,7 +20,7 @@
 		# been thrown into disarray again (20101123/straup)
 		#
 
-		foreach (array('sheet', 'user', 'geo', 'time', 'extras') as $what){
+		foreach (array('user', 'geo', 'time', 'extras') as $what){
 
 			if (isset($where_parts[$what])){
 				$where = array_merge($where, $where_parts[$what]);
@@ -44,8 +46,6 @@
 		}
 
 		if (! $is_own){
-
-			# $where[] = "`perms`=0";
 
 			if ($GLOBALS['cfg']['user']['id']){
 				$enc_id = AddSlashes($GLOBALS['cfg']['user']['id']);
@@ -81,59 +81,11 @@
 		# Okay! Go! For real! But where...
 		#
 
-		if (isset($where_parts['user_row'])){
-
-			$search_more['cluster_id'] = $where_parts['user_row']['cluster_id'];
-
-			if (isset($where_parts['extras'])){
-				$search_more['has_extras'] = 1;
-			}
-
-			return _search_dots_user($where, $viewer_id, $search_more);
+		if (isset($where_parts['extras'])){
+			$search_more['has_extras'] = 1;
 		}
 
 		return _search_dots_all($where, $viewer_id, $search_more);
-	}
-
-	#################################################################
-
-	function _search_dots_user($where, $viewer_id, $more){
-
-		if ($more['has_extras']){
-			$sql = 'SELECT d.*, e.name, e.value FROM Dots d, DotsExtras e WHERE d.id=e.dot_id AND ';
-		}
-
-		else {
-			$sql = 'SELECT * FROM Dots d WHERE ';
-		}
-
-		#
-
-		$sql .= implode(" AND ", $where);
-
-		# TO DO: ordering
-
-		$rsp = db_fetch_paginated_users($more['cluster_id'], $sql, $more);
-
-		if (! $rsp['ok']){
-			return $rsp;
-		}
-
-		$dots = array();
-
-		$dot_more = array(
-			'load_user' => 1,
-		);
-
-		foreach ($rsp['rows'] as $row){
-			$dot_more['dot_user_id'] = $row['user_id'];
-			$dots[] = dots_get_dot($row['id'], $viewer_id, $dot_more);
-		}
-
-		return array(
-			'ok' => 1,
-			'dots' => &$dots,
-		);
 	}
 
 	#################################################################
@@ -144,7 +96,15 @@
 		# Go!
 		#
 
-		$sql = "SELECT * FROM DotsSearch d WHERE " . implode(" AND ", $where);
+		if ($more['has_extras']){
+			$sql = 'SELECT d.*, e.name, e.value FROM DotsSearch d, DotsSearchExtras e WHERE d.dot_id=e.dot_id AND ';
+		}
+
+		else {
+			$sql = 'SELECT * FROM DotsSearch d WHERE ';
+		}
+
+		$sql .= implode(" AND ", $where);
 
 		if (isset($more['order'])){
 
@@ -184,7 +144,6 @@
 			'gh' => 'geohash',
 			'la' => 'latitude',
 			'ln' => 'longitude',
-			's' => 'sheet_id',
 			't' => 'type',
 			'u' => 'user_id',
 			'e' => 'extras',
@@ -193,7 +152,6 @@
 		$b = sanitize($args['b'], 'str');		# bounding box
 		$dt = sanitize($args['dt'], 'str');		# datetime
 		$gh = sanitize($args['gh'], 'str');		# geohash
-		$s = '';					# sanitize($args['s'], 'int32');		# sheetid
 		$u = sanitize($args['u'], 'int32');		# userid
 
 		$e = sanitize($args['e'], 'str');		# extras
@@ -202,17 +160,6 @@
 		$sortorder = '';	# sanitize($args['_o'], 'str');		# sort order
 
 		$where_parts = array();
-
-		if ($s){
-
-			$sheet = sheets_get_sheet($s);
-
-			if ($sheet['id']){
-				$where_parts['sheet'] = array(
-					"d.sheet_id = " . AddSlashes($sheet['id']),
-				);
-			}
-		}
 
 		#
 		# Geo
