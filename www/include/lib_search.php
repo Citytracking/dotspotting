@@ -104,7 +104,7 @@
 		}
 
 		else {
-			$sql = 'SELECT * FROM Dots WHERE ';
+			$sql = 'SELECT * FROM Dots d WHERE ';
 		}
 
 		#
