@@ -49,11 +49,11 @@
 
 			if ($GLOBALS['cfg']['user']['id']){
 				$enc_id = AddSlashes($GLOBALS['cfg']['user']['id']);
-				$where[] = "(`perms`=0 OR `user_id`='{$enc_id}')";	# glurgh... indexes...
+				$where[] = "(d.perms=0 OR d.user_id='{$enc_id}')";	# glurgh... indexes...
 			}
 
 			else {
-				$where[] = "`perms`=0";
+				$where[] = "d.perms=0";
 			}
 		}
 
@@ -111,6 +111,8 @@
 
 		$sql .= implode(" AND ", $where);
 
+		# TO DO: ordering
+
 		$rsp = db_fetch_paginated_users($more['cluster_id'], $sql, $more);
 
 		if (! $rsp['ok']){
@@ -146,7 +148,7 @@
 
 		if (isset($more['order'])){
 
-			$sql .= " ORDER BY `{$more['order']['by']}` {$more['order']['sort']}";
+			$sql .= " ORDER BY d.{$more['order']['by']} {$more['order']['sort']}";
 		}
 
 		$rsp = db_fetch_paginated($sql, $more);
@@ -173,8 +175,6 @@
 	}
 
 	#################################################################
-
-	# TO DO: extras
 
 	function _search_generate_where_parts(&$args){
 
@@ -343,6 +343,9 @@
 		if (($e) && ($where_parts['user_row'])){
 
 			$extras = array();
+
+			# This (the part with the ";" and the ":") is not the final syntax.
+			# I'm just working through the other bits first. (20101213/straup)
 
 			foreach (explode(";", $e) as $parts){
 
