@@ -48,13 +48,13 @@
 
 		$rsp = search_dots($_GET, $GLOBALS['cfg']['user']['id'], $more);
 
-		$dots_indexed = dots_indexed_on($rsp['dots']);
-		$GLOBALS['smarty']->assign_by_ref('dots_indexed', $dots_indexed);
-
 		if ((! $rsp['ok']) || (! count($rsp['dots']))){
 			$GLOBALS['smarty']->display('page_search_noresults.txt');
 			exit();
 		}
+
+		$dots_indexed = dots_indexed_on($rsp['dots']);
+		$GLOBALS['smarty']->assign_by_ref('dots_indexed', $dots_indexed);
 
 		#
 		# Export this search?
