@@ -85,6 +85,10 @@
 
 	$sheet['dots'] = dots_get_dots_for_sheet($sheet, $GLOBALS['cfg']['user']['id'], $more);
 
+	$to_index = array($sheet['dots'][0]);
+	$dots_indexed = dots_indexed_on($to_index);
+	$GLOBALS['smarty']->assign_by_ref("dots_indexed", $dots_indexed);
+
 	if ($is_own){
 		$smarty->assign("permissions_map", dots_permissions_map());
 		$smarty->assign("geocoder_map", geo_geocode_service_map());

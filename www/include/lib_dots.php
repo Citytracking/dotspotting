@@ -918,6 +918,25 @@
 
 	#################################################################
 
+	function dots_indexed_on(&$dots){
+
+		$indexed = array();
+
+		foreach ($dots as $dot){
+			
+			foreach ($dot['index_on'] as $i){
+
+				if (! in_array($i, $indexed)){
+					$indexed[] = $i;
+				}
+			}
+		}
+
+		return $indexed;
+	}
+
+	#################################################################
+
 	function dots_ensure_valid_data(&$data){
 
 		$skip_required_latlon = 0;

@@ -9,7 +9,7 @@
 			<th>Latitude</th>
 			<th>Longitude</th>
 {if $cfg.enable_feature_dots_indexing}
-	{foreach from=$dots.0.index_on item="label"}
+	{foreach from=$dots_indexed item="label"}
 			<th>{$label|escape}</th>
 	{/foreach}
 {else}
@@ -58,8 +58,8 @@
 				</td>
 
 {if $cfg.enable_feature_dots_indexing}
-	{foreach from=$dot.index_on item="label"}
-				<td class="dotlist_{$label|escape}">{$dot.$label|escape}</th>
+	{foreach from=$dots_indexed item="label"}
+				<td class="dotlist_{$label|escape}">{if $dot.$label}{$dot.$label|escape}{else}&#8212;{/if}</th>
 	{/foreach}
 
 {else}
