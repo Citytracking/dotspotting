@@ -11,33 +11,31 @@
 
 	#################################################################
 
-	function dots_extras_create(&$dot, $key, $value){
+	function dots_extras_add_lots_of_extras(&$extras, $add_offline=0){
 
-		$user = users_get_by_id($dot['user_id']);
+		$_extras = array();
 
-		$id = dbtickets_create(32);
+		foreach ($extras as $e){
 
-		if (! $id){
+			$hash = array();
 
-			return array(
-				'ok' => 0,
-				'error' => 'Ticket server failed',
-			);
+			foreach ($e as $key => $value){
+				$hash[$key] = AddSlashes($value);
+			}
+
+			$_extras[] = $hash;
 		}
 
-		$data = array(
-			'id' => $id,
-			'dot_id' => $dot['id'],
-			'user_id' => $user['id'],
-			'created' => $now,
-			'name' => $name
-		);
+		return db_insert_many('DotsExtras', $_extras);
+	}
 
-		# TO DO:
-		#
-		# * am I a string or am I a number?
-		# 
-		# $data['is_numeric'] = 'fix me';
+	#################################################################
+
+	function dots_extras_create($data){
+
+		# unique ID/key is (dot_id, name, value)
+
+		$user = users_get_by_id($data['user_id']);
 
 		$hash = array();
 
@@ -56,4 +54,15 @@
 
 	#################################################################
 
+	function dots_extras_remove_dot(&$dot){
+
+		$user = users_get_by_id($dot['user_id']);
+
+		$enc_id = AddSlashes($dot['id']);
+
+		$sql = "DELETE FROM DotsExtras WHERE dot_id='{$enc_id}'";
+		return db_write_users($user['cluster_id'], $sql);
+	}
+
+	#################################################################
 ?>

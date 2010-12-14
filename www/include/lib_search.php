@@ -18,7 +18,7 @@
 		# been thrown into disarray again (20101123/straup)
 		#
 
-		foreach (array('sheet', 'user', 'geo', 'time', 'type', 'location') as $what){
+		foreach (array('sheet', 'user', 'geo', 'time', 'extras') as $what){
 
 			if (isset($where_parts[$what])){
 				$where = array_merge($where, $where_parts[$what]);
@@ -58,20 +58,6 @@
 		}
 
 		#
-		# Check to see if we can just query a user's shard. This is
-		# just a placeholder for now as everything reads from DotsSearch.
-		# See also: README.SEARCH.md (20101120/straup)
-		#
-
-		#
-		# $use_shard = (isset($where_parts['user_row'])) ? 1 : 0;
-		# 
-		# if ($use_shard){
-		# 	$use_shard = (isset($where_parts['type']) || isset($where_parts['location']) || isset($where_parts['time']) ? 1 : 0;
-		# }
-		#
-
-		#
 		# Go!
 		#
 
@@ -91,7 +77,61 @@
 			$search_more['order'] = $where_parts['order'];
 		}
 
+		#
+		# Okay! Go! For real! But where...
+		#
+
+		if (isset($where_parts['user_row'])){
+
+			$search_more['cluster_id'] = $where_parts['user_row']['cluster_id'];
+
+			if (isset($where_parts['extras'])){
+				$search_more['has_extras'] = 1;
+			}
+
+			return _search_dots_user($where, $viewer_id, $search_more);
+		}
+
 		return _search_dots_all($where, $viewer_id, $search_more);
+	}
+
+	#################################################################
+
+	function _search_dots_user($where, $viewer_id, $more){
+
+		if ($more['has_extras']){
+			$sql = 'SELECT d.*, e.name, e.value FROM Dots d, DotsExtras e WHERE d.id=e.dot_id AND ';
+		}
+
+		else {
+			$sql = 'SELECT * FROM Dots WHERE ';
+		}
+
+		#
+
+		$sql .= implode(" AND ", $where);
+
+		$rsp = db_fetch_paginated_users($more['cluster_id'], $sql, $more);
+
+		if (! $rsp['ok']){
+			return $rsp;
+		}
+
+		$dots = array();
+
+		$dot_more = array(
+			'load_user' => 1,
+		);
+
+		foreach ($rsp['rows'] as $row){
+			$dot_more['dot_user_id'] = $row['user_id'];
+			$dots[] = dots_get_dot($row['id'], $viewer_id, $dot_more);
+		}
+
+		return array(
+			'ok' => 1,
+			'dots' => &$dots,
+		);
 	}
 
 	#################################################################
@@ -102,7 +142,7 @@
 		# Go!
 		#
 
-		$sql = "SELECT * FROM DotsSearch WHERE " . implode(" AND ", $where);
+		$sql = "SELECT * FROM DotsSearch d WHERE " . implode(" AND ", $where);
 
 		if (isset($more['order'])){
 
@@ -134,30 +174,32 @@
 
 	#################################################################
 
+	# TO DO: extras
+
 	function _search_generate_where_parts(&$args){
 
 		$search_params = array(
 			'b' => 'bbox',
 			'dt' => 'created',		# change to be 'c' ?
 			'gh' => 'geohash',
-			'l' => 'location',
 			'la' => 'latitude',
 			'ln' => 'longitude',
 			's' => 'sheet_id',
 			't' => 'type',
 			'u' => 'user_id',
+			'e' => 'extras',
 		);
 
 		$b = sanitize($args['b'], 'str');		# bounding box
 		$dt = sanitize($args['dt'], 'str');		# datetime
 		$gh = sanitize($args['gh'], 'str');		# geohash
-		$l = sanitize($args['l'], 'str');		# 'location'
-		$s = '';		# sanitize($args['s'], 'int32');		# sheetid
-		$t = sanitize($args['t'], 'str');		# 'type'
+		$s = '';					# sanitize($args['s'], 'int32');		# sheetid
 		$u = sanitize($args['u'], 'int32');		# userid
 
+		$e = sanitize($args['e'], 'str');		# extras
+
 		$sortby = '';		# sanitize($args['_s'], 'str');		# sort by
-		$sortorder = '';	# sanitize($args['_o'], 'str');	# sort order
+		$sortorder = '';	# sanitize($args['_o'], 'str');		# sort order
 
 		$where_parts = array();
 
@@ -167,7 +209,7 @@
 
 			if ($sheet['id']){
 				$where_parts['sheet'] = array(
-					"`sheet_id` = " . AddSlashes($sheet['id']),
+					"d.sheet_id = " . AddSlashes($sheet['id']),
 				);
 			}
 		}
@@ -185,10 +227,10 @@
 			list($swlat, $swlon, $nelat, $nelon) = explode(",", $b, 4);
 
 			$where_parts['geo'] = array(
-				"`latitude` >= " . AddSlashes(floatval($swlat)),
-				"`longitude` >= " . AddSlashes(floatval($swlon)),
-				"`latitude` <= " . AddSlashes(floatval($nelat)),
-				"`longitude` <= " . AddSlashes(floatval($nelon)),
+				"d.latitude >= " . AddSlashes(floatval($swlat)),
+				"d.longitude >= " . AddSlashes(floatval($swlon)),
+				"d.latitude <= " . AddSlashes(floatval($nelat)),
+				"d.longitude <= " . AddSlashes(floatval($nelon)),
 			);
 
 			$where_parts['geo_query'] = 'bbox';
@@ -199,35 +241,13 @@
 			$geohash = substr($gh, 0, 5);
 
 			$where_parts['geo'] = array(
-				"`geohash` LIKE '" . AddSlashes($geohash) . "%'",
+				"d.geohash LIKE '" . AddSlashes($geohash) . "%'",
 			);
 
 			$where_parts['geo_query'] = 'geohash';
 		}
 
 		else {}
-
-		#
-		# type (or poorman's "what")
-		#
-
-		if ($t){
-
-			$where_parts['type'] = array(
-				"`type`='" . AddSlashes($t) . "'",
-			);
-		}
-
-		#
-		# location (or poorman's "where")
-		#
-
-		if ($l){
-
-			$where_parts['location'] = array(
-				"`location`='" . AddSlashes($l) . "'",
-			);
-		}
 
 		#
 		# Time
@@ -286,11 +306,11 @@
 			$time_parts = array();
 
 			if ($date_start){
-				$time_parts[] = "UNIX_TIMESTAMP(created) >= " . AddSlashes($date_start);
+				$time_parts[] = "UNIX_TIMESTAMP(d.created) >= " . AddSlashes($date_start);
 			}
 
 			if ($date_end){
-				$time_parts[] = "UNIX_TIMESTAMP(created) <= " . AddSlashes($date_end);
+				$time_parts[] = "UNIX_TIMESTAMP(d.created) <= " . AddSlashes($date_end);
 			}
 
 			if (count($time_parts)){
@@ -309,10 +329,33 @@
 			if (($user) && (! $user['deleted'])){
 
 				$where_parts['user'] = array(
-					"`user_id`=" . AddSlashes($user['id']),
+					"d.user_id=" . AddSlashes($user['id']),
 				);
 
 				$where_parts['user_row'] = $user;
+			}
+		}
+
+		#
+		# Extras (requires user)
+		#
+
+		if (($e) && ($where_parts['user_row'])){
+
+			$extras = array();
+
+			foreach (explode(";", $e) as $parts){
+
+				list($name, $value) = explode(":", $parts);
+
+				$enc_name = AddSlashes($name);
+				$enc_value = AddSlashes($value);
+
+				$extras[] = "(e.name='{$enc_name}' AND e.value='{$enc_value}')";
+			}
+
+			if (count($extras)){
+				$where_parts['extras'] = $extras;
 			}
 		}
 
@@ -345,12 +388,6 @@
 		}
 
 		return $where_parts;
-	}
-
-	#################################################################
-
-	function _search_generate_result_set(&$rsp, $viewer_id){
-
 	}
 
 	#################################################################

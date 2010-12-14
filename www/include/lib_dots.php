@@ -37,8 +37,8 @@
 		$processed = 0;
 
 		$errors = array();
-
 		$search = array();
+		$extras = array();
 		$lookup = array();
 
 		$timings = array(
@@ -51,6 +51,7 @@
 		# all the inserts and do them at at end. 
 
 		$more['buffer_search_inserts'] = 1;
+		$more['buffer_extras_inserts'] = 1;
 		$more['buffer_lookup_inserts'] = 1;
 
 		foreach ($dots as $dot){
@@ -76,6 +77,10 @@
 				$search[] = $rsp['search'];
 			}
 
+			if (isset($rsp['extras'])){
+				$extras = array_merge($extras, $rsp['extras']);
+			}
+
 			if (isset($rsp['lookup'])){
 				$lookup[] = $rsp['lookup'];
 			}
@@ -93,6 +98,15 @@
 			$lookup_rsp = dots_lookup_add_lots_of_dots($lookup);
 
 			if (! $lookup_rsp){
+				# What then ?
+			}
+		}
+
+		if (count($extras)){
+
+			$extras_rsp = dots_extras_add_lots_of_extras($extras);
+
+			if (! $extras_rsp){
 				# What then ?
 			}
 		}
@@ -227,9 +241,15 @@
 			}
 		}
 
+		# Please to write me: A discussion on the relationship between
+		# details, extras, 'indexed' and search. (20101213/straup)
+
 		#
 		# Dots extras (as in: extra things you can search for)
 		#
+
+		$details = array();
+		$extras = array();
 
 		if (($GLOBALS['cfg']['enable_feature_dots_indexing']) && ($more['dots_index_on'])){
 
@@ -245,6 +265,14 @@
 					continue;
 				}
 
+				$extras[] = array(
+					'dot_id' => $id,
+					'sheet_id' => $sheet['id'],
+					'user_id' => $user['id'],
+					'name' => $field,
+					'value' => $data[$field],
+				);
+
 				$index_on[] = AddSlashes($field);
 			}
 
@@ -254,8 +282,6 @@
 		#
 		# Store any remaining fields in a big old JSON blob
 		#
-
-		$details = array();
 
 		foreach (array_keys($data) as $label){
 
@@ -341,10 +367,20 @@
 		}
 
 		#
-		# Now the searching
+		# Now the searching (first user 'extras' then global 'search')
 		#
 
-		# TO DO: what about dots extras ?
+		if ($more['buffer_extras_inserts']){
+			$rsp['extras'] = $extras;
+		}
+
+		else {
+			$extras_rsp = dots_extras_add_lots_of_extras($extras);
+
+			if (! $extras_rsp['ok']){
+				# What then...
+			}
+		}
 
 		$search = array(
 			'dot_id' => $id,
@@ -353,8 +389,6 @@
 			'imported' => $now,
 			'created' => $data['created'],
 			'perms' => $perms,
-			'type' => $data['type'],
-			'location' => $data['location'],
 			'geohash' => $data['geohash'],
 		);
 
@@ -441,7 +475,9 @@
 	function dots_delete_dot(&$dot, $more=array()){
 
 		#
-		# Update the search table
+		# Update the search and extras table (check to see that
+		# we haven't already done this, for example if we're in
+		# the process of deleting a user or a sheet)
 		#
 
  		if (! isset($more['skip_update_search'])){
@@ -452,6 +488,10 @@
 				# What?
 			}
 		}
+
+		#
+		# Okay. Let's start deleting the dot itself!
+		#
 
 		$user = users_get_by_id($dot['user_id']);
 
@@ -470,6 +510,16 @@
 
 			$rsp2 = sheets_update_dot_count_for_sheet($sheet);
 			$rsp['update_sheet_count'] = $rsp2['ok'];
+		}
+
+		#
+		# Update the extras table
+		#
+
+		$extras_rsp = dots_extras_remove_dot($dot);
+
+		if (! $extras_rsp['ok']){
+			# What?
 		}
 		
 		#
