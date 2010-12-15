@@ -13,9 +13,11 @@
 	}
 
 	$user_id = get_int64("u");
+	$page = get_int32('page');
 
 	$more = array(
 		'user_id' => $user_id,
+		'page' => $page,
 	);
 
 	if ($name = get_str('name')){

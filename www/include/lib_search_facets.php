@@ -38,8 +38,21 @@
 
 		$rsp = db_fetch($sql, $more);
 
-		# TODO: sort in memory
+		#
 
+		function cmp($a, $b){
+			if ($a['count_values'] == $b['count_values']) {
+				return 0;
+			}
+
+			return ($a['count_values'] > $b['count_values']) ? -1 : 1;
+		}
+
+		usort($rsp['rows'], 'cmp');
+
+		#
+
+		_search_facets_paginate($rsp, $more);
 		return $rsp;
 	}
 
@@ -71,8 +84,21 @@
 
 		$rsp = db_fetch($sql, $more);
 
-		# TODO: sort in memory
+		#
 
+		function cmp($a, $b){
+			if ($a['count_sheets'] == $b['count_sheets']) {
+				return 0;
+			}
+
+			return ($a['count_sheets'] > $b['count_sheets']) ? -1 : 1;
+		}
+
+		usort($rsp['rows'], 'cmp');
+
+		#
+
+		_search_facets_paginate($rsp, $more);
 		return $rsp;
 	}
 
@@ -95,6 +121,37 @@
 		}
 
 		return $perms;
+	}
+
+	#################################################################
+
+	function _search_facets_paginate(&$rsp, $args){
+
+		$page = isset($args['page']) ? max(1, $args['page']) : 1;
+		$per_page = isset($args['per_page']) ? max(1, $args['per_page']) : $GLOBALS['cfg']['pagination_per_page'];
+
+		$total_count = count($rsp['rows']);
+		$page_count = ceil($total_count / $per_page);
+
+		$pagination = array(
+			'total_count' => $total_count,
+			'page' => $page,
+			'per_page' => $per_page,
+			'page_count' => $page_count,
+		);		
+
+		if ($total_count > $per_page){
+
+			$offset = ($page - 1) * $per_page;
+			$length = $per_page;
+
+			$rows = array_slice($rsp['rows'], $offset, $length);
+			$rsp['rows'] = $rows;
+		}
+
+		$rsp['pagination'] = $pagination;
+
+		# Note the pass-by-ref
 	}
 
 	#################################################################

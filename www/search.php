@@ -122,6 +122,14 @@
 		exit();
 	}
 
+	# At least until there's some sort of search UI...
+
+	if ($GLOBALS['cfg']['enable_feature_search_facets']){
+		$redir = $GLOBALS['cfg']['abs_root_url'] . "search/facets/";
+		header("location: {$redir}");
+		exit();
+	}
+
 	$GLOBALS['smarty']->display('page_search.txt');
 	exit();
 ?>
