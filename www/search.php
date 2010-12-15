@@ -19,6 +19,8 @@
 
 	#################################################################
 
+	$search = (get_str('search') == 'sheets') ? 'sheets' : 'dots';
+
 	if (count($_GET)){
 
 		$do_export = 0;
@@ -44,21 +46,36 @@
 		# Go!
 		#
 
-		$rsp = search_dots($_GET, $GLOBALS['cfg']['user']['id'], $more);
+		if ($search == 'sheets'){
+			$rsp = search_sheets($_GET, $GLOBALS['cfg']['user']['id'], $more);
 
-		if ((! $rsp['ok']) || (! count($rsp['dots']))){
-			$GLOBALS['smarty']->display('page_search_noresults.txt');
-			exit();
+			if ((! $rsp['ok']) || (! count($rsp['sheets']))){
+				$GLOBALS['smarty']->display('page_search_noresults.txt');
+				exit();
+			}
+
+			$GLOBALS['smarty']->assign_by_ref('sheets', $rsp['sheets']);
 		}
 
-		$dots_indexed = dots_indexed_on($rsp['dots']);
-		$GLOBALS['smarty']->assign_by_ref('dots_indexed', $dots_indexed);
+		else {
+			$rsp = search_dots($_GET, $GLOBALS['cfg']['user']['id'], $more);
+
+			if ((! $rsp['ok']) || (! count($rsp['dots']))){
+				$GLOBALS['smarty']->display('page_search_noresults.txt');
+				exit();
+			}
+
+			$GLOBALS['smarty']->assign_by_ref('dots', $rsp['dots']);
+
+			$dots_indexed = dots_indexed_on($rsp['dots']);
+			$GLOBALS['smarty']->assign_by_ref('dots_indexed', $dots_indexed);
+		}
 
 		#
-		# Export this search?
+		# Export this search? (Only dots for now...)
 		#
 
-		if ($do_export){
+		if (($do_export) && ($search == 'dots')){
 
 			$mimetype = $map[$format];
 
@@ -77,7 +94,6 @@
 		# Display inline
 		#
 
-		$smarty->assign_by_ref('dots', $rsp['dots']);
 		$page_as_queryarg = 0;
 
 		if (($args['nearby']) && ($args['gh'])){
@@ -105,8 +121,6 @@
 		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();
 	}
-
-	# facets go here...
 
 	$GLOBALS['smarty']->display('page_search.txt');
 	exit();

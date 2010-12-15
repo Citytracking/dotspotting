@@ -1,0 +1,6 @@
+{assign var="page_title" value="Faceted search"}
+{include file="inc_head.txt"}
+
+<p>Faceted search is currently disabled.</p>
+
+{include file="inc_foot.txt"}

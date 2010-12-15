@@ -7,6 +7,16 @@
 	#################################################################
 
 	function search_dots(&$args, $viewer_id=0, $more=array()){
+		return _search_by($args, 'dots', $viewer_id, $more);
+	}
+
+	function search_sheets(&$args, $viewer_id=0, $more=array()){
+		return _search_by($args, 'sheets', $viewer_id, $more);
+	}
+
+	#################################################################
+
+	function _search_by(&$args, $search_by, $viewer_id=0, $more=array()){
 
 		$where_parts = _search_generate_where_parts($args);
 
@@ -83,6 +93,10 @@
 			$search_more['has_extras'] = 1;
 		}
 
+		if ($search_by == 'sheets'){
+			return _search_sheets_all($where, $viewer_id, $search_more);
+		}
+
 		return _search_dots_all($where, $viewer_id, $search_more);
 	}
 
@@ -90,17 +104,13 @@
 
 	function _search_dots_all($where, $viewer_id, $more=array()){
 
-		#
-		# Go!
-		#
+		$sql = 'SELECT * FROM DotsSearch d WHERE ';
 
 		if ($more['has_extras']){
 			$sql = 'SELECT d.*, e.name, e.value FROM DotsSearch d, DotsSearchExtras e WHERE d.dot_id=e.dot_id AND ';
 		}
 
-		else {
-			$sql = 'SELECT * FROM DotsSearch d WHERE ';
-		}
+		#
 
 		$sql .= implode(" AND ", $where);
 
@@ -122,6 +132,11 @@
 		);
 
 		foreach ($rsp['rows'] as $row){
+
+			if (! $row['dot_id']){
+				continue;
+			}
+
 			$dot_more['dot_user_id'] = $row['user_id'];
 			$dots[] = dots_get_dot($row['dot_id'], $viewer_id, $dot_more);
 		}
@@ -129,6 +144,48 @@
 		return array(
 			'ok' => 1,
 			'dots' => &$dots,
+		);
+	}
+
+	#################################################################
+
+	function _search_sheets_all($where, $viewer_id, $more=array()){
+
+		$sql = "SELECT DISTINCT(d.sheet_id) FROM DotsSearch d WHERE ";
+
+		if ($more['has_extras']){
+			$sql = "SELECT DISTINCT(d.sheet_id) FROM DotsSearch d, DotsSearchExtras e WHERE d.dot_id=e.dot_id AND ";
+		}
+
+		#
+
+		$sql .= implode(" AND ", $where);
+
+		$rsp = db_fetch_paginated($sql, $more);
+
+		if (! $rsp['ok']){
+			return $rsp;
+		}
+
+		$sheets = array();
+
+		$sheet_more = array(
+			'load_user' => 1,
+		);
+
+		foreach ($rsp['rows'] as $row){
+
+			if (! $row['sheet_id']){
+				continue;
+			}
+
+			$sheet_more['sheet_user_id'] = $row['user_id'];
+			$sheets[] = sheets_get_sheet($row['sheet_id'], $viewer_id, $sheet_more);
+		}
+
+		return array(
+			'ok' => 1,
+			'sheets' => &$sheets,
 		);
 	}
 
@@ -300,10 +357,21 @@
 
 				list($name, $value) = explode(":", $parts);
 
-				$enc_name = AddSlashes($name);
-				$enc_value = AddSlashes($value);
+				$parts = array();
 
-				$extras[] = "(e.name='{$enc_name}' AND e.value='{$enc_value}')";
+				if ($name){
+					$enc_name = AddSlashes($name);
+					$parts[] = "e.name='{$enc_name}'";
+				}
+
+				if ($value){
+					$enc_value = AddSlashes($value);
+					$parts[] = "e.value='{$enc_value}'";
+				}
+
+				if (count($parts)){
+					$extras[] = "(" . implode(" AND ", $parts) . ")";
+				}
 			}
 
 			if (count($extras)){

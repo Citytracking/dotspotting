@@ -49,6 +49,7 @@
 
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
 	$GLOBALS['cfg']['enable_feature_search_export'] = 0;
+	$GLOBALS['cfg']['enable_feature_search_facets'] = 0;
 
 	$GLOBALS['cfg']['enable_feature_http_prefetch'] = 0;
 

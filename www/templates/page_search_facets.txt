@@ -1,0 +1,29 @@
+{assign var="page_title" value="Faceted search"}
+{include file="inc_head.txt"}
+
+{if $names|@count}
+
+<h2>Facets</h2>
+
+{foreach from=$names item="row"}
+
+<h3>Where the facet is <q><a href="{$cfg.abs_root_url}search/facets/{$row.name|escape:'url'}/">{$row.name|escape}</a></q></h3>
+
+<p>There are <a href="{$cfg.abs_root_url}search/?e={$row.name|escape:'url'}:">{$row.count_dots|escape} dots</a> and <a href="{$cfg.abs_root_url}search/facets/{$row.name|escape:'url'}/">{$row.count_values|escape} unique values</a></p>
+{/foreach}
+
+{/if}
+
+{if $values|@count}
+
+<h2>When <a href="{$cfg.abs_root_url}search/facets/">faceted</a> by <q>{$name|escape}</q></h2>
+
+{foreach from=$values item="row"}
+<h3>Where {$name|escape} is <q><a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}">{$row.value|escape}</a></q></h3>
+
+<p>There are <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}">{$row.count_dots|escape} dots</a> that are part of {$row.count_sheets|escape} distinct sheets.</p>
+{/foreach}
+
+{/if}
+
+{include file="inc_foot.txt"}

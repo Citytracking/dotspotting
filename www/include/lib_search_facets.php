@@ -16,7 +16,7 @@
 
 	#################################################################
 
-	function dots_search_facets_by_name($viewer_id=0, $more=array()){
+	function search_facets_by_name($viewer_id=0, $more=array()){
 
 		# See those perms? That makes caching hard unless
 		# we only facet on public things...
@@ -42,7 +42,7 @@
 
 	#################################################################
 
-	function dots_search_facets_values_by_name($name, $viewer_id=0, $more=array()){
+	function search_facets_values_by_name($name, $viewer_id=0, $more=array()){
 
 		# See those perms? That makes caching hard unless
 		# we only facet on public things...
@@ -58,7 +58,7 @@
 
 		$sql = "SELECT e.value, COUNT(d.dot_id) AS count_dots, COUNT(DISTINCT(d.sheet_id)) AS count_sheets";
 		$sql .= " FROM DotsSearch d, DotsSearchExtras e";
-		$sql .= " WHERE d.dot_id=e.dot_id AND e.name='{$name}' AND {$perms}";
+		$sql .= " WHERE d.dot_id=e.dot_id AND e.name='{$enc_name}' AND {$perms}";
 		$sql .= " GROUP BY e.value";
 
 		$rsp = db_fetch($sql, $more);

@@ -87,6 +87,7 @@ RewriteRule ^recent(/sheets)?/?$		recent_sheets.php?%{QUERY_STRING} [L]
 RewriteRule ^recent/dots/?$			recent_dots.php?%{QUERY_STRING} [L]
 
 RewriteRule ^search/?$				search.php?%{QUERY_STRING} [L]
+RewriteRule ^search/facets(/([^\/]+))?/?$	search_facets.php?name=$2&%{QUERY_STRING} [L]
 
 RewriteRule ^nearby/?$						nearby.php?%{QUERY_STRING} [L]
 RewriteRule ^nearby/([a-z0-9]+)(/page([0-9]+))?/?$		search.php?gh=$1&nearby=1&page=$3&%{QUERY_STRING} [L]
