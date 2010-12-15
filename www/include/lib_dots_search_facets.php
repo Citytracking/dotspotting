@@ -56,7 +56,8 @@
 
 		$enc_name = AddSlashes($name);
 
-		$sql = "SELECT e.value, COUNT(d.dot_id) AS count_dots FROM DotsSearch d, DotsSearchExtras e";
+		$sql = "SELECT e.value, COUNT(d.dot_id) AS count_dots, COUNT(DISTINCT(d.sheet_id)) AS count_sheets";
+		$sql .= " FROM DotsSearch d, DotsSearchExtras e";
 		$sql .= " WHERE d.dot_id=e.dot_id AND e.name='{$name}' AND {$perms}";
 		$sql .= " GROUP BY e.value";
 
