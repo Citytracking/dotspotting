@@ -292,6 +292,10 @@
 			# This (the part with the ";" and the ":") is not the final syntax.
 			# I'm just working through the other bits first. (20101213/straup)
 
+			# Also, to do: work out some way to specify CAST-ing requirements
+			# for searching on extras:
+			# http://dev.mysql.com/doc/refman/5.0/en/cast-functions.html#function_cast
+			
 			foreach (explode(";", $e) as $parts){
 
 				list($name, $value) = explode(":", $parts);
