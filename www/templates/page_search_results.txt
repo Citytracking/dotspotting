@@ -4,12 +4,19 @@
 
 <h2>
 {$page_title|escape}
-{if $cfg.enable_feature_search_export} <span style="font-size:small;">/ <a href="{$pagination_url}&export=1">export</a></span>{/if}
+{if $cfg.enable_feature_search_export and $dots} <span style="font-size:small;">/ <a href="{$pagination_url}&export=1">export</a></span>{/if}
 </h2>
 
 {if $query_all_url}<div id="search_see_all"><a href="{$cfg.abs_root_url}{$query_all_url|escape}">see results for all users</a></div>{/if}
 
+{if $dots}
 {include file="inc_dots_list.txt"}
+{/if}
+
+{if $sheets}
+{include file="inc_sheets_list.txt"}
+{/if}
+
 {pagination}
 
 {include file="inc_foot.txt"}

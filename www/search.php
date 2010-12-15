@@ -19,7 +19,7 @@
 
 	#################################################################
 
-	$search = (get_str('search') == 'sheets') ? 'sheets' : 'dots';
+	$display = (get_str('d') == 'sheets') ? 'sheets' : 'dots';
 
 	if (count($_GET)){
 
@@ -46,7 +46,7 @@
 		# Go!
 		#
 
-		if ($search == 'sheets'){
+		if ($display == 'sheets'){
 			$rsp = search_sheets($_GET, $GLOBALS['cfg']['user']['id'], $more);
 
 			if ((! $rsp['ok']) || (! count($rsp['sheets']))){
@@ -75,7 +75,7 @@
 		# Export this search? (Only dots for now...)
 		#
 
-		if (($do_export) && ($search == 'dots')){
+		if (($do_export) && ($display == 'dots')){
 
 			$mimetype = $map[$format];
 

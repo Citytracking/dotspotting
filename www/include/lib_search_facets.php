@@ -16,21 +16,24 @@
 
 	#################################################################
 
-	function search_facets_by_name($viewer_id=0, $more=array()){
+	function search_facets_by_extras_name($viewer_id=0, $more=array()){
+
+		$sql = "SELECT e.name, COUNT(DISTINCT(e.value)) AS count_values, COUNT(d.dot_id) AS count_dots";
+		$sql .= " FROM DotsSearch d, DotsSearchExtras e";
+		$sql .= " WHERE d.dot_id=e.dot_id";
+
+		if ($more['user_id']){
+			$enc_user = AddSlashes($more['user_id']);
+			$sql .= " AND d.user_id='{$enc_user}'";
+		}
 
 		# See those perms? That makes caching hard unless
 		# we only facet on public things...
 
-		$perms = "d.perms=0";
-
-		if ($viewer_id){
-			$enc_id = AddSlashes($viewer_id);
-			$perms = "(d.perms=0 OR d.user_id='{$enc_id}')";
+		if ($perms = _search_facets_perms($viewer_id, $more)){
+			$sql .= " AND {$perms}";
 		}
 
-		$sql = "SELECT e.name, COUNT(DISTINCT(e.value)) AS count_values, COUNT(d.dot_id) AS count_dots";
-		$sql .= " FROM DotsSearch d, DotsSearchExtras e";
-		$sql .= " WHERE d.dot_id=e.dot_id AND {$perms}";
 		$sql .= " GROUP BY e.name";
 
 		$rsp = db_fetch($sql, $more);
@@ -42,23 +45,28 @@
 
 	#################################################################
 
-	function search_facets_values_by_name($name, $viewer_id=0, $more=array()){
-
-		# See those perms? That makes caching hard unless
-		# we only facet on public things...
-
-		$perms = "d.perms=0";
-
-		if ($viewer_id){
-			$enc_id = AddSlashes($viewer_id);
-			$perms = "(d.perms=0 OR d.user_id='{$enc_id}')";
-		}
+	function search_facets_extras_values_by_name($name, $viewer_id=0, $more=array()){
 
 		$enc_name = AddSlashes($name);
 
 		$sql = "SELECT e.value, COUNT(d.dot_id) AS count_dots, COUNT(DISTINCT(d.sheet_id)) AS count_sheets";
 		$sql .= " FROM DotsSearch d, DotsSearchExtras e";
-		$sql .= " WHERE d.dot_id=e.dot_id AND e.name='{$enc_name}' AND {$perms}";
+		$sql .= " WHERE d.dot_id=e.dot_id";
+
+		if ($more['user_id']){
+			$enc_user = AddSlashes($more['user_id']);
+			$sql .= " AND d.user_id='{$enc_user}'";
+		}
+
+		$sql .= " AND e.name='{$enc_name}'";
+
+		# See those perms? That makes caching hard unless
+		# we only facet on public things...
+
+		if ($perms = _search_facets_perms($viewer_id, $more)){
+			$sql .= " AND {$perms}";
+		}
+
 		$sql .= " GROUP BY e.value";
 
 		$rsp = db_fetch($sql, $more);
@@ -70,4 +78,24 @@
 
 	#################################################################
 
+	function _search_facets_perms($viewer_id, $more=array()){
+
+		$perms = "d.perms=0";
+
+		if ($viewer_id){
+
+			if (($more['user_id']) && ($more['user_id'] == $viewer_id)){
+				$perms = '';
+			}
+
+			else {
+				$enc_id = AddSlashes($viewer_id);
+				$perms = "(d.perms=0 OR d.user_id='{$enc_id}')";
+			}
+		}
+
+		return $perms;
+	}
+
+	#################################################################
 ?>

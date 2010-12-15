@@ -12,14 +12,20 @@
 		exit;
 	}
 
+	$user_id = get_int64("u");
+
+	$more = array(
+		'user_id' => $user_id,
+	);
+
 	if ($name = get_str('name')){
-		$values = search_facets_values_by_name($name, $GLOBALS['cfg']['user']['id']);
+		$values = search_facets_extras_values_by_name($name, $GLOBALS['cfg']['user']['id'], $more);
 		$GLOBALS['smarty']->assign_by_ref("values", $values['rows']);
 		$GLOBALS['smarty']->assign("name", $name);
 	}
 
 	else {
-		$names = search_facets_by_name($GLOBALS['cfg']['user']['id']);
+		$names = search_facets_by_extras_name($GLOBALS['cfg']['user']['id'], $more);
 		$GLOBALS['smarty']->assign_by_ref("names", $names['rows']);
 	}
 

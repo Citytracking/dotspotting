@@ -171,6 +171,7 @@
 
 		$sheet_more = array(
 			'load_user' => 1,
+			'load_extent' => 1,
 		);
 
 		foreach ($rsp['rows'] as $row){
@@ -195,13 +196,14 @@
 
 		$search_params = array(
 			'b' => 'bbox',
+			# 'd' is reserved for 'display' (as in 'sheets' or 'dots')
 			'dt' => 'created',		# change to be 'c' ?
+			'e' => 'extras',
 			'gh' => 'geohash',
 			'la' => 'latitude',
 			'ln' => 'longitude',
 			't' => 'type',
 			'u' => 'user_id',
-			'e' => 'extras',
 		);
 
 		$b = sanitize($args['b'], 'str');		# bounding box
@@ -342,7 +344,7 @@
 		# Extras
 		#
 
-		if ($e){
+		if (($e) && ($GLOBALS['cfg']['enable_feature_search_facets'])){
 
 			$extras = array();
 
