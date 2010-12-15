@@ -4,27 +4,13 @@
 	# $Id$
 	#
 
-	loadlib("dots_search_facets");
-
 	#################################################################
 
 	function dots_search_extras_add_lots_of_extras(&$extras, $add_offline=0){
 
 		$_extras = array();
-		$facets = array();
 
 		foreach ($extras as $e){
-
-			$f_name = $e['name'];
-			$f_value = $e['value'];
-
-			if (! isset($facets[$f_name])){
-				$facets[$f_name] = array();
-			}
-
-			$facets[$f_name][$f_value] ++;
-
-			#
 
 			$hash = array();
 
@@ -36,17 +22,6 @@
 		}
 
 		$rsp = db_insert_many('DotsSearchExtras', $_extras);
-
-		if ($rsp['ok']){
-
-			foreach ($facets as $name => $data){
-
-				foreach ($data as $value => $count){
-					dots_search_facets_add($name, $value, $count);
-				}
-			}
-		}
-
 		return $rsp;
 	}
 
