@@ -19,7 +19,7 @@
 			if (sPreviousSearch === null || sPreviousSearch != anControl.val()) {
 				window.clearTimeout(oTimerId);
 				sPreviousSearch = anControl.val();
-	
+
 				oTimerId = window.setTimeout(function() {
 					$.fn.dataTableExt.iApiIndex = i;
 					_that.fnFilter( anControl.val() );

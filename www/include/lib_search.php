@@ -4,8 +4,6 @@
 	# $Id$
 	#
 
-	# /?u=14&debug=0&e=recommendation:i%20want%20to%20go%20there
-
 	#################################################################
 
 	function search_dots(&$args, $viewer_id=0, $more=array()){
@@ -284,10 +282,10 @@
 		}
 
 		#
-		# Extras (requires user)
+		# Extras
 		#
 
-		if (($e) && ($where_parts['user_row'])){
+		if ($e){
 
 			$extras = array();
 

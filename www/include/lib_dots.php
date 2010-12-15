@@ -121,6 +121,18 @@
 		}
 
 		#
+		# I'm going to punt on facets for anything but search extras -- which
+		# extras are handled by their corresponding libraries -- for now and
+		# just see how they work before I start adding stuff like this which
+		# effectively means adding type classifications (extra, user-stuff, etc.)
+		# to the mix and that all sounds like a herd of advancing yaks right
+		# now. (20101214/straup)
+		#
+
+		# loadlib("dots_search_facets");
+		# dots_search_facets_add("dots_for_user", $dot['user_id'], $processed);
+
+		#
 
 		$end_all = microtime_ms() / 1000;
 		$timings[0] = $end_all - $start_all;
@@ -518,7 +530,7 @@
 		# Update the extras table
 		#
 
-		$extras_rsp = dots_extras_remove_dot($dot);
+		$extras_rsp = dots_search_extras_remove_dot($dot);
 
 		if (! $extras_rsp['ok']){
 			# What?

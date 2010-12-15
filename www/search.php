@@ -21,8 +21,6 @@
 
 	if (count($_GET)){
 
-		# this is experimental
-
 		$do_export = 0;
 
 		if (($GLOBALS['cfg']['enable_feature_search_export']) && (get_str('export'))){
@@ -107,6 +105,8 @@
 		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();
 	}
+
+	# facets go here...
 
 	$GLOBALS['smarty']->display('page_search.txt');
 	exit();
