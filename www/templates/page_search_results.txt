@@ -4,7 +4,7 @@
 
 <h2>
 {$page_title|escape}
-{if $cfg.enable_feature_search_export and $dots} <span style="font-size:small;">/ <a href="{$pagination_url}&export=1">export</a></span>{/if}
+{if $cfg.enable_feature_search_export and $dots} <span style="font-size:small;">/ <a href="{$cfg.abs_root_url}{$pagination_url}&export=1">export</a></span>{/if}
 </h2>
 
 {if $query_all_url}<div id="search_see_all"><a href="{$cfg.abs_root_url}{$query_all_url|escape}">see results for all users</a></div>{/if}
