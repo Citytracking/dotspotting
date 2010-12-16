@@ -20,9 +20,11 @@
 	$GLOBALS['export_ignore_columns'] = array(
 		'details_json',
 		'details_listview',
+		'index_on',
 
 		# for export from search - probably not the
 		# best way to do things (20101122/straup)
+
 		'user',
 		'sheet',
 	);
@@ -73,14 +75,6 @@
 
 					foreach ($row['details'][$k] as $e){
 						$values[] = $e['value'];
-
-						# derived from stuff - this should be considered
-						# incomplete (20101111/straup)
-
-						if (isset($e['derived_from'])){
-							$d = "{$k}:derived_from";
-							$row[$d] = $e['derived_from'];
-						}
 					}
 
 					$row[$k] = implode(",", $values);
@@ -104,6 +98,24 @@
 				if (isset($row[$ts])){
 					$row[$ts] = gmdate('Y-m-d\TH:m:s e', $row[$ts]);
 				}
+			}
+
+			$to_prefix = array(
+				'id',
+				'sheet_id',
+				'user_id',
+				'perms',
+				'geohash',
+			);
+
+			foreach ($to_prefix as $col){
+
+				if (! array_key_exists($col, $row)){
+					continue;
+				}
+
+				$row["dotspotting:{$col}"] = $row[$col];
+				unset($row[$col]);
 			}
 
 			$rows[$i] = $row;
