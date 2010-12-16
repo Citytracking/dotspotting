@@ -23,9 +23,8 @@
 		$where = array();
 
 		#
-		# Note that order of these keys is^H^H will be important.
-		# They are dictated by the indexes on DotsSearch which have
-		# been thrown into disarray again (20101123/straup)
+		# Note that order of these keys is important for database
+		# indexes.
 		#
 
 		foreach (array('user', 'geo', 'time', 'extras') as $what){
