@@ -12,9 +12,6 @@
 	{foreach from=$dots_indexed item="label"}
 			<th>{$label|escape}</th>
 	{/foreach}
-{else}
-			<th>Location</th>
-			<th>Type</th>
 {/if}
 			<th>Created</th>
 			{if $is_own}
@@ -65,15 +62,6 @@
 				{else}&#8212;{/if}
 				</td>
 	{/foreach}
-
-{else}
-				<td class="dotslist_location" nowrap>
-{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&l={$dot.location|escape:'url'}">{$dot.location|escape}</a>{else}&#8212;{/if}
-				</td>
-
-				<td class="dotslist_type" nowrap>
-{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&t={$dot.type|escape:'url'}">{$dot.type|truncate:15:"..."|escape}</a>{else}&#8212;{/if}
-				</td>
 {/if}
 
 				<td class="dotslist_created" nowrap>

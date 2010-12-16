@@ -33,7 +33,7 @@
 	$GLOBALS['cfg']['enable_feature_import'] = 1;
 	$GLOBALS['cfg']['enable_feature_import_by_url'] = 0;
 
-	$GLOBALS['cfg']['enable_feature_dots_indexing'] = 0;
+	$GLOBALS['cfg']['enable_feature_dots_indexing'] = 1;
 
 	# Don't turn this on until there is a working offline tasks system
 	# $GLOBALS['cfg']['enable_feature_enplacify'] = 0;
