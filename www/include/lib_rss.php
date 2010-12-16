@@ -21,7 +21,7 @@
 		$xml = fread($fh, filesize($more['file']['path']));
 		fclose($fh);
 
-    		$rss = new MagpieRSS($xml, 'utf-8', 'utf-8', true );
+		$rss = new MagpieRSS($xml, 'utf-8', 'utf-8', true );
 
 		$data = array();
 		$record = 1;
@@ -97,7 +97,11 @@
 				if ($woe = $item['woe']){
 					$tmp['yahoo:woeid'] = filter_strict(sanitize($woe['woeid'], 'str'));
 				}
+
+				# TO DO: tags
 			}
+
+			$data[] = $tmp;
 		}
 
 		return array(
