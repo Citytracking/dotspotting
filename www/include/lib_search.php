@@ -343,7 +343,7 @@
 		# Extras
 		#
 
-		if (($e) && ($GLOBALS['cfg']['enable_feature_search_facets'])){
+		if (($e) && ($GLOBALS['cfg']['enable_feature_dots_indexing'])){
 
 			$extras = array();
 
