@@ -930,6 +930,10 @@
 
 		foreach ($dots as $dot){
 			
+			if (! is_array($dot['index_on'])){
+				continue;
+			}
+
 			foreach ($dot['index_on'] as $i){
 
 				if (! in_array($i, $indexed)){
