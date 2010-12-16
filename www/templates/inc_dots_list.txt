@@ -59,7 +59,11 @@
 
 {if $cfg.enable_feature_dots_indexing}
 	{foreach from=$dots_indexed item="label"}
-				<td class="dotlist_{$label|escape}">{if $dot.$label}{$dot.$label|escape}{else}&#8212;{/if}</th>
+				<td class="dotlist_{$label|escape}">
+				{if $dot.$label}
+				<a href="{$cfg.abs_root_url}search?u={$dot.user_id|escape}&e={$label|escape:'url'}:{$dot.$label|escape:'url'}">{$dot.$label|escape}</a>
+				{else}&#8212;{/if}
+				</td>
 	{/foreach}
 
 {else}

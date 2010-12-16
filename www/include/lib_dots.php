@@ -489,6 +489,12 @@
 			if (! $search_rsp['ok']){
 				# What?
 			}
+
+			$extras_rsp = dots_search_extras_remove_dot($dot);
+
+			if (! $extras_rsp['ok']){
+				# What?
+			}
 		}
 
 		#

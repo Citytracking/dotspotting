@@ -8,6 +8,9 @@
 
 	loadlib("sheets_lookup");
 
+	loadlib("dots_search");
+	loadlib("dots_search_extras");
+
 	#################################################################
 
 	function sheets_create_sheet(&$user, $more=array()){
@@ -97,6 +100,7 @@
 		#
 
 		dots_search_remove_sheet($sheet);
+		dots_search_extras_remove_sheet($sheet);
 
 		#
 		# Okay, go

@@ -56,7 +56,7 @@ CREATE TABLE `SheetsLookup` (
 DROP TABLE IF EXISTS `DotsSearch`;
 
 CREATE TABLE `DotsSearch` (
-  `dot_id` int(20) unsigned NOT NULL PRIMARY KEY,
+  `dot_id` int(20) unsigned NOT NULL,
   `sheet_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `perms` tinyint(3) unsigned NOT NULL,
@@ -65,31 +65,25 @@ CREATE TABLE `DotsSearch` (
   `geohash` char(12) NOT NULL,
   `created` datetime DEFAULT NULL,
   `imported` int(10) unsigned NOT NULL,
-  `type` varchar(64) NOT NULL,
-  `location` varchar(64) NOT NULL,
-  KEY `user_by_user` (`user_id`,`geohash`,`created`,`type`,`location`,`perms`),
-  KEY `user_by_created` (`user_id`,`created`,`type`,`location`,`perms`),
-  KEY `user_by_type` (`user_id`,`type`,`location`,`perms`),
-  KEY `user_by_location` (`user_id`,`location`,`perms`),
+  PRIMARY KEY (`dot_id`),
+  KEY `user_by_user` (`user_id`,`geohash`,`created`,`perms`),
+  KEY `user_by_created` (`user_id`,`created`,`perms`),
   KEY `user_by_perms` (`user_id`,`perms`),
-  KEY `geohash_by_created` (`geohash`,`created`,`type`,`location`,`perms`),
-  KEY `geohash_by_type` (`geohash`,`type`,`location`,`perms`),
-  KEY `geohash_by_location` (`geohash`,`location`,`perms`),
+  KEY `geohash_by_created` (`geohash`,`created`,`perms`),
   KEY `geohash_by_perms` (`geohash`,`perms`),
-  KEY `created_by_type` (`created`,`type`,`location`,`perms`),
-  KEY `created_by_location` (`created`,`location`,`perms`),
-  KEY `created_by_perms` (`created`,`perms`),
-  KEY `location_by_perms` (`location`,`perms`)
+  KEY `created_by_perms` (`created`,`perms`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `DotsSearchExtras`;
 
 CREATE TABLE `DotsSearchExtras` (
-  `dot_id` bigint(20) unsigned NOT NULL,
-  `name` varchar(255) NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
-  `value` varchar(255) NOT NULL,
+  `dot_id` bigint(20) unsigned NOT NULL,
   `sheet_id` int(11) unsigned NOT NULL,
-  UNIQUE KEY `uid` (`dot_id`,`name`,`value`)
+  `name` varchar(255) NOT NULL,
+  `value` varchar(255) NOT NULL,
+  UNIQUE KEY `uid` (`dot_id`,`name`,`value`),
+  KEY `by_sheet` (`sheet_id`),
+  KEY `by_value` (`value`),
+  KEY `by_name` (`name`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

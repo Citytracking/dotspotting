@@ -103,12 +103,12 @@
 
 		else {
 			unset($_GET['page']);
-			$pagination_url = "/search/?" . http_build_query($_GET);
+			$pagination_url = "search/?" . http_build_query($_GET);
 			$page_as_queryarg = 1;
 
 			if ($_GET['u']){
 				unset($_GET['u']);
-				$smarty->assign("query_all_url", "/search/?" . http_build_query($_GET));
+				$smarty->assign("query_all_url", "search/?" . http_build_query($_GET));
 			}
 		}
 
