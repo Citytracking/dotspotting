@@ -349,29 +349,50 @@
 
 			# This (the part with the ";" and the ":") is not the final syntax.
 			# I'm just working through the other bits first. (20101213/straup)
-
-			# Also, to do: work out some way to specify CAST-ing requirements
-			# for searching on extras:
-			# http://dev.mysql.com/doc/refman/5.0/en/cast-functions.html#function_cast
 			
 			foreach (explode(";", $e) as $parts){
 
 				list($name, $value) = explode(":", $parts);
 
-				$parts = array();
+				$tmp = array();
 
 				if ($name){
 					$enc_name = AddSlashes($name);
-					$parts[] = "e.name='{$enc_name}'";
+					$tmp[] = "e.name='{$enc_name}'";
 				}
 
 				if ($value){
-					$enc_value = AddSlashes($value);
-					$parts[] = "e.value='{$enc_value}'";
+
+					if (preg_match("/^CONTAINS\((.+)\)$/", $value, $m)){
+						$enc_value = AddSlashes($m[1]);
+						$tmp[] = "e.value LIKE '%{$enc_value}%'";
+					}
+
+					# Also, to do: work out some way to specify CAST-ing requirements
+					# for searching on extras. It would be nice to spend the time working
+					# out a simplified syntax for doing basic operations (greater than, 
+					# between, etc.) but then you get sucked in to a twisty maze of edge
+					# cases where you also want to do <= or that when strings are cast
+					# as ints they become 0 or whether to use decimals and how big they
+					# should or ... anyway, you get the idea. There are more pressing
+					# things to deal with Now. (20101216/straup)
+					#
+					# http://dev.mysql.com/doc/refman/5.0/en/cast-functions.html#function_cast
+
+					else {
+						$enc_value = AddSlashes($value);
+						$tmp[] = "e.value='{$enc_value}'";
+					}
+
+					# Something to consider if it's ever possible to feel
+					# safe and comfortible evulating regular expressions
+					# from user input... (20101216/straup)
+					# http://dev.mysql.com/doc/refman/5.1/en/regexp.html
+
 				}
 
 				if (count($parts)){
-					$extras[] = "(" . implode(" AND ", $parts) . ")";
+					$extras[] = "(" . implode(" AND ", $tmp) . ")";
 				}
 			}
 
