@@ -10,7 +10,7 @@
 
 		$map = array(
 			'text/csv' => 'csv',
-			# 'application/rss+xml' => 'rss',
+			'application/rss+xml' => 'rss',
 			'application/vnd.google-earth.kml+xml' => 'kml',
 		);
 

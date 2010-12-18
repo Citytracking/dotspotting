@@ -1,0 +1,50 @@
+{include file="inc_head.txt"}
+
+{if $error|@count}
+{$error|@dumper}
+{/if}
+
+{if $import_rsp}
+
+{if ! $import_rsp.ok}
+<p class="error">Hrmph! There was a problem importing your file.</p>
+{else}
+{include file="inc_upload_success.txt" upload=$import_rsp}
+{/if}
+
+{else}
+
+{if !$url}
+<p class="tx1">...</p>
+
+<form method="POST" action="{$cfg.abs_root_url}upload/flickr/">
+	<input type="text" size="40" name="url" value="" />
+	<input type="submit" value="IMPORT FROM FLICKR" />
+</form>
+
+{else}
+<p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from the website <q class="important">{$parsed_url.host|escape}</q> into Dotspotting?</p>
+
+<form method="POST" action="{$cfg.abs_root_url}upload/flickr/">
+	{$crumb_key|crumb_input}
+	<input type="hidden" name="confirm" value="1" />
+	<input type="hidden" name="url" value="{$url|escape}" />
+
+	<br />
+
+	<input type="text" value="" size="40" name="label" />
+	<br />
+	<label for="label">Give your upload a name (optional)</label>
+	<br /><br />
+
+	<input type="checkbox" name="private" />
+	<label for="private">make all these dots private</label>
+	<br /><br />
+
+	<input type="submit" value="YES, PLEASE TO IMPORT" />
+</form>
+{/if}
+
+{/if}
+
+{include file="inc_foot.txt"}
