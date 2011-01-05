@@ -19,23 +19,7 @@
 	<label for="upload">Choose a file to upload</label>
 	<br /><br />
 
-	<input type="text" size="40" name="label" />
-	<br />
-	<label for="label">Give your upload a name (optional)</label>
-	<br /><br />
-
-	{if $cfg.enable_feature_dots_indexing}
-
-	<input type="text" size="40" name="dots_index_on" />
-	<br />
-	<label for="dots_index_on">A comma-separated list of the field names you would like us to index (optional, maximum of {$cfg.dots_indexing_max_cols|escape})</label>
-	<br /><br />
-
-	{/if}
-
-	<input type="checkbox" name="private" />
-	<label for="private">make all these dots private</label>
-	<br /><br />
+	{include file="inc_upload_file_attributes.txt"}
 
 	<input type="SUBMIT" value="UPLOAD YOUR DOTS!" />
 </form>

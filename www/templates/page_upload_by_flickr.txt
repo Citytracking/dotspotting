@@ -1,9 +1,4 @@
 {include file="inc_head.txt"}
-
-{if $error|@count}
-{$error|@dumper}
-{/if}
-
 {if $import_rsp}
 
 {if ! $import_rsp.ok}
@@ -14,8 +9,29 @@
 
 {else}
 
-{if !$url}
-<p class="tx1">...</p>
+{if $error|@count}
+<p class="error">
+{if $error.not_flickr}
+Hey! Only URLs from <a href="http://www.flickr.com/">flickr.com</a> can be used. That's why it's called <q>import photos from Flickr</q>!
+{elseif $error.no_feed_url}
+Hrm. We were unable to find the hidden magic link needed to import photos from your link. Would you like to try another URL?
+{else}
+INVISIBLE ERROR CAT HISSES AT YOU!
+{/if}
+</p>
+{/if}
+
+{if !$url or $error|@count}
+
+<h2>Import photos from Flickr</h2>
+
+<p class="tx1">Use this form to upload geotagged photos from <a href="http://www.flickr.com/">Flickr</a>. Many pages on Flickr contain an embedded (fancy talk for <q>hidden</q>) link to a machine-readable version of the most recent photos for that view &#8212; a user's photostream, a group pool, etc. &#8212; so you can simply copy and paste the URL in the input field below. For example:</p>
+
+<p class="tx1" style="text-align:center;"><code><a href="http://www.flickr.com/groups/flickrcommons/pool/">http://www.flickr.com/groups/flickrcommons/pool/</a></code></p>
+
+<p class="tx1">Dotspotting will do the rest and import any photos it finds in to a new sheet!</p>
+
+<br />
 
 <form method="POST" action="{$cfg.abs_root_url}upload/flickr/">
 	<input type="text" size="40" name="url" value="" />
@@ -32,14 +48,7 @@
 
 	<br />
 
-	<input type="text" value="" size="40" name="label" />
-	<br />
-	<label for="label">Give your upload a name (optional)</label>
-	<br /><br />
-
-	<input type="checkbox" name="private" />
-	<label for="private">make all these dots private</label>
-	<br /><br />
+	{include file="inc_upload_file_attributes.txt"}
 
 	<input type="submit" value="YES, PLEASE TO IMPORT" />
 </form>

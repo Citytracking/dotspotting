@@ -76,6 +76,8 @@
 				'created' => filter_strict(sanitize($item['pubdate'], 'str')),
 				'author' => filter_strict(sanitize($item['author'], 'str')),
 
+				'description' => filter_strict(sanitize($item['description'], 'str')),
+
 				'latitude' => $lat,
 				'longitude' => $lon,
 			);
@@ -83,6 +85,8 @@
 			# what to do about 'description' and other tags?
 
 			if (preg_match("/^tag:flickr.com,2004:\/photo\/(\d+)$/", $tmp['guid'], $m)){
+
+				# remove 'foo posted a photo:' stuff here
 
 				$tmp['flickr:id'] = $m[1];
 
@@ -98,7 +102,9 @@
 					$tmp['yahoo:woeid'] = filter_strict(sanitize($woe['woeid'], 'str'));
 				}
 
-				# TO DO: tags
+				if (isset($item['media']) && isset($item['media']['category'])){
+					$tmp['tags'] = filter_strict(sanitize($item['media']['category'], 'str'));
+				}
 			}
 
 			$data[] = $tmp;
