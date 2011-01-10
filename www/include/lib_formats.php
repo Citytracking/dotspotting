@@ -12,6 +12,7 @@
 			'text/csv' => 'csv',
 			'application/rss+xml' => 'rss',
 			'application/vnd.google-earth.kml+xml' => 'kml',
+			'application/vnd.ms-excel' => 'xls',
 		);
 
 		# TODO: fix me so that this will work for mime-types
