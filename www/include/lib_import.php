@@ -370,4 +370,9 @@
 
 	#################################################################
 
+	function import_scrub($input, $sanitize_as='str'){
+		return filter_strict(sanitize($input, $sanitize_as));
+	}
+
+	#################################################################
 ?>
