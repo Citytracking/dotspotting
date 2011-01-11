@@ -9,6 +9,7 @@
 	# https://code.google.com/p/php-excel-reader/wiki/Documentation
 
 	loadpear("Spreadsheet/Excel/Reader");
+	loadpear("Spreadsheet/Excel/Writer");
 
 	#################################################################
 
@@ -72,6 +73,9 @@
 
 			$data[] = $tmp;
 		}
+
+dumper($data);
+exit;
 
 		return array(
 			'ok' => 1,

@@ -39,8 +39,19 @@
 	# Go!
 
 	define('DOTSPOTTING_WWW_DIR', dirname(dirname(__FILE__)) );
-
 	define('DOTSPOTTING_INCLUDE_DIR', DOTSPOTTING_WWW_DIR . '/include/');
+
+	# See this? We're being super restrictive about where we look
+	# for libs. Dotspotting should be able to run as-is with everything
+	# located locally. (20110110/straup)
+
+	$include_path = array(
+		DOTSPOTTING_INCLUDE_DIR,
+		DOTSPOTTING_INCLUDE_DIR . "pear/"
+	);
+
+	ini_set("include_path", implode(":", $include_path));
+
 	define('DOTSPOTTING_CONFIG_DIR', dirname(DOTSPOTTING_WWW_DIR) . '/config/');
 
 	include(DOTSPOTTING_INCLUDE_DIR . "config.php");
@@ -282,7 +293,7 @@
 		$GLOBALS['loaded_libs'][$name] = 1;
 
 		$fq_name = DOTSPOTTING_INCLUDE_DIR . "lib_{$name}.php";
-		include($fq_name);
+		include_once($fq_name);
 	}
 
 	function loadpear($name){
@@ -294,7 +305,7 @@
 		$GLOBALS['loaded_libs']['PEAR:'.$name] = 1;
 
 		$fq_name = DOTSPOTTING_INCLUDE_DIR . "pear/{$name}.php";
-		include($fq_name);
+		include_once($fq_name);
 	}
 
 	#################################################################

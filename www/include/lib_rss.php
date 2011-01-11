@@ -4,10 +4,6 @@
 	# $Id$
 	#
 
-	# THIS SHOULD BE CONSIDERED BEYOND BLEEDING EDGE - if for no other
-	# reason than that I haven't checked the magpie stuff in to core
-	# yet (20101215/straup)
-
 	#################################################################
 
 	loadlib("geo_utils");
