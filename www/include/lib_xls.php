@@ -60,15 +60,32 @@
 
 			for ($j=1; $j < $cols; $j++){
 
-				$val = $xls->val($i, $j);
-				$type = $xls->type($i, $j);
+				$label = $fields[$j-1];
+				$value = $xls->val($i, $j);
 
 				# type always seems to come back empty
 				# (20110110/straup)
+				# $type = $xls->type($i, $j);
 
-				# check lat,lon here
+				if ($label == 'latitude'){
 
-				$tmp[$fields[$j-1]] = import_scrub($val);
+					if (! geo_utils_is_valid_latitude($value)){
+						$errors[] = array( 'record' => $record, 'error' => 'invalid latitude' );
+						continue;
+					}
+				}
+
+				if ($label == 'longitude'){
+
+					if (! geo_utils_is_valid_longitude($value)){
+						$errors[] = array( 'record' => $record, 'error' => 'invalid longitude' );
+						continue;
+					}
+				}
+
+				# TO DO : dates and times (they seem to be always be weird)
+
+				$tmp[$label] = import_scrub($value);
 			}
 
 			$data[] = $tmp;
