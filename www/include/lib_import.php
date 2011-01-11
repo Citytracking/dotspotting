@@ -6,6 +6,7 @@
 
 	#################################################################
 
+	loadlib("geo_utils");
 	loadlib("csv");
 	loadlib("formats");
 
@@ -371,8 +372,24 @@
 	#################################################################
 
 	function import_scrub($input, $sanitize_as='str'){
-		return filter_strict(sanitize($input, $sanitize_as));
+
+		$input = html_entity_decode($input, ENT_QUOTES, 'UTF-8');
+
+		$input = sanitize($input, $sanitize_as);
+		$input = filter_strict($input);
+
+		$input = trim($input);
+		return $input;
 	}
 
 	#################################################################
+
+	function import_ensure_valid_latlon($lat, $lon){
+		$lat = ($lat && geo_utils_is_valid_latitude($lat)) ? $lat : null;
+		$lon = ($lon && geo_utils_is_valid_longitude($lon)) ? $lon : null;
+		return array($lat, $lon);
+	}
+
+	#################################################################
+
 ?>

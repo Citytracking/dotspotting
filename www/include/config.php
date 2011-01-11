@@ -163,6 +163,8 @@
 	$GLOBALS['cfg']['import_by_url_blacklist'] = '';
 	$GLOBALS['cfg']['import_by_url_whitelist'] = '';
 
+	$GLOBALS['cfg']['import_kml_resolve_network_links'] = 1;
+
 	#
 	# Email
 	#

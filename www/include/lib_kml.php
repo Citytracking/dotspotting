@@ -4,211 +4,192 @@
 	# $Id$
 	#
 
-	# WARNING: Sausage below. This works for foursquare which was the
-	# initial test case but then started failing in a twisty maze of
-	# XML/namespaces gotchas that, right now, spell "yak". The whole
-	# thing is slated for re-imagining. (20101210/straup)
+	# THIS IS STILL BEING REWRITTEN (20110110/straup)
 
 	#################################################################
 
 	function kml_parse_fh($fh, $more=array()){
 
-		# Note: One possible brute force solution (see above) is simply
-		# read $fh long enough to see if it has namespaces in the root
-		# <kml> element and if it is does, rewind and write $fh to disk
-		# stripping it of xmlns declarations. This is probably evil but
-		# might also have the advantage of being a 95/5 solution, as
-		# opposed to one where I need to declare namespaces for every
-		# version of KML under the sun... (20101210/straup)
-
-		# Why is there no loadFH method?
+		$data = fread($fh, filesize($more['file']['path']));
 		fclose($fh);
 
-		$doc = new DOMDocument();
-		$doc->preserveWhiteSpace = false;
+		$xml = new SimpleXMLElement($data);
 
-		$doc->load($more['file']['path']);
+		if ($nl = $xml->NetworkLink){
 
-		$xpath = new DOMXpath($doc);
+			if (! $GLOBALS['cfg']['import_kml_resolve_network_links']){
+				return array(
+					'ok' => 0,
+					'error' => 'Network linked KML files are not currently supported.'
+				);
+			}
 
-		$name = $xpath->query("/kml/Folder/name");
-		$label = '';
+			$url = $nl->Url;
+			$link = (string)$url->href;
 
-		if ($name->length){
-			$label = sanitize($name->item(0)->nodeValue, 'str');
-		}
+			$rsp = http_get($link);
 
-		$nodes = $xpath->query("*//Placemark");
+			if (! $rsp['ok']){
+				return $rsp;
+			}
 
-		if (! $nodes->length){
-			return array( 'ok' => 0, 'error' => 'Unable to locate any places' );
+			$xml = new SimpleXMLElement($rsp['body']);
 		}
 
 		$data = array();
+		$errors = array();
+
 		$record = 1;
 
-		# How to recoginize, store and index these as internal fields without
-		# a) destroying user data b) conveying to the user that these will
-		# automagically index (read: don't worry about listing them as dots_extras)
-		# (20101210/straup)
+		$ctx = ($xml->Document) ? $xml->Document : $xml->Folder;
 
-		$labels_map = array(
-			'published' => 'created',
-			'visibility' => 'perms',
-		);
+		if (! $ctx){
 
-		foreach ($nodes as $node){
+			return array(
+				'ok' => 0,
+				'error' => 'Failed to locate any placemarks',
+			);
+		}
+
+		$label = (string)$ctx->name;
+		$label = import_scrub($label);
+
+		foreach ($ctx->Placemark as $p){
 
 			$record ++;
 
 			if (($more['max_records']) && ($record > $more['max_records'])){
 				break;
 			}
-			
-			$theirs = array();
-			$ours = array();
 
-			# Hey look! This is not a general purpose KML parser!!
-			# At the moment it is a super bare-bones parser designed
-			# for sites like Foursquare and a few others. It will
-			# undoubtedly need to be revisited as Dotspotting progresses
-			# (20101209/straup)
-			#
-			# See also: http://blog.jclark.com/2010/11/xml-vs-web_24.html
+			$tmp = array();
 
-			_kml_placemark2hash($node, $theirs);
+			# do everything but the geo bits first in case we run in to a big
+			# bag of points like we might find in a KML file from Google's
+			# mytracks (20110111/straup)
 
-			if (! count($theirs)){
-				$errors[] = array( 'record' => $record, 'error' => 'failed to parse placemark' );
+			$title = (string)$p->name;
+			$desc = (string)$p->description;
+
+			# foursquare-isms
+
+			if ((preg_match("/^foursquare /", $label)) && ($a = $p->description->a)){
+				$attrs = $a->attributes();
+				$href = (string)$attrs['href'];
+
+				if (preg_match("/venue\/(\d+)\/?$/", $href, $m)){
+					$tmp['foursquare:venue'] = $m[1];
+					$desc = (string)$a;
+				}
+			}
+
+			# random other stuff
+
+			if ($pub = $p->published){
+				$pub = (string)$pub;
+				$pub = import_scrub($pub);
+				$tmp['created'] = $pub;
+			}
+
+			if ($vis = $p->visibility){
+
+				if ($vis = (string)$vis){
+					$tmp['perms'] = 'private';
+				}
+			}
+
+			$title = import_scrub($title);
+			$desc = import_scrub($desc);
+
+			$tmp['title'] = $title;
+			$tmp['description'] = $desc;
+
+			# sigh...
+
+			if ($coords = (string)$p->Point->coordinates){
+
+				list($lon, $lat, $altitude) = explode(",", $coords, 3);
+				list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
+
+				if (! $lat || ! $lon){
+
+					$errors[] = array(
+						'record' => $record,
+						'error' => 'Invalid latitude or longitude',
+					);
+
+					continue;
+				}
+
+				$tmp['latitude'] = $lat;
+				$tmp['longitude'] = $lon;
+				# $tmp['altitude'] = import_scrub($altitude);
+			}
+
+			else if ($coords = (string)$p->MultiGeometry->LineString->coordinates){
+
+				# We're going to keep our own counter below
+
+				$record --;
+
+				$coords = explode(" ", $coords);
+
+				foreach ($coords as $coord){
+
+					$record ++;
+
+					if (($more['max_records']) && ($record > $more['max_records'])){
+						break;
+					}
+
+					list($lon, $lat, $altitude) = explode(",", $coord, 3);
+					list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
+
+					if (! $lat || ! $lon){
+
+						$errors[] = array(
+							'record' => $record,
+							'error' => 'Invalid latitude or longitude',
+						);
+
+						continue;
+					}
+
+					$tmp['latitude'] = $lat;
+					$tmp['longitude'] = $lon;
+
+					$tmp['altitude'] = import_scrub($altitude);
+					$data[] = $tmp;
+				}
+
 				continue;
 			}
 
-			foreach ($theirs as $key => $value){			
+			else {
+				$errors[] = array(
+					'record' => $record,
+					'error' => 'Unable to determine location information',
+				);
 
-				if ($key == 'Point'){
-
-					$coords = sanitize($value['coordinates']['#text'], 'str');
-					list($lon, $lat) = explode(",", $coords, 2);
-
-					$ours['latitude'] = $lat;
-					$ours['longitude'] = $lon;
-
-					foreach ($value as $_key => $_value){
-
-						if ($_key == 'coordinates'){
-							continue;
-						}
-
-						$rsp = _kml_sanitize($_key, $_value['#text']);
-
-						if (! $rsp['ok']){
-							$errors[] = array( 'record' => $record, 'error' => $rsp['error'] );
-							continue;
-						}
-
-						$ours[ $rsp['key'] ] = $rsp['value'];
-					}
-
-					continue;
-				}
-
-				else if ($key == 'description'){
-
-					if (isset($value['a']) && isset($value['a']['@href'])){
-
-						if (preg_match("/\/venue\/(\d+)$/", $value['a']['@href'], $m)){
-							$ours['foursquare:venue'] = $m[1];
-							$value = $value['a']['#text'];
-						}
-					}
-
-					else {
-						$value = $value['#text'];
-					}
-				}
-
-				else {
-					$value = $value['#text'];
-				}
-
-				$rsp = _kml_sanitize($key, $value);
-
-				if (! $rsp['ok']){
-					$errors[] = array( 'record' => $record, 'error' => $rsp['error'] );
-					continue;
-				}
-
-				$key_clean = $rsp['key'];
-				$value_clean = $rsp['value'];
-
-				if ($key_clean == 'perms'){
-					$value_clean = ($value_clean) ? "public" : "private";
-				}
-
-				$ours[ $key_clean ] = $value_clean;
+				continue;
 			}
 
-			if (isset($ours['foursquare:venue']) && ($ours['title'] == $ours['description'])){
-				unset($ours['description']);
-			}
-
-			if (isset($ours['#text'])){
-				unset($ours['#text']);
-			}
-
-			$data[] = $ours;
+			$data[] = $tmp;
 		}
 
 		return array(
 			'ok' => 1,
-			'data' => &$data,
 			'label' => $label,
+			'data' => &$data,
 			'errors' => &$errors,
 		);
 	}
 
 	#################################################################
 
-	function _kml_sanitize($key, $value){
+	function kml_export_dots(&$dots, $more=array()){
 
-		$key_clean = sanitize($key, 'str');
-		$value_clean = sanitize($value, 'str');
 
-		if (! $key_clean){
-			return array( 'ok' => 0, 'error' => 'invalid key' );
-		}
-
-		if (($value) && (! $value_clean)){
-			return array( 'ok' => 0, 'error' => 'invalid value' );
-		}
-
-		return array( 'ok' => 1, 'key' => $key_clean, 'value' => $value_clean );
-	}
-
-	#################################################################
-
-	function _kml_placemark2hash($node, &$hash){
-
-		foreach ($node->childNodes as $el){
-
-			$name = $el->nodeName;
-			$value = $el->nodeValue;
-
-			if ($el->hasChildNodes()){
-
-				$kids = array();
-				_kml_placemark2hash($el, $kids);
-
-				$hash[$name] = $kids;
-				continue;
-			}
-
-			$hash[ $name ] = trim($value);
-		}
-
-		foreach ($node->attributes as $a){
-			$hash[ '@' . $a->name ] = $a->value;
-		}
 	}
 
 	#################################################################
