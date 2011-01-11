@@ -36,6 +36,7 @@ require_once 'Spreadsheet/Excel/Writer/Format.php';
 require_once 'Spreadsheet/Excel/Writer/BIFFwriter.php';
 require_once 'Spreadsheet/Excel/Writer/Worksheet.php';
 require_once 'Spreadsheet/Excel/Writer/Parser.php';
+require_once 'OLE.php';
 require_once 'OLE/PPS/Root.php';
 require_once 'OLE/PPS/File.php';
 
