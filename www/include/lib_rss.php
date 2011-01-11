@@ -34,11 +34,7 @@
 
 			if ($geo = $item['geo']){
 
-				$lat = filter_strict(sanitize($geo['lat'], 'str'));
-				$lon = filter_strict(sanitize($geo['long'], 'str'));
-
-				$lat = ($lat && geo_utils_is_valid_latitude($lat)) ? $lat : null;
-				$lon = ($lon && geo_utils_is_valid_longitude($lon)) ? $lon : null;
+				list($lat, $lon) = import_ensure_valid_latlon($geo['lat'], $geo['lon']);
 
 				$has_latlon = ($lat && $lon) ? 1 : 0;
 			}
@@ -46,9 +42,7 @@
 			if (! $has_latlon && $geo = $item['georss']){
 
 				list($lat, $lon) = explode(" ", $geo['point'], 2);
-
-				$lat = ($lat && geo_utils_is_valid_latitude($lat)) ? $lat : null;
-				$lon = ($lon && geo_utils_is_valid_longitude($lon)) ? $lon : null;
+				list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
 				$has_latlon = ($lat && $lon) ? 1 : 0;
 			}
@@ -115,4 +109,120 @@
 
 	#################################################################
 
+	function rss_export_dots(&$dots, $fh){
+
+		$ns_map = array(
+			'geo' => 'http://www.georss.org/georss',
+			'dotspotting' => 'x-urn:dotspotting#internal',
+			'sheet' => 'x-urn:dotspotting#sheet',
+		);
+
+		$channel_data = array(
+			'title' => '',
+			'link' => '',
+			'description' => '',
+			'pubDate' => '',
+			'lastBuildDate' => '',
+			'generator' => 'Dotspotting',
+		);
+
+		$skip = array(
+			'latitude',
+			'longitude',
+			'altitude',
+			'title',
+			'description',
+		);
+
+		$doc = new DomDocument('1.0', 'UTF-8');
+
+		$rss = $doc->createElement('rss');
+		$rss = $doc->appendChild($rss);
+
+		foreach ($ns_map as $prefix => $uri){
+
+			$xmlns = ($prefix) ? "xmlns:{$prefix}" : "xmlns";
+			$attr = $doc->createAttribute($xmlns);
+
+			$uri = $doc->createTextNode($uri);
+			$attr->appendChild($uri);
+
+			$rss->appendChild($attr);
+		}
+
+		$channel = $doc->createElement('channel');
+		$channel = $rss->appendChild($channel);
+
+		foreach ($channel_data as $key => $value){
+
+			$text = $doc->createTextNode($value);
+			$el = $doc->createElement($key);
+			$el->appendChild($text);
+			$channel->appendChild($el);
+		}
+
+		foreach ($dots as $dot){
+
+			$properties = array();
+
+			$item = $doc->createElement('item');
+
+			foreach ($dot as $key => $value){
+
+				if (in_array($key, $skip)){
+					continue;
+				}
+
+				$properties[] = "{$key}\t{$value}";
+
+				if (! preg_match("/^dotspotting:/", $key)){
+					$key = "sheet:{$key}";
+				}
+
+				$el = $doc->createElement($key);
+				$text = $doc->createTextNode($value);
+
+				$el->appendChild($text);
+				$item->appendChild($el);
+			}
+
+			$coords = array($dot['latitude'],$dot['longitude']);
+			$_geo = $doc->createTextNode(implode(",", $coords));
+
+			$geo = $doc->createElement('geo:point');
+			$geo->appendChild($_geo);
+
+			$_title = $doc->createTextNode("Dot #{$dot['dotspotting:id']}");
+
+			if (isset($dot['title'])){
+				$_title = $doc->createTextNode($dot['title']);
+			}
+
+			$title = $doc->createElement('title');
+			$title->appendChild($_title);
+
+			$link = $doc->createElement('link');
+			# what to do here?
+
+			$_description = $doc->createTextNode(implode("\n", $properties));
+
+			if (isset($dot['description'])){
+				$_description = $doc->createTextNode($dot['description']);
+			}
+
+			$description = $doc->createElement('description');
+			$description->appendChild($_description);
+
+			$item->appendChild($title);
+			$item->appendChild($link);
+			$item->appendChild($description);
+			$item->appendChild($geo);
+
+			$channel->appendChild($item);
+		}
+
+		fwrite($fh, $doc->saveXML($rss));
+	}
+
+	#################################################################
 ?>

@@ -196,6 +196,16 @@
 			'sheet' => 'x-urn:dotspotting#sheet',
 		);
 
+		$skip = array(
+			'latitude',
+			'longitude',
+			'altitude',
+			'created',
+			'title',
+			'description',
+			'dotspotting:perms',
+		);
+
 		$doc = new DomDocument('1.0', 'UTF-8');
 
 		$kml = $doc->createElement('kml');
@@ -214,15 +224,6 @@
 
 		$document = $doc->createElement('Document');
 		$document = $kml->appendChild($document);
-
-		$skip = array(
-			'latitude',
-			'longitude',
-			'altitude',
-			'created',
-			'title',
-			'dotspotting:perms',
-		);
 
 		foreach ($dots as $dot){
 

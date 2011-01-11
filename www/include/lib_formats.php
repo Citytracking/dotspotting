@@ -10,8 +10,8 @@
 
 		$map = array(
 			'text/csv' => 'csv',
-			'application/rss+xml' => 'rss',
 			'application/vnd.google-earth.kml+xml' => 'kml',
+			'application/rss+xml' => 'rss',
 			'application/vnd.ms-excel' => 'xls',
 		);
 
@@ -31,8 +31,9 @@
 
 		$map = array(
 			'text/csv' => 'csv',
-			'application/vnd.ms-excel' => 'xls',
 			'application/vnd.google-earth.kml+xml' => 'kml',
+			'application/rss+xml' => 'rss',
+			'application/vnd.ms-excel' => 'xls',
 		);
 
 		if ($key_by_extension){
