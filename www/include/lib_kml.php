@@ -129,10 +129,11 @@
 			else if ($coords = (string)$p->MultiGeometry->LineString->coordinates){
 
 				# We're going to keep our own counter below
-
 				$record --;
 
 				$coords = explode(" ", $coords);
+
+				# TO DO: simplify me please
 
 				foreach ($coords as $coord){
 
@@ -187,9 +188,127 @@
 
 	#################################################################
 
-	function kml_export_dots(&$dots, $more=array()){
+	function kml_export_dots(&$dots, $fh){
 
+		$ns_map = array(
+			'' => 'http://earth.google.com/kml/2.0',
+			'dotspotting' => 'x-urn:dotspotting#internal',
+			'sheet' => 'x-urn:dotspotting#sheet',
+		);
 
+		$doc = new DomDocument('1.0', 'UTF-8');
+
+		$kml = $doc->createElement('kml');
+		$kml = $doc->appendChild($kml);
+
+		foreach ($ns_map as $prefix => $uri){
+
+			$xmlns = ($prefix) ? "xmlns:{$prefix}" : "xmlns";
+			$attr = $doc->createAttribute($xmlns);
+
+			$uri = $doc->createTextNode($uri);
+			$attr->appendChild($uri);
+
+			$kml->appendChild($attr);
+		}
+
+		$document = $doc->createElement('Document');
+		$document = $kml->appendChild($document);
+
+		$skip = array(
+			'latitude',
+			'longitude',
+			'altitude',
+			'created',
+			'title',
+			'dotspotting:perms',
+		);
+
+		foreach ($dots as $dot){
+
+			$placemark = $doc->createElement('Placemark');
+
+			$properties = array();
+
+			foreach ($dot as $key => $value){
+
+				if (in_array($key, $skip)){
+					continue;
+				}
+
+				$properties[] = "{$key}\t{$value}";
+
+				if (! preg_match("/^dotspotting:/", $key)){
+					$key = "sheet:{$key}";
+				}
+
+				$el = $doc->createElement($key);
+				$text = $doc->createTextNode($value);
+
+				$el->appendChild($text);
+				$placemark->appendChild($el);
+			}
+
+			# title
+
+			if (isset($dot['title'])){			
+				$_name = $doc->createTextNode($dot['title']);
+
+				$name = $doc->createElement("name");
+				$name->appendChild($_name);
+				$placemark->appendChild($name);
+			}
+
+			# description
+
+			$_description = $doc->createTextNode(implode("\n", $properties));
+
+			if (isset($dot['description'])){			
+				$_description = $doc->createTextNode($dot['description']);
+			}
+
+			$description = $doc->createElement("description");
+			$description->appendChild($_description);
+			$placemark->appendChild($description);
+
+			# pubdate
+
+			$_published = $doc->createTextNode($dot['created']);
+
+			$published = $doc->createElement("published");
+			$published->appendChild($_published);
+			$placemark->appendChild($published);
+
+			# perms
+
+			$perms = $doc->createTextNode(($dot['dotspotting:perms'] == 'private') ? 0 : 1);
+
+			$visibility = $doc->createElement("visibility");
+			$visibility->appendChild($perms);
+
+			# geo
+
+			$lat = $dot['latitude'];
+			$lon = $dot['longitude'];
+
+			$_coords = array($lon, $lat);
+
+			if (isset($dot['altitude'])){
+				$_coords[] = $dot['altitude'];
+			}
+
+			$point = $doc->createElement('Point');
+			$coords = $doc->createElement('coordinates');
+			$lonlat = $doc->createTextNode(implode(",", $_coords));
+
+			$coords->appendChild($lonlat);
+			$point->appendChild($coords);
+			$placemark->appendChild($point);
+
+			$document->appendChild($placemark);
+		}
+
+		fwrite($fh, $doc->saveXML($kml));
 	}
 
 	#################################################################
