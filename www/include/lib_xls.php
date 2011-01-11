@@ -74,14 +74,42 @@
 			$data[] = $tmp;
 		}
 
-dumper($data);
-exit;
-
 		return array(
 			'ok' => 1,
 			'data' => &$data,
 			'errors' => &$errors,
 		);
+	}
+
+	#################################################################
+
+	function xls_export_dots(&$rows, $fh){
+
+		$xls = new Spreadsheet_Excel_Writer();
+		$sheet = $xls->addWorksheet();
+
+		$col_names = array_keys($rows[0]);
+		$count = count($col_names);
+
+		for ($colnum=0; $colnum < $count; $colnum++){
+			$sheet->write(0, $colnum, $col_names[$colnum]);
+		}
+
+		$rownum = 1;
+
+		foreach ($rows as $row){
+
+			$values = array_values($row);
+			$count = count($values);
+
+			for ($colnum=0; $colnum < $count; $colnum++){
+				$sheet->write($rownum, $colnum, $values[$colnum]);
+			}
+
+			$rownum ++;
+		}
+
+		$xls->close();
 	}
 
 	#################################################################

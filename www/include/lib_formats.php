@@ -31,6 +31,7 @@
 
 		$map = array(
 			'text/csv' => 'csv',
+			'application/vnd.ms-excel' => 'xls',
 		);
 
 		if ($key_by_extension){
