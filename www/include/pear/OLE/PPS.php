@@ -172,6 +172,9 @@ class OLE_PPS extends PEAR
     */
     function _getPpsWk()
     {
+
+	$_ole = new OLE();
+
         $ret = $this->Name;
         for ($i = 0; $i < (64 - strlen($this->Name)); $i++) {
             $ret .= "\x00";
@@ -187,8 +190,8 @@ class OLE_PPS extends PEAR
               . "\xc0\x00\x00\x00"                  // 92
               . "\x00\x00\x00\x46"                  // 96 // Seems to be ok only for Root
               . "\x00\x00\x00\x00"                  // 100
-              . OLE::LocalDate2OLE($this->Time1st)       // 108
-              . OLE::LocalDate2OLE($this->Time2nd)       // 116
+              . $_ole->LocalDate2OLE($this->Time1st)       // 108
+              . $_ole->LocalDate2OLE($this->Time2nd)       // 116
               . pack("V", isset($this->_StartBlock)? 
                         $this->_StartBlock:0)        // 120
               . pack("V", $this->Size)               // 124

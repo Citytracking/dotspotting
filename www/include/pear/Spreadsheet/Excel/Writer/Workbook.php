@@ -36,7 +36,6 @@ require_once 'Spreadsheet/Excel/Writer/Format.php';
 require_once 'Spreadsheet/Excel/Writer/BIFFwriter.php';
 require_once 'Spreadsheet/Excel/Writer/Worksheet.php';
 require_once 'Spreadsheet/Excel/Writer/Parser.php';
-require_once 'OLE.php';
 require_once 'OLE/PPS/Root.php';
 require_once 'OLE/PPS/File.php';
 
@@ -566,10 +565,13 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
     */
     function _storeOLEFile()
     {
+
+	$_ole = new OLE();
+
         if($this->_BIFF_version == 0x0600) {
-            $OLE = new OLE_PPS_File(OLE::Asc2Ucs('Workbook'));
+            $OLE = new OLE_PPS_File($_ole->Asc2Ucs('Workbook'));
         } else {
-            $OLE = new OLE_PPS_File(OLE::Asc2Ucs('Book'));
+            $OLE = new OLE_PPS_File($_ole->Asc2Ucs('Book'));
         }
         if ($this->_tmp_dir != '') {
             $OLE->setTempDir($this->_tmp_dir);

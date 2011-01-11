@@ -19,7 +19,7 @@ Deny from none
 
 FileETag none
 
-php_flag display_errors off
+php_flag display_errors on
 
 # See Cal's awesome comments in flamework/.htaccess
 php_value magic_quotes_gpc 0
