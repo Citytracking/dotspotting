@@ -11,7 +11,22 @@
 		$data = fread($fh, filesize($more['file']['path']));
 		fclose($fh);
 
-		$xml = new SimpleXMLElement($data);
+		libxml_use_internal_errors(true);
+		$xml = simplexml_load_string($data);
+
+		if (! $xml){
+
+			$errors = array();
+
+			foreach (libxml_get_errors() as $error) {
+				$errors[] = $error->message;
+			}
+
+			return array(
+				'ok' => 0,
+				'error' => 'failed to parse XML: ' . implode(";", $errors),
+			);
+		}
 
 		if ($nl = $xml->NetworkLink){
 
