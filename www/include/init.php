@@ -46,6 +46,7 @@
 	# located locally. (20110110/straup)
 
 	$include_path = array(
+		".",
 		DOTSPOTTING_INCLUDE_DIR,
 		DOTSPOTTING_INCLUDE_DIR . "pear/"
 	);

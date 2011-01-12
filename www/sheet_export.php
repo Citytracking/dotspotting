@@ -72,6 +72,12 @@
 		header("Content-Disposition: attachment; filename=\"{$filename}\"");
 	}
 
+	else if (preg_match("/^image/", $mimetype)){
+		header("Content-Type: " . htmlspecialchars($mimetype));
+	}
+
+	else { }
+
 	header("X-Dotspotting-Sheet-ID: " . htmlspecialchars($sheet['id']));
 	header("X-Dotspotting-Sheet-Label: " . htmlspecialchars($sheet['label']));
 	header("X-Dotspotting-Sheet-Extent: " . htmlspecialchars($bbox));

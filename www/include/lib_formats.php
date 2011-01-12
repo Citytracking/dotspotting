@@ -38,6 +38,12 @@
 			'application/vnd.ms-excel' => 'xls',
 		);
 
+		# Ensure that we can actually generate PNG files
+
+		if (function_exists('imagecreatetruecolor')){
+			$map['image/png'] = 'png';
+		}
+
 		if ($key_by_extension){
 			$map = array_flip($map);
 		}

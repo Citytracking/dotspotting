@@ -4,26 +4,71 @@
 	# $Id$
 	#
 
-	# THIS IS NOT FINISHED YET (2011011/straup)
+	loadpear("modestmaps/ModestMaps");
 
 	#################################################################
 
 	function png_export_dots(&$dots, $fh){
 
-		loadpear("modestmaps/ModestMaps");
+		# See these? They are hard-coded. For now. Or at least
+		# until it becomes necessary to do it otherwise...
+		# (20110112/straup)
 
-		$template = 'http://tile.openstreetmap.org/{Z}/{X}/{Y}.png';
+		$im_height = 768;
+		$im_width = 1024;
+		$dot_size = 20;
+
+		#
+
+		$swlat = null;
+		$swlon = null;
+		$nelat = null;
+		$nelon = null;
+
+		foreach ($dots as $dot){
+			$swlat = (! isset($swlat)) ? $dot['latitude'] : min($swlat, $dot['latitude']);
+			$swlon = (! isset($swlon)) ? $dot['longitude'] : min($swlon, $dot['longitude']);
+			$nelat = (! isset($nelat)) ? $dot['latitude'] : max($nelat, $dot['latitude']);
+			$nelon = (! isset($nelon)) ? $dot['longitude'] : max($nelon, $dot['longitude']);
+		}
+
+		$template = $GLOBALS['cfg']['maptiles_template_url'];
+
+		# This really needs to happen in modestmaps/Providers.php
+		# but we'll do it here for now (20110112/straup)
+
+		$hosts = $GLOBALS['cfg']['maptiles_template_hosts'];
+		shuffle($hosts);
+		$template = str_replace("{S}", $hosts[0], $template);
+
 		$provider = new MMaps_Templated_Spherical_Mercator_Provider($template);
 
-		$zoom = 14;
+		$sw = new MMaps_Location($swlat, $swlon);
+		$ne = new MMaps_Location($nelat, $nelon);
 
-		$loc = new MMaps_Location(37.804969, -122.257662);
-		$dims = new MMaps_Point(500, 500);
+		$dims = new MMaps_Point($im_width, $im_height);
 
-		$map = MMaps_mapByCenterZoom($provider, $loc, $zoom, $dims);
+		$map = MMaps_mapByExtent($provider, $sw, $ne, $dims);
 		$im = $map->draw();
 
+		$points = array();
+
+		$fill = imagecolorallocatealpha($im, 0, 17, 45, 96);
+		$stroke = imagecolorallocate($im, 153, 204, 0);
+
+		foreach ($dots as $dot){
+
+			$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
+			$pt = $map->locationPoint($loc);
+
+			imagefilledellipse($im, $pt->x, $pt->y, $dot_size, $dot_size, $fill);
+
+			imagesetthickness($im, 3);
+			imagearc($im, $pt->x, $pt->y, $dot_size, $dot_size, 0, 359.9, $stroke);
+		}
+
 		imagepng($im);
+		imagedestroy($im);
 	}
 
 	#################################################################

@@ -4,3 +4,9 @@
 [submodule "ext/php-lib-enplacify"]
 	path = ext/php-lib-enplacify
 	url = git@github.com:Citytracking/php-lib-enplacify.git
+[submodule "modestmaps-php"]
+	path = modestmaps-php
+	url = git@github.com:Citytracking/modestmaps-php.git
+[submodule "ext/modestmaps-php"]
+	path = ext/modestmaps-php
+	url = git@github.com:Citytracking/modestmaps-php.git
