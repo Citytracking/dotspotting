@@ -10,6 +10,7 @@
 
 		$map = array(
 			'text/csv' => 'csv',
+			'application/x-javascript' => 'json',
 			'application/vnd.google-earth.kml+xml' => 'kml',
 			'application/rss+xml' => 'rss',
 			'application/vnd.ms-excel' => 'xls',
@@ -31,6 +32,7 @@
 
 		$map = array(
 			'text/csv' => 'csv',
+			'application/x-javascript' => 'json',
 			'application/vnd.google-earth.kml+xml' => 'kml',
 			'application/rss+xml' => 'rss',
 			'application/vnd.ms-excel' => 'xls',

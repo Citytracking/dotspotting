@@ -4,8 +4,6 @@
 	# $Id$
 	#
 
-	# THIS IS STILL BEING REWRITTEN (20110110/straup)
-
 	#################################################################
 
 	function kml_parse_fh($fh, $more=array()){
