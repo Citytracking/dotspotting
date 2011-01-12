@@ -111,19 +111,21 @@
 
 	function rss_export_dots(&$dots, $fh){
 
+		$_dot = dots_get_dot($dots[0]['dotspotting:id']);
+		
+		$channel_data = array(
+			'title' => "Dots from sheet ID {$_dot['sheet']['id']}",
+			'link' => urls_url_for_sheet($_dot['sheet']),
+			'description' => "Dots from sheet ID {$_dot['sheet']['id']}",
+			'pubDate' => gmdate("c", time()),
+			'lastBuildDate' => gmdate("c", time()),
+			'generator' => 'Dotspotting',
+		);
+
 		$ns_map = array(
 			'geo' => 'http://www.georss.org/georss',
 			'dotspotting' => 'x-urn:dotspotting#internal',
 			'sheet' => 'x-urn:dotspotting#sheet',
-		);
-
-		$channel_data = array(
-			'title' => '',
-			'link' => '',
-			'description' => '',
-			'pubDate' => '',
-			'lastBuildDate' => '',
-			'generator' => 'Dotspotting',
 		);
 
 		$skip = array(
@@ -201,8 +203,11 @@
 			$title = $doc->createElement('title');
 			$title->appendChild($_title);
 
+			$_dot = dots_get_dot($dot['dotspotting:id']);
+			$_link = $doc->createTextNode(urls_url_for_dot($_dot));
+
 			$link = $doc->createElement('link');
-			# what to do here?
+			$link->appendChild($_link);
 
 			$_description = $doc->createTextNode(implode("\n", $properties));
 
