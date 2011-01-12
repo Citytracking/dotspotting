@@ -66,6 +66,42 @@
 				}
 			}
 
+			# MultiPoints (get their own counter)
+
+			if ($f['geometry']['type'] == 'MultiPoint'){
+
+				$counter = ($record - 1);
+
+				foreach ($f['geometry']['coordinates'] as $coords){
+
+					$counter ++;
+
+					if (($more['max_records']) && ($counter > $more['max_records'])){
+						break;
+					}
+
+					list($lon, $lat) = $coords;
+					list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
+
+					if (! $lat || ! $lon){
+
+						$errors[] = array(
+							'error' => 'invalid latitude or longitude',
+							'record' => $record,
+						);
+					}
+
+					$tmp['latitude'] = $lat;
+					$tmp['longitude'] = $lon;
+
+					$data[] = $tmp;
+				}
+
+				continue;
+			}
+
+			# plain old Points
+
 			list($lon, $lat) = $f['geometry']['coordinates'];
 			list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
@@ -96,7 +132,39 @@
 
 	function json_export_dots(&$dots, $fh){
 
-		$json = array();
+		$to_skip = array(
+			'latitude',
+			'longitude',
+		);
+
+		$json = array(
+			'type' => 'FeatureCollection',
+			'features' => array(),
+		);
+
+		foreach ($dots as $dot){
+
+			$feature = array(
+				'type' => 'Feature',
+				'id' => $dot['dotspotting:id'],
+				'geometry' => array(
+					'type' => 'Point',
+					'coordinates' => array($dot['longitude'], $dot['latitude']),
+				),
+				'properties' => array(),
+			);
+
+			foreach ($dot as $key => $value){
+
+				if (in_array($key, $to_skip)){
+					continue;
+				}
+
+				$feature['properties'][$key] = $value;
+			}
+
+			$json['features'][] = $feature;
+		}
 
 		fwrite($fh, json_encode($json));
 	}
