@@ -213,7 +213,20 @@
 		$type = $file['type'];
 
 		if (! isset($map[$type])){
-			return 0;
+
+			# check by extension...
+
+			$map = array_flip($map);
+
+			$parts = pathinfo($file['name']);
+			$ext = $parts['extension'];
+
+			if (! isset($map[$ext])){
+				return 0;
+			}
+
+			# Note the pass-by-ref above
+			$file['type'] = $map[$ext];
 		}
 
 		return 1;

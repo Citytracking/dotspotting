@@ -10,6 +10,7 @@
 
 		$map = array(
 			'text/csv' => 'csv',
+			'application/gpx+xml' => 'gpx',
 			'application/x-javascript' => 'json',
 			'application/vnd.google-earth.kml+xml' => 'kml',
 			'application/rss+xml' => 'rss',
@@ -32,6 +33,7 @@
 
 		$map = array(
 			'text/csv' => 'csv',
+			'application/gpx+xml' => 'gpx',
 			'application/x-javascript' => 'json',
 			'application/vnd.google-earth.kml+xml' => 'kml',
 			'application/rss+xml' => 'rss',
@@ -53,6 +55,9 @@
 	}
 
 	#################################################################
+
+	# This is called in the upload template to display a pretty list
+	# of valid formats to upload.
 
 	function formats_valid_import_list($sep=', '){
 
