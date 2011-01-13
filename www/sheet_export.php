@@ -67,13 +67,13 @@
 	$mimetype = $map[$format];
 	$filename = "dotspotting-sheet-{$sheet['id']}.{$format}";
 
-	if (! get_str('inline')){
+	if (preg_match("/^image/", $mimetype)){
 		header("Content-Type: " . htmlspecialchars($mimetype));
-		header("Content-Disposition: attachment; filename=\"{$filename}\"");
 	}
 
-	else if (preg_match("/^image/", $mimetype)){
+	else if (! get_str('inline')){
 		header("Content-Type: " . htmlspecialchars($mimetype));
+		header("Content-Disposition: attachment; filename=\"{$filename}\"");
 	}
 
 	else { }
