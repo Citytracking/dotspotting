@@ -103,14 +103,25 @@
 		);
 
 		$doc = new DomDocument('1.0', 'UTF-8');
+
 		$gpx = $doc->createElement('gpx');
+		$gpx = $doc->appendChild($gpx);
 
 		$_ver = $doc->createTextNode('1.1');
 		$ver = $doc->createAttribute("version");
 		$ver->appendChild($_ver);
 		$gpx->appendChild($ver);
 
-		$gpx = $doc->appendChild($gpx);
+		foreach ($ns_map as $prefix => $uri){
+
+			$xmlns = ($prefix) ? "xmlns:{$prefix}" : "xmlns";
+			$attr = $doc->createAttribute($xmlns);
+
+			$uri = $doc->createTextNode($uri);
+			$attr->appendChild($uri);
+
+			$gpx->appendChild($attr);
+		}
 
 		$name = $doc->createElement('name');
 		# name goes here
