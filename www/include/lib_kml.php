@@ -146,7 +146,11 @@
 				$coords = (string)$coords;
 				$coords = preg_split("/[\s]+/", $coords);
 
-				# TO DO: simplify me please
+				$simplify = ($GLOBALS['cfg']['import_do_simplification']['kml']) ? 1 : 0;
+
+				if ($simplify){
+					$coords = _kml_simplify($coords);
+				}
 
 				foreach ($coords as $coord){
 
@@ -156,7 +160,18 @@
 						break;
 					}
 
-					list($lon, $lat, $altitude) = explode(",", $coord, 3);
+					#
+
+					if ($simplify){
+						list($lat, $lon) = $coord;
+					}
+
+					else {
+						list($lon, $lat, $altitude) = explode(",", $coord, 3);
+					}
+
+					#
+
 					list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
 					if (! $lat || ! $lon){
@@ -327,4 +342,25 @@
 
 	#################################################################
 
+	function _kml_simplify(&$coords){
+
+		loadlib("geo_douglaspeucker");
+
+		$latlons = array();
+
+		foreach ($coords as $coord){
+
+			list($lon, $lat, $ignore) = explode(",", $coord, 3);
+
+			if (! geo_utils_is_valid_latitude($lat)){
+				continue;
+			}
+
+			$latlons[] = array($lat, $lon);
+		}
+
+		return geo_douglaspeucker_simplify($latlons);
+	}
+
+	#################################################################
 ?>

@@ -155,6 +155,13 @@
 	$GLOBALS['cfg']['import_max_records'] = 1000;
 	$GLOBALS['cfg']['import_by_url_do_head'] = 1;
 
+	# a list of format which might be simplified
+
+	$GLOBALS['cfg']['import_do_simplification'] = array(
+		'kml' => 0, # when coordinates are stored in LineStrings
+		'gpx' => 0, # not implemented yet
+	);
+
 	$GLOBALS['cfg']['dots_indexing_max_cols'] = 2;
 
 	# If these two are arrays they will be checked by the upload_by_url.php
