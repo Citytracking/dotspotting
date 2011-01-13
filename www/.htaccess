@@ -77,7 +77,7 @@ RewriteRule ^u/([0-9]+)/?$				user.php?user_id=$1&%{QUERY_STRING} [L]
 
 RewriteRule ^u/([0-9]+)/dots/([0-9]+)/?$		dot.php?user_id=$1&dot_id=$2&%{QUERY_STRING} [L]
 RewriteRule ^u/([0-9]+)/sheets/([0-9]+)/?$		sheet.php?user_id=$1&sheet_id=$2&&%{QUERY_STRING} [L]
-RewriteRule ^u/([0-9]+)/sheets/([0-9]+)/export(/([a-z]+))?/?$	sheet_export.php?user_id=$1&sheet_id=$2&format=$4&%{QUERY_STRING} [L]
+RewriteRule ^u/([0-9]+)/sheets/([0-9]+)/export(\.([a-z]+))?$	sheet_export.php?user_id=$1&sheet_id=$2&format=$4&%{QUERY_STRING} [L]
 
 RewriteRule ^u/([0-9]+)/dots(/page([0-9]+))?/?$		user_dots.php?user_id=$1&page=$3&%{QUERY_STRING} [L]
 RewriteRule ^u/([0-9]+)/sheets(/page([0-9]+))?/?$	user_sheets.php?user_id=$1&page=$3&%{QUERY_STRING} [L]

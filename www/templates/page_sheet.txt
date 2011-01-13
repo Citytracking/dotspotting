@@ -22,7 +22,11 @@ An unnamed sheet of dots by {$owner.username|escape}
 Sheet ID #{$sheet.id|escape}
 {/if}
 
-<span style="font-size:small;">/ <a href="{$sheet|@urls_url_for_sheet}export">export</a></span>
+<span style="font-size:small;">/ export as
+{foreach from=$export_formats item="fmt" name="formats"}
+<a href="{$sheet|@urls_url_for_sheet}export.{$fmt|escape}">{$fmt}</a>{if ! $smarty.foreach.formats.last}, {/if}
+{/foreach}
+</span>
 </h2>
 
 {if $is_own}
