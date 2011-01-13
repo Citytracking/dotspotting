@@ -52,4 +52,33 @@
 	}
 
 	#################################################################
+
+	function formats_valid_import_list($sep=', '){
+
+		$map = formats_valid_import_map('key by extension');
+
+		$things_with_geo = array(
+			'json',
+			'rss',
+		);
+
+		$list = array();
+
+		foreach (array_keys($map) as $format){
+
+			$prefix = '';
+
+			if (in_array($format, $things_with_geo)){
+				$prefix = 'Geo';
+			}
+
+			$list[] = $prefix . strtoupper($format);
+		}
+
+		sort($list);
+
+		return implode($sep, $list);
+	}
+
+	#################################################################
 ?>
