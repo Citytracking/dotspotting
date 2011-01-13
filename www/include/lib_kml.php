@@ -49,11 +49,6 @@
 			$xml = new SimpleXMLElement($rsp['body']);
 		}
 
-		$data = array();
-		$errors = array();
-
-		$record = 1;
-
 		$ctx = ($xml->Document) ? $xml->Document : $xml->Folder;
 
 		if (! $ctx){
@@ -66,6 +61,11 @@
 
 		$label = (string)$ctx->name;
 		$label = import_scrub($label);
+
+		$data = array();
+		$errors = array();
+
+		$record = 1;
 
 		foreach ($ctx->Placemark as $p){
 
@@ -136,15 +136,15 @@
 
 				$tmp['latitude'] = $lat;
 				$tmp['longitude'] = $lon;
-				# $tmp['altitude'] = import_scrub($altitude);
 			}
 
-			else if ($coords = (string)$p->MultiGeometry->LineString->coordinates){
+			else if (($coords = $p->MultiGeometry->LineString->coordinates) || ($coords = $p->LineString->coordinates)){
 
 				# We're going to keep our own counter below
 				$record --;
 
-				$coords = explode(" ", $coords);
+				$coords = (string)$coords;
+				$coords = preg_split("/[\s]+/", $coords);
 
 				# TO DO: simplify me please
 

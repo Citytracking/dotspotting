@@ -36,6 +36,7 @@
 			'application/vnd.google-earth.kml+xml' => 'kml',
 			'application/rss+xml' => 'rss',
 			'application/vnd.ms-excel' => 'xls',
+			# 'foo/bar' => 'pdf',
 		);
 
 		# Ensure that we can actually generate PNG files
