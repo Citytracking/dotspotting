@@ -38,8 +38,11 @@
 			$do_export = (isset($map[$format])) ? 1 : 0;
 		}
 
+		$page = get_str('page');
+		$GLOBALS['smarty']->assign('page', $page);
+
 		$more = array(
-			'export_search' => $do_export,
+			'page' => $page
 		);
 
 		#
@@ -47,6 +50,7 @@
 		#
 
 		if ($display == 'sheets'){
+
 			$rsp = search_sheets($_GET, $GLOBALS['cfg']['user']['id'], $more);
 
 			if ((! $rsp['ok']) || (! count($rsp['sheets']))){
@@ -58,6 +62,7 @@
 		}
 
 		else {
+
 			$rsp = search_dots($_GET, $GLOBALS['cfg']['user']['id'], $more);
 
 			if ((! $rsp['ok']) || (! count($rsp['dots']))){
@@ -81,7 +86,15 @@
 
 			$filename = "dotspotting-search.{$format}";
 
-			if (! get_str('inline')){
+			if (preg_match("/^image/", $mimetype)){
+				header("Content-Type: " . htmlspecialchars($mimetype));
+			}
+
+			else if (get_str('inline')){
+				# pass
+			}
+
+			else {
 				header("Content-Type: " . htmlspecialchars($mimetype));
 				header("Content-Disposition: attachment; filename=\"{$filename}\"");
 			}
@@ -117,6 +130,9 @@
 
 		$perms_map = dots_permissions_map();
 		$GLOBALS['smarty']->assign_by_ref('permissions_map', $perms_map);
+
+		$formats = array_values(formats_valid_export_map());
+		$GLOBALS['smarty']->assign("export_formats", $formats);
 
 		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();

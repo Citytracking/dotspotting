@@ -72,14 +72,6 @@
 			'page' => $args['page'],
 		);
 
-		if ($more['do_export']){
-
-			$search_more = array(
-				'page' => 1,
-				'per_page' => $GLOBALS['cfg']['import_max_records'],
-			);
-		}
-
 		if (isset($where_parts['order'])){
 			$search_more['order'] = $where_parts['order'];
 		}
