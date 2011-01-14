@@ -93,10 +93,10 @@
 	if ($is_own){
 		$smarty->assign("permissions_map", dots_permissions_map());
 		$smarty->assign("geocoder_map", geo_geocode_service_map());
-
-		$formats = array_values(formats_valid_export_map());
-		$smarty->assign("export_formats", $formats);
 	}
+
+	$formats = array_values(formats_valid_export_map());
+	$smarty->assign("export_formats", $formats);
 
 	$smarty->display("page_sheet.txt");
 	exit;
