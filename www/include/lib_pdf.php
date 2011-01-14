@@ -7,6 +7,7 @@
 	# HEY LOOK! THIS DOESN'T WORK.
 
 	loadpear("modestmaps/ModestMaps");
+	loadpear("fpdf");
 
 	#################################################################
 
