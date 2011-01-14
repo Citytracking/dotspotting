@@ -41,6 +41,8 @@
 	define('DOTSPOTTING_WWW_DIR', dirname(dirname(__FILE__)) );
 	define('DOTSPOTTING_INCLUDE_DIR', DOTSPOTTING_WWW_DIR . '/include/');
 
+	define('FPDF_FONTPATH', DOTSPOTTING_INCLUDE_DIR . '/pear/fpdf_fonts/');
+
 	# See this? We're being super restrictive about where we look
 	# for libs. Dotspotting should be able to run as-is with everything
 	# located locally. (20110110/straup)
