@@ -38,13 +38,16 @@
 			'application/vnd.google-earth.kml+xml' => 'kml',
 			'application/rss+xml' => 'rss',
 			'application/vnd.ms-excel' => 'xls',
-			# 'foo/bar' => 'pdf',
 		);
 
 		# Ensure that we can actually generate PNG files
+		# Also, we don't strictly speaking need GD to
+		# generate PDF files except for the part where we
+		# want to include PNG files so it's six of one...
 
 		if (function_exists('imagecreatetruecolor')){
 			$map['image/png'] = 'png';
+			# $map['application/pdf'] = 'pdf';
 		}
 
 		if ($key_by_extension){
