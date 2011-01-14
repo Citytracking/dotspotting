@@ -4,6 +4,8 @@
 	# $Id$
 	#
 
+	# http://www.topografix.com/GPX/1/1/
+
 	#################################################################
 
 	function gpx_parse_fh($fh, $more=array()){
@@ -87,6 +89,9 @@
 
 	#################################################################
 
+	# For debugging:
+	# xmllint --noout --schema http://www.topografix.com/GPX/1/1/gpx.xsd dotspotting-sheet-509-8.gpx 
+
 	function gpx_export_dots(&$dots, $fh){
 
 		$ns_map = array(
@@ -112,6 +117,11 @@
 		$ver->appendChild($_ver);
 		$gpx->appendChild($ver);
 
+		$_creator = $doc->createTextNode('Dotspotting');
+		$creator = $doc->createAttribute('creator');
+		$creator->appendChild($_creator);
+		$gpx->appendChild($creator);
+
 		foreach ($ns_map as $prefix => $uri){
 
 			$xmlns = ($prefix) ? "xmlns:{$prefix}" : "xmlns";
@@ -123,17 +133,28 @@
 			$gpx->appendChild($attr);
 		}
 
-		$name = $doc->createElement('name');
-		# name goes here
+		$trk = $doc->createElement('trk');
+		$trk = $gpx->appendChild($trk);
 
-		$gpx->appendChild($name);
+		$_dot = dots_get_dot($dots[0]['dotspotting:id']);
+		$_name = ($_dot['sheet']['label']) ? "Dots from the sheet '{$_dot['sheet']['label']}'" : "Dots from sheet ID #{$_dot['sheet']['id']}";
+
+		$_name = $doc->createTextNode(htmlspecialchars($_name));
+		$name = $doc->createElement('name');
+		$name->appendChild($_name);
+		$trk->appendChild($name);
+
+		$_desc = $doc->createTextNode("n/a");
+		$desc = $doc->createElement('desc');
+		$desc->appendChild($_desc);
+		$trk->appendChild($desc);
 
 		$trkseg = $doc->createElement('trkseg');
-		$trkseg = $gpx->appendChild($trkseg);
+		$trkseg = $trk->appendChild($trkseg);
 
 		foreach ($dots as $dot){
 
-			$trk = $doc->createElement('trk');
+			$trkpt = $doc->createElement('trkpt');
 
 			$_lat = $doc->createTextNode($dot['latitude']);
 			$_lon = $doc->createTextNode($dot['longitude']);
@@ -144,23 +165,34 @@
 			$lon = $doc->createAttribute("lon");
 			$lon->appendChild($_lon);
 
-			$trk->appendChild($lat);
-			$trk->appendChild($lon);
+			$trkpt->appendChild($lat);
+			$trkpt->appendChild($lon);
 
-			$_time = $doc->createTextNode($dot['created']);
+			#
+
+			$elevation = (isset($dot['elevation'])) ? $dot['elevation'] : '0.000000';
+
+			$_ele = $doc->createTextNode($elevation);
+
+			$ele = $doc->createElement('ele');
+			$ele->appendChild($_ele);
+			$trkpt->appendChild($ele);
+
+			#
+
+			$created = strtotime($dot['created']);
+			$created = gmdate('Y-m-d\TH:m:s\Z', $created);
+
+			$_time = $doc->createTextNode($created);
 
 			$time = $doc->createElement('time');
 			$time->appendChild($_time);
-			$trk->appendChild($time);
+			$trkpt->appendChild($time);
 
-			if (isset($dot['elevation'])){
-				$_ele = $doc->createTextNode($dot['elevation']);
+			# non-standard elements makes tools by garmin cry...
+			# (20110113/straup)
 
-				$ele = $doc->createElement('ele');
-				$ele->appendChild($_ele);
-				$trk->appendChild($ele);
-			}
-
+			if (0){
 			foreach ($dot as $key => $value){
 
 				if (in_array($key, $skip)){
@@ -177,10 +209,11 @@
 				$text = $doc->createTextNode($value);
 
 				$el->appendChild($text);
-				$trk->appendChild($el);
+				$trkpt->appendChild($el);
 			}
-			
-			$trkseg->appendChild($trk);
+			}
+
+			$trkseg->appendChild($trkpt);
 		}
 
 		fwrite($fh, $doc->saveXML($gpx));

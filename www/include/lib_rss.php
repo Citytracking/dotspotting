@@ -175,7 +175,10 @@
 					continue;
 				}
 
-				$properties[] = "{$key}\t{$value}";
+				$properties[] = implode("\t", array(
+					htmlspecialchars($key),
+					htmlspecialchars($value)
+				));
 
 				if (! preg_match("/^dotspotting:/", $key)){
 					$key = "sheet:{$key}";
@@ -209,7 +212,7 @@
 			$link = $doc->createElement('link');
 			$link->appendChild($_link);
 
-			$_description = $doc->createTextNode(implode("\n", $properties));
+			$_description = $doc->createTextNode(implode("<br />", $properties));
 
 			if (isset($dot['description'])){
 				$_description = $doc->createTextNode($dot['description']);
