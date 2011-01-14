@@ -98,17 +98,17 @@
 
 		if (($args['nearby']) && ($args['gh'])){
 			$enc_gh = urlencode($args['gh']);
-			$pagination_url = "/nearby/{$enc_gh}/";
+			$pagination_url = "{$GLOBALS['cfg']['abs_root_url']}nearby/{$enc_gh}/";
 		}
 
 		else {
 			unset($_GET['page']);
-			$pagination_url = "search/?" . http_build_query($_GET);
+			$pagination_url = "{$GLOBALS['cfg']['abs_root_url']}search/?" . http_build_query($_GET);
 			$page_as_queryarg = 1;
 
 			if ($_GET['u']){
 				unset($_GET['u']);
-				$smarty->assign("query_all_url", "search/?" . http_build_query($_GET));
+				$smarty->assign("query_all_url", "{$GLOBALS['cfg']['abs_root_url']}search/?" . http_build_query($_GET));
 			}
 		}
 
