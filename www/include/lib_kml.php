@@ -134,6 +134,7 @@
 					continue;
 				}
 
+				$tmp['altitude'] = import_scrub($altitude);
 				$tmp['latitude'] = $lat;
 				$tmp['longitude'] = $lon;
 			}
