@@ -7,26 +7,109 @@
 	# HEY LOOK! THIS DOESN'T WORK.
 
 	loadpear("modestmaps/ModestMaps");
-	loadpear("fpdf");
 
 	#################################################################
 
 	function pdf_export_dots(&$dots, $fh){
 
-		$w = 8.5;
-		$h = 11;
+		$w = 11;
+		$h = 8.5;
+
+		$margin = .5;
 		$dpi = 72;
 
 		$pdf = new FPDF("P", "in", array($w, $h));
-		$pdf->setMargins(.5, .5);
+		$pdf->setMargins($margin, $margin);
+
+		# First, add the map
+
 		$pdf->addPage();
 
 		$map_img = _pdf_export_dots_map($dots, ($w * $dpi), ($h * $dpi));
 		$pdf->Image($map_img, 0, 0, 0, 0, 'PNG');
 
-		$pdf->Output();
+		# Now add the dots
 
+		$cols = array();
+
+		foreach (array_keys($dots[0]) as $col){
+			$col = str_replace("dotspotting:", "", $col);
+			$cols[] = $col;
+		}
+
+		$pdf->addPage();
+
+		$x = $margin;
+		$y = $margin;
+
+		$y += _pdf_add_row($pdf, $cols, $w, $h, $margin, $x, $y, array('header' => 1));
+
+		foreach ($dots as $dot){
+
+			$data = array_values($dot);
+			$_y = _pdf_add_row($pdf, $data, $w, $h, $margin, $x, $y);
+
+			if ($_y != -1){
+				$y += $_y;
+				continue;
+			}
+
+			$pdf->addPage();
+
+			$x = $margin;
+			$y = $margin;
+
+			$y += _pdf_add_row($pdf, $cols, $w, $h, $margin, $x, $y, array('header' => 1));
+			$y += _pdf_add_row($pdf, $data, $w, $h, $margin, $x, $y);
+		}
+
+		# Go!
+
+		$pdf->Output();
 		unlink($map_img);
+	}
+
+	#################################################################
+
+	function _pdf_add_row($pdf, &$cols, $w, $h, $margin, $x, $y, $more=array()){
+
+		if ($more['header']){
+			$pdf->SetFont('Helvetica', 'B', 10);
+		}
+
+		else {
+			$pdf->SetFont('Helvetica', '', 8);
+		}
+
+		$count_cols = count($cols);
+
+		$col_w = ($w - ($margin * 2)) / $count_cols;
+		$col_h = .2;
+
+		$row_h = $col_h;
+
+		foreach ($cols as $col){
+
+			$str_w = $pdf->GetStringWidth($col);
+
+			if ($str_w > $col_w){
+				$lines = ceil($str_w / $col_w);
+				$row_h = max($row_h, ($lines * $col_h));
+			}
+		}
+
+		if (($y + $row_h) > ($h - $margin * 2)){
+			return -1;
+		}
+
+		foreach ($cols as $col){
+			$pdf->SetXY($x, $y);
+			$pdf->Rect($x, $y, $col_w, $row_h);
+			$pdf->MultiCell($col_w, $col_h, $col);
+			$x += $col_w;
+		}
+
+		return $row_h;
 	}
 
 	#################################################################
