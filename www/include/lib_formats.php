@@ -47,7 +47,7 @@
 
 		if (function_exists('imagecreatetruecolor')){
 			$map['image/png'] = 'png';
-			# $map['application/pdf'] = 'pdf';
+			$map['application/pdf'] = 'pdf';
 		}
 
 		if ($key_by_extension){
