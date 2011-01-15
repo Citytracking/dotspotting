@@ -8,7 +8,7 @@
 
 	#################################################################
 
-	function png_export_dots(&$dots, $fh){
+	function png_export_dots(&$dots, &$more){
 
 		# See these? They are hard-coded. For now. Or at least
 		# until it becomes necessary to do it otherwise...

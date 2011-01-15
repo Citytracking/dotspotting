@@ -130,7 +130,7 @@
 
 	#################################################################
 
-	function json_export_dots(&$dots, $fh){
+	function json_export_dots(&$dots, &$more){
 
 		$to_skip = array(
 			'latitude',
@@ -146,7 +146,7 @@
 
 			$feature = array(
 				'type' => 'Feature',
-				'id' => $dot['dotspotting:id'],
+				'id' => $dot['id'],
 				'geometry' => array(
 					'type' => 'Point',
 					'coordinates' => array($dot['longitude'], $dot['latitude']),
@@ -166,7 +166,7 @@
 			$json['features'][] = $feature;
 		}
 
-		fwrite($fh, json_encode($json));
+		fwrite($more['fh'], json_encode($json));
 	}
 	
 	#################################################################

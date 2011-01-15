@@ -109,9 +109,9 @@
 
 	#################################################################
 
-	function rss_export_dots(&$dots, $fh){
+	function rss_export_dots(&$dots, &$more){
 
-		$_dot = dots_get_dot($dots[0]['dotspotting:id']);
+		$_dot = dots_get_dot($dots[0]['id']);
 		
 		$channel_data = array(
 			'title' => "Dots from sheet ID {$_dot['sheet']['id']}",
@@ -180,6 +180,9 @@
 					htmlspecialchars($value)
 				));
 
+				# maybe do OSM-style k= v= pairs? (20110114/straup)
+
+				if (0){
 				if (! preg_match("/^dotspotting:/", $key)){
 					$key = "sheet:{$key}";
 				}
@@ -189,6 +192,8 @@
 
 				$el->appendChild($text);
 				$item->appendChild($el);
+				}
+
 			}
 
 			$coords = array($dot['latitude'],$dot['longitude']);
@@ -197,7 +202,7 @@
 			$geo = $doc->createElement('geo:point');
 			$geo->appendChild($_geo);
 
-			$_title = $doc->createTextNode("Dot #{$dot['dotspotting:id']}");
+			$_title = $doc->createTextNode("Dot #{$dot['id']}");
 
 			if (isset($dot['title'])){
 				$_title = $doc->createTextNode($dot['title']);
@@ -206,18 +211,15 @@
 			$title = $doc->createElement('title');
 			$title->appendChild($_title);
 
-			$_dot = dots_get_dot($dot['dotspotting:id']);
+			$_dot = dots_get_dot($dot['id']);
 			$_link = $doc->createTextNode(urls_url_for_dot($_dot));
 
 			$link = $doc->createElement('link');
 			$link->appendChild($_link);
 
+			# see above inre: osm style tags
+
 			$_description = $doc->createTextNode(implode("<br />", $properties));
-
-			if (isset($dot['description'])){
-				$_description = $doc->createTextNode($dot['description']);
-			}
-
 			$description = $doc->createElement('description');
 			$description->appendChild($_description);
 
@@ -229,7 +231,7 @@
 			$channel->appendChild($item);
 		}
 
-		fwrite($fh, $doc->saveXML($rss));
+		fwrite($more['fh'], $doc->saveXML($rss));
 	}
 
 	#################################################################

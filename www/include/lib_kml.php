@@ -217,7 +217,7 @@
 
 	#################################################################
 
-	function kml_export_dots(&$dots, $fh){
+	function kml_export_dots(&$dots, &$more){
 
 		$ns_map = array(
 			'' => 'http://earth.google.com/kml/2.0',
@@ -232,7 +232,7 @@
 			'created',
 			'title',
 			'description',
-			'dotspotting:perms',
+			'perms',
 		);
 
 		$doc = new DomDocument('1.0', 'UTF-8');
@@ -266,8 +266,14 @@
 					continue;
 				}
 
-				$properties[] = "{$key}\t{$value}";
+				$properties[] = implode("\t", array(
+					htmlspecialchars($key),
+					htmlspecialchars($value)
+				));
 
+				# maybe do OSM-style k= v= pairs? (20110114/straup)
+
+				if (0){
 				if (! preg_match("/^dotspotting:/", $key)){
 					$key = "sheet:{$key}";
 				}
@@ -277,6 +283,7 @@
 
 				$el->appendChild($text);
 				$placemark->appendChild($el);
+				}
 			}
 
 			# title
@@ -289,14 +296,9 @@
 				$placemark->appendChild($name);
 			}
 
-			# description
+			# description (see above inre: osm stag tags)
 
 			$_description = $doc->createTextNode(implode("\n", $properties));
-
-			if (isset($dot['description'])){			
-				$_description = $doc->createTextNode($dot['description']);
-			}
-
 			$description = $doc->createElement("description");
 			$description->appendChild($_description);
 			$placemark->appendChild($description);
@@ -311,7 +313,7 @@
 
 			# perms
 
-			$perms = $doc->createTextNode(($dot['dotspotting:perms'] == 'private') ? 0 : 1);
+			$perms = $doc->createTextNode(($dot['perms'] == 'private') ? 0 : 1);
 
 			$visibility = $doc->createElement("visibility");
 			$visibility->appendChild($perms);
@@ -338,7 +340,7 @@
 			$document->appendChild($placemark);
 		}
 
-		fwrite($fh, $doc->saveXML($kml));
+		fwrite($more['fh'], $doc->saveXML($kml));
 	}
 
 	#################################################################

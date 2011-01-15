@@ -92,7 +92,7 @@
 	# For debugging:
 	# xmllint --noout --schema http://www.topografix.com/GPX/1/1/gpx.xsd dotspotting-sheet-509-8.gpx 
 
-	function gpx_export_dots(&$dots, $fh){
+	function gpx_export_dots(&$dots, &$more){
 
 		$ns_map = array(
 			'' => 'http://www.topografix.com/GPX/1/1',
@@ -192,31 +192,10 @@
 			# non-standard elements makes tools by garmin cry...
 			# (20110113/straup)
 
-			if (0){
-			foreach ($dot as $key => $value){
-
-				if (in_array($key, $skip)){
-					continue;
-				}
-
-				$properties[] = "{$key}\t{$value}";
-
-				if (! preg_match("/^dotspotting:/", $key)){
-					$key = "sheet:{$key}";
-				}
-
-				$el = $doc->createElement($key);
-				$text = $doc->createTextNode($value);
-
-				$el->appendChild($text);
-				$trkpt->appendChild($el);
-			}
-			}
-
 			$trkseg->appendChild($trkpt);
 		}
 
-		fwrite($fh, $doc->saveXML($gpx));
+		fwrite($more['fh'], $doc->saveXML($gpx));
 	}
 
 	#################################################################
