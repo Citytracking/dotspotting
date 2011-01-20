@@ -16,24 +16,48 @@
 
 	function ppt_export_dots(&$dots, &$more){
 
+		$maps = array();
+
 		$w = 1024;
 		$h = 768;
-
-		$map_img = _ppt_export_dots_map($dots, $w, $h);
 
 		$ppt = new PHPPowerPoint();
 		$ppt->getProperties()->setTitle("test");
 
-		$slide = $ppt->getActiveSlide();
+		# set title here
+		# $slide = $ppt->getActiveSlide();
 
-		$shape = $slide->createDrawingShape();
-		$shape->setName('map');
-		$shape->setDescription('');
-		$shape->setPath($map_img);
-		$shape->setWidth($w);
-		$shape->setHeight($h);
-		$shape->setOffsetX(0);
-		$shape->setOffsetY(0);
+		if (0){
+
+			$map_img = _ppt_export_dots_map($dots, $w, $h);
+			$maps[] = $map_img;
+		}
+
+		else {
+
+			foreach ($dots as $dot){
+				$map_img = _ppt_export_center_map($dot, $w, $h);
+				$maps[] = $map_img;
+			}
+		}
+
+		# now draw all the maps...
+
+		foreach ($maps as $map_img){
+
+			$slide = $ppt->createSlide();
+
+			$shape = $slide->createDrawingShape();
+			$shape->setName('map');
+			$shape->setDescription('');
+			$shape->setPath($map_img);
+			$shape->setWidth($w);
+			$shape->setHeight($h);
+			$shape->setOffsetX(0);
+			$shape->setOffsetY(0);
+		}
+
+		#
 
 		$tmp = tempnam(sys_get_temp_dir(), "ppt") . ".ppt";
 
@@ -46,8 +70,13 @@
 
 		fclose($fh);
 
+		#
+
 		unlink($tmp);
-		unlink($map_img);
+
+		foreach ($maps as $path){
+			unlink($path);
+		}
 	}
 
 	#################################################################
@@ -103,6 +132,47 @@
 			imagesetthickness($im, 3);
 			imagearc($im, $pt->x, $pt->y, $dot_size, $dot_size, 0, 359.9, $stroke);
 		}
+
+		$tmp = tempnam(sys_get_temp_dir(), "pdf") . ".png";
+
+		imagepng($im, $tmp);
+		imagedestroy($im);
+
+		return $tmp;
+	}
+
+	#################################################################
+
+	function _ppt_export_center_map(&$dot, $w, $h){
+
+		$dot_size = 20;
+
+		$template = $GLOBALS['cfg']['maptiles_template_url'];
+
+		$hosts = $GLOBALS['cfg']['maptiles_template_hosts'];
+		shuffle($hosts);
+		$template = str_replace("{S}", $hosts[0], $template);
+
+		$provider = new MMaps_Templated_Spherical_Mercator_Provider($template);
+
+		$centroid = new MMaps_Location($dot['latitude'], $dot['longitude']);
+		$dims = new MMaps_Point($w, $h);
+
+		$map = MMaps_mapByCenterZoom($provider, $centroid, 17, $dims);
+		$im = $map->draw();
+
+		$points = array();
+
+		$fill = imagecolorallocatealpha($im, 0, 17, 45, 96);
+		$stroke = imagecolorallocate($im, 153, 204, 0);
+
+		$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
+		$pt = $map->locationPoint($loc);
+
+		imagefilledellipse($im, $pt->x, $pt->y, $dot_size, $dot_size, $fill);
+
+		imagesetthickness($im, 3);
+		imagearc($im, $pt->x, $pt->y, $dot_size, $dot_size, 0, 359.9, $stroke);
 
 		$tmp = tempnam(sys_get_temp_dir(), "pdf") . ".png";
 
