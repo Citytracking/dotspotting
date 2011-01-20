@@ -54,7 +54,8 @@
 		# has an 'id' column
 
 		if ($pages_per_row > 1){
-			$pages_per_row = ceil(($count_cols + ($pages_per_row - 1)) / $cols_per_page);
+			$_count = $count_cols + ($pages_per_row - 1);
+			$pages_per_row = ceil($_count / $cols_per_page);
 		}
 
 		# First, chunk out the header in (n) pages and measure the
@@ -66,13 +67,15 @@
 
 		for ($i = 0; $i < $count_cols; $i++){
 
+			$col_name = $more['columns'][$i];
+
 			$b = floor($i / $cols_per_page);
 
 			if (! is_array($header_buckets[$b])){
 				$header_buckets[] = array();
 			}
 
-			$header_buckets[$b][] = $more['columns'][$i];
+			$header_buckets[$b][] = $col_name;
 
 			$str_width = ceil($pdf->GetStringWidth($more['columns'][$i]));
 
@@ -96,7 +99,18 @@
 			if (! in_array('id', $cols)){
 				array_unshift($cols, 'id');
 				$header_buckets[$i] = $cols;
-			}			
+			}
+
+			# move stuff around so that we keep the pages nice and tidy
+
+			if (count($header_buckets[$i]) > $cols_per_page){
+
+				$to_keep = array_slice($header_buckets[$i], 0, $cols_per_page);
+				$extra = array_slice($header_buckets[$i], $cols_per_page);
+
+				$header_buckets[$i] = $to_keep;
+				$header_buckets[$i + 1] = $extra;
+			}
 		}
 
 		# Now work out the height of each row of dots
@@ -119,7 +133,7 @@
 				}		
 			}
 
-			$row_heights[] = $_h;
+			$row_heights[] = $_h * 1.1;
 		}
 
 		# Now sort everything in to pages
@@ -139,7 +153,13 @@
 
 			# will this row bleed off the current page ($page) ?
 
+			$goto_nextpage = 0;
+
 			if (($y + $row_height) > ($h - ($margin * 2))){
+				$goto_nextpage = 1;
+			}
+
+			if ($goto_nextpage){
 				$page += $pages_per_row;
 				$y = $margin + $header_h;
 			}
@@ -191,9 +211,12 @@
 
 				$style = ($data['bold']) ? 'B' : '';
 
-				$pdf->SetFont('Helvetica', $style, 8);
+				$pdf->SetFont('Helvetica', $style, 10);
 
-				$max_width = floor($col_width * .9);
+				$x_offset = $col_width * .1;
+				$y_offset = $data['height'] * .1;
+
+				$max_width = $col_width - ($x_offset * 3);
 
 				foreach ($data['row'] as $value){
 
@@ -206,7 +229,7 @@
 					# badly (20110120/straup)
 
 					if ($width < $max_width){
-						$pdf->SetXY($x, $y);
+						$pdf->SetXY($x + $x_offset, $y + $y_offset);
 						$pdf->Cell(0, $row_h, $value);
 					}
 
@@ -215,6 +238,7 @@
 						$_x = $x;
 						$_y = $y;
 
+						$lines = array();
 						$buffer = '';
 
 						foreach (str_split($value) as $char){
@@ -222,22 +246,22 @@
 							$buffer .= $char;
 							$width = $pdf->GetStringWidth($buffer);
 
-							if ($width < $max_width){
-								continue;
+							if ($width >= $max_width){
+								$lines[] = $buffer;
+								$buffer = '';
 							}
-
-							$pdf->SetXY($_x, $_y);
-							$pdf->Cell(0, $row_h, $buffer);
-							$buffer = '';
-
-							$_y += $row_h * .8;
 						}
 
 						if (strlen($buffer)){
-
-							$pdf->SetXY($_x, $_y);
-							$pdf->Cell(0, $row_h, $buffer);
+							$lines[] = $buffer;
 							$buffer = '';
+						}
+
+						foreach ($lines as $ln){
+
+							$pdf->SetXY($_x + $x_offset, $_y + $y_offset);
+							$pdf->Cell(0, $row_h, $ln);
+							$_y += $row_h * .8;
 						}
 					}
 
@@ -263,7 +287,7 @@
 
 	function _pdf_export_dots_map(&$dots, $w, $h){
 
-		$dot_size = 20;
+		$dot_size = 15;
 
 		$swlat = null;
 		$swlon = null;
