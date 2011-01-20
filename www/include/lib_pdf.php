@@ -14,11 +14,21 @@
 
 	function pdf_export_dots(&$dots, &$more){
 
+		# PLEASE FOR TO BE CACHING ME, OBIWAN...
+		# (20110120/straup)
+
 		$w = 11;
 		$h = 8.5;
 
 		$margin = .5;
 		$dpi = 72;
+
+		$header_h = .2;
+		$row_h = .2;
+
+		$col_width = 1.25;
+
+		# Here we go...
 
 		$pdf = new FPDF("P", "in", array($w, $h));
 		$pdf->setMargins($margin, $margin);
@@ -27,20 +37,68 @@
 
 		$pdf->addPage();
 
-		$map_img = _pdf_export_dots_map($dots, ($h * $dpi), ($h * $dpi));
+		list($map, $map_img) = _pdf_export_dots_map($dots, ($h * $dpi), ($h * $dpi));
 		$pdf->Image($map_img, 0, 0, 0, 0, 'PNG');
+
+		# Now add a legend
+
+		$legend = array();
+
+		foreach ($dots as $dot){
+
+			$created = strtotime($dot['created']);
+			$ymd = gmdate("Y-m-d", $created);
+
+			$legend[] = array(
+				'id' => $dot['id'],
+				'latitude' => $dot['latitude'],
+				'longitude' => $dot['longitude'],
+				'ymd' => $ymd,
+			);
+		}
+
+		function sort_by_lat($a, $b){
+
+			if ($a['latitude'] == $b['latitude']) {
+				return 0;
+			}
+
+			return ($a['latitude'] > $b['latitude']) ? -1 : 1;
+		}
+
+		usort($legend, "sort_by_lat");
+
+		$pdf->SetFont('Helvetica', '', 10);
+
+		$x = $h + $margin;
+		$y = $margin;
+
+		foreach ($legend as $dot){
+
+			$text = "{$dot['id']} ({$dot['ymd']})";
+
+			$pdf->SetXY($x, $y);
+			$pdf->Cell(0, $row_h, $text);
+
+			$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
+			$pt = $map->locationPoint($loc);
+
+			$x1 = $x - ($margin / 2);
+			$y1 = $y + ($row_h / 2);
+
+			$x2 = $pt->x / $dpi;
+			$y2 = $pt->y / $dpi;
+
+			$pdf->Line($x1, $y1, $x2, $y2);
+
+			$y += $row_h * 1.1;
+		}
 
 		# Now add the dots
 
 		$header_buckets = array();
 
 		#
-
-		$header_h = .2;
-		$row_h = .2;
-
-		$col_width = 1.25;
-
 		#
 
 		$cols_per_page = floor(($w - ($margin * 2)) / $col_width);
@@ -243,6 +301,10 @@
 
 						foreach (str_split($value) as $char){
 
+							if (($buffer == '') && ($char == ' ')){
+								continue;
+							}
+
 							$buffer .= $char;
 							$width = $pdf->GetStringWidth($buffer);
 
@@ -338,7 +400,7 @@
 		imagepng($im, $tmp);
 		imagedestroy($im);
 
-		return $tmp;
+		return array($map, $tmp);
 	}
 
 	#################################################################
