@@ -31,29 +31,182 @@
 
 		# Now add the dots
 
-		$pdf->addPage();
+		$header_buckets = array();
 
-		$x = $margin;
-		$y = $margin;
+		#
 
-		$y += _pdf_add_row($pdf, $more['columns'], null, $w, $h, $margin, $x, $y);
+		$header_h = .2;
+		$row_h = .2;
+
+		$col_width = 1.25;
+
+		#
+
+		$cols_per_page = floor(($w - ($margin * 2)) / $col_width);
+
+		$count_cols = count($more['columns']);
+
+		$pages_per_row = ceil($count_cols / $cols_per_page);
+
+		# See this? We're adding enough extra columns and re-counting
+		# everything in order to ensure that every page for each row
+		# has an 'id' column
+
+		if ($pages_per_row > 1){
+			$pages_per_row = ceil(($count_cols + ($pages_per_row - 1)) / $cols_per_page);
+		}
+
+		# First, chunk out the header in (n) pages and measure the
+		# height of the (header) row itself
+
+		$_h = $header_h;
+
+		$pdf->SetFont('Helvetica', 'B', 10);
+
+		for ($i = 0; $i < $count_cols; $i++){
+
+			$b = floor($i / $cols_per_page);
+
+			if (! is_array($header_buckets[$b])){
+				$header_buckets[] = array();
+			}
+
+			$header_buckets[$b][] = $more['columns'][$i];
+
+			$str_width = ceil($pdf->GetStringWidth($more['columns'][$i]));
+
+			if ($str_width > $col_width){
+				$lines = ceil($str_width / $col_width);
+				$_h = max($_h, ($lines * $header_h));
+			}
+		}
+
+		$header_h = $_h;
+
+		# make sure every page has an 'id' field
+		# (see above)
+
+		$count_buckets = count($header_buckets);
+
+		for ($i = 0; $i < $count_buckets; $i++){
+
+			$cols = $header_buckets[$i];
+
+			if (! in_array('id', $cols)){
+				array_unshift($cols, 'id');
+				$header_buckets[$i] = $cols;
+			}			
+		}
+
+		# Now work out the height of each row of dots
+
+		$row_heights = array();
+
+		$pdf->SetFont('Helvetica', '', 10);
 
 		foreach ($dots as $dot){
 
-			$_y = _pdf_add_row($pdf, $more['columns'], $dot, $w, $h, $margin, $x, $y);
+			$_h = $row_h;
 
-			if ($_y != -1){
-				$y += $_y;
-				continue;
+			foreach ($dot as $key => $value){
+
+				$str_width = ceil($pdf->GetStringWidth($value));
+
+				if ($str_width > $col_width){
+					$lines = ceil($str_width / $col_width);
+					$_h = max($_h, ($lines * $row_h));
+				}		
 			}
 
-			$pdf->addPage();
+			$row_heights[] = $_h;
+		}
+
+		# Now sort everything in to pages
+
+		$pages = array();
+		$page = 0;
+
+		$count_dots = count($dots);
+		$dot_idx = 0;
+
+		$y = $margin + $header_h;
+
+		while ($dot_idx < $count_dots){
+
+			$dot = $dots[$dot_idx];
+			$row_height = $row_heights[$dot_idx];
+
+			# will this row bleed off the current page ($page) ?
+
+			if (($y + $row_height) > ($h - ($margin * 2))){
+				$page += $pages_per_row;
+				$y = $margin + $header_h;
+			}
+
+			$y += $row_height;
+
+			$j = 0;
+
+			foreach ($header_buckets as $cols){
+
+				$_row = array();
+
+				foreach ($cols as $name){
+					$_row[] = $dot[$name];
+				}
+
+				$page_idx = $page + $j;
+
+				if (! is_array($pages[$page_idx])){
+
+					$pages[$page_idx] = array(array(
+						'row' => $cols,
+						'bold' => 1,
+						'height' => $header_h,
+					));
+				}
+
+				$pages[ $page_idx ][] = array(
+					'row' => $_row,
+					'height' => $row_height,
+				);
+
+				$j ++;
+			}
+
+			$dot_idx++;
+		}
+
+		# ZOMG... finally publish the thing...
+
+		foreach ($pages as $page){
+
+			$pdf->AddPage();
 
 			$x = $margin;
 			$y = $margin;
 
-			$y += _pdf_add_row($pdf, $more['columns'], null, $w, $h, $margin, $x, $y);
-			$y += _pdf_add_row($pdf, $more['columns'], $dot, $w, $h, $margin, $x, $y);
+			foreach ($page as $data){
+
+				$style = ($data['bold']) ? 'B' : '';
+
+				$pdf->SetFont('Helvetica', $style, 8);
+
+				foreach ($data['row'] as $value){
+
+					$value = trim($value);
+
+					$pdf->Rect($x, $y, $col_width, $data['height']);
+
+					$pdf->SetXY($x, $y);
+					$pdf->MultiCell($col_width, $data['height'], $value, 0, 'L');
+
+					$x += $col_width;
+				}
+
+				$x = $margin;
+				$y += $data['height'];
+			}
 		}
 
 		# Go!
