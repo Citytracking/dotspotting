@@ -27,7 +27,7 @@
 
 		$pdf->addPage();
 
-		$map_img = _pdf_export_dots_map($dots, ($w * $dpi), ($h * $dpi));
+		$map_img = _pdf_export_dots_map($dots, ($h * $dpi), ($h * $dpi));
 		$pdf->Image($map_img, 0, 0, 0, 0, 'PNG');
 
 		# Now add the dots
@@ -193,14 +193,53 @@
 
 				$pdf->SetFont('Helvetica', $style, 8);
 
+				$max_width = floor($col_width * .9);
+
 				foreach ($data['row'] as $value){
 
 					$value = trim($value);
+					$width = $pdf->GetStringWidth($value);
 
 					$pdf->Rect($x, $y, $col_width, $data['height']);
 
-					$pdf->SetXY($x, $y);
-					$pdf->MultiCell($col_width, $data['height'], $value, 0, 'L');
+					# Don't bother with MultiCell - it is behaving
+					# badly (20110120/straup)
+
+					if ($width < $max_width){
+						$pdf->SetXY($x, $y);
+						$pdf->Cell(0, $row_h, $value);
+					}
+
+					else {
+
+						$_x = $x;
+						$_y = $y;
+
+						$buffer = '';
+
+						foreach (str_split($value) as $char){
+
+							$buffer .= $char;
+							$width = $pdf->GetStringWidth($buffer);
+
+							if ($width < $max_width){
+								continue;
+							}
+
+							$pdf->SetXY($_x, $_y);
+							$pdf->Cell(0, $row_h, $buffer);
+							$buffer = '';
+
+							$_y += $row_h * .8;
+						}
+
+						if (strlen($buffer)){
+
+							$pdf->SetXY($_x, $_y);
+							$pdf->Cell(0, $row_h, $buffer);
+							$buffer = '';
+						}
+					}
 
 					$x += $col_width;
 				}
