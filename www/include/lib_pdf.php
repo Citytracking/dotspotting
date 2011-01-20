@@ -4,8 +4,7 @@
 	# $Id$
 	#
 
-	# HEY LOOK! This isn't finished. It mostly works but there's a lot
-	# of layout work left to do... (20110119/straup)
+	# THIS NEEDS COMMENTS.
 
 	loadpear("modestmaps/ModestMaps");
 	loadpear("fpdf");
