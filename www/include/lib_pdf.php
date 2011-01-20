@@ -40,66 +40,14 @@
 		list($map, $map_img) = _pdf_export_dots_map($dots, ($h * $dpi), ($h * $dpi));
 		$pdf->Image($map_img, 0, 0, 0, 0, 'PNG');
 
-		# Now add a legend
+		# The legend gets added below (once we've figured out what page
+		# each dot is on)
 
 		$legend = array();
 
-		foreach ($dots as $dot){
-
-			$created = strtotime($dot['created']);
-			$ymd = gmdate("Y-m-d", $created);
-
-			$legend[] = array(
-				'id' => $dot['id'],
-				'latitude' => $dot['latitude'],
-				'longitude' => $dot['longitude'],
-				'ymd' => $ymd,
-			);
-		}
-
-		function sort_by_lat($a, $b){
-
-			if ($a['latitude'] == $b['latitude']) {
-				return 0;
-			}
-
-			return ($a['latitude'] > $b['latitude']) ? -1 : 1;
-		}
-
-		usort($legend, "sort_by_lat");
-
-		$pdf->SetFont('Helvetica', '', 10);
-
-		$x = $h + $margin;
-		$y = $margin;
-
-		foreach ($legend as $dot){
-
-			$text = "{$dot['id']} ({$dot['ymd']})";
-
-			$pdf->SetXY($x, $y);
-			$pdf->Cell(0, $row_h, $text);
-
-			$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
-			$pt = $map->locationPoint($loc);
-
-			$x1 = $x - ($margin / 2);
-			$y1 = $y + ($row_h / 2);
-
-			$x2 = $pt->x / $dpi;
-			$y2 = $pt->y / $dpi;
-
-			$pdf->Line($x1, $y1, $x2, $y2);
-
-			$y += $row_h * 1.1;
-		}
-
-		# Now add the dots
+		# Now figure out the what is the what of the dots
 
 		$header_buckets = array();
-
-		#
-		#
 
 		$cols_per_page = floor(($w - ($margin * 2)) / $col_width);
 
@@ -213,7 +161,7 @@
 
 			$goto_nextpage = 0;
 
-			if (($y + $row_height) > ($h - ($margin * 2))){
+			if (($y + $row_height) > ($h - ($margin * 1))){
 				$goto_nextpage = 1;
 			}
 
@@ -221,6 +169,14 @@
 				$page += $pages_per_row;
 				$y = $margin + $header_h;
 			}
+
+			$legend[ $dot['id'] ] = array(
+				'page' => $page + 2,	# account for a zero-based list + 1 (the map page)
+				'id' => $dot['id'],
+				'latitude' => $dot['latitude'],
+				'longitude' => $dot['longitude'],
+				'ymd' => gmdate('Y-m-d', strtotime($dot['created'])),
+			);
 
 			$y += $row_height;
 
@@ -241,7 +197,7 @@
 					$pages[$page_idx] = array(array(
 						'row' => $cols,
 						'bold' => 1,
-						'height' => $header_h,
+						'height' => $header_h * 1.3,
 					));
 				}
 
@@ -258,6 +214,47 @@
 
 		# ZOMG... finally publish the thing...
 
+		# Start with a legend
+
+		function sort_by_lat($a, $b){
+
+			if ($a['latitude'] == $b['latitude']) {
+				return 0;
+			}
+
+			return ($a['latitude'] > $b['latitude']) ? -1 : 1;
+		}
+
+		usort($legend, "sort_by_lat");
+
+		$pdf->SetFont('Helvetica', '', 10);
+
+		$x = $h + $margin;
+		$y = $margin;
+
+		foreach ($legend as $dot){
+
+			$text = "{$dot['id']} / pg. {$dot['page']}";
+
+			$pdf->SetXY($x, $y);
+			$pdf->Cell(0, $row_h, $text);
+
+			$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
+			$pt = $map->locationPoint($loc);
+
+			$x1 = $x - ($margin / 8);
+			$y1 = $y + ($row_h / 2);
+
+			$x2 = $pt->x / $dpi;
+			$y2 = $pt->y / $dpi;
+
+			$pdf->Line($x1, $y1, $x2, $y2);
+
+			$y += $row_h * 1.1;
+		}
+
+		# Now the rows (of dots)
+
 		foreach ($pages as $page){
 
 			$pdf->AddPage();
@@ -265,6 +262,8 @@
 			$x = $margin;
 			$y = $margin;
 
+			$z = 0;
+	
 			foreach ($page as $data){
 
 				$style = ($data['bold']) ? 'B' : '';
@@ -276,12 +275,16 @@
 
 				$max_width = $col_width - ($x_offset * 3);
 
+				$bg = ($z % 2) ? 255 : 205;
+				$z ++;
+
 				foreach ($data['row'] as $value){
 
 					$value = trim($value);
 					$width = $pdf->GetStringWidth($value);
 
-					$pdf->Rect($x, $y, $col_width, $data['height']);
+					$pdf->SetFillColor($bg);
+					$pdf->Rect($x, $y, $col_width, $data['height'], 'F');
 
 					# Don't bother with MultiCell - it is behaving
 					# badly (20110120/straup)
