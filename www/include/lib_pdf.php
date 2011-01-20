@@ -66,7 +66,7 @@
 		# First, chunk out the header in (n) pages and measure the
 		# height of the (header) row itself
 
-		$_h = $header_h;
+		$_h = $header_h * 1.3;
 
 		$pdf->SetFont('Helvetica', 'B', 10);
 
@@ -160,7 +160,7 @@
 
 			$goto_nextpage = 0;
 
-			if (($y + $row_height) > ($h - ($margin * 1))){
+			if (($y + $row_height) > ($h - ($margin * 1.5))){
 				$goto_nextpage = 1;
 			}
 
@@ -196,7 +196,7 @@
 					$pages[$page_idx] = array(array(
 						'row' => $cols,
 						'bold' => 1,
-						'height' => $header_h * 1.3,
+						'height' => $header_h,
 					));
 				}
 
