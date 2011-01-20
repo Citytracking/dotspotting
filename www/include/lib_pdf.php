@@ -4,7 +4,8 @@
 	# $Id$
 	#
 
-	# HEY LOOK! THIS DOESN'T WORK.
+	# HEY LOOK! This isn't finished. It mostly works but there's a lot
+	# of layout work left to do... (20110119/straup)
 
 	loadpear("modestmaps/ModestMaps");
 	loadpear("fpdf");
@@ -213,52 +214,6 @@
 
 		$pdf->Output();
 		unlink($map_img);
-	}
-
-	#################################################################
-
-	function _pdf_add_row($pdf, $cols, $dot, $w, $h, $margin, $x, $y){
-
-		if ($dot){
-			$pdf->SetFont('Helvetica', '', 8);
-		}
-
-		else {
-			$pdf->SetFont('Helvetica', 'B', 10);
-		}
-
-		$col_w = ceil($w - ($margin * 2)) / count($cols);
-		$col_h = .2;
-
-		$row_h = $col_h;
-
-		foreach ($cols as $col){
-
-			$str = ($dot) ? $dot[$col] : $col;
-			$str_w = ceil($pdf->GetStringWidth($str));
-
-			if ($str_w > $col_w){
-				$lines = ceil($str_w / $col_w);
-				$row_h = max($row_h, ($lines * $col_h));
-			}
-		}
-
-		if (($y + $row_h) > ($h - $margin * 2)){
-			return -1;
-		}
-
-		foreach ($cols as $col){
-
-			$pdf->SetXY($x, $y);
-
-			$pdf->Rect($x, $y, $col_w, $row_h);
-			$str = ($dot) ? $dot[$col] : $col;
-			$pdf->MultiCell($col_w, $col_h, trim($str), 0, 'L');
-
-			$x += $col_w;
-		}
-
-		return $row_h;
 	}
 
 	#################################################################
