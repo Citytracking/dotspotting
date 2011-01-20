@@ -29,7 +29,6 @@ function draw_map_polymaps(dot){
 }
 
 function draw_map_modestmaps(dot){
-
 	var more = { 'static' : 1 };	 
 	var map = utils_modestmap('map', more);
 

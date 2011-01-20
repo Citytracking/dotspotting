@@ -162,20 +162,19 @@ function utils_polymaps_assign_dot_properties(e){
 		);
 
 		// Okay! Go!!
-
 		var count_process = to_process.length;
-
+		
 		for (var k = 0; k < count_process; k ++){
 
 			var el = to_process[k][0];
 			var props = to_process[k][1];
-
+			
 			var classes = ['dot'];
 
 			if (props && props.permissions){
 				classes.push('dot_' + props.permissions);
 			}
-
+			
 			el.setAttribute('class', classes.join(' '));
 			el.setAttribute('r', 8);
 
@@ -188,7 +187,11 @@ function utils_polymaps_assign_dot_properties(e){
 
 	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
 	    				el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
-	    				el.setAttribute('onclick', 'dot_onclick(' + enc_id + ');return false');
+						
+						// switch inline onclick to jquery bind method
+						// also pass the props & geometry arrays
+					
+						$(el).bind('click', {props: props, geo: f.data.geometry}, dot_onclick); 
 				}
 			}
 
@@ -232,6 +235,7 @@ function utils_polymaps_assign_sheet_properties (e){
 				el.setAttribute('id', 'sheet_' + data.properties.id);
 				el.setAttribute('onmouseover', 'sheet_onmouseover(' + enc_id + ');return false');
 				el.setAttribute('onmouseout', 'sheet_onmouseout(' + enc_id + ');return false');
+				el.setAttribute('onclick', 'sheet_onclick(' + enc_id + ');return false');
 			}
 
 		}

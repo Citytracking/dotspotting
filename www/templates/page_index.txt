@@ -1,22 +1,25 @@
 {capture assign="page_title}{if $cfg.user.id}Welcome back!{else}Welcome!{/if}{/capture}
 {include file='inc_head.txt'}
 
+{* inside #content div *}
+
 {if $cfg.user.id}
 	<h2>Hi {$cfg.user.username|escape}!</h2>
 {else}
 
-	<div style="margin-left:20%;margin-bottom:25px;">
-	<div><a href="http://www.flickr.com/photos/apelad/3866190995/" title="Laugh-Out-Loud Cats #1223 by Ape Lad, on Flickr" target="_flickr"><img src="http://farm3.static.flickr.com/2093/3866190995_2fa09e50bc.jpg" width="500" height="328" alt="Laugh-Out-Loud Cats #1223" /></a></div>
+		<div style="margin-left:20%;margin-bottom:25px;">
+		<div><a href="http://www.flickr.com/photos/apelad/3866190995/" title="Laugh-Out-Loud Cats #1223 by Ape Lad, on Flickr" target="_flickr"><img src="http://farm3.static.flickr.com/2093/3866190995_2fa09e50bc.jpg" width="500" height="328" alt="Laugh-Out-Loud Cats #1223" /></a></div>
 
-	<div style="font-size:11px;color:#666;max-width:500px;font-style:italic;">kirby dots courtesy <a href="http://www.flickr.com/photos/apelad/3866190995/">laugh-out-loud cats #1223</a> &#8212; what are <a href="https://secure.wikimedia.org/wikipedia/en/wiki/Kirby_dots" target="_wikipedia">kirby dots</a>?</div>
-	</div>
+		<div style="font-size:11px;color:#666;max-width:500px;font-style:italic;">kirby dots courtesy <a href="http://www.flickr.com/photos/apelad/3866190995/">laugh-out-loud cats #1223</a> &#8212; what are <a href="https://secure.wikimedia.org/wikipedia/en/wiki/Kirby_dots" target="_wikipedia">kirby dots</a>?</div>
+		</div>
+
 
 	{if $cfg.enable_feature_import}
-	
-<h2>Welcome to Dotspotting!</h2>
-<p><a href="{$cfg.abs_root_url}upload">Get started and upload some dots</a> or find out more by reading the Dotspotting <a href="{$cfg.abs_root_url}about">About</a> and <a href="{$cfg.abs_root_url}faq">FAQ</a> pages.</p>
+		<h2>Welcome to Dotspotting!</h2>
+		
+		<p><a href="{$cfg.abs_root_url}upload">Get started and upload some dots</a> or find out more by reading the Dotspotting <a href="{$cfg.abs_root_url}about">About</a> and <a href="{$cfg.abs_root_url}faq">FAQ</a> pages.</p>
 
-<p>You can also see recently created <a href="{$cfg.abs_root_url}recent/">sheets</a> and <a href="{$cfg.abs_root_url}recent/dots/">dots</a>!</p>
+		<p>You can also see recently created <a href="{$cfg.abs_root_url}recent/">sheets</a> and <a href="{$cfg.abs_root_url}recent/dots/">dots</a>!</p>
 	{/if}
 
 {/if}
@@ -25,5 +28,7 @@
 	<h3>Sheets that have been added to Dotspotting recently:</h3>
 	{include file="inc_sheets_list.txt" sheets=$recent_sheets}
 {/if}
+
+{* end #content div *}
 
 {include file='inc_foot.txt'}

@@ -37,12 +37,13 @@
 
     if (_dotspotting.use_polymaps){
 
-       $LAB
-       .script(_dotspotting.abs_root_url + 'javascript/polymaps.min.js')
-       .script(_dotspotting.abs_root_url + 'javascript/polymaps.tilestache.js')
-       .wait(function(){
-		_dotspotting.js_loadlib = true;
-       });
+		$LAB
+		.script(_dotspotting.abs_root_url + 'javascript/maptip.js')
+		.script(_dotspotting.abs_root_url + 'javascript/polymaps.min.js')
+		.script(_dotspotting.abs_root_url + 'javascript/polymaps.tilestache.js')
+		.wait(function(){
+			_dotspotting.js_loadlib = true;
+		});
     }   
 
     else {
