@@ -72,6 +72,10 @@ function dot_tip_body(dotid){
 	return html;
 }
 
+function resetBounds(){
+	jQuery("#map").trigger('resetmapbounds');
+}
+
 function dot_onmouseover(dotid){
 
 	var dot = dot_getinfo(dotid);
@@ -120,10 +124,25 @@ function dot_onmouseover(dotid){
 		$("#map_info").show();
 	*/
 	
+	/* Move dot to bottom of group */
+	var element = document.getElementById("dot_"+dotid);
+	element.parentNode.appendChild(element);
+	
+	/* Add dot hover class, because appendChild breaks ':hover' */
+	var classes = (element.className.baseVal).split(' ');
+	classes.push('dotHover');
+	element.setAttribute('class', classes.join(' '));	
+	
 	dot_highlight_tr(dotid);
 }
 
 function dot_onmouseout(dotid){
+	
+	/* Remove dot hover class */
+	var element = document.getElementById("dot_"+dotid);
+	var classes = (element.className.baseVal).split(' ');
+	classes.pop();
+	element.setAttribute('class', classes.join(' '));
 
 	/*
 	var html = $("#map_info").html();
@@ -426,8 +445,13 @@ function draw_map_polymaps(dots){
 
 	utils_polymaps_add_compass(map);
 	
+	$("#map").bind('resetmapbounds', function(e) {
+		var extent = utils_adjust_bbox(dots.extent);
+		map.extent(extent);
+	});
+	
 	/* 
-		Add ToolTip & bind events to #map
+		Add ToolTip & bind marker click event to #map
 		
 		tooltip appears on click
 		
@@ -437,11 +461,7 @@ function draw_map_polymaps(dots){
 		#############################################################################
 	*/
 
-	
-	var mapel = $('#canvas');
-	if(mapel.length == 0){
-		mapel = $("#map").prepend("<div id='canvas'></div>");
-	}
+	var mapel = $("#map").parent();
 	
 	$("#map").bind('markerclick', function(e,props,geo) {
 		if(mapel.length == 0) return
@@ -458,7 +478,7 @@ function draw_map_polymaps(dots){
 	      })
 	      .top(function(tip) {
 	        var point = tip.props.map.locationPoint(this.props.location)
-	        return parseFloat(point.y - 30)
+	        return parseFloat(point.y)
 	      }).left(function(tip) {
 	        var radius = tip.target.getAttribute('r'),
 	            point = tip.props.map.locationPoint(this.props.location)

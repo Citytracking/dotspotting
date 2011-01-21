@@ -1,23 +1,35 @@
 {include file="inc_map.txt"}
+
+{* hidden for now *}
 <div id="user_dots_processing" class="dataTables_processing"></div>
+
 <table id="user_dots" class="ds_table">
 	<thead>
 		<tr>
-			<th>Dot</th>
-			<th>Owner</th>
-			<th>Sheet</th>
-			<th>Latitude</th>
-			<th>Longitude</th>
+			<th title="sort by dot ID">Dot</th>
+			<th title="sort by dot owner">Owner</th>
+			
+			{* 
+				not sure if this is doing what i want,
+				which is checking to see if we are on a sheet page
+			*}
+			{if !$sheet}
+				<th title="sort dots by sheet name">Sheet</th>
+			{/if}
+			
+			<th title="sort by latitude">Latitude</th>
+			<th title="sort by longitude">Longitude</th>
+			
 {if $cfg.enable_feature_dots_indexing}
 	{foreach from=$dots_indexed item="label"}
-			<th>{$label|escape}</th>
+			<th title="sort by {$label|escape}">{$label|escape}</th>
 	{/foreach}
 {/if}
-			<th>Created</th>
+			<th title="sort by created date of dots">Created</th>
 			{if $is_own}
-			<th>Permissions</th>
+			<th title="sort by permissions">Permissions</th>
 			{/if}
-			<th>Other</th>
+			<th title="sort by misc fields associated w/ dot">Other</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -27,17 +39,18 @@
 			<tr class="dot dot_{$permissions_map.$perms|escape}" id="dotslist_dot_{$dot.id|escape}">
 
 				<td class="dotslist_id" nowrap>
-					<strong><a href="{$dot|@urls_url_for_dot}">{$dot.id|escape}</a></strong>
+					<strong><a href="{$dot|@urls_url_for_dot}" title="view dot #{$dot.id|escape} page">{$dot.id|escape}</a></strong>
 				</td>
 
 				<td class="dotslist_owner" ds:owner_id="{$dot.user_id|escape}" nowrap>
 			{if $owner}
-					<a href="{$owner|@urls_url_for_user}">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
+					<a href="{$owner|@urls_url_for_user}" title="view {if $is_own}Your{else}{$owner.username|escape}'s{/if} page">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
 			{else}
-					<a href="{$dot.user|@urls_url_for_user}">{if $dot.user.id == $cfg.user.id}You{else}{$dot.user.username|escape}{/if}</a>
+					<a href="{$dot.user|@urls_url_for_user}" title="view {if $dot.user.id == $cfg.user.id}Your{else}{$dot.user.username|escape}'s{/if} page">{if $dot.user.id == $cfg.user.id}You{else}{$dot.user.username|escape}{/if}</a>
 			{/if}
 				</td>
-
+			
+			{if !$sheet}
 				<td class="dotslist_label" nowrap>
 			{if $sheet}
 					<a href="{$sheet|@urls_url_for_sheet}">{if $sheet.label}{$sheet.label|truncate:20:"..."|escape}{else}<span style="font-style:italic;">untitled</span>{/if}</a>
@@ -45,27 +58,36 @@
 					<a href="{$dot.sheet|@urls_url_for_sheet}">{if $dot.sheet.label}{$dot.sheet.label|truncate:20:"..."|escape}{else}<span class="untitled">untitled</span>{/if}</a>
 			{/if}
 				</td>
-
+			{/if}
+			
 				<td class="dotslist_latitude" nowrap>
-{if $dot.latitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.latitude|escape}</a>{else}&#8212;{/if}
+{if $dot.latitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}" title="search for dots around {$dot.latitude|escape} latitude">{$dot.latitude|escape}</a>{else}&#8212;{/if}
 				</td>
 
 				<td class="dotslist_longitude" nowrap>
-{if $dot.longitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}">{$dot.longitude|escape}</a>{else}&#8212;{/if}
+{if $dot.longitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}" title="search for dots around {$dot.longitude|escape} longitude">{$dot.longitude|escape}</a>{else}&#8212;{/if}
 				</td>
 
 {if $cfg.enable_feature_dots_indexing}
 	{foreach from=$dots_indexed item="label"}
 				<td class="dotlist_{$label|escape}">
 				{if $dot.$label}
-				<a href="{$cfg.abs_root_url}search?u={$dot.user_id|escape}&e={$label|escape:'url'}:{$dot.$label|escape:'url'}">{$dot.$label|escape}</a>
+					{if $dot.$label|count_characters < 40}
+						<a href="{$cfg.abs_root_url}search?u={$dot.user_id|escape}&e={$label|escape:'url'}:{$dot.$label|escape:'url'}" title="search for dots containing {$dot.$label|escape}">{$dot.$label|escape}</a>
+					{else}
+						{$dot.$label|escape}
+					{/if}
 				{else}&#8212;{/if}
 				</td>
 	{/foreach}
 {/if}
 
 				<td class="dotslist_created" nowrap>
-{if $dot.created}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape:'url'})">{$dot.created|date_format:"%Y-%m-%d"|escape}{else}&#8212;{/if}
+			{if $dot.created}
+				<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape:'url'})" title="search for dots created around {$dot.created|date_format:"%Y-%m-%d"|escape}">{$dot.created|date_format:"%Y-%m-%d"|escape}</a>
+			{else}
+				&#8212;
+			{/if}
 				</td>
 
 			{if $is_own}

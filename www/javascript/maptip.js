@@ -106,19 +106,27 @@
         el.remove()
       })
     },
+
+	
     
     move: function(event) {
       this.left(this.props.callbackLeft).top(this.props.callbackTop)
+		var size = this.props.map.size();
+	
+	if( (this.props.left > 0 && this.props.left < size.x) && (this.props.top > 0 && this.props.top < size.y) ){
       this.el.css({left: this.props.left + 'px', top: this.props.top + 'px'}) 
-
+		this.el.css("visibility","");
+	}else{
+		this.el.css("visibility","hidden");
+	}
       return this
     },
     
     resize: function(event) {
-      this.left(this.props.callbackLeft).top(this.props.callbackTop)
-      this.el.css({left: this.props.left + 'px', top: this.props.top + 'px'}) 
-
-      return this
+      //this.left(this.props.callbackLeft).top(this.props.callbackTop)
+      //this.el.css({left: this.props.left + 'px', top: this.props.top + 'px'}) 
+		
+      return this.move(event);
     },
     
     render: function() {

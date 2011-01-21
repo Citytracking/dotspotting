@@ -8,6 +8,7 @@ body {
 
 a {
 	color:black;
+	outline:none;
 }
 
 #main {
@@ -25,11 +26,11 @@ a {
     margin-bottom:5px;
     border: 1px solid #ccc; 
 	position:relative;
-	overflow:hidden;
 }
 
 #map_wrapper {
 	margin-bottom: 20px;
+	position:relative;
 }
 
 #map_info {
@@ -173,7 +174,7 @@ td {
 
 td a {
 	color:#444;
-	text-decoration:none;
+	text-decoration:underline;
 }
 
 th {
@@ -191,6 +192,7 @@ th {
 .untitled {
 	font-style:italic;
 }
+
 
 #map_caveat {
 	font-size:11px;
@@ -285,8 +287,9 @@ li code {
 	margin-bottom: 12px;
 }
 
-/* cribbed from the tablesorter examples */
 
+
+/* cribbed from the tablesorter examples */
 table.ds_table {
     font-family:arial;
     background-color: #eeeeee;
@@ -298,9 +301,23 @@ table.ds_table {
 
 table.ds_table thead tr th, table.ds_table tfoot tr th {
     background-color: #eeeeee;
-    border: 1px solid #eeeeee;
+    border: 2px solid #eeeeee;
     font-size: 8pt;
     padding: 8px;
+}
+
+table.ds_table thead tr th{
+	padding-right:18px;
+	cursor:pointer;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+table.ds_table thead tr th:hover{
+	color:#00ddee;
 }
 
 table.ds_table thead tr .header {
@@ -338,13 +355,40 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 }
 
 .dataTables_filter {
-    margin-bottom: 15px;
+    margin-bottom: 5px;
+	font-size:9;
+	font-weight:bold;
+	text-transform:uppercase;
+	color:#999;
+	text-align:right;
 }
+
+
+.dataTables_filter input{
+	padding: 2px;
+	border: solid 1px #E5E5E5;
+	outline: 0;
+	font: normal 13px/100% Verdana, Tahoma, sans-serif;
+	width: 200px;
+	/*background: #FFFFFF url('bg_form.png') left top repeat-x;*/
+	background: -webkit-gradient(linear, left top, left 25, from(#FFFFFF), color-stop(4%, #EEEEEE), to(#FFFFFF));
+	background: -moz-linear-gradient(top, #FFFFFF, #EEEEEE 1px, #FFFFFF 25px);
+	box-shadow: rgba(0,0,0, 0.1) 0px 0px 8px;
+	-moz-box-shadow: rgba(0,0,0, 0.1) 0px 0px 8px;
+	-webkit-box-shadow: rgba(0,0,0, 0.1) 0px 0px 8px;
+}
+
+.dataTables_filter input:hover, .dataTables_filter input:focus{
+	border-color: #C9C9C9;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 8px;
+}
+
 
 .dataTables_processing {
     font-style: italic;
     font-weight: 700;
     text-align: right;
+	display:none;
 }
 
 /* cribbed from the datatables examples */
@@ -358,7 +402,7 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 }
 
 .sorting {
-	// background: url('../images/sort_both.png') no-repeat center right;
+	 background: url('../images/sort_both.png') no-repeat center right;
 }
 
 .sorting_asc_disabled {
@@ -377,6 +421,7 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
     stroke: #99cc00;
     stroke-width: 3;	
     stroke-opacity: 1;
+	cursor:pointer;
 }
 
 .dot:hover {
@@ -385,8 +430,13 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
     stroke: #00112d;
     stroke-width: 5;
     stroke-opacity: 1;	
-    z-index: 400;
-	cursor:pointer;
+}
+.dotHover{
+	fill: #00ddee;
+    fill-opacity: .8;
+    stroke: #00112d;
+    stroke-width: 5;
+    stroke-opacity: 1;	
 }
 
 .dot_private {
@@ -463,9 +513,9 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 
 /*
 MAP TOOLTIP 
-from Portlan crime map guy 
+from Portland crime map guy 
 */
-#canvas{margin:0;padding:0;}
+
 
 div.maptip {
   background: rgba(20,20,20,0.5);
@@ -473,6 +523,7 @@ div.maptip {
   -moz-border-radius: 5px;
   border-radius: 5px;
   z-index: 99999;
+  margin-top: -30px;
 }
 
 div.maptip-cnt {
