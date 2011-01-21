@@ -9,6 +9,8 @@
 	loadpear("modestmaps/ModestMaps");
 	loadpear("fpdf");
 
+	loadlib("kmeans");
+
 	#################################################################
 
 	function pdf_export_dots(&$dots, &$more){
@@ -32,24 +34,73 @@
 		$pdf = new FPDF("P", "in", array($w, $h));
 		$pdf->setMargins($margin, $margin);
 
-		# First, add the map
-
-		$pdf->addPage();
-
-		list($map, $map_img) = _pdf_export_dots_map($dots, ($h * $dpi), ($h * $dpi));
-		$pdf->Image($map_img, 0, 0, 0, 0, 'PNG');
-
 		# The legend gets added below (once we've figured out what page
-		# each dot is on)
+		# each dot is on) but we'll just declare it here.
 
 		$legend = array();
 
+		$count_legend_items = floor($h / ($row_h * 1.4));
+		$count_clusters = ceil(count($dots) / $count_legend_items);
+
+		# Just turn clusters off for now... the map rendering time
+		# is still too long for multiple map images (20110120/straup)
+
+		$count_clusters = 1;
+
+		$clusters = array();
+
+		if ($count_clusters == 1){
+			$clusters = array($dots);
+		}
+
+		else {
+
+			$points = array();
+			$i = 0;
+
+			foreach ($dots as $dot){
+
+				$points[] = array(
+					'x' => (float)$dot['longitude'],
+					'y' => (float)$dot['latitude'],
+					'id' => $dot['id'],
+					'idx' => $i,
+				);
+
+				$i++;
+			}
+
+			$_clusters = kmeans_cluster($points, $count_clusters);
+
+			foreach ($_clusters as $_cluster){
+
+				$_dots = array();
+
+				foreach ($_cluster as $_pt){
+					$_dots[] = $dots[$pt['idx']];
+				}
+
+				$clusters[] = $_dots;
+			}
+		}
+
+		#
+		# First generate all the maps
+		#
+
+		$maps = array();
+
+		foreach ($clusters as $dots){
+
+			list($map, $map_img) = _pdf_export_dots_map($dots, ($h * $dpi), ($h * $dpi));
+			$maps[] = $map_img;
+		}
+
 		# Now figure out the what is the what of the dots
 
-		$header_buckets = array();
+		$columns = array();
 
 		$cols_per_page = floor(($w - ($margin * 2)) / $col_width);
-
 		$count_cols = count($more['columns']);
 
 		$pages_per_row = ceil($count_cols / $cols_per_page);
@@ -76,11 +127,11 @@
 
 			$b = floor($i / $cols_per_page);
 
-			if (! is_array($header_buckets[$b])){
-				$header_buckets[] = array();
+			if (! is_array($columns[$b])){
+				$columns[] = array();
 			}
 
-			$header_buckets[$b][] = $col_name;
+			$columns[$b][] = $col_name;
 
 			$str_width = ceil($pdf->GetStringWidth($more['columns'][$i]));
 
@@ -95,26 +146,26 @@
 		# make sure every page has an 'id' field
 		# (see above)
 
-		$count_buckets = count($header_buckets);
+		$count_columns = count($columns);
 
-		for ($i = 0; $i < $count_buckets; $i++){
+		for ($i = 0; $i < $count_columns; $i++){
 
-			$cols = $header_buckets[$i];
+			$cols = $columns[$i];
 
 			if (! in_array('id', $cols)){
 				array_unshift($cols, 'id');
-				$header_buckets[$i] = $cols;
+				$columns[$i] = $cols;
 			}
 
 			# move stuff around so that we keep the pages nice and tidy
 
-			if (count($header_buckets[$i]) > $cols_per_page){
+			if (count($columns[$i]) > $cols_per_page){
 
-				$to_keep = array_slice($header_buckets[$i], 0, $cols_per_page);
-				$extra = array_slice($header_buckets[$i], $cols_per_page);
+				$to_keep = array_slice($columns[$i], 0, $cols_per_page);
+				$extra = array_slice($columns[$i], $cols_per_page);
 
-				$header_buckets[$i] = $to_keep;
-				$header_buckets[$i + 1] = $extra;
+				$columns[$i] = $to_keep;
+				$columns[$i + 1] = $extra;
 			}
 		}
 
@@ -169,6 +220,10 @@
 				$y = $margin + $header_h;
 			}
 
+			$y += $row_height;
+
+			# set up information for legend
+
 			$legend[ $dot['id'] ] = array(
 				'page' => $page + 2,	# account for a zero-based list + 1 (the map page)
 				'id' => $dot['id'],
@@ -177,11 +232,11 @@
 				'ymd' => gmdate('Y-m-d', strtotime($dot['created'])),
 			);
 
-			$y += $row_height;
+			#
 
 			$j = 0;
 
-			foreach ($header_buckets as $cols){
+			foreach ($columns as $cols){
 
 				$_row = array();
 
@@ -211,9 +266,12 @@
 			$dot_idx++;
 		}
 
+		#
 		# ZOMG... finally publish the thing...
+		#
 
-		# Start with a legend
+		# First, display all the maps and corresponding
+		# legends
 
 		function sort_by_lat($a, $b){
 
@@ -224,32 +282,54 @@
 			return ($a['latitude'] > $b['latitude']) ? -1 : 1;
 		}
 
-		usort($legend, "sort_by_lat");
+		$count_clusters = count($clusters);
 
-		$pdf->SetFont('Helvetica', '', 10);
+		for ($i = 0; $i < $count_clusters; $i++){
 
-		$x = $h + $margin;
-		$y = $margin;
+			$dots = $clusters[$i];
+			$_legend = array();
 
-		foreach ($legend as $dot){
+			$j = 0;
 
-			$text = "{$dot['id']} / pg. {$dot['page']}";
+			foreach ($dots as $dot){
+				$_legend[$dot['id']] = $legend[$dot['id']];
+				$j ++;
 
-			$pdf->SetXY($x, $y);
-			$pdf->Cell(0, $row_h, $text);
+				if ($j >= $count_legend_items){
+					break;
+				}
+			}
 
-			$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
-			$pt = $map->locationPoint($loc);
+			usort($_legend, "sort_by_lat");
 
-			$x1 = $x - ($margin / 8);
-			$y1 = $y + ($row_h / 2);
+			$pdf->AddPage();
+			$pdf->Image($maps[$i], 0, 0, 0, 0, 'PNG');
 
-			$x2 = $pt->x / $dpi;
-			$y2 = $pt->y / $dpi;
+			$pdf->SetFont('Helvetica', '', 10);
 
-			$pdf->Line($x1, $y1, $x2, $y2);
+			$x = $h + $margin;
+			$y = $margin;
 
-			$y += $row_h * 1.1;
+			foreach ($_legend as $dot){
+
+				$text = "{$dot['id']} / pg. {$dot['page']}";
+
+				$pdf->SetXY($x, $y);
+				$pdf->Cell(0, $row_h, $text);
+
+				$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
+				$pt = $map->locationPoint($loc);
+
+				$x1 = $x - ($margin / 8);
+				$y1 = $y + ($row_h / 2);
+
+				$x2 = $pt->x / $dpi;
+				$y2 = $pt->y / $dpi;
+
+				$pdf->Line($x1, $y1, $x2, $y2);
+
+				$y += $row_h * 1.1;
+			}
 		}
 
 		# Now the rows (of dots)
@@ -340,7 +420,11 @@
 		# Go!
 
 		$pdf->Output();
-		unlink($map_img);
+
+		foreach ($maps as $map_img){
+			unlink($map_img);
+		}
+
 	}
 
 	#################################################################
