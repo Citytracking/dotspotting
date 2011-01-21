@@ -18,8 +18,8 @@
 
 		$maps = array();
 
-		$w = 1024;
-		$h = 768;
+		$w = 900;
+		$h = 720;
 
 		$ppt = new PHPPowerPoint();
 		$ppt->getProperties()->setTitle("FIX ME");
@@ -30,9 +30,9 @@
 
 		$ppt->removeSlideByIndex(0);
 
-		$dot_per_slide = 0;
+		$dot_per_slide = 1;
 
-		if (0){
+		if (! $dot_per_slide){
 
 			$map_img = _ppt_export_dots_map($dots, $w, $h);
 			$maps[] = $map_img;
@@ -45,7 +45,6 @@
 				$maps[] = $map_img;
 			}
 
-			$dot_per_slide = 1;
 		}
 
 		# now draw all the maps...
@@ -86,10 +85,11 @@
 		$writer = PHPPowerPoint_IOFactory::createWriter($ppt, 'PowerPoint2007');
 		$writer->save($tmp);
 
+		#
+
 		$fh = fopen($tmp, 'r');
 
 		fwrite($more['fh'], fread($fh, filesize($tmp)));
-
 		fclose($fh);
 
 		#
@@ -167,7 +167,7 @@
 
 	function _ppt_export_center_map(&$dot, $w, $h){
 
-		$dot_size = 20;
+		$dot_size = 25;
 
 		$template = $GLOBALS['cfg']['maptiles_template_url'];
 
@@ -180,13 +180,10 @@
 		$centroid = new MMaps_Location($dot['latitude'], $dot['longitude']);
 		$dims = new MMaps_Point($w, $h);
 
-		$map = MMaps_mapByCenterZoom($provider, $centroid, 30, $dims);
+		$map = MMaps_mapByCenterZoom($provider, $centroid, 17, $dims);
 		$im = $map->draw();
 
 		$points = array();
-
-		# $fill = imagecolorallocatealpha($im, 0, 17, 45, 96);
-		# $stroke = imagecolorallocate($im, 153, 204, 0);
 
 		$fill = imagecolorallocatealpha($im, 153, 204, 0, 96);
 		$stroke = imagecolorallocate($im, 0, 17, 45);
@@ -195,6 +192,8 @@
 		$pt = $map->locationPoint($loc);
 
 		imagefilledellipse($im, $pt->x, $pt->y, $dot_size, $dot_size, $fill);
+
+		imagefilledellipse($im, $pt->x, $pt->y, 2, 2, $stroke);
 
 		imagesetthickness($im, 3);
 		imagearc($im, $pt->x, $pt->y, $dot_size, $dot_size, 0, 359.9, $stroke);
