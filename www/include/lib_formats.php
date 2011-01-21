@@ -36,7 +36,7 @@
 			'application/gpx+xml' => 'gpx',
 			'application/x-javascript' => 'json',
 			'application/vnd.google-earth.kml+xml' => 'kml',
-			'application/vnd.ms-powerpoint' => 'ppt',
+			# 'application/vnd.ms-powerpoint' => 'ppt',
 			'application/rss+xml' => 'rss',
 			'application/vnd.ms-excel' => 'xls',
 		);
