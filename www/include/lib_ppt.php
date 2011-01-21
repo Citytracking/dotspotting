@@ -22,10 +22,15 @@
 		$h = 768;
 
 		$ppt = new PHPPowerPoint();
-		$ppt->getProperties()->setTitle("test");
+		$ppt->getProperties()->setTitle("FIX ME");
+		$ppt->getProperties()->setCreator("Dotspotting");
 
 		# set title here
 		# $slide = $ppt->getActiveSlide();
+
+		$ppt->removeSlideByIndex(0);
+
+		$dot_per_slide = 0;
 
 		if (0){
 
@@ -36,9 +41,11 @@
 		else {
 
 			foreach ($dots as $dot){
-				$map_img = _ppt_export_center_map($dot, $w, $h);
+				$map_img = _ppt_export_center_map($dot, $h, $h);
 				$maps[] = $map_img;
 			}
+
+			$dot_per_slide = 1;
 		}
 
 		# now draw all the maps...
@@ -55,6 +62,21 @@
 			$shape->setHeight($h);
 			$shape->setOffsetX(0);
 			$shape->setOffsetY(0);
+
+			if ($dot_per_slide){
+
+				$text = $slide->createRichTextShape();
+				$text->setHeight($h);
+				$text->setWidth($w - $h);
+				$text->setOffsetX($h);
+				$text->setOffsetY(0);
+
+				$align = $text->getAlignment();
+				$align->setHorizontal( PHPPowerPoint_Style_Alignment::HORIZONTAL_LEFT );
+
+				$body = $text->createTextRun('hello world foo bar');
+				$body->getFont()->setSize(18);
+			}
 		}
 
 		#
@@ -158,13 +180,16 @@
 		$centroid = new MMaps_Location($dot['latitude'], $dot['longitude']);
 		$dims = new MMaps_Point($w, $h);
 
-		$map = MMaps_mapByCenterZoom($provider, $centroid, 17, $dims);
+		$map = MMaps_mapByCenterZoom($provider, $centroid, 30, $dims);
 		$im = $map->draw();
 
 		$points = array();
 
-		$fill = imagecolorallocatealpha($im, 0, 17, 45, 96);
-		$stroke = imagecolorallocate($im, 153, 204, 0);
+		# $fill = imagecolorallocatealpha($im, 0, 17, 45, 96);
+		# $stroke = imagecolorallocate($im, 153, 204, 0);
+
+		$fill = imagecolorallocatealpha($im, 153, 204, 0, 96);
+		$stroke = imagecolorallocate($im, 0, 17, 45);
 
 		$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
 		$pt = $map->locationPoint($loc);
