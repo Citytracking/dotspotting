@@ -15,6 +15,23 @@ function dot_onclick(e){
 	*/
 }
 
+// helper function to highlight dot when user hovers over table row
+function dot_tr_hover(el,type){
+	var raw_dotid = (el.id).split("_");
+	var dotid = raw_dotid[raw_dotid.length-1];
+	if(type == "over"){
+		dot_onmouseover(dotid);
+	}else{
+		dot_onmouseout(dotid);
+		var tlen = _dotspotting.dots_list_mouseout_timers.length;
+
+		for (var i = 0; i < tlen; i++){
+			clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
+		}
+		dot_restore_tr();
+	}
+}
+
 // returns string used in tooltip header text
 function dot_tip_header(dotid){
 	

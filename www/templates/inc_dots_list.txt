@@ -36,7 +36,9 @@
 		{foreach from=$dots item=dot}
 		{assign var="perms" value=$dot.perms}
 		{assign var="geocoded_by" value=$dot.geocoded_by}
-			<tr class="dot dot_{$permissions_map.$perms|escape}" id="dotslist_dot_{$dot.id|escape}">
+		
+			{* remove dot class from tr, also not sure why dot_public is needed *}
+			<tr class="dot_{$permissions_map.$perms|escape}" id="dotslist_dot_{$dot.id|escape}">
 
 				<td class="dotslist_id" nowrap>
 					<strong><a href="{$dot|@urls_url_for_dot}" title="view dot #{$dot.id|escape} page">{$dot.id|escape}</a></strong>

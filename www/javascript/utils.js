@@ -62,7 +62,7 @@ function utils_tile_provider(){
     var rsp = {
 	'template' : template,
 	'hosts' : hosts,
-	'static' : static_tiles,
+	'static' : static_tiles
     };	
 
     return rsp;
@@ -76,7 +76,7 @@ function ensure_valid_url_template(t){
 	return null;
     }
 
-    if (! uri.path.match(/\/{Z}\/{X}\/{Y}\.(?:jpg|png)$/)){
+    if (! uri.path.match(/\/{Z}\/{X}\/{Y}\.(?:jpg|png)$/) ){
 	return null;
     }
 
@@ -181,7 +181,8 @@ function utils_polymaps_assign_dot_properties(e){
 			if (props && props.id){
 
 		    		el.setAttribute('id', 'dot_' + props.id);
-
+					utils_svg_title(el,props.id);
+					
 				if (props.is_interactive){
 		    			var enc_id = encodeURIComponent(props.id);
 
@@ -225,6 +226,7 @@ function utils_polymaps_assign_sheet_properties (e){
 
 			var el = to_process[k][0];
 			var props = to_process[k][1];
+			
 
 			el.setAttribute('class', 'sheet');
 
@@ -236,10 +238,17 @@ function utils_polymaps_assign_sheet_properties (e){
 				el.setAttribute('onmouseover', 'sheet_onmouseover(' + enc_id + ');return false');
 				el.setAttribute('onmouseout', 'sheet_onmouseout(' + enc_id + ');return false');
 				el.setAttribute('onclick', 'sheet_onclick(' + enc_id + ');return false');
+				utils_svg_title(el,props.label);
 			}
 
 		}
 	}
+}
+
+// add title to svg elements (dots, sheets)
+function utils_svg_title(el,title){
+	el.setAttribute('title', title);
+	el.appendChild( document.createElementNS(org.polymaps.svg.ns, "title") ).appendChild(document.createTextNode(title));
 }
 
 function utils_modestmap(map_id, more){

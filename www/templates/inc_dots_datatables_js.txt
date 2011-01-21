@@ -39,30 +39,43 @@
 {/literal}
 
 {if $is_sheet}
-{literal}
-$(document).ready(function(){ 
+	{literal}
+	$(document).ready(function(){ 
 
-     $('#user_dots').dataTable({
-	"bPaginate": false,
-	"bFilter": true,
-	"bInfo" : false,
-	"bProcessing": true,
-     }).fnSetFilteringHooks();
+	     $('#user_dots').dataTable({
+		"bPaginate": false,
+		"bFilter": true,
+		"bInfo" : false,
+		"bProcessing": true,
+	     }).fnSetFilteringHooks();
 
-});
-{/literal}
+		// add hover event to table rows, that will highlight dot
+		$('#user_dots').find('tr').hover(
+		    function()
+		    {
+		        dot_tr_hover(this,"over");
+		    },
+		    function()
+		    {
+		        dot_tr_hover(this,"off");
+			}
+		);
+	
+	});
+		
+	{/literal}
 {else}
-{literal}
-$(document).ready(function(){ 
+	{literal}
+	$(document).ready(function(){ 
 
-     $('#user_dots').dataTable({
-	"bPaginate": false,
-	"bFilter": false,	// figure out how best to enable this
-	"bSort": false,
-	"bInfo" : false,
-	"bProcessing": true,
-     });
-});
-{/literal}
+	     $('#user_dots').dataTable({
+		"bPaginate": false,
+		"bFilter": false,	// figure out how best to enable this
+		"bSort": false,
+		"bInfo" : false,
+		"bProcessing": true,
+	     });
+	});
+	{/literal}
 {/if}
 </script>
