@@ -49,7 +49,11 @@
 
 		# now draw all the maps...
 
-		foreach ($maps as $map_img){
+		$count_maps = count($maps);
+
+		for ($i = 0; $i < $count_maps; $i++){
+
+			$map = $maps[$i];
 
 			$slide = $ppt->createSlide();
 
@@ -64,17 +68,37 @@
 
 			if ($dot_per_slide){
 
+				$dot = $dots[$i];
+
 				$text = $slide->createRichTextShape();
 				$text->setHeight($h);
 				$text->setWidth($w - $h);
-				$text->setOffsetX($h);
-				$text->setOffsetY(0);
+				$text->setOffsetX($h + 20);
+				$text->setOffsetY(0 + 20);
 
 				$align = $text->getAlignment();
 				$align->setHorizontal( PHPPowerPoint_Style_Alignment::HORIZONTAL_LEFT );
 
-				$body = $text->createTextRun('hello world foo bar');
-				$body->getFont()->setSize(18);
+				$_dot = dots_get_dot($dot['id']);
+
+				$cols = array_merge($_dot['index_on'], array(
+					'latitude',
+					'longitude',
+					'created',
+					'id',
+				));
+
+				foreach ($cols as $col){
+
+					$body = $text->createTextRun("{$col}\n");
+					# $body->setFont();
+					$body->getFont()->setSize(18);
+					$body->getFont()->setBold(true);
+
+					$body = $text->createTextRun("{$dot[$col]}\n\n");
+					$body->getFont()->setSize(14);
+					$body->getFont()->setBold(false);
+				}
 			}
 		}
 
