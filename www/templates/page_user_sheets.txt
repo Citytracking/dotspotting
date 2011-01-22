@@ -5,10 +5,23 @@
 <p class="success">Your sheet has been deleted.</p>
 {/if}
 
+{$owner.counts.count_sheets|escape}
+
+
 {if $is_own}
-<h2><a href="{$owner|@urls_url_for_user}">Your</a> sheets (of <a href="{$owner|@urls_dots_for_user}">dots</a>)</h2>
+
+{* 
+	<h2><a href="{$owner|@urls_url_for_user}">Your</a> sheets (of <a href="{$owner|@urls_dots_for_user}">dots</a>)</h2> 
+*}
+
+<h2><a href="{$owner|@urls_url_for_user}">Your</a>{if $sheets|@count > 1} {$sheets|@count} sheets{else}sheet{/if}</h2>
 {else}
-<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> sheets (of <a href="{$owner|@urls_dots_for_user}">dots</a>)</h2>
+
+{* 
+	<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> sheets (of <a href="{$owner|@urls_dots_for_user}">dots</a>)</h2> 
+*}
+
+<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> {if $sheets|@count > 1}{$sheets|@count} sheets{else} 1 sheet{/if}</h2>
 {/if}
 
 {if $sheets|@count == 0}

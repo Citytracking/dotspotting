@@ -15,6 +15,7 @@ function dot_onclick(e){
 	*/
 }
 
+
 // helper function to highlight dot when user hovers over table row
 function dot_tr_hover(el,type){
 	var raw_dotid = (el.id).split("_");
@@ -31,6 +32,7 @@ function dot_tr_hover(el,type){
 		dot_restore_tr();
 	}
 }
+
 
 // returns string used in tooltip header text
 function dot_tip_header(dotid){

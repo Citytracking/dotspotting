@@ -55,9 +55,9 @@
 			{if !$sheet}
 				<td class="dotslist_label" nowrap>
 			{if $sheet}
-					<a href="{$sheet|@urls_url_for_sheet}">{if $sheet.label}{$sheet.label|truncate:20:"..."|escape}{else}<span style="font-style:italic;">untitled</span>{/if}</a>
+					<a href="{$sheet|@urls_url_for_sheet}" title="view '{if $sheet.label}{$sheet.label|truncate:20:"..."|escape}{else}untitled{/if}' sheet page">{if $sheet.label}{$sheet.label|truncate:20:"..."|escape}{else}<span style="font-style:italic;">untitled</span>{/if}</a>
 			{else}
-					<a href="{$dot.sheet|@urls_url_for_sheet}">{if $dot.sheet.label}{$dot.sheet.label|truncate:20:"..."|escape}{else}<span class="untitled">untitled</span>{/if}</a>
+					<a href="{$dot.sheet|@urls_url_for_sheet}" title="view '{if $dot.sheet.label}{$dot.sheet.label|truncate:20:"..."|escape}{else}untitled{/if}' sheet page">{if $dot.sheet.label}{$dot.sheet.label|truncate:20:"..."|escape}{else}<span class="untitled">untitled</span>{/if}</a>
 			{/if}
 				</td>
 			{/if}

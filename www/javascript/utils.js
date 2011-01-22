@@ -208,7 +208,7 @@ function utils_polymaps_assign_sheet_properties (e){
 	if (! count){
 		return;
 	}
-
+	
 	for (var i=0; i < count; i++){
 
 		var f = e.features[i];
@@ -217,7 +217,7 @@ function utils_polymaps_assign_sheet_properties (e){
 		var to_process = new Array(
 			[ f.element, data.properties ]
 		);
-
+	
 		// Okay! Go!!
 
 		var count_process = to_process.length;
@@ -226,6 +226,10 @@ function utils_polymaps_assign_sheet_properties (e){
 
 			var el = to_process[k][0];
 			var props = to_process[k][1];
+			
+			/* Move dot to bottom of group */
+			
+			el.parentNode.appendChild(el);
 			
 
 			el.setAttribute('class', 'sheet');
