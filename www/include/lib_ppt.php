@@ -4,9 +4,6 @@
 	# $Id$
 	#
 
-	# THIS IS SO NOT DONE YET.
-	# (20110119/straup)
-
 	loadpear("modestmaps/ModestMaps");
 
 	loadpear("PHPPowerPoint");
@@ -22,7 +19,7 @@
 		$h = 720;
 
 		$ppt = new PHPPowerPoint();
-		$ppt->getProperties()->setTitle("FIX ME");
+		$ppt->getProperties()->setTitle($more['title']);
 		$ppt->getProperties()->setCreator("Dotspotting");
 
 		# set title here
@@ -54,15 +51,16 @@
 		for ($i = 0; $i < $count_maps; $i++){
 
 			$map = $maps[$i];
-
 			$slide = $ppt->createSlide();
 
 			$shape = $slide->createDrawingShape();
 			$shape->setName('map');
 			$shape->setDescription('');
-			$shape->setPath($map_img);
+			$shape->setPath($map);
+
 			$shape->setWidth($w);
 			$shape->setHeight($h);
+
 			$shape->setOffsetX(0);
 			$shape->setOffsetY(0);
 
@@ -90,10 +88,15 @@
 
 				foreach ($cols as $col){
 
-					$body = $text->createTextRun("{$col}\n");
-					# $body->setFont();
+					$value = trim($dot[$col]);
+
+					if (! $value){
+						continue;
+					}
+
+					$body = $text->createTextRun("{$col}:\n");
 					$body->getFont()->setSize(18);
-					$body->getFont()->setBold(true);
+					$body->getFont()->setBold(false);	# default bold font is not what do say "pretty"
 
 					$body = $text->createTextRun("{$dot[$col]}\n\n");
 					$body->getFont()->setSize(14);
