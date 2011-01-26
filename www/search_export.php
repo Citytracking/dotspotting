@@ -42,15 +42,39 @@
 
 	#
 
-	$more = array(
-		'page' => $page
-	);
+	$dots = array();
 
-	$rsp = search_dots($_GET, $GLOBALS['cfg']['user']['id'], $more);
+	if ($ids = get_str('ids')){
 
-	if ((! $rsp['ok']) || (! count($rsp['dots']))){
-		$GLOBALS['smarty']->display('page_search_noresults.txt');
-		exit();
+		foreach (explode(",", $ids) as $id){
+
+			$dot = dots_get_dot($id);
+
+			if (! $dot['id']){
+				continue;
+			}
+
+			if (! dots_can_view_dot($dot, $GLOBALS['cfg']['user']['id'])){
+				continue;
+			}
+
+			$dots[] = $dot;
+		}
+	}
+
+	else {
+
+		$more = array(
+			'page' => $page
+		);
+
+		$rsp = search_dots($_GET, $GLOBALS['cfg']['user']['id'], $more);
+
+		if (! $rsp['ok']){
+			exit();
+		}
+
+		$dots = $rsp['dots'];
 	}
 
 	#
@@ -72,7 +96,7 @@
 		header("Content-Disposition: attachment; filename=\"{$filename}\"");
 	}
 
-	export_dots($rsp['dots'], $format);
+	export_dots($dots, $format);
 	exit();
 
 ?>
