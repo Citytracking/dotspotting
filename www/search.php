@@ -23,20 +23,18 @@
 
 	if (count($_GET)){
 
-		$do_export = 0;
+		# are we trying to export?
 
-		if (($GLOBALS['cfg']['enable_feature_search_export']) && (get_str('export'))){
+		if (($display == 'dots') && (isset($_GET['export']))){
 
-			$format = get_str('format');
+			$query_args = http_build_query($_GET);
+			$redir = $GLOBALS['cfg']['abs_root_url'] . 'search/export/?' . $query_args;
 
-			if (! $format){
-				$format = 'csv';
-			}
-
-			$map = formats_valid_export_map('key by extension');
-
-			$do_export = (isset($map[$format])) ? 1 : 0;
+			header('location: ' . $redir);
+			exit;
 		}
+
+		# carry on
 
 		$page = get_str('page');
 		$GLOBALS['smarty']->assign('page', $page);
@@ -77,37 +75,30 @@
 		}
 
 		#
-		# Export this search? (Only dots for now...)
-		#
-
-		if (($do_export) && ($display == 'dots')){
-
-			$mimetype = $map[$format];
-
-			$filename = "dotspotting-search.{$format}";
-
-			if (preg_match("/^image/", $mimetype)){
-				header("Content-Type: " . htmlspecialchars($mimetype));
-			}
-
-			else if (get_str('inline')){
-				# pass
-			}
-
-			else {
-				header("Content-Type: " . htmlspecialchars($mimetype));
-				header("Content-Disposition: attachment; filename=\"{$filename}\"");
-			}
-
-			export_dots($rsp['dots'], $format);
-			exit();
-		}
-
-		#
 		# Display inline
 		#
 
 		$page_as_queryarg = 0;
+
+		#
+
+		$args = $_GET;
+
+		$to_remove = array(
+			'format',
+		);
+
+		foreach ($to_remove as $k){
+
+			if (isset($args[$k])){
+				unset($args[$k]);
+			}
+		}
+
+		$query_args = http_build_query($args);
+		$GLOBALS['smarty']->assign_by_ref("enc_query_args", $query_args);
+
+		#
 
 		if (($args['nearby']) && ($args['gh'])){
 			$enc_gh = urlencode($args['gh']);
@@ -116,12 +107,12 @@
 
 		else {
 			unset($_GET['page']);
-			$pagination_url = "{$GLOBALS['cfg']['abs_root_url']}search/?" . http_build_query($_GET);
+			$pagination_url = "{$GLOBALS['cfg']['abs_root_url']}search/?" . $query_args;
 			$page_as_queryarg = 1;
 
 			if ($_GET['u']){
 				unset($_GET['u']);
-				$smarty->assign("query_all_url", "{$GLOBALS['cfg']['abs_root_url']}search/?" . http_build_query($_GET));
+				$smarty->assign("query_all_url", "{$GLOBALS['cfg']['abs_root_url']}search/?" . $query_args);
 			}
 		}
 
