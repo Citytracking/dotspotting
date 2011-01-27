@@ -83,12 +83,12 @@
 
 	$filename = "dotspotting-search.{$format}";
 
-	if (preg_match("/^image/", $mimetype)){
-		header("Content-Type: " . htmlspecialchars($mimetype));
+	if (get_str('inline')){
+		# pass
 	}
 
-	else if (get_str('inline')){
-		# pass
+	else if (preg_match("/^image/", $mimetype)){
+		header("Content-Type: " . htmlspecialchars($mimetype));
 	}
 
 	else {
