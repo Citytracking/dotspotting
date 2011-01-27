@@ -425,12 +425,14 @@
 
 		# Go!
 
-		$pdf->Output();
+		$pdf->Close();
+		$pdf->Output($more['path'], 'F');
 
 		foreach ($maps as $map_img){
 			unlink($map_img);
 		}
 
+		return $more['path'];
 	}
 
 	#################################################################

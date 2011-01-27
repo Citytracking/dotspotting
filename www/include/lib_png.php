@@ -10,15 +10,17 @@
 
 	function png_export_dots(&$dots, &$more){
 
-		$more = array(
+		$map_more = array(
 			'width' => 1024, 
 			'height' => 768,
 		);
 
-		list($map, $img) = maps_image_for_dots($dots, $more);
+		list($map, $img) = maps_image_for_dots($dots, $map_more);
 
-		imagepng($img);
+		imagepng($img, $more['path']);
 		imagedestroy($img);
+
+		return $more['path'];
 	}
 
 	#################################################################

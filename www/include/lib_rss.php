@@ -231,7 +231,8 @@
 			$channel->appendChild($item);
 		}
 
-		fwrite($more['fh'], $doc->saveXML($rss));
+		$doc->save($more['path']);
+		return $more['path'];
 	}
 
 	#################################################################

@@ -115,15 +115,18 @@
 
 	#################################################################
 
-	function csv_export_dots(&$rows, &$more){
+	function csv_export_dots(&$rows, $more=array()){
 
-		$fh = $more['fh'];
+		$fh = fopen($more['path'], 'w');
 
 		fputcsv($fh, $more['columns']);
 
 		foreach ($rows as $row){
 			fputcsv($fh, array_values($row));
 		}
+
+		fclose($fh);
+		return $more['path'];
 	}
 
 	#################################################################

@@ -340,7 +340,8 @@
 			$document->appendChild($placemark);
 		}
 
-		fwrite($more['fh'], $doc->saveXML($kml));
+		$doc->save($more['path']);
+		return $more['path'];
 	}
 
 	#################################################################

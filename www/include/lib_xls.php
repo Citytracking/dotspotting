@@ -100,9 +100,9 @@
 
 	#################################################################
 
-	function xls_export_dots(&$rows, $fh){
+	function xls_export_dots(&$rows, $more){
 
-		$xls = new Spreadsheet_Excel_Writer();
+		$xls = new Spreadsheet_Excel_Writer($more['path']);
 		$sheet = $xls->addWorksheet();
 
 		$col_names = array_keys($rows[0]);
@@ -127,6 +127,8 @@
 		}
 
 		$xls->close();
+
+		return $more['path'];
 	}
 
 	#################################################################

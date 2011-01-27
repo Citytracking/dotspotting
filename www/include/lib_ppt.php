@@ -126,25 +126,14 @@
 
 		#
 
-		$tmp = tempnam(sys_get_temp_dir(), "ppt") . ".ppt";
-
 		$writer = PHPPowerPoint_IOFactory::createWriter($ppt, 'PowerPoint2007');
-		$writer->save($tmp);
-
-		#
-
-		$fh = fopen($tmp, 'r');
-
-		fwrite($more['fh'], fread($fh, filesize($tmp)));
-		fclose($fh);
-
-		#
-
-		unlink($tmp);
+		$writer->save($more['path']);
 
 		foreach ($maps as $path){
 			unlink($path);
 		}
+
+		return $more['path'];
 	}
 
 	#################################################################

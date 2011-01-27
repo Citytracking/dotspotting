@@ -31,12 +31,18 @@
 
 	#################################################################
 
-	# It is assumed that you've validated $format by now
+	# This generates a file of type $format for $rows. Also, it is
+	# assumed that you've validated $format by the time you get here.
 
 	function export_dots(&$rows, $format, $more=array()){
 
-		if (! isset($more['fh'])){
-			$more['fh'] = fopen("php://output", 'w');
+		# TO DO: figure out how caching should work
+		# here (20110127/straup)
+
+		if (! isset($more['path'])){
+
+			$tmp = tempnam(sys_get_temp_dir(), "export-{$format}") . ".{$format}";
+			$more['path'] = $tmp;
 		}
 
 		# Are you ready? This gets hairy very fast because we
@@ -204,9 +210,61 @@
 		$more['columns'] = $cols;
 
 		loadlib($format);
-		call_user_func_array("{$format}_export_dots", array(&$rows, &$more));
+		$exported_file = call_user_func_array("{$format}_export_dots", array(&$rows, &$more));
+
+		return $exported_file;
 	}
 
 	#################################################################
 
+	function export_send_file($path, $more=array()){
+
+		$defaults = array(
+			'unlink_file' => 1,
+			'x-headers' => array(),
+		);
+
+		$more = array_merge($defaults, $more);
+
+		# basic headers
+
+		if (preg_match("/^image/", $more['mimetype'])){
+			header("Content-Type: " . htmlspecialchars($more['mimetype']));
+		}
+
+		else if (! $more['inline']){
+			header("Content-Type: " . htmlspecialchars($more['mimetype']));
+			header("Content-Disposition: attachment; filename=\"{$more['filename']}\"");
+		}
+
+		else { }
+
+  		$fsize = filesize($path);
+		header("Content-Length: {$fsize}");
+
+		# x headers
+
+		foreach ($more['x-headers'] as $k => $v){
+
+			$header = htmlspecialchars("X-Dotspotting-{$k}");
+			$value = htmlspecialchars($v);
+
+			header("{$header}: {$value}");
+		}
+
+		# go!
+
+		$fh = fopen($path, 'r');
+
+		echo fread($fh, $fsize);
+		fclose($fh);
+
+		# clean up ?
+
+		if ($more['unlink_file']){
+			unlink($path);
+		}
+	}
+
+	#################################################################
 ?>

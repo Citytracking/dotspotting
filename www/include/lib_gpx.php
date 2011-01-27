@@ -195,7 +195,8 @@
 			$trkseg->appendChild($trkpt);
 		}
 
-		fwrite($more['fh'], $doc->saveXML($gpx));
+		$doc->save($more['path']);
+		return $more['path'];
 	}
 
 	#################################################################

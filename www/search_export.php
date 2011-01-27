@@ -75,30 +75,25 @@
 
 	#
 
-	$mimetype = $map[$format];
-
-	$filename = "dotspotting-search.{$format}";
-
-	if (get_str('inline')){
-		# pass
-	}
-
-	else if (preg_match("/^image/", $mimetype)){
-		header("Content-Type: " . htmlspecialchars($mimetype));
-	}
-
-	else {
-		header("Content-Type: " . htmlspecialchars($mimetype));
-		header("Content-Disposition: attachment; filename=\"{$filename}\"");
-	}
-
-	#
-
 	$more = array(
 		'viewer_id' => $GLOBALS['cfg']['user']['id'],
 	);
 
-	export_dots($dots, $format, $more);
-	exit();
+	$export = export_dots($dots, $format, $more);
 
+	if (! $export){
+		error_500();
+	}
+
+	# go!
+
+	$more = array(
+		'path' => $export,
+		'mimetype' => $map[$format],
+		'filename' => "dotspotting-search.{$format}",
+		'inline' => get_str('inline'),
+	);
+
+	export_send_file($export, $more);
+	exit();
 ?>
