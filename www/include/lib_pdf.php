@@ -91,7 +91,7 @@
 		$maps = array();
 
 		$img_more = array(
-			'width' => ($w * $dpi),
+			'width' => ($h * $dpi),
 			'height' => ($h * $dpi),
 			'dot_size' => 15,
 		);
