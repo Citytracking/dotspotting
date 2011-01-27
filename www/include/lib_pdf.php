@@ -98,14 +98,8 @@
 
 		foreach ($clusters as $dots){
 
-			list($map, $map_img) = maps_image_for_dots($dots, $img_more);
-
-			$tmp = tempnam(sys_get_temp_dir(), "pdf") . ".png";
-
-			imagepng($map_img, $tmp);
-			imagedestroy($map_img);
-
-			$maps[] = $tmp;
+			list($map, $gd_img) = maps_image_for_dots($dots, $img_more);
+			$maps[] = maps_gd_to_png($gd_img);
 		}
 
 		# Now figure out the what is the what of the dots

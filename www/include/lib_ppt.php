@@ -39,7 +39,7 @@
 
 		if ((! $dot_per_slide) || (count($dots) == 0)){
 
-			$maps[] = _ppt_map_for_dots($dots, $img_more);
+			$maps[] = maps_png_for_dots($dots, $img_more);
 		}
 
 		else {
@@ -50,7 +50,7 @@
 			foreach ($dots as $dot){
 
 				$_dots = array($dot);
- 				$maps[] = _ppt_map_for_dots($_dots, $img_more);
+ 				$maps[] = maps_png_for_dots($_dots, $img_more);
 			}
 
 		}
@@ -145,20 +145,6 @@
 		foreach ($maps as $path){
 			unlink($path);
 		}
-	}
-
-	#################################################################
-
-	function _ppt_map_for_dots(&$dots, $more){
-
-		list ($map, $map_img) = maps_image_for_dots($dots, $more);
-
-		$tmp = tempnam(sys_get_temp_dir(), "pdf") . ".png";
-
-		imagepng($map_img, $tmp);
-		imagedestroy($map_img);
-
-		return $tmp;
 	}
 
 	#################################################################

@@ -623,15 +623,18 @@
 
 			$sql = "SELECT * FROM Dots WHERE id='{$enc_id}'";
 
-			if ($viewer_id !== $user['id']){
-				$sql = _dots_where_public_sql($sql);
-			}
-
 			$rsp = db_fetch_users($user['cluster_id'], $sql);
 			$dot = db_single($rsp);
 
 			if ($rsp['ok']){
-				cache_set($cache_set, $dot, 'cache locally');
+				cache_set($cache_key, $dot, 'cache locally');
+			}
+		}
+
+		if (($dot) && (($viewer_id !== $user['id']))){
+
+			if (! dots_can_view_dot($dot, $viewer_id)){
+				$dot = null;
 			}
 		}
 

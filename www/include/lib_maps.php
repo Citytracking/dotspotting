@@ -8,6 +8,17 @@
 
 	#################################################################
 
+	function maps_png_for_dots(&$dots, $more=array()){
+
+		list ($map, $gd_img) = maps_image_for_dots($dots, $more);
+
+		return maps_gd_to_png($gd_img);
+	}
+
+	#################################################################
+
+	# this returns a gd image handle for a bunch of dots
+
 	function maps_image_for_dots(&$dots, $more=array()){
 
 		$defaults = array(
@@ -124,4 +135,15 @@
 
 	#################################################################
 
+	function maps_gd_to_png($gd){
+
+		$tmp = tempnam(sys_get_temp_dir(), "pdf") . ".png";
+
+		imagepng($gd, $tmp);
+		imagedestroy($gd);
+
+		return $tmp;
+	}
+
+	#################################################################
 ?>

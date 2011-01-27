@@ -48,13 +48,9 @@
 
 		foreach (explode(",", $ids) as $id){
 
-			$dot = dots_get_dot($id);
+			$dot = dots_get_dot($id, $GLOBALS['cfg']['user']['id']);
 
 			if (! $dot['id']){
-				continue;
-			}
-
-			if (! dots_can_view_dot($dot, $GLOBALS['cfg']['user']['id'])){
 				continue;
 			}
 
