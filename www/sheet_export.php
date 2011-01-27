@@ -93,6 +93,10 @@
 	# (20101028/straup)
 	#
 
-	export_dots($sheet['dots'], $format);
+	$more = array(
+		'viewer_id' => $GLOBALS['cfg']['user']['id'],
+	);
+
+	export_dots($sheet['dots'], $format, $more);
 	exit();
 ?>

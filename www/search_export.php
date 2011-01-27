@@ -96,7 +96,13 @@
 		header("Content-Disposition: attachment; filename=\"{$filename}\"");
 	}
 
-	export_dots($dots, $format);
+	#
+
+	$more = array(
+		'viewer_id' => $GLOBALS['cfg']['user']['id'],
+	);
+
+	export_dots($dots, $format, $more);
 	exit();
 
 ?>

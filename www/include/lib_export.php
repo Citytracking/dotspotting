@@ -33,10 +33,10 @@
 
 	# It is assumed that you've validated $format by now
 
-	function export_dots(&$rows, $format, $fh=null){
+	function export_dots(&$rows, $format, $more=array()){
 
-		if (! $fh){		 
-			$fh = fopen("php://output", 'w');
+		if (! isset($more['fh'])){
+			$more['fh'] = fopen("php://output", 'w');
 		}
 
 		# Are you ready? This gets hairy very fast because we
@@ -201,10 +201,7 @@
 
 		# carry on
 
-		$more = array(
-			'columns' => $cols,
-			'fh' => $fh,
-		);
+		$more['columns'] = $cols;
 
 		loadlib($format);
 		call_user_func_array("{$format}_export_dots", array(&$rows, &$more));
