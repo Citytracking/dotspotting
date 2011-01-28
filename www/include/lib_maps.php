@@ -105,7 +105,14 @@
 
 			$dims = new MMaps_Point($more['width'], $more['height']);
 
-			$map = MMaps_mapByExtent($provider, $sw, $ne, $dims);
+			if (($swlat == $nelat) && ($swlon == $nelon)){
+				$map = MMaps_mapByCenterZoom($provider, $sw, 17, $dims);
+			}
+
+			else {
+				$map = MMaps_mapByExtent($provider, $sw, $ne, $dims);
+			}
+
 			$img = $map->draw();
 		}
 
