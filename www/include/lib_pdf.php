@@ -360,7 +360,7 @@
 
 				$max_width = $col_width - ($x_offset * 3);
 
-				$bg = ($z % 2) ? 255 : 205;
+				$bg = ($z % 2) ? 255 : 235;
 				$z ++;
 
 				foreach ($data['row'] as $value){
