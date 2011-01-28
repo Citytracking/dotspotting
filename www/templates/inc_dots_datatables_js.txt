@@ -3,7 +3,7 @@
     $.fn.dataTableExt.oApi.fnSetFilteringHooks = function (oSettings){
 
 	var _that = this;
-	
+
 	this.each( function (i){
 		$.fn.dataTableExt.iApiIndex = i;
 
@@ -17,6 +17,13 @@
 			var $$this = $this;
 
 			_dotspotting.datatables_query = anControl.val();
+
+			var parts = location.href.split('#');
+			location.href = parts[0] + '#' + anControl.val();
+
+			var pm = document.getElementById('permalink');
+			pm.innerHTML = location.href;
+			pm.setAttribute('href', location.href);
 
 			if (sPreviousSearch === null || sPreviousSearch != anControl.val()) {
 				window.clearTimeout(oTimerId);
@@ -44,12 +51,24 @@
 {literal}
 $(document).ready(function(){ 
 
-     $('#user_dots').dataTable({
+     var dt = $('#user_dots').dataTable({
 	"bPaginate": false,
 	"bFilter": true,
 	"bInfo" : false,
 	"bProcessing": true,
-     }).fnSetFilteringHooks();
+     });
+
+     dt.fnSetFilteringHooks();
+
+     var parts = location.href.split('#');
+
+     if (parts.length == 2){
+	   dt.fnFilter(parts[1]);
+
+	   var pm = document.getElementById('permalink');
+	   pm.innerHTML = location.href;
+	   pm.setAttribute('href', location.href);
+     }
 
 });
 {/literal}

@@ -57,6 +57,11 @@ Sheet ID #{$sheet.id|escape}
 		<th>Bounding Box</th>
 		<td>{$sheet.extent.swlat|escape} {$sheet.extent.swlon|escape} {$sheet.extent.nelat|escape} {$sheet.extent.nelon|escape}</td>
 	</tr>
+	<tr>
+		<th>Permalink</th>
+		<td><a href="{$sheet|@urls_url_for_sheet}" id="permalink">{$sheet|@urls_url_for_sheet}</a></td>
+	</tr>
+
 </table>
 
 {include file="inc_dots_list.txt" dots=$sheet.dots is_sheet=1}
