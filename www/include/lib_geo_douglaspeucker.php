@@ -1,22 +1,29 @@
 <?php
 
-	function geo_douglaspeucker_simplify(&$latlons, $tolerance=0.0001){
+	function geo_douglaspeucker_simplify(&$data, $tolerance=0.0001){
 
 		$geopoints = array();
 		$simplified = array();
 
-		foreach ($latlons as $pair){
-			$geopoints[] = new GeoPoint($pair[0], $pair[1]);
+		foreach ($data as $dot){
+
+			$geopoints[] = new GeoPoint($dot['latitude'], $dot['longitude'], $dot);
 		}
 
 		$reducer = new PolylineReducer($geopoints);
 
-		foreach ($reducer->SimplerLine($tolerance) as $gp){
-			$simplified[] = array($gp->latitude, $gp->longitude);
+		foreach ($reducer->SimplerLine($tolerance) as $dot){
+			$simplified[] = $dot;
 		}
 
 		return $simplified;
 	}
+
+	# Note the way we're passing 'extra' around between GeoPoint and Vector
+	# objects. We're doing it this way, now, because it works. Something like
+	# this is necessary to preserve non lat/lon attributes (in KML or GPX
+	# files for example) but there may be a better way to do it.
+	# (20110128/straup)
 
 /*========================================================
 /* Implementation of Douglas-Peuker in PHP.
@@ -37,11 +44,13 @@
 class GeoPoint {
     public $latitude;
     public $longitude;
-
-    public function __construct($lat,$lng)
+    public $extra;
+	
+    public function __construct($lat, $lng, $extra)
     {
         $this->latitude = (float)$lat;
         $this->longitude = (float)$lng;
+	$this->extra = $extra;
     }
 }
 
@@ -55,7 +64,7 @@ class PolylineReducer
     {
         foreach ($geopoints_array as $point)
         {
-            $this->original_points[] = new Vector($point->latitude,$point->longitude);
+            $this->original_points[] = new Vector($point->latitude,$point->longitude, $point->extra);
         }
         /*----- Include first and last points -----*/
         $this->original_points[0]->include = true;
@@ -78,7 +87,7 @@ class PolylineReducer
         {
             if ($point->include)
             {
-                $out[] = new GeoPoint($point->x,$point->y);
+                $out[] = new GeoPoint($point->x,$point->y, $point->extra);
             }
         }
         return $out;
@@ -132,12 +141,14 @@ class Vector
 {
     public $x;
     public $y;
+    public $extra;	
     public $include;
 
-    public function __construct($x,$y)
+    public function __construct($x, $y, $extra)
     {
         $this->x = $x;
         $this->y = $y;
+        $this->extra = $extra;
     }
 
     public function DotProduct(Vector $v)
@@ -154,7 +165,7 @@ class Vector
     public function UnitVector()
     {
         if ($this->Magnitude()==0) return new Vector(0,0);
-        return new Vector($this->x/$this->Magnitude(),$this->y/$this->Magnitude());
+        return new Vector($this->x/$this->Magnitude(),$this->y/$this->Magnitude(), null);
     }
 }
 
@@ -178,8 +189,9 @@ class Line
     
     public function DistanceToPointSquared(Vector $point)
     {
-        $v = new Vector($point->x - $this->p1->x, $point->y - $this->p1->y);
-        $l = new Vector($this->p2->x - $this->p1->x, $this->p2->y - $this->p1->y);
+
+        $v = new Vector($point->x - $this->p1->x, $point->y - $this->p1->y, null);
+        $l = new Vector($this->p2->x - $this->p1->x, $this->p2->y - $this->p1->y, null);
         $dot = $v->DotProduct($l->UnitVector());
         if ($dot<=0) // Point nearest P1
         {

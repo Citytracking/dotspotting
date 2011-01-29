@@ -149,29 +149,17 @@
 
 				$simplify = ($GLOBALS['cfg']['import_do_simplification']['kml']) ? 1 : 0;
 
-				if ($simplify){
-					$coords = _kml_simplify($coords);
-				}
+				#
 
 				foreach ($coords as $coord){
 
 					$record ++;
 
-					if (($more['max_records']) && ($record > $more['max_records'])){
+					if (($more['max_records']) && ($record > $more['max_records']) && (! $simplify)){
 						break;
 					}
 
-					#
-
-					if ($simplify){
-						list($lat, $lon) = $coord;
-					}
-
-					else {
-						list($lon, $lat, $altitude) = explode(",", $coord, 3);
-					}
-
-					#
+					list($lon, $lat, $altitude) = explode(",", $coord, 3);
 
 					list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
@@ -185,11 +173,24 @@
 						continue;
 					}
 
-					$tmp['latitude'] = $lat;
-					$tmp['longitude'] = $lon;
+					$data[] = array(
+						'latitude' => $lat,
+						'longitude' => $lon,
+						'altitude' => import_scrub($altitude),
+					);
+				}
 
-					$tmp['altitude'] = import_scrub($altitude);
-					$data[] = $tmp;
+				#
+
+				if ($simplify){
+
+					$data = _kml_simplify($data);
+
+					if (($more['max_records']) && (count($data) > $more['max_records'])){
+						$data = array_slice($data, 0, $more['max_records']);
+					}
+
+					# slice data here...
 				}
 
 				continue;
@@ -350,20 +351,13 @@
 
 		loadlib("geo_douglaspeucker");
 
-		$latlons = array();
+		$simplified = array();
 
-		foreach ($coords as $coord){
-
-			list($lon, $lat, $ignore) = explode(",", $coord, 3);
-
-			if (! geo_utils_is_valid_latitude($lat)){
-				continue;
-			}
-
-			$latlons[] = array($lat, $lon);
+		foreach (geo_douglaspeucker_simplify($coords) as $gp){
+			$simplified[] = $gp->extra;
 		}
 
-		return geo_douglaspeucker_simplify($latlons);
+		return $simplified;
 	}
 
 	#################################################################
