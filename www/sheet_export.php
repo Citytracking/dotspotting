@@ -64,35 +64,32 @@
 	$sheet['dots'] = dots_get_dots_for_sheet($sheet, $GLOBALS['cfg']['user']['id'], $more);
 	$bbox = implode(", ", array_values($sheet['extent']));
 
-	$mimetype = $map[$format];
-	$filename = "dotspotting-sheet-{$sheet['id']}.{$format}";
+	# 
 
-	if (preg_match("/^image/", $mimetype)){
-		header("Content-Type: " . htmlspecialchars($mimetype));
+	$more = array(
+		'viewer_id' => $GLOBALS['cfg']['user']['id'],
+	);
+
+	$export = export_dots($sheet['dots'], $format, $more);
+
+	if (! $export){
+		error_500();
 	}
 
-	else if (! get_str('inline')){
-		header("Content-Type: " . htmlspecialchars($mimetype));
-		header("Content-Disposition: attachment; filename=\"{$filename}\"");
-	}
+	# go!
 
-	else { }
+	$more = array(
+		'path' => $export,
+		'mimetype' => $map[$format],
+		'filename' => "dotspotting-sheet-{$sheet['id']}.{$format}",
+		'inline' => get_str('inline'),
+		'x-headers' => array(
+			'Sheet-ID' => $sheet['id'],
+			'Sheet-Label' => $sheet['label'],
+			'Sheet-Extent' => $bbox,
+		),
+	);
 
-	header("X-Dotspotting-Sheet-ID: " . htmlspecialchars($sheet['id']));
-	header("X-Dotspotting-Sheet-Label: " . htmlspecialchars($sheet['label']));
-	header("X-Dotspotting-Sheet-Extent: " . htmlspecialchars($bbox));
-
-	#
-	# As of this writing, the 'export' functionality assumes that
-	# there are complimentary (format)_export_(things) functions in
-	# both lib_(format) and lib_export where the (things) are written
-	# directly to a filehandle, or php://output. I *think* that this
-	# is the right way to do it, as opposed to farming everything out
-	# to smarty and enormous strings. That said, I just banged this
-	# out at the end of the day so it may yet change.
-	# (20101028/straup)
-	#
-
-	export_dots($sheet['dots'], $format);
+	export_send_file($export, $more);
 	exit();
 ?>

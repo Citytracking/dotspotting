@@ -4,10 +4,7 @@
 	# $Id$
 	#
 
-	# THIS IS SO NOT DONE YET.
-	# (20110119/straup)
-
-	loadpear("modestmaps/ModestMaps");
+	loadlib("maps");
 
 	loadpear("PHPPowerPoint");
 	loadpear("PHPPowerPoint/IOFactory");
@@ -18,169 +15,127 @@
 
 		$maps = array();
 
-		$w = 1024;
-		$h = 768;
+		$w = 960;
+		$h = 720;
 
 		$ppt = new PHPPowerPoint();
-		$ppt->getProperties()->setTitle("test");
+		$ppt->getProperties()->setTitle($more['title']);
+		$ppt->getProperties()->setCreator("Dotspotting");
 
 		# set title here
 		# $slide = $ppt->getActiveSlide();
 
-		if (0){
+		$ppt->removeSlideByIndex(0);
 
-			$map_img = _ppt_export_dots_map($dots, $w, $h);
-			$maps[] = $map_img;
+		# draw the maps
+
+		$dot_per_slide = 1;
+
+		$img_more = array(
+			'width' => $w,
+			'height' => $h,
+			'dot_size' => 20,
+		);
+
+		if ((! $dot_per_slide) || (count($dots) == 0)){
+
+			$maps[] = maps_png_for_dots($dots, $img_more);
 		}
 
 		else {
 
+			$img_more['dot_size'] = 25;
+			$img_more['width'] = $img_more['height'];
+
 			foreach ($dots as $dot){
-				$map_img = _ppt_export_center_map($dot, $w, $h);
-				$maps[] = $map_img;
+
+				$_dots = array($dot);
+ 				$maps[] = maps_png_for_dots($_dots, $img_more);
 			}
+
 		}
 
 		# now draw all the maps...
 
-		foreach ($maps as $map_img){
+		$count_maps = count($maps);
 
+		for ($i = 0; $i < $count_maps; $i++){
+
+			$map = $maps[$i];
 			$slide = $ppt->createSlide();
 
 			$shape = $slide->createDrawingShape();
 			$shape->setName('map');
 			$shape->setDescription('');
-			$shape->setPath($map_img);
+			$shape->setPath($map);
+
 			$shape->setWidth($w);
 			$shape->setHeight($h);
+
 			$shape->setOffsetX(0);
 			$shape->setOffsetY(0);
+
+			if ($dot_per_slide){
+
+				$dot = $dots[$i];
+
+				if (! $dot['id']){
+					continue;
+				}
+
+				$_dot = dots_get_dot($dot['id'], $more['viewer_id']);
+
+				if (! $_dot['id']){
+					continue;
+				}
+
+				$text = $slide->createRichTextShape();
+				$text->setHeight($h);
+				$text->setWidth($w - $h);
+				$text->setOffsetX($h + 20);
+				$text->setOffsetY(0 + 20);
+
+				$align = $text->getAlignment();
+				$align->setHorizontal( PHPPowerPoint_Style_Alignment::HORIZONTAL_LEFT );
+
+				$cols = array_merge($_dot['index_on'], array(
+					'latitude',
+					'longitude',
+					'created',
+					'id',
+				));
+
+				foreach ($cols as $col){
+
+					$value = trim($dot[$col]);
+
+					if (! $value){
+						continue;
+					}
+
+					$body = $text->createTextRun("{$col}:\n");
+					$body->getFont()->setSize(18);
+					$body->getFont()->setBold(false);	# default bold font is not what do say "pretty"
+
+					$body = $text->createTextRun("{$dot[$col]}\n\n");
+					$body->getFont()->setSize(14);
+					$body->getFont()->setBold(false);
+				}
+			}
 		}
 
 		#
 
-		$tmp = tempnam(sys_get_temp_dir(), "ppt") . ".ppt";
-
 		$writer = PHPPowerPoint_IOFactory::createWriter($ppt, 'PowerPoint2007');
-		$writer->save($tmp);
-
-		$fh = fopen($tmp, 'r');
-
-		fwrite($more['fh'], fread($fh, filesize($tmp)));
-
-		fclose($fh);
-
-		#
-
-		unlink($tmp);
+		$writer->save($more['path']);
 
 		foreach ($maps as $path){
 			unlink($path);
 		}
+
+		return $more['path'];
 	}
 
 	#################################################################
 
-	# See this: It is basically a clone of what's happening in lib_png.
-	# Soon it will be time to reconcile the two. But not yet.
-	# (20110113/straup)
-
-	function _ppt_export_dots_map(&$dots, $w, $h){
-
-		$dot_size = 20;
-
-		$swlat = null;
-		$swlon = null;
-		$nelat = null;
-		$nelon = null;
-
-		foreach ($dots as $dot){
-			$swlat = (! isset($swlat)) ? $dot['latitude'] : min($swlat, $dot['latitude']);
-			$swlon = (! isset($swlon)) ? $dot['longitude'] : min($swlon, $dot['longitude']);
-			$nelat = (! isset($nelat)) ? $dot['latitude'] : max($nelat, $dot['latitude']);
-			$nelon = (! isset($nelon)) ? $dot['longitude'] : max($nelon, $dot['longitude']);
-		}
-
-		$template = $GLOBALS['cfg']['maptiles_template_url'];
-
-		$hosts = $GLOBALS['cfg']['maptiles_template_hosts'];
-		shuffle($hosts);
-		$template = str_replace("{S}", $hosts[0], $template);
-
-		$provider = new MMaps_Templated_Spherical_Mercator_Provider($template);
-
-		$sw = new MMaps_Location($swlat, $swlon);
-		$ne = new MMaps_Location($nelat, $nelon);
-
-		$dims = new MMaps_Point($w, $h);
-
-		$map = MMaps_mapByExtent($provider, $sw, $ne, $dims);
-		$im = $map->draw();
-
-		$points = array();
-
-		$fill = imagecolorallocatealpha($im, 0, 17, 45, 96);
-		$stroke = imagecolorallocate($im, 153, 204, 0);
-
-		foreach ($dots as $dot){
-
-			$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
-			$pt = $map->locationPoint($loc);
-
-			imagefilledellipse($im, $pt->x, $pt->y, $dot_size, $dot_size, $fill);
-
-			imagesetthickness($im, 3);
-			imagearc($im, $pt->x, $pt->y, $dot_size, $dot_size, 0, 359.9, $stroke);
-		}
-
-		$tmp = tempnam(sys_get_temp_dir(), "pdf") . ".png";
-
-		imagepng($im, $tmp);
-		imagedestroy($im);
-
-		return $tmp;
-	}
-
-	#################################################################
-
-	function _ppt_export_center_map(&$dot, $w, $h){
-
-		$dot_size = 20;
-
-		$template = $GLOBALS['cfg']['maptiles_template_url'];
-
-		$hosts = $GLOBALS['cfg']['maptiles_template_hosts'];
-		shuffle($hosts);
-		$template = str_replace("{S}", $hosts[0], $template);
-
-		$provider = new MMaps_Templated_Spherical_Mercator_Provider($template);
-
-		$centroid = new MMaps_Location($dot['latitude'], $dot['longitude']);
-		$dims = new MMaps_Point($w, $h);
-
-		$map = MMaps_mapByCenterZoom($provider, $centroid, 17, $dims);
-		$im = $map->draw();
-
-		$points = array();
-
-		$fill = imagecolorallocatealpha($im, 0, 17, 45, 96);
-		$stroke = imagecolorallocate($im, 153, 204, 0);
-
-		$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
-		$pt = $map->locationPoint($loc);
-
-		imagefilledellipse($im, $pt->x, $pt->y, $dot_size, $dot_size, $fill);
-
-		imagesetthickness($im, 3);
-		imagearc($im, $pt->x, $pt->y, $dot_size, $dot_size, 0, 359.9, $stroke);
-
-		$tmp = tempnam(sys_get_temp_dir(), "pdf") . ".png";
-
-		imagepng($im, $tmp);
-		imagedestroy($im);
-
-		return $tmp;
-	}
-
-	#################################################################
 ?>

@@ -130,7 +130,7 @@
 
 	#################################################################
 
-	function json_export_dots(&$dots, &$more){
+	function json_export_dots(&$dots, $more=array()){
 
 		$to_skip = array(
 			'latitude',
@@ -166,7 +166,11 @@
 			$json['features'][] = $feature;
 		}
 
-		fwrite($more['fh'], json_encode($json));
+		$fh = fopen($more['path'], 'w');
+		fwrite($fh, json_encode($json));
+		fclose($fh);
+
+		return $more['path'];
 	}
 	
 	#################################################################
