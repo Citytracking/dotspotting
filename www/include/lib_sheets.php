@@ -32,6 +32,7 @@
 			'created' => $now,
 			'last_modified' => $now,
 			'id' => $sheet_id,
+			'simplified' => $more['simplified'],
 		);
 
 		$optional = array(

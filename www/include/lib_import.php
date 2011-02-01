@@ -45,6 +45,7 @@
 			'label' => $label,
 			'mark_all_private' => $more['mark_all_private'],
 			'mime_type' => $file['type'],
+			'simplified' => (($process_rsp['simplified']) ? 1 : 0),
 		);
 
 		return import_process_data($user, $process_rsp['data'], $import_more);
