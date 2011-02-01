@@ -141,13 +141,13 @@
 
 			else if (($coords = $p->MultiGeometry->LineString->coordinates) || ($coords = $p->LineString->coordinates)){
 
+				$simplify = (($GLOBALS['cfg']['import_do_simplification']['kml']) && ($more['simplify'])) ? 1 : 0;
+
 				# We're going to keep our own counter below
 				$record --;
 
 				$coords = (string)$coords;
 				$coords = preg_split("/[\s]+/", $coords);
-
-				$simplify = ($GLOBALS['cfg']['import_do_simplification']['kml']) ? 1 : 0;
 
 				#
 
@@ -189,8 +189,6 @@
 					if (($more['max_records']) && (count($data) > $more['max_records'])){
 						$data = array_slice($data, 0, $more['max_records']);
 					}
-
-					# slice data here...
 				}
 
 				continue;
@@ -213,6 +211,7 @@
 			'label' => $label,
 			'data' => &$data,
 			'errors' => &$errors,
+			'simplified' => $simplify,
 		);
 	}
 

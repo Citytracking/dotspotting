@@ -159,7 +159,7 @@
 
 	$GLOBALS['cfg']['import_do_simplification'] = array(
 		'kml' => 0, # when coordinates are stored in LineStrings
-		'gpx' => 0, # not implemented yet
+		'gpx' => 0, # basically always
 	);
 
 	$GLOBALS['cfg']['dots_indexing_max_cols'] = 2;

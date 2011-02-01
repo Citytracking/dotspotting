@@ -33,18 +33,18 @@
 		$label = (string)$gpx->trk->name;
 		$label = import_scrub($label);
 
+		$simplify = (($GLOBALS['cfg']['import_do_simplification']['gpx']) && ($more['simplify'])) ? 1 : 0;
+
 		$data = array();
 		$errors = array();
 
 		$record = 1;
 
-		# HOW TO DO SIMPLIFICATION AND PRESERVE OTHER ATTRIBUTES ?
-
 		foreach ($gpx->trk->trkseg->trkpt as $pt){
 
 			$record ++;
 
-			if (($more['max_records']) && ($record > $more['max_records'])){
+			if (($more['max_records']) && ($record > $more['max_records']) && (! $simplify)){
 				break;
 			}
 
@@ -78,11 +78,21 @@
 			$data[] = $tmp;
 		}
 
+		if ($simplify){
+
+			$data = _gpx_simplify($data);
+
+			if (($more['max_records']) && (count($data) > $more['max_records'])){
+				$data = array_slice($data, 0, $more['max_records']);
+			}
+		}
+
 		return array(
 			'ok' => 1,
 			'label' => $label,
 			'data' => &$data,
 			'errors' => &$errors,
+			'simplified' => $simplify,
 		);
 
 	}
@@ -200,4 +210,20 @@
 	}
 
 	#################################################################
+
+	function _gpx_simplify(&$coords){
+
+		loadlib("geo_douglaspeucker");
+
+		$simplified = array();
+
+		foreach (geo_douglaspeucker_simplify($coords) as $gp){
+			$simplified[] = $gp->extra;
+		}
+
+		return $simplified;
+	}
+
+	#################################################################
+
 ?>
