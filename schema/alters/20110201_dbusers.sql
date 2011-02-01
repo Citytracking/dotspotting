@@ -1,0 +1,1 @@
+ALTER TABLE Sheets ADD simplified TINYINT(3) NOT NULL;
