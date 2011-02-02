@@ -109,14 +109,21 @@ function utils_polymap(map_id, more){
 
 	var map = org.polymaps.map();
 	map.container(svg);
-
+	
 	if ((! more) || (! more['static'])){
+		
+		//	inital attempt to add touch support to polymaps
+		if(_dotspotting.enable_touch_support){
+			var tt = new org.polymaps.TouchHandler();
+			tt.init(map,div);
+		}else{
+			var drag = org.polymaps.drag();
+			map.add(drag);
 
-		var drag = org.polymaps.drag();
-		map.add(drag);
-
-		var dblclick = org.polymaps.dblclick();	
-		map.add(dblclick);
+			var dblclick = org.polymaps.dblclick();	
+			map.add(dblclick);
+		}
+		
 	}
 
 	var tp = utils_tile_provider();
@@ -322,4 +329,16 @@ function utils_adjust_bbox(bbox){
 	bbox[1]['lat'] += offset;
 	bbox[1]['lon'] += offset;
 	return bbox;
+}
+
+// 	simple check to detect touch support
+//	not thoughly tested
+function isTouchDevice() {
+   var el = document.createElement('div');
+   el.setAttribute('ongesturestart', 'return;');
+   if(typeof el.ongesturestart == "function"){
+      return true;
+   }else {
+      return false
+   }
 }
