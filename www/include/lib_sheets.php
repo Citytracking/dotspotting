@@ -175,6 +175,19 @@
 		}
 
 		#
+		#
+		#
+
+		loadlib("archive");
+		$archive_path = archive_path_for_sheet($sheet);
+
+		if (file_exists){
+
+			$ok = unlink($archive_path);
+			# if not $ok then what?
+		}
+
+		#
 		# Happy happy!
 		#
 
