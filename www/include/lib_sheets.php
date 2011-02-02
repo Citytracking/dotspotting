@@ -98,7 +98,14 @@
 	function sheets_delete_sheet(&$sheet){
 
 		#
-		# First, purge search
+		# Figure out where the sheet is stored
+		#
+
+		loadlib("archive");
+		$archive_path = archive_path_for_sheet($sheet);
+
+		#
+		# Purge search
 		#
 
 		dots_search_remove_sheet($sheet);
@@ -178,10 +185,7 @@
 		#
 		#
 
-		loadlib("archive");
-		$archive_path = archive_path_for_sheet($sheet);
-
-		if (file_exists){
+		if (file_exists($archive_path)){
 
 			$ok = unlink($archive_path);
 			# if not $ok then what?
