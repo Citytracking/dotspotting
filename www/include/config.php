@@ -33,6 +33,8 @@
 	$GLOBALS['cfg']['enable_feature_import'] = 1;
 	$GLOBALS['cfg']['enable_feature_import_by_url'] = 0;
 
+	$GLOBALS['cfg']['enable_feature_import_archive'] = 0;
+
 	$GLOBALS['cfg']['enable_feature_dots_indexing'] = 1;
 
 	# Don't turn this on until there is a working offline tasks system
@@ -154,6 +156,8 @@
 
 	$GLOBALS['cfg']['import_max_records'] = 1000;
 	$GLOBALS['cfg']['import_by_url_do_head'] = 1;
+
+	$GLOBALS['cfg']['import_archive_root'] = '';
 
 	# a list of format which might be simplified
 

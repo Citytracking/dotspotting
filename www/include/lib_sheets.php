@@ -67,6 +67,7 @@
 			'sheet_id' => AddSlashes($sheet_id),
 			'user_id' => AddSlashes($user['id']),
 			'created' => AddSlashes($now),
+			'fingerprint' => AddSlashes($more['fingerprint']),
 		);
 
 		$lookup_rsp = sheets_lookup_create($lookup);

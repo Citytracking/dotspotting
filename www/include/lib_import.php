@@ -37,6 +37,8 @@
 		# store the data
 		#
 
+		$fingerprint = md5_file($file['path']);
+
 		$label = ($more['label']) ? $more['label'] : $process_rsp['label'];
 
 		$import_more = array(
@@ -45,10 +47,30 @@
 			'label' => $label,
 			'mark_all_private' => $more['mark_all_private'],
 			'mime_type' => $file['type'],
+			'fingerprint' => $fingerprint,
 			'simplified' => (($process_rsp['simplified']) ? 1 : 0),
 		);
 
-		return import_process_data($user, $process_rsp['data'], $import_more);
+		$import_rsp = import_process_data($user, $process_rsp['data'], $import_more);
+
+		if (! $import_rsp['ok']){
+			return $import_rsp;
+		}
+
+		#
+		# store the actual file?
+		#
+
+		if ($GLOBALS['cfg']['enable_feature_import_keep_originals']){
+
+			# please to finish writing me
+		}
+
+		#
+		# happy happy
+		#
+
+		return $import_rsp;
 	}
 
 	#################################################################
@@ -213,8 +235,12 @@
 		$map = formats_valid_import_map();
 		$type = $file['type'];
 
-		if (! isset($map[$type])){
+		if (isset($map[$type])){
 
+			$file['extension'] = $map[$type];
+		}
+
+		else {
 			# check by extension...
 
 			$map = array_flip($map);
@@ -228,6 +254,7 @@
 
 			# Note the pass-by-ref above
 			$file['type'] = $map[$ext];
+			$file['extension'] = $ext;
 		}
 
 		return 1;
