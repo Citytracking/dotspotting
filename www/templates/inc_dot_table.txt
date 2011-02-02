@@ -1,0 +1,79 @@
+<table class="page_dot">
+	<tr>
+		<th>owner</th>
+		<td><a href="{$owner|@urls_url_for_user}" title="all dots owned by, {$owner.username|escape}">{$owner.username|escape}</a></td>
+	</tr>
+
+	<tr>
+		<th>latitude</th>
+		<td>{if $dot.latitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}" title="search for dots near latitude point {$dot.latitude|escape}">{$dot.latitude|escape}</a>{else}&#8212;{/if}</td>
+	</tr>
+
+	<tr>
+		<th>longitude</th>
+		<td>{if $dot.longitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}" title="search for dots near longitude point {$dot.longitude|escape}">{$dot.longitude|escape}</a>{else}&#8212;{/if}</td>
+	</tr>
+
+	{if $dot.altitude}
+	<tr>
+		<th>altitude</th>
+		<td>{$dot.altitude|escape}</td>
+	</tr>
+	{/if}
+
+	<tr>
+		<th>geohash</th>
+		<td>{if $dot.geohash}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}" title="search for dots near geohash '{$dot.geohash|escape}'">{$dot.geohash|escape}</a>{else}&#8212;{/if}</td>
+	</tr>
+
+{if $cfg.enable_feature_dots_indexing}
+	{foreach from=$dot.index_on item="label"}
+	<tr>
+		<th>{$label|escape}</th>
+		<td>{$dot.$label|escape}</td>
+	</tr>
+	{/foreach}
+{else}
+	<tr>
+		<th>location</th>
+		<td>{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&l={$dot.location|escape}" title="search for dots near location, '{$dot.location|escape}'">{$dot.location|escape}</a>{else}&#8212;{/if}</td>
+	</tr>
+
+	<tr>
+		<th>type</th>
+		<td>{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&t={$dot.type|escape}" title="all dots with type, {$dot.type|escape}">{$dot.type|escape}</a>{else}&#8212;{/if}</td>
+	</tr>
+{/if}
+
+	{if $dot.address}
+	<tr>
+		<th>address</th>
+		<td>{$dot.address|escape}</td>
+	</tr>
+	{/if}
+
+	{if $geocoded_by}
+	<tr>
+		<th>geocoded by</th>
+		<td>{$geocoder_map.$geocoded_by|escape}</td>
+	</tr>
+	{/if}
+
+	{include file="inc_dot_details.txt"}
+
+	{if $is_own}
+		{assign var="perms" value=$dot.perms}
+		{assign var="geocoded_by" value=$dot.geocoded_by}
+	<tr>
+		<th>permissions</th>
+		<td>{$permissions_map.$perms|escape}</td>
+	</tr>
+
+	{/if}
+	
+	<tr>
+		<th>created</th>
+		<td><a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape})" title="search for dots created around {$dot.created|escape}">{$dot.created|escape}</a></td>
+	</tr>
+
+</table>

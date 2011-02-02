@@ -175,6 +175,12 @@ function utils_polymaps_assign_dot_properties(e){
 				classes.push('dot_' + props.permissions);
 			}
 			
+			//	just add the hover class for single dot pages
+			//	clicking on them doesn't do anything anyways
+			if(props && props.is_page_dot){
+				classes.push('dotHover');
+			}
+			
 			el.setAttribute('class', classes.join(' '));
 			el.setAttribute('r', 8);
 

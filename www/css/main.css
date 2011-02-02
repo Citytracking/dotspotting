@@ -22,14 +22,14 @@ a {
 #map{
     width:100%;
     height:300px;
-    margin-top:25px;
+    margin-top:15px;
     margin-bottom:5px;
     border: 1px solid #ccc; 
 	position:relative;
 }
 
 #map_wrapper {
-	margin-bottom: 20px;
+	margin-bottom: 0px;
 	position:relative;
 }
 
@@ -193,6 +193,7 @@ th {
 	font-style:italic;
 }
 
+.clear{clear:both;}
 
 #map_caveat {
 	font-size:11px;
@@ -286,8 +287,6 @@ li code {
 	margin-top: 0px;
 	margin-bottom: 12px;
 }
-
-
 
 /* cribbed from the tablesorter examples */
 table.ds_table {
@@ -513,9 +512,8 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 
 /*
 MAP TOOLTIP 
-from Portland crime map guy 
+co-opted from Portland crime map: https://github.com/Caged/portlandcrime
 */
-
 
 div.maptip {
   background: rgba(20,20,20,0.5);
@@ -592,3 +590,63 @@ div.maptip-cnt {
   left: -6px;
   top: 24px;
 }
+
+/* PAGE LAYOUT CSS */
+.right_column {
+	width:45%;
+	float:right;
+}
+
+.left_column{
+	width:54%;
+	float:left;
+}
+
+table.page_dot {
+	margin-top:15px;
+}
+table.page_dot tr{
+} 
+
+table.page_dot th{
+	background:rgba(200,200,200,.4);
+
+	text-transform:uppercase;
+	text-align:left;
+	font-weight: 200;
+	padding: 5px 10px 5px 5px;
+}
+table.page_dot td{
+	text-align:left;
+	padding: 5px;
+}
+
+#page_dot_pagination{
+	text-align:left;
+	margin:5px 10px 0px 0;
+	font-size:11px;
+	text-transform:uppercase;
+}
+
+/* for flickr */
+.left_column_flickr{
+	width:10%;
+	float:left;
+}
+.right_column_flickr{
+	width:89%;
+	float:right;
+}
+#flickr_holder{
+	height:300px;
+	margin:15px auto 0 auto;
+	overflow:hidden;
+	padding:0;
+	text-align:center;
+	background: #DCEFEF url(../images/icon_camera.png) 50% 50% no-repeat;
+}
+#flickr_holder img{
+	position:relative;
+}
+/* end flickr CSS */
+/* end page layout css */

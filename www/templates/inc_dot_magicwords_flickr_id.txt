@@ -16,12 +16,18 @@
 			}
 
 			var ph = rsp['photo'];
-
+			
+			/*
+				for now create generic variable for size, until a size parameter is in place 
+			*/
+			var photoSize = "full";
+			var ph_ending = (photoSize == 'thumb') ? '_t.jpg' : '.jpg';
+			
 			var ph_url =
 				'http://farm' + encodeURIComponent(ph['farm']) +
 				'.static.flickr.com/' + encodeURIComponent(ph['server']) +
 				'/' + encodeURIComponent(ph['id']) +
-				'_' + encodeURIComponent(ph['secret']) + '_t.jpg';
+				'_' + encodeURIComponent(ph['secret']) + ph_ending;
 
 			var ph_page =
 				'http://www.flickr.com/photos/' +
@@ -30,28 +36,90 @@
 				encodeURIComponent(ph['id']);
 
 			var ph_title = htmlspecialchars(ph['title']['_content']);
-			var ph_owner = htmlspecialchars(ph['owner']['username']);
-
-			var html = 
-				photo_id +
-				'<div class="flickr_photo">' + 
-				'Flickr ID <a href="' + ph_page + '" target="_flickr">' + photo_id + '</a> is a photo ' +
-				'titled <q><a href="' + ph_page + '" target="_flickr">' + ph_title + '</a></q> ' +
-				'by ' + ph_owner +
-				'<br /><br />' + 
-				'<a href="' + ph_page + '" target="_flickr"><img src="' + ph_url + '" /></a>' +
-				'</div>';
-
-			var el = document.getElementById("details_flickr:id");
+			var ph_owner = htmlspecialchars(ph['owner']['username']);	
+				
+			var html = 	'<a href="' + ph_page + '" target="_flickr" title="link to '+ph_title+' photo"></a>';
+			var el = document.getElementById("flickr_holder");
 			el.innerHTML = html;
-		};
+			
+			var rc = $(".right_column_flickr");
+			var lc = $(".left_column_flickr");
+			var current_container_width = $('#content').width();
+			
+			var img = new Image();
+			
+			// img loader
+			$(img)
+				.load(function () {
+
+					// hide img by default    
+					$(this).hide();
+
+					// insert img into link
+					$("#flickr_holder a").html(this);
+
+					//set variables for resizing
+					var maxWidth = current_container_width * .5; 	// Max width for the image
+					var maxHeight = $("#map").height();   			// Max height for the image
+					var ratio = 0;  // Used for aspect ratio
+					var width = $(this).width();    				// Current image width
+					var height = $(this).height();  				// Current image height
+
+					// resize image
+					if(width > maxWidth){
+						ratio = maxWidth / width;   				// get ratio for scaling image
+						$(this).css("width", maxWidth); 			// Set new width
+						$(this).css("height", height * ratio);  	// Scale height based on ratio
+						height = height * ratio;    				// Reset height to match scaled image
+						width = width * ratio;    					// Reset width to match scaled image
+						$(this).css("top",(maxHeight-height) * .5); // centers img vertically
+					}
+
+					if(height > maxHeight){
+						ratio = maxHeight / height;					// get ratio for scaling image
+						$(this).css("height", maxHeight);   		// Set new height
+						$(this).css("width", width * ratio);    	// Scale width based on ratio
+						width = width * ratio;    					// Reset width to match scaled image
+					}
+
+					//calculate new map width
+					var new_map_width =  current_container_width - (width + 10);
+
+					// animation sequence
+					$(this).fadeIn(400);
+
+					$(lc).animate({
+						width: width
+					}, 400, function() {
+						$(el).css("background","none");
+					});
+
+					$(rc).animate({
+						width: new_map_width
+					}, 400, function() {
+						$("#map").trigger('mapresize');
+					});
+				})
+
+				// error handler
+				.error(function () {
+					// oops error
+				})
+
+				// set attributes
+				.attr('src', ph_url)
+				.attr('alt','flickr photo: '+ph_title + ' by ' + ph_owner)
+				.attr('title',ph_title + ' by ' + ph_owner);
+			
+		}; //	close _flickr_photos_getinfo
 
 		var args = {
 			'photo_id': photo_id,
 			'jsoncallback': '_flickr_photos_getinfo',
 		};
-
+		
 		flickr.api_call('flickr.photos.getInfo', args);
 	}
+
 	{/literal}
 	</script>
