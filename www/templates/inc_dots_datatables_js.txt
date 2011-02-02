@@ -48,10 +48,6 @@
 {/literal}
 
 {if $is_sheet}
-<<<<<<< HEAD
-	{literal}
-	$(document).ready(function(){ 
-=======
 {literal}
 $(document).ready(function(){ 
 
@@ -73,45 +69,22 @@ $(document).ready(function(){
 	   pm.innerHTML = location.href;
 	   pm.setAttribute('href', location.href);
      }
->>>>>>> upstream/master
-
-	     $('#user_dots').dataTable({
-		"bPaginate": false,
-		"bFilter": true,
-		"bInfo" : false,
-		"bProcessing": true,
-	     }).fnSetFilteringHooks();
+});
 		
-		/*	removed for now, doesn't make much sense IMHO
-		
-		// add hover event to table rows, that will highlight dot
-		$('#user_dots').find('tr').hover(
-		    function()
-		    {
-		        dot_tr_hover(this,"over");
-		    },
-		    function()
-		    {
-		        dot_tr_hover(this,"off");
-			}
-		);
-		*/
-	});
-		
-	{/literal}
+{/literal}
 {else}
-	{literal}
-	$(document).ready(function(){ 
-	
-	     $('#user_dots').dataTable({
-		"bPaginate": false,
-		"bFilter": false,	// figure out how best to enable this
-		"bSort": false,
-		"bInfo" : false,
-		"bProcessing": true,
-	     });
+{literal}
+$(document).ready(function(){ 
 
-	});
-	{/literal}
+     $('#user_dots').dataTable({
+	"bPaginate": false,
+	"bFilter": false,	// figure out how best to enable this
+	"bSort": false,
+	"bInfo" : false,
+	"bProcessing": true,
+     });
+
+});
+{/literal}
 {/if}
 </script>
