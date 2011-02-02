@@ -61,9 +61,12 @@
 		# store the actual file?
 		#
 
-		if ($GLOBALS['cfg']['enable_feature_import_keep_originals']){
+		if ($GLOBALS['cfg']['enable_feature_import_archive']){
 
-			# please to finish writing me
+			loadlib("archive");
+			$archive_rsp = archive_store_file($file, $import_rsp['sheet']);
+
+			# throw an error if archiving fails?
 		}
 
 		#
