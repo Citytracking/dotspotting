@@ -7,7 +7,6 @@
 	#################################################################
 
 	loadlib("geo_utils");
-	loadlib("csv");
 	loadlib("formats");
 
 	#################################################################
@@ -352,24 +351,10 @@
 		# we bother to create a sheet.
 		#
 
-		$record = 1;
+		$rsp = import_ensure_valid_data($data);
 
-		foreach ($data as $row){
-
-			$rsp = dots_ensure_valid_data($row);
-
-			if (! $rsp['ok']){
-
-				return array(
-					'ok' => 0,
-					'errors' => array(array(
-						'error' => $rsp['error'],
-						'record' => $record,
-					)),
-				);
-			}
-
-			$record++;
+		if (! $rsp['ok']){
+			return $rsp;
 		}
 
 		#
@@ -424,6 +409,36 @@
 
 		$input = trim($input);
 		return $input;
+	}
+
+	#################################################################
+
+	function import_ensure_valid_data(&$data){
+
+		$errors = array();
+		$record = 1;
+
+		foreach ($data as $row){
+
+			$rsp = dots_ensure_valid_data($row);
+
+			if (! $rsp['ok']){
+
+				$errors[] = array(
+					'error' => $rsp['error'],
+					'record' => $record,
+				);
+			}
+
+			$record++;
+		}
+
+		$ok = (count($errors)) ? 0 : 1;
+
+		return array(
+			'ok' => $ok,
+			'errors' => $errors,
+		);
 	}
 
 	#################################################################
