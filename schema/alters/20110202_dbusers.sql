@@ -1,0 +1,1 @@
+ALTER TABLE Sheets CHANGE mime_type mime_type VARCHAR(64);
