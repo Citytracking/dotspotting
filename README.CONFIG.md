@@ -39,11 +39,13 @@ Feature Flags
 	$GLOBALS['cfg']['enable_feature_password_retrieval'] = 0;
 
 	$GLOBALS['cfg']['enable_feature_import'] = 1;
-	$GLOBALS['cfg']['enable_feature_import_by_url'] = 0;	# experimental; don't enable this yet
+	$GLOBALS['cfg']['enable_feature_import_by_url'] = 0;
+
+	$GLOBALS['cfg']['enable_feature_import_archive'] = 0;	# in developement (20110201/straup)
 
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
-	$GLOBALS['cfg']['enable_feature_search_export'] = 0;	# this is still a work in progress
+	$GLOBALS['cfg']['enable_feature_search_export'] = 1;
 
 	#
 	# Magic words are a runtime display feature to hook in to third-party APIs and services in order
@@ -123,6 +125,10 @@ App Specific Stuff
 	# to check stuff like download length(s) and file type.
 
 	$GLOBALS['cfg']['import_by_url_do_head'] = 1;
+
+	# You will need to set this if you have enabled $GLOBALS['cfg']['enable_feature_import_archive']
+
+	$GLOBALS['cfg']['import_archive_root'] = '/path/to/where/archives/should/be/stored';
 
 	#
 	# If these two are arrays they will be checked in the upload by URL code. They are expected to be lists

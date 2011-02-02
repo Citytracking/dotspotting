@@ -32,6 +32,7 @@
 			'created' => $now,
 			'last_modified' => $now,
 			'id' => $sheet_id,
+			'simplified' => $more['simplified'],
 		);
 
 		$optional = array(
@@ -66,6 +67,7 @@
 			'sheet_id' => AddSlashes($sheet_id),
 			'user_id' => AddSlashes($user['id']),
 			'created' => AddSlashes($now),
+			'fingerprint' => AddSlashes($more['fingerprint']),
 		);
 
 		$lookup_rsp = sheets_lookup_create($lookup);
@@ -96,7 +98,14 @@
 	function sheets_delete_sheet(&$sheet){
 
 		#
-		# First, purge search
+		# Figure out where the sheet is stored
+		#
+
+		loadlib("archive");
+		$archive_path = archive_path_for_sheet($sheet);
+
+		#
+		# Purge search
 		#
 
 		dots_search_remove_sheet($sheet);
@@ -170,6 +179,16 @@
 
 		if (! $lookup_rsp['ok']){
 			# what?
+		}
+
+		#
+		#
+		#
+
+		if (file_exists($archive_path)){
+
+			$ok = unlink($archive_path);
+			# if not $ok then what?
 		}
 
 		#

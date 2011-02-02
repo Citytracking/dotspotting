@@ -6,14 +6,9 @@
 
 	#################################################################
 
-	# https://code.google.com/p/php-excel-reader/wiki/Documentation
-
-	loadpear("Spreadsheet/Excel/Reader");
-	loadpear("Spreadsheet/Excel/Writer");
-
-	#################################################################
-
 	function xls_parse_fh($fh, $more=array()){
+
+		loadpear("Spreadsheet/Excel/Reader");
 
 		fclose($fh);
 
@@ -101,6 +96,54 @@
 	#################################################################
 
 	function xls_export_dots(&$rows, $more){
+
+		loadpear("PHPExcel");
+
+		$xls = new PHPExcel();
+
+		$sheet = $xls->setActiveSheetIndex(0);
+
+		$col_names = array_keys($rows[0]);
+
+		$row = 1;
+		$col = 0;
+
+		foreach ($col_names as $c){
+			$sheet->setCellValueByColumnAndRow($col, $row, $c);
+			$col ++;
+		}
+
+		$row = 2;
+		$col = 0;
+
+		foreach ($rows as $_row){
+
+			foreach (array_values($_row) as $value){
+				$sheet->setCellValueByColumnAndRow($col, $row, $value);
+				$col++;
+			}
+
+			$row ++;
+			$col = 0;
+		}
+
+		# Excel 2007 is just plain weird and confuses
+		# both OpenOffice and Numbers.app
+		# (20110201/straup)
+
+		$writer = PHPExcel_IOFactory::createWriter($xls, 'Excel5');
+		$writer->save($more['path']);
+
+		return $more['path'];
+	}
+
+	#################################################################
+
+	# deprecated - makes Numbers.app cry (20110201/straup)
+
+	function _xls_export_dots(&$rows, $more){
+
+		loadpear("Spreadsheet/Excel/Writer");
 
 		$xls = new Spreadsheet_Excel_Writer($more['path']);
 		$sheet = $xls->addWorksheet();
