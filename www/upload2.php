@@ -39,6 +39,8 @@
 	$GLOBALS['smarty']->assign("dots_index_on", $dots_index_on);
 	$GLOBALS['smarty']->assign("mime_type", $mime_type);
 
+	#
+
 	if (($crumb_ok) && ($_FILES['upload'])){
 
 		$GLOBALS['smarty']->assign('step', 'process');
