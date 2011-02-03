@@ -39,6 +39,8 @@
 
 	if (($crumb_ok) && ($_FILES['upload'])){
 
+		$GLOBALS['smarty']->assign('step', 'process');
+
 		$ok = 1;
 
 		if ($_FILES['upload']['error']){
@@ -81,10 +83,12 @@
 
 			else {
 
-				$fingerprint = md5_file($_FILES['upload']);
+				$_FILES['upload']['path'] = $_FILES['upload']['tmp_name'];
+
+				$fingerprint = md5_file($_FILES['upload']['path']);
 				$GLOBALS['smarty']->assign("fingerprint", $fingerprint);
 
-				$sheets = sheets_lookup_by_fingerprint($fingerprint, $GLOBALS['cfg']['user']);
+				$sheets = sheets_lookup_by_fingerprint($fingerprint, $GLOBALS['cfg']['user']['id']);
 				$GLOBALS['smarty']->assign_by_ref("sheets", $sheets);
 
 				$more = array(
@@ -93,6 +97,22 @@
 
 				$pre_process = import_process_file($_FILES['upload'], $more);
 
+				# convert any errors from a bag of arrays in to a hash
+				# where the key maps to record number (assuming the count
+				# starts at 1.
+
+				if (count($pre_process['errors'])){
+
+					$_errors = array();
+
+					foreach ($pre_process['errors'] as $e){
+						$_errors[$e['record']] = $e['error'];
+					}
+
+					$pre_process['errors'] = $_errors;
+				}
+
+				$pre_process['errors']['1'] = 'poo poo';
 				$GLOBALS['smarty']->assign_by_ref("pre_process", $pre_process);
 
 				# store the file somewhere in a pending bin?
@@ -101,6 +121,8 @@
 	}
 
 	else if (($crumb_ok) && (post_str("data"))){
+
+		$GLOBALS['smarty']->assign('step', 'import');
 
 		# FIX ME... where should these come from?
 
