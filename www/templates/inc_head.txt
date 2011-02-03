@@ -42,7 +42,7 @@
 		.script(_dotspotting.abs_root_url + 'javascript/maptip.js')
 		.script(_dotspotting.abs_root_url + 'javascript/polymaps.min.js')
 		.script(function(){
-				if (dotspotting.enable_touch_support) {
+				if (_dotspotting.enable_touch_support) {
 					return _dotspotting.abs_root_url + 'javascript/polymaps_touch.min.js';
 				}
 				else {

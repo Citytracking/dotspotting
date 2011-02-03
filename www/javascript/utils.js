@@ -114,8 +114,8 @@ function utils_polymap(map_id, more){
 		
 		//	inital attempt to add touch support to polymaps
 		if(_dotspotting.enable_touch_support){
-			var tt = new org.polymaps.TouchHandler();
-			tt.init(map,div);
+			var touch = org.polymaps.touch();
+			map.add(touch);
 		}else{
 			var drag = org.polymaps.drag();
 			map.add(drag);
