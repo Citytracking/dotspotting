@@ -83,11 +83,21 @@
 					list($lon, $lat) = $coords;
 					list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
-					if (! $lat || ! $lon){
+					if (! $lat){
 
 						$errors[] = array(
-							'error' => 'invalid latitude or longitude',
+							'error' => 'invalid latitude',
 							'record' => $record,
+							'column' => 'latitude',
+						);
+					}
+
+					if (! $lon){
+
+						$errors[] = array(
+							'error' => 'longitude',
+							'record' => $record,
+							'column' => 'longitude',
 						);
 					}
 
@@ -105,11 +115,23 @@
 			list($lon, $lat) = $f['geometry']['coordinates'];
 			list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
-			if (! $lat || ! $lon){
+			if (! $lat){
 
 				$errors[] = array(
-					'error' => 'invalid latitude or longitude',
+					'error' => 'invalid latitude',
 					'record' => $record,
+					'column' => 'latitude',
+				);
+
+				continue;
+			}
+
+			if (! $lon){
+
+				$errors[] = array(
+					'error' => 'invalid longitude',
+					'record' => $record,
+					'column' => 'longitude',
 				);
 
 				continue;
