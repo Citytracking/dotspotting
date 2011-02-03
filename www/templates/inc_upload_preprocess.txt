@@ -1,11 +1,14 @@
 <table id="pre_process">
 
+<thead>
 <tr>
 {foreach from=$data.0 item="ignore" key="label"}
 	<th>{$label|escape}</th>
 {/foreach}
 </tr>
+</thead>
 
+<tbody>
 {foreach from=$data item="row" name="records"}
 
 {assign var="idx" value=$smarty.foreach.records.index+1}
@@ -24,5 +27,49 @@
 </tr>
 
 {/foreach}
+</tbody>
 
 </table>
+
+{literal}
+<script type="text/javascript">
+
+function collect_data(){
+
+	var headers = $("#pre_process thead tr").map(function(i, row){
+
+		var _headers = [];
+
+		$(row).find("th").each(function(col, th){
+			_headers.push($(th).text().toLowerCase());
+		});
+
+		return _headers;
+	});
+
+	var rows = $("#pre_process tbody tr").map(function(i, row){
+
+		var _row = {};
+
+		$(row).find("td").each(function(col, td){
+
+			var key = (headers) ? headers[col].toLowerCase() : null;
+
+			if (! key){
+				return;
+			}
+
+			var value = $(td).text();
+			value = value.replace(/^\s+/, '');
+			value = value.replace(/\s+$/, '');
+			_row[key] = value;
+		});
+
+		return _row;
+	});
+
+	return rows;
+}
+
+</script>
+{/literal}
