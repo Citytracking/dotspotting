@@ -6,7 +6,7 @@
 
 <div style="margin-top:15px;">
 
-<p class="tx1">Dotspotting is able to import the following types of files: <strong>{", "|@formats_valid_import_list|escape}</strong>.At the moment, only the first {$cfg.import_max_records|escape} records in a file will be imported. For all the details about uploading data into Dotspotting, <a href="{$cfg.abs_root_url}faq/#uploads">click here</a>.</p>
+<p class="tx1">Dotspotting is able to import the following types of files: <strong>{", "|@formats_valid_import_list|escape}</strong>. At the moment, only the first {$cfg.import_max_records|escape} records in a file will be imported. For all the details about uploading data into Dotspotting, <a href="{$cfg.abs_root_url}faq/#uploads">click here</a>.</p>
 
 <p class="tx1" style="text-align:left;"><strong>All dots are made public by default.</strong> You can override this behaviour in your CSV file by including a <code>perms</code> column and assign the relevant rows a value of <q>private</q> or by ticking the <q>make all these dots private</q> checkbox below. There is currently no way to toggle privacy settings for individual dots but that be done shortly.</p>
 
