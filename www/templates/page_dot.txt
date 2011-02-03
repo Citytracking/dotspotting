@@ -43,7 +43,7 @@ A dot by {$cfg.user.username|escape}
 {/if}
 
 {* pagination *}
-{if $dot_spot_in_array >= 0}
+{if $prev_dot || $next_dot}
 	{include file="inc_dot_pagination.txt"}
 {/if}
 

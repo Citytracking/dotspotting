@@ -1,11 +1,11 @@
 <p id="page_dot_pagination">
 {if $prev_dot > -1}
-	<a href="{$cfg.abs_root_url}u/{$dot.user_id}/dots/{$dots.$prev_dot.id}/" title="link to dot #{$dots.$prev_dot.id}">previous</a> /
+	<a href="{$cfg.abs_root_url}u/{$dot.user_id}/dots/{$prev_dot}/" title="link to dot #{$prev_dot}">previous</a> /
 {else}
 	<span style="color:#ccc;">first dot</span> / 
 {/if}
-{if $next_dot < $dots_total+1}
- <a href="{$cfg.abs_root_url}u/{$dot.user_id}/dots/{$dots.$next_dot.id}/" title="link to dot #{$dots.$next_dot.id}">next</a>
+{if $next_dot > -1}
+ <a href="{$cfg.abs_root_url}u/{$dot.user_id}/dots/{$next_dot}/" title="link to dot #{$next_dot}">next</a>
 {else}
 	<span style="color:#ccc;">last dot</span>
 {/if}
