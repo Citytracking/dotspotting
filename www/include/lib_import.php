@@ -13,7 +13,7 @@
 
 	function import_import_file(&$user, &$file, $more=array()){
 
-		if (! import_is_valid_mimetype($file)){
+		if (! import_is_valid_mimetype($file, $more)){
 
 			return array(
 				'error' => 'invalid_mimetype',
@@ -224,21 +224,23 @@
 
 	#################################################################
 
-	function import_is_valid_mimetype(&$file){
+	function import_is_valid_mimetype(&$file, $more){
 
 		#
 		# TODO: read bits of the file?
 		#
 
-		if (! isset($file['type'])){
+		$type = ($more['assume_mime_type']) ? $more['assume_mime_type'] : $file['type'];
+
+		if (! $type){
 			return 0;
 		}
 
 		$map = formats_valid_import_map();
-		$type = $file['type'];
 
 		if (isset($map[$type])){
 
+			$file['type'] = $type;
 			$file['extension'] = $map[$type];
 		}
 
