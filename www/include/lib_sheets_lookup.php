@@ -30,6 +30,36 @@
 
 	#################################################################
 
+	function sheets_lookup_by_fingerprint($fingerprint, $user_id=0){
+
+		$enc_fingerprint = AddSlashes($fingerprint);
+		$sql = "SELECT * FROM SheetsLookup WHERE fingerprint='{$enc_fingerprint}'";
+
+		if ($user_id){
+
+			$enc_id = AddSlashes($user_id);
+			$sql .= " AND user_id='{$enc_id}'";
+		}
+
+		$rsp = db_fetch($sql);
+		$sheets = array();
+
+		foreach ($rsp['rows'] as $row){
+
+			$more = array(
+				'sheet_user_id' => $row['user_id'],
+			);
+
+			if ($sheet = sheets_get_sheet($row['sheet_id'], $user_id, $more)){
+				$sheets[] = $sheet;
+			}		
+		}
+
+		return $sheets;
+	}
+
+	#################################################################
+
 	function sheets_lookup_create(&$lookup){
 
 		$hash = array();

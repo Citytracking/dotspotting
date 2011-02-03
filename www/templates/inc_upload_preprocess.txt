@@ -1,0 +1,28 @@
+<table id="pre_process">
+
+<tr>
+{foreach from=$data.0 item="ignore" key="label"}
+	<th>{$label|escape}</th>
+{/foreach}
+</tr>
+
+{foreach from=$data item="row" name="records"}
+
+{assign var="idx" value=$smarty.foreach.records.index+1}
+{assign var="css_style" value="row"}
+{if $errors.$idx}
+{assign var="css_style" value="row_error"}
+<tr>
+<td colspan="10">{$errors.$idx|escape}</td>
+</tr>
+{/if}
+
+<tr class="{$css_style|escape}">
+{foreach from=$row item="value"}
+<td>{$value|escape}</td>
+{/foreach}
+</tr>
+
+{/foreach}
+
+</table>

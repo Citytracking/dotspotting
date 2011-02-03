@@ -30,16 +30,19 @@
 
 			$label = filter_strict(post_str('label'));
 			$dots_index_on = filter_strict(post_str('dots_index_on'));
-
 			$private = (post_str('private')) ? 1 : 0;
 		
 			$more = array(
 				'return_dots' => 0,
 				'label' => $label,
-				'dots_index_on' => $dots_index_on,
 				'mime_type' => $_FILES['upload']['type'],
 				'mark_all_private' => $private,
 			);
+
+			if ($mime_type = post_str('mime_type')){
+
+				$more['assume_mime_type'] = $mime_type;
+			}
 
 			$_FILES['upload']['path'] = $_FILES['upload']['tmp_name'];
 
@@ -54,6 +57,9 @@
 		}
 	}
 
-	$smarty->display("page_upload.txt");
+	$import_formats = formats_valid_import_map('key by extension');
+	$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
+
+	$GLOBALS['smarty']->display("page_upload.txt");
 	exit();
 ?>

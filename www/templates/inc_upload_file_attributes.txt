@@ -12,6 +12,23 @@
 
 	{/if}
 
+	{if $import_formats}
+
+	<label for="mime_type">By default Dotspotting will try to guess what kind of file you're trying to upload but you can also tell it yourself:</label>
+
+	<br /><br />
+
+<select name="mime_type">
+<option>Select a file type</option>
+{foreach from=$import_formats item="mime_type" key="extension"}
+{capture assign="label"}{if $extension=='xls'}Excel{else}{if $extension=='rss' or $extension=='json'}Geo{/if}{$extension|@strtoupper}{/if}{/capture}
+<option value="{$mime_type|escape}">{$label|escape}</option>
+{/foreach}
+</select>
+
+	<br /><br />
+	{/if}
+
 	<input type="checkbox" name="private" />
 	<label for="private">make all these dots private</label>
 	<br /><br />

@@ -7,14 +7,13 @@
 	#################################################################
 
 	loadlib("geo_utils");
-	loadlib("csv");
 	loadlib("formats");
 
 	#################################################################
 
 	function import_import_file(&$user, &$file, $more=array()){
 
-		if (! import_is_valid_mimetype($file)){
+		if (! import_is_valid_mimetype($file, $more)){
 
 			return array(
 				'error' => 'invalid_mimetype',
@@ -225,21 +224,23 @@
 
 	#################################################################
 
-	function import_is_valid_mimetype(&$file){
+	function import_is_valid_mimetype(&$file, $more){
 
 		#
 		# TODO: read bits of the file?
 		#
 
-		if (! isset($file['type'])){
+		$type = ($more['assume_mime_type']) ? $more['assume_mime_type'] : $file['type'];
+
+		if (! $type){
 			return 0;
 		}
 
 		$map = formats_valid_import_map();
-		$type = $file['type'];
 
 		if (isset($map[$type])){
 
+			$file['type'] = $type;
 			$file['extension'] = $map[$type];
 		}
 
@@ -352,24 +353,10 @@
 		# we bother to create a sheet.
 		#
 
-		$record = 1;
+		$rsp = import_ensure_valid_data($data);
 
-		foreach ($data as $row){
-
-			$rsp = dots_ensure_valid_data($row);
-
-			if (! $rsp['ok']){
-
-				return array(
-					'ok' => 0,
-					'errors' => array(array(
-						'error' => $rsp['error'],
-						'record' => $record,
-					)),
-				);
-			}
-
-			$record++;
+		if (! $rsp['ok']){
+			return $rsp;
 		}
 
 		#
@@ -424,6 +411,36 @@
 
 		$input = trim($input);
 		return $input;
+	}
+
+	#################################################################
+
+	function import_ensure_valid_data(&$data){
+
+		$errors = array();
+		$record = 1;
+
+		foreach ($data as $row){
+
+			$rsp = dots_ensure_valid_data($row);
+
+			if (! $rsp['ok']){
+
+				$errors[] = array(
+					'error' => $rsp['error'],
+					'record' => $record,
+				);
+			}
+
+			$record++;
+		}
+
+		$ok = (count($errors)) ? 0 : 1;
+
+		return array(
+			'ok' => $ok,
+			'errors' => $errors,
+		);
 	}
 
 	#################################################################
