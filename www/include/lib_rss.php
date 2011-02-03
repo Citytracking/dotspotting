@@ -49,15 +49,29 @@
 
 			# What now? Maybe throw the description in to Placemaker ?
 
-			if (! $has_latlon){
+			if (! $lat){
 
 				$errors[] = array(
 					'record' => $record,
-					'error' => 'failed to locate any geo information!'
+					'error' => 'invalid or missing latitude',
+					'column' => 'latitude',
 				);
 
 				continue;
 			}
+
+			if (! $lon){
+
+				$errors[] = array(
+					'record' => $record,
+					'error' => 'invalid or missing longitude',
+					'column' => 'longitude',
+				);
+
+				continue;
+			}
+
+			#
 
 			$tmp = array(
 				'guid' => filter_strict(sanitize($item['guid'], 'str')),
