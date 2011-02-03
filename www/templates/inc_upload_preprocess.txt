@@ -2,8 +2,8 @@
 
 <thead>
 <tr>
-{foreach from=$data.0 item="ignore" key="label"}
-	<th>{$label|escape}</th>
+{foreach from=$data.0 item="ignore" key="colname"}
+	<th>{$colname|escape}</th>
 {/foreach}
 </tr>
 </thead>
@@ -22,7 +22,7 @@
 
 <tr class="{$css_style|escape}">
 {foreach from=$row item="value"}
-<td>{$value|escape}</td>
+<td contenteditable="true">{$value|escape}</td>
 {/foreach}
 </tr>
 
