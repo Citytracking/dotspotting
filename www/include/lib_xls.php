@@ -32,7 +32,8 @@
 
 				$errors[] = array(
 					'record' => 0,
-					'error' => "missing {$what} column",
+					'error' => "missing required column",
+					'column' => $what,
 				);
 
 				continue;
@@ -65,7 +66,13 @@
 				if ($label == 'latitude'){
 
 					if (! geo_utils_is_valid_latitude($value)){
-						$errors[] = array( 'record' => $record, 'error' => 'invalid latitude' );
+
+						$errors[] = array(
+							'record' => $record,
+							'error' => 'invalid latitude',
+							'column' => 'latitude',
+						);
+
 						continue;
 					}
 				}
@@ -73,7 +80,13 @@
 				if ($label == 'longitude'){
 
 					if (! geo_utils_is_valid_longitude($value)){
-						$errors[] = array( 'record' => $record, 'error' => 'invalid longitude' );
+
+						$errors[] = array(
+							'record' => $record,
+							'error' => 'invalid longitude',
+							'column' => 'longitude',
+						);
+
 						continue;
 					}
 				}
