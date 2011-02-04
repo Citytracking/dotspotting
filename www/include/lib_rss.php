@@ -41,7 +41,9 @@
 
 			if (! $has_latlon && $geo = $item['georss']){
 
-				list($lat, $lon) = explode(" ", $geo['point'], 2);
+				$point = trim($geo['point']);
+
+				list($lat, $lon) = explode(" ", $point, 2);
 				list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
 				$has_latlon = ($lat && $lon) ? 1 : 0;
