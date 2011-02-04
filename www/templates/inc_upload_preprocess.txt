@@ -31,16 +31,19 @@
 
 </table>
 
+<div style="margin-top:30px;padding-top:35px;border-top:solid thin;">
+
 <form action="{$cfg.abs_root_url}upload" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8" id="processed">
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="data" value="" />
-	<input type="hidden" name="label" value="{$label|escape}" />
-	<input type="hidden" name="private" value="{$private|escape}" />
-	<input type="hidden" name="dots_index_on" value="{$dots_index_on|escape}" />
-	<input type="hidden" name="mime_type" value="{$mime_type|escape}" />
 	<input type="hidden" name="fingerprint" value="{$fingerprint|escape}" />
-	<input type="SUBMIT" value="IMPORT" />
+
+	{include file="inc_upload_file_attributes.txt"}
+
+	<input type="SUBMIT" value="OKAY! IMPORT THIS DATA" />
 </form>
+
+</div>
 
 {literal}
 <script type="text/javascript">
