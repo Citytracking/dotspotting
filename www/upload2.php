@@ -144,9 +144,11 @@
 
 	else {
 
-		$import_formats = formats_valid_import_map('key by extension');
-		$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
+		# nuthin' 
 	}
+
+	$import_formats = formats_valid_import_map('key by extension');
+	$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
 
 	$smarty->display("page_upload2.txt");
 	exit();
