@@ -2,11 +2,10 @@
 <script type="text/javascript">
 
 function dot_onclick(e){
-	
 	// send click event and data to custom markerclick event
 	// creates the tooltip
-	jQuery("#map").trigger('markerclick',[e.data.props,e.data.geo]);
 
+	jQuery("#map").trigger('markerclick',[e.data.props,e.data.geo]);
 	
 	/*
 	if (dot['id']){
@@ -486,7 +485,7 @@ function draw_map_polymaps(dots){
 		if(mapel.length == 0) return
 		
 		var dotid = props.id;
-		var coor = geo.coordinates
+		var coor = geo.coordinates;
 		
 		mapel.maptip(this)
 	      .map(map)

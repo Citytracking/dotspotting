@@ -201,10 +201,8 @@ function utils_polymaps_assign_dot_properties(e){
 
 	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
 	    				el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
-						
 						// switch inline onclick to jquery bind method
 						// also pass the props & geometry arrays
-					
 						$(el).bind('click', {props: props, geo: f.data.geometry}, dot_onclick); 
 				}
 			}

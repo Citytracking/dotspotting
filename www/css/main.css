@@ -603,12 +603,16 @@ div.maptip-cnt {
 }
 
 table.page_dot {
-	margin-top:15px;
+	margin:0;
+	padding:12px 0 0;
+	width:100%;
+	border-top:2px dotted #ccc;
 }
 table.page_dot tr{
 } 
 
 table.page_dot th{
+	background-color:#e8e8e8;
 	background:rgba(200,200,200,.4);
 
 	text-transform:uppercase;
