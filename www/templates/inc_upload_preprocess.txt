@@ -1,29 +1,43 @@
+{literal}
+<style type="text/css">
+.col_preprocess_error {
+background-color: pink;
+}
+</style>
+{/literal}
+
 <table id="pre_process">
 
 <thead>
 <tr>
+<th>&#160;</th>
 {foreach from=$data.0 item="ignore" key="colname"}
 	<th>{$colname|escape}</th>
 {/foreach}
+<th>&#160;</th>
 </tr>
 </thead>
 
 <tbody>
 {foreach from=$data item="row" name="records"}
+{assign var="row_idx" value=$smarty.foreach.records.index+1}
 
-{assign var="idx" value=$smarty.foreach.records.index+1}
-{assign var="css_style" value="row"}
-{if $errors.$idx}
-{assign var="css_style" value="row_error"}
-<tr>
-<td colspan="10">{$errors.$idx|escape}</td>
-</tr>
+<tr id="row_preprocess_{$idx|escape}">
+<td>{$row_idx|escape}</td>
+
+{foreach from=$row item="value" name="columns"}
+{assign var="col_idx" value=$smarty.foreach.columns.index}
+{assign var="col_class" value="col_preprocess"}
+{assign var="col_ok" value="1"}
+
+{if $errors.$row_idx and $errors.$row_idx.column==$columns.$col_idx}
+{assign var="col_class" value="col_preprocess_error"}
+{assign var="col_ok" value="0"}
 {/if}
 
-<tr class="{$css_style|escape}">
-{foreach from=$row item="value"}
-<td contenteditable="true">{$value|escape}</td>
+<td contenteditable="true" class="{$col_class}">{$value|escape}{if !$col_ok} ({$errors.$row_idx.error|escape}){/if}</td>
 {/foreach}
+
 </tr>
 
 {/foreach}
