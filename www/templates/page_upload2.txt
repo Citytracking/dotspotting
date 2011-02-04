@@ -28,7 +28,7 @@
 
 {/if}
 
-{include file="inc_upload_preprocess.txt data=$pre_process.data errors=$pre_process.errors}
+{include file="inc_upload_preprocess.txt data=$pre_process.data columns=$pre_process.data.0|@array_keys errors=$pre_process.errors}
 
 {else}
 
