@@ -1,11 +1,11 @@
-	<input type="text" size="40" name="label" />
+	<input type="text" size="40" name="label" value="{$label|escape}" />
 	<br />
 	<label for="label">Give your upload a name (optional)</label>
 	<br /><br />
 
 	{if $cfg.enable_feature_dots_indexing}
 
-	<input type="text" size="40" name="dots_index_on" />
+	<input type="text" size="40" name="dots_index_on" value="{$dots_index_on|escape}" />
 	<br />
 	<label for="dots_index_on">A comma-separated list of the field names you would like us to index (optional, maximum of {$cfg.dots_indexing_max_cols|escape})</label>
 	<br /><br />
@@ -20,15 +20,15 @@
 
 <select name="mime_type">
 <option>Select a file type</option>
-{foreach from=$import_formats item="mime_type" key="extension"}
+{foreach from=$import_formats item="type" key="extension"}
 {capture assign="label"}{if $extension=='xls'}Excel{else}{if $extension=='rss' or $extension=='json'}Geo{/if}{$extension|@strtoupper}{/if}{/capture}
-<option value="{$mime_type|escape}">{$label|escape}</option>
+<option value="{$type|escape}"{if $mime_type and $mime_type==$type} selected{/if}>{$label|escape}</option>
 {/foreach}
 </select>
 
 	<br /><br />
 	{/if}
 
-	<input type="checkbox" name="private" />
+	<input type="checkbox" name="private"{if $private} checked="true"{/if}/>
 	<label for="private">make all these dots private</label>
 	<br /><br />
