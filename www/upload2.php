@@ -84,8 +84,6 @@
 
 				$pre_process = import_process_file($_FILES['upload'], $more);
 
-# dumper($pre_process);
-
 				# convert any errors from a bag of arrays in to a hash
 				# where the key maps to record number (assuming the count
 				# starts at 1.
@@ -126,6 +124,8 @@
 		}
 
 		else {
+
+			# TO DO: check that $data doesn't have errors still
 
 			$more = array(
 				'return_dots' => 0,
