@@ -37,6 +37,7 @@
 				'label' => $label,
 				'mime_type' => $_FILES['upload']['type'],
 				'mark_all_private' => $private,
+				'dots_index_on' => $dots_index_on,
 			);
 
 			if ($mime_type = post_str('mime_type')){

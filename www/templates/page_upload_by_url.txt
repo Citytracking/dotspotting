@@ -4,7 +4,7 @@
 {if $import}
 
 {if ! $import.ok}
-<p class="error">Hrmph! There was a problem importing your file.</p>
+<p class="error">Hrmph! There was a problem importing your file: {$import.error|escape}</p>
 {else}
 {include file="inc_upload_success.txt" upload=$import}
 {/if}
@@ -22,14 +22,7 @@
 
 	<br />
 
-	<input type="text" value="" size="40" name="label" />
-	<br />
-	<label for="label">Give your upload a name (optional)</label>
-	<br /><br />
-
-	<input type="checkbox" name="private" />
-	<label for="private">make all these dots private</label>
-	<br /><br />
+	{include file="inc_upload_file_attributes.txt"}
 
 	<input type="submit" value="YES, PLEASE TO IMPORT" />
 </form>

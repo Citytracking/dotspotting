@@ -113,16 +113,26 @@
 
 		$label = filter_strict(post_str('label'));
 		$private = (post_str('private')) ? 1 : 0;
+		$dots_index_on = filter_strict(post_str('dots_index_on'));
 
 		$more = array(
 			'label' => $label,
 			'mark_all_private' => $private,
 			'return_dots' => 0,
+			'dots_index_on' => $dots_index_on,
 		);
+
+		if ($mime_type = post_str('mime_type')){
+
+			$more['assume_mime_type'] = $mime_type;
+		}
 
 		$rsp = import_import_uri($GLOBALS['cfg']['user'], $url, $more);
 		$smarty->assign_by_ref('import', $rsp);
 	}
+
+	$import_formats = formats_valid_import_map('key by extension');
+	$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
 
 	$smarty->display("page_upload_by_url.txt");
 	exit();
