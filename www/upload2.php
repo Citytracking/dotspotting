@@ -84,6 +84,8 @@
 
 				$pre_process = import_process_file($_FILES['upload'], $more);
 
+# dumper($pre_process);
+
 				# convert any errors from a bag of arrays in to a hash
 				# where the key maps to record number (assuming the count
 				# starts at 1.
@@ -93,7 +95,7 @@
 					$_errors = array();
 
 					foreach ($pre_process['errors'] as $e){
-						$_errors[$e['record']] = $e['error'];
+						$_errors[$e['record']] = $e;
 					}
 
 					$pre_process['errors'] = $_errors;
