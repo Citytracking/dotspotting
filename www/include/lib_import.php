@@ -188,15 +188,16 @@
 		#
 
 		$type = $http_rsp['headers']['content-type'];
+
+		if ($more['assume_mime_type']){
+			$type = $more['assume_mime_type'];
+		}
+
 		$type_map = formats_valid_import_map();
 
 		if (! isset($type_map[$type])){
 
-			if ($more['assume_mimetype']){
-				$type = $more['assume_mimetype'];
-			}
-
-			else if (preg_match("/\.([a-z0-9]+)$/", basename($uri), $m)){
+			if (preg_match("/\.([a-z0-9]+)$/", basename($uri), $m)){
 
 				$ext = $m[1];
 				$ext_map = formats_valid_import_map('key by extension');

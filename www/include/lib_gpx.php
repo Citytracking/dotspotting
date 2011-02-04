@@ -54,11 +54,23 @@
 
 			list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
-			if (! $lat || ! $lon){
+			if (! $lat){
 
 				$errors[] = array(
 					'record' => $record,
-					'error' => 'invalid latlon',
+					'error' => 'invalid latitude',
+					'column' => 'latitude',
+				);
+
+				continue;
+			}
+
+			if (! $lon){
+
+				$errors[] = array(
+					'record' => $record,
+					'error' => 'invalid longitude',
+					'column' => 'longitude',
 				);
 
 				continue;

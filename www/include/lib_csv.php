@@ -69,7 +69,8 @@
 
 						return array(
 							'ok' => 0,
-							'error' => "the field name '{$raw}' failed validation",
+							'error' => "invalid column name",
+							'column' => $raw,
 						);
 					}
 
@@ -96,7 +97,8 @@
 
 					$errors[] = array(
 						'record' => $record,
-						'error' => "invalid input for the '{$field_names[$i]}' column",
+						'error' => "invalid input",
+						'column' => $field_names[$i],
 					);
 				}
 			}

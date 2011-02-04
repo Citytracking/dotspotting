@@ -32,10 +32,14 @@
 	$label = filter_strict(post_str('label'));
 	$private = (post_str('private')) ? 1 : 0;
 	$dots_index_on = filter_strict(post_str('dots_index_on'));
+	$mime_type = filter_strict(post_str('mime_type'));
 		
 	$GLOBALS['smarty']->assign("label", $label);
 	$GLOBALS['smarty']->assign("private", $private);
 	$GLOBALS['smarty']->assign("dots_index_on", $dots_index_on);
+	$GLOBALS['smarty']->assign("mime_type", $mime_type);
+
+	#
 
 	if (($crumb_ok) && ($_FILES['upload'])){
 
@@ -52,30 +56,13 @@
 
 		if ($ok){
 
-			# first, figure out if this is a file we know how
-			# do to anything with.
+			$more = array();
 
-			if ($ext = post_str("format")){
-
-				$map = formats_valid_import_map('key by extension');
-
-				if (isset($map[$ext])){
-					$_FILES['upload']['type'] = $map[$ext];
-					$_FILES['upload']['extension'] = $ext;
-				}
-
-				else {
-					$ok = 0;
-				}
+			if ($mime_type){
+				$more['assume_mime_type'] = $mime_type;
 			}
 
-			else {
-
-				$ok = import_is_valid_mimetype($_FILES['upload']);
-			}
-
-			if (! $ok){
-
+			if (! import_is_valid_mimetype($_FILES['upload'], $more)){
 				$GLOBALS['error']['invalid_mimetype'] = 1;
 			}
 
@@ -97,6 +84,8 @@
 
 				$pre_process = import_process_file($_FILES['upload'], $more);
 
+# dumper($pre_process);
+
 				# convert any errors from a bag of arrays in to a hash
 				# where the key maps to record number (assuming the count
 				# starts at 1.
@@ -106,13 +95,12 @@
 					$_errors = array();
 
 					foreach ($pre_process['errors'] as $e){
-						$_errors[$e['record']] = $e['error'];
+						$_errors[$e['record']] = $e;
 					}
 
 					$pre_process['errors'] = $_errors;
 				}
 
-				$pre_process['errors']['1'] = 'poo poo';
 				$GLOBALS['smarty']->assign_by_ref("pre_process", $pre_process);
 
 				# store the file somewhere in a pending bin?
@@ -123,8 +111,6 @@
 	else if (($crumb_ok) && (post_str("data"))){
 
 		$GLOBALS['smarty']->assign('step', 'import');
-
-		# FIX ME... where should these come from?
 
 		$fingerprint = post_str('fingerprint');
 		$mime_type = post_str('mime_type');
@@ -157,7 +143,9 @@
 	}
 
 	else {
-		# nuthin'
+
+		$import_formats = formats_valid_import_map('key by extension');
+		$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
 	}
 
 	$smarty->display("page_upload2.txt");

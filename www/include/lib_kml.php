@@ -121,14 +121,28 @@
 
 			if ($coords = (string)$p->Point->coordinates){
 
+				$coords = trim($coords);
+
 				list($lon, $lat, $altitude) = explode(",", $coords, 3);
 				list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
-				if (! $lat || ! $lon){
+				if (! $lat){
 
 					$errors[] = array(
 						'record' => $record,
-						'error' => 'Invalid latitude or longitude',
+						'error' => 'invalid latitude',
+						'column' => 'latitude',
+					);
+
+					continue;
+				}
+
+				if (! $lon){
+
+					$errors[] = array(
+						'record' => $record,
+						'error' => 'invalid longitude',
+						'column' => 'longitude',
 					);
 
 					continue;
@@ -144,9 +158,11 @@
 				$simplify = (($GLOBALS['cfg']['import_do_simplification']['kml']) && ($more['simplify'])) ? 1 : 0;
 
 				# We're going to keep our own counter below
-				$record --;
+				$record -= 2;
 
 				$coords = (string)$coords;
+				$coords = trim($coords);
+
 				$coords = preg_split("/[\s]+/", $coords);
 
 				#
@@ -163,11 +179,23 @@
 
 					list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
-					if (! $lat || ! $lon){
+					if (! $lat){
 
 						$errors[] = array(
 							'record' => $record,
-							'error' => 'Invalid latitude or longitude',
+							'error' => "invalid latitude",
+							'column' => 'latitude',
+						);
+
+						continue;
+					}
+
+					if (! $lon){
+
+						$errors[] = array(
+							'record' => $record,
+							'error' => "invalid longitude",
+							'column' => 'longitude',
 						);
 
 						continue;

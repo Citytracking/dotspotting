@@ -7,7 +7,7 @@
 {elseif $step=='import'}
 
 	{if $import.ok}
-		{include file="inc_upload_success.txt" upload=$rsp}
+		{include file="inc_upload_success.txt" upload=$import}
 	{else}
 	<p class="error">Your upload failed with the following errors:{if $rsp.error} {$rsp.error|escape}{/if}</p>
 
