@@ -17,6 +17,8 @@
 		$xml = fread($fh, filesize($more['file']['path']));
 		fclose($fh);
 
+		$xml = trim($xml);
+
 		$rss = new MagpieRSS($xml, 'utf-8', 'utf-8', true );
 
 		$data = array();
