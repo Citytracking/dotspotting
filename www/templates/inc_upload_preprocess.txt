@@ -22,7 +22,9 @@ background-color: pink;
 
 {/if}
 
-<table id="pre_process" border="0">
+<p style="font-size:11px;font-style:italic;">TO DO: The ability to select a column and affect all the member rows (geocoding, changing the value).</p>
+
+<table id="pre_process" class="ds_table">
 
 <thead>
 <tr>
@@ -42,9 +44,9 @@ background-color: pink;
 
 <tr id="row_preprocess_{$row_idx|escape}">
 <td><a href="#" onclick="delete_row({$row_idx|escape}); return false;" style="font-size:11px; color:red;">[x]</a></td>
-<td>{$row_idx|escape}</td>
+<td><strong style="color:#000;">{$row_idx|escape}</strong></td>
 
-{foreach from=$row item="value" name="columns"}
+{foreach from=$row item="value" name="columns" key="colname"}
 {assign var="col_idx" value=$smarty.foreach.columns.index}
 {assign var="col_class" value="col_preprocess"}
 {assign var="col_ok" value="1"}
@@ -55,6 +57,7 @@ background-color: pink;
 {/if}
 
 <td contenteditable="true" class="{$col_class}">{$value|escape}</td>
+
 {/foreach}
 
 </tr>
@@ -86,6 +89,17 @@ background-color: pink;
 
 {literal}
 <script type="text/javascript">
+
+$(document).ready(function(){
+
+     var dt = $('#pre_process').dataTable({
+	"bPaginate": false,
+	"bFilter": true,
+	"bInfo" : false,
+	"bProcessing": true,
+     });
+
+});
 
 $("#processed").submit(function(){
 	var data = collect_data();
