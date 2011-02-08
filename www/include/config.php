@@ -47,6 +47,9 @@
 	$GLOBALS['cfg']['enable_feature_account_delete'] = 1;
 	$GLOBALS['cfg']['enable_feature_password_retrieval'] = 1;
 
+	$GLOBALS['cfg']['password_retrieval_from_email'] = "do-not-reply@{$_SERVER['SERVER_NAME']}";
+	$GLOBALS['cfg']['password_retrieval_from_name'] = 'Dotspotting Password Helper Robot';
+
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
 
 	$GLOBALS['cfg']['enable_feature_search'] = 1;
