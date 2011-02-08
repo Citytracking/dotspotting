@@ -69,7 +69,7 @@ background-color: pink;
 
 <a name="#submit"></a>
 
-<form method="POST" enctype="multipart/form-data" accept-encoding="UTF-8" id="processed">
+<form action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8" id="processed">
 
 <div style="margin-bottom:25px;margin-top:30px;padding-top:35px;border-top:solid thin; border-bottom:solid thin;">
 

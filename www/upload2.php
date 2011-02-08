@@ -192,6 +192,8 @@
 		# nuthin' 
 	}
 
+	$GLOBALS['smarty']->assign("upload_endpoint", "upload2");
+
 	$import_formats = formats_valid_import_map('key by extension');
 	$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
 
