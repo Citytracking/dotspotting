@@ -21,8 +21,8 @@
 			var html = 
 				woeid +
 				'<div class="yahoo_woeid">' + 
-				'WOE ID <a href="' + url + '" target="_woeid">' + woeid + '</a> is named ' +
-				'<q><a href="' + url + '" target="_woeid">' + name + '</a></q> and is a ' + placetype;
+				'WOE ID <a href="' + url + '" target="_woeid" title="more information for WOE id, '+woeid+' ">' + woeid + '</a> is named ' +
+				'<q><a href="' + url + '" target="_woeid" title="more information for WOE name, '+name+' ">' + name + '</a></q> and is a ' + placetype;
 
 			if (placetype != 'Country'){
 				html += ' in ' + htmlspecialchars(pl['country']['content']);

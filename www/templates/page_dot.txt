@@ -13,6 +13,7 @@ A dot by {$cfg.user.username|escape}
 	{/if}
 {/if}
 {/capture}
+
 {* open question: should this be inlined directly in inc_dot_details? (20101111/straup) *}
 {capture assign="extra_head"}
 {if $cfg.enable_feature_magicwords.flickr.id}
@@ -31,96 +32,27 @@ A dot by {$cfg.user.username|escape}
 	{include file="inc_dot_magicwords_foursquare_venue.txt"}
 {/if}
 {/capture}
+
 {include file="inc_head.txt"}
 
-{include file="inc_map.txt"}
+{* headline *}
 {if $dot.sheet.label}
-<p>This dot is part of a sheet named <a href="{$dot.sheet|@urls_url_for_sheet}">{$dot.sheet.label|escape}</a>, created {$dot.sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
+<h3>Dot: #{$dot.id} / Sheet: <a href="{$dot.sheet|@urls_url_for_sheet}" title="view {$dot.sheet.label|truncate:20:"..."|escape} sheet">{$dot.sheet.label|escape}</a> / Created: {$dot.sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}</h3>
 {else}
-<p>This dot is part of an <a href="{$dot.sheet|@urls_url_for_sheet}">unnamed sheet</a>, created {$dot.sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}.</p>
+<h3>Dot: #{$dot.id} / Sheet: <a href="{$dot.sheet|@urls_url_for_sheet}" title="view unnamed sheet">unnamed sheet</a> / Created: {$dot.sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}</h3>
 {/if}
 
-<table>
-
-	<tr>
-		<th>owner</th>
-		<td><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a></td>
-	</tr>
-
-	<tr>
-		<th>latitude</th>
-		<td>{if $dot.latitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}">{$dot.latitude|escape}</a>{else}&#8212;{/if}</td>
-	</tr>
-
-	<tr>
-		<th>longitude</th>
-		<td>{if $dot.longitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}">{$dot.longitude|escape}</a>{else}&#8212;{/if}</td>
-	</tr>
-
-	{if $dot.altitude}
-	<tr>
-		<th>altitude</th>
-		<td>{$dot.altitude|escape}</td>
-	</tr>
-	{/if}
-
-	<tr>
-		<th>geohash</th>
-		<td>{if $dot.geohash}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}">{$dot.geohash|escape}</a>{else}&#8212;{/if}</td>
-	</tr>
-
-{if $cfg.enable_feature_dots_indexing}
-	{foreach from=$dot.index_on item="label"}
-	<tr>
-		<th>{$label|escape}</th>
-		<td>{$dot.$label|escape}</td>
-	</tr>
-	{/foreach}
-{else}
-	<tr>
-		<th>location</th>
-		<td>{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&l={$dot.location|escape}">{$dot.location|escape}</a>{else}&#8212;{/if}</td>
-	</tr>
-
-	<tr>
-		<th>type</th>
-		<td>{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&t={$dot.type|escape}">{$dot.type|escape}</a>{else}&#8212;{/if}</td>
-	</tr>
+{* pagination *}
+{if $prev_dot || $next_dot}
+	{include file="inc_dot_pagination.txt"}
 {/if}
 
-	{if $dot.address}
-	<tr>
-		<th>address</th>
-		<td>{$dot.address|escape}</td>
-	</tr>
-	{/if}
+{* check magical type, as defined in 'dot.php', then decide layout *}
+{if $dot_is_flickr and $cfg.enable_feature_magicwords.flickr.id}
+	{include file="inc_dot_layout_flickr.txt"}
+{else}
+	{include file="inc_dot_layout_basic_two_column.txt"}
+{/if}
 
-	{if $geocoded_by}
-	<tr>
-		<th>geocoded by</th>
-		<td>{$geocoder_map.$geocoded_by|escape}</td>
-	</tr>
-	{/if}
-
-	{include file="inc_dot_details.txt"}
-
-	{if $is_own}
-		{assign var="perms" value=$dot.perms}
-		{assign var="geocoded_by" value=$dot.geocoded_by}
-
-	<tr>
-		<th>permissions</th>
-		<td>{$permissions_map.$perms|escape}</td>
-	</tr>
-
-	{/if}
-
-	<tr>
-		<th>created</th>
-		<td><a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape})">{$dot.created|escape}</a></td>
-	</tr>
-
-</table>
 {include file="inc_dot_map_js.txt" dot=$dot}
-
 {include file="inc_foot.txt"}

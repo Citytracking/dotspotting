@@ -1,0 +1,15 @@
+{*
+   ********************   ********************
+   *                  *   *                  *
+   *     TABLE        *   *       MAP        *
+   *                  *   *                  *
+   ********************   ********************
+*}
+
+<div class="left_column">
+{include file="inc_dot_table.txt"}
+</div>
+<div class="right_column">
+{include file="inc_map.txt"}
+</div>
+<div class="clear"></div>

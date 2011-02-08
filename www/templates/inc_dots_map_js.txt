@@ -1,13 +1,97 @@
 {literal}
 <script type="text/javascript">
 
-function dot_onclick(dotid){
+function dot_onclick(e){
+	// send click event and data to custom markerclick event
+	// creates the tooltip
 
-	var dot = dot_getinfo(dotid);
-
+	jQuery("#map").trigger('markerclick',[e.data.props,e.data.geo]);
+	
+	/*
 	if (dot['id']){
 		location.href = dot.url;
 	}
+	*/
+}
+
+
+// helper function to highlight dot when user hovers over table row
+function dot_tr_hover(el,type){
+	var raw_dotid = (el.id).split("_");
+	var dotid = raw_dotid[raw_dotid.length-1];
+	if(type == "over"){
+		dot_onmouseover(dotid);
+	}else{
+		dot_onmouseout(dotid);
+		var tlen = _dotspotting.dots_list_mouseout_timers.length;
+
+		for (var i = 0; i < tlen; i++){
+			clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
+		}
+		dot_restore_tr();
+	}
+}
+
+
+// returns string used in tooltip header text
+function dot_tip_header(dotid){
+	
+	var dot = dot_getinfo(dotid);
+	
+	if (! dot['id']){
+		return "";
+	}
+
+	var html = 'This is dot #<a href="' + dot.url + '">' + dot.id + '</a>';
+
+	return html;
+
+}
+
+// returns string used in tooltip body text
+function dot_tip_body(dotid){
+	var dot = dot_getinfo(dotid);
+
+	if (! dot['id']){
+		return "";
+	}
+
+	var html = 'It is owned';
+
+	if ((dot.ownerid) && (dot.ownerid != _dotspotting.user.id)){
+		html += ' by ' + htmlspecialchars(dot.owner);
+	}
+
+	else {
+		html += ' by you';
+	}
+
+	html += '.';
+
+	if (dot.location){
+		var search_url = _dotspotting.abs_root_url + 'search?l=' + encodeURIComponent(dot.location);
+		html += ' It\'s located at <a href="' + search_url + '">' + htmlspecialchars(dot.location) + '</a>.';
+	}
+
+	else if (dot.latitude && dot.longitude){
+		var search_url = _dotspotting.abs_root_url + 'search?gh=' + encodeGeoHash(dot.latitude, dot.longitude);
+		html += ' It\'s located at <a href="' + search_url + '">' + dot.latitude + ',' + dot.longitude + '</a>.';
+	}
+
+	else {} 
+
+	if (dot.type){
+		var search_url = _dotspotting.abs_root_url + 'search?t=' + encodeURIComponent(dot.type);
+		html += ' It\'s a <q><a href="' + search_url + '">' + htmlspecialchars(dot.type) + '</a></q>.';
+	}
+	
+	html += ' <span class="date">Created on: ' + dot.created + '</span>';
+	
+	return html;
+}
+
+function resetBounds(){
+	jQuery("#map").trigger('resetmapbounds');
 }
 
 function dot_onmouseover(dotid){
@@ -52,20 +136,39 @@ function dot_onmouseover(dotid){
 		var search_url = _dotspotting.abs_root_url + 'search?t=' + encodeURIComponent(dot.type);
 		html += ' It\'s a <q><a href="' + search_url + '">' + htmlspecialchars(dot.type) + '</a></q>.';
 	}
-
-	$("#map_info").html(html);
-	$("#map_info").show();
-
+	
+	/*
+		$("#map_info").html(html);
+		$("#map_info").show();
+	*/
+	
+	/* Move dot to bottom of group */
+	var element = document.getElementById("dot_"+dotid);
+	element.parentNode.appendChild(element);
+	
+	/* Add dot hover class, because appendChild breaks ':hover' */
+	var classes = (element.className.baseVal).split(' ');
+	classes.push('dotHover');
+	element.setAttribute('class', classes.join(' '));	
+	
 	dot_highlight_tr(dotid);
 }
 
 function dot_onmouseout(dotid){
+	
+	/* Remove dot hover class */
+	var element = document.getElementById("dot_"+dotid);
+	var classes = (element.className.baseVal).split(' ');
+	classes.pop();
+	element.setAttribute('class', classes.join(' '));
 
+	/*
 	var html = $("#map_info").html();
 	html = html.replace(/^This is/, 'That was');
 
 	$("#map_info").html(html);
-
+	*/
+	
 	var tid = setTimeout(function(){
 
 		$("#map_info").fadeOut('slow', function(){
@@ -359,6 +462,73 @@ function draw_map_polymaps(dots){
 	map.add(points);
 
 	utils_polymaps_add_compass(map);
+	
+	$("#map").bind('resetmapbounds', function(e) {
+		var extent = utils_adjust_bbox(dots.extent);
+		map.extent(extent);
+	});
+	
+	/* 
+		Add ToolTip & bind marker click event to #map
+		
+		tooltip appears on click
+		
+		#############################################################################
+		Because they look so good,
+		code & styles from Portland crime map: https://github.com/Caged/portlandcrime
+		#############################################################################
+	*/
+
+	var mapel = $("#map").parent();
+	
+	$("#map").bind('markerclick', function(e,props,geo) {
+		if(mapel.length == 0) return
+		
+		var dotid = props.id;
+		var coor = geo.coordinates;
+		
+		mapel.maptip(this)
+	      .map(map)
+	      .data(props)
+	      .location({lat: coor[1], lon: coor[0]})
+	      .classNames(function(d) {
+	        return d.code
+	      })
+	      .top(function(tip) {
+	        var point = tip.props.map.locationPoint(this.props.location)
+	        return parseFloat(point.y)
+	      }).left(function(tip) {
+	        var radius = tip.target.getAttribute('r'),
+	            point = tip.props.map.locationPoint(this.props.location)
+
+	        return parseFloat(point.x + (radius / 2.0) + 20)
+	      }).content(function(d) {
+	        var self = this,
+	            props = d,
+	            cnt = $('<div/>'),
+	            hdr = $('<h2/>'),
+	            bdy = $('<p/>'),
+
+	            close = $('<span/>').addClass('close').text('X')
+
+	        hdr.html(dot_tip_header(props.id));
+	         hdr.append(close)
+	        
+
+	        bdy.html(dot_tip_body(props.id))
+
+	        cnt.append($('<div/>').addClass('nub'))
+	        cnt.append(hdr).append(bdy) 
+
+	        close.click(function() {
+	          self.hide()
+	        })   
+
+	        return cnt  
+	      }).render()
+
+	});
+
 	return 1;
 }
 	

@@ -69,8 +69,8 @@ $(document).ready(function(){
 	   pm.innerHTML = location.href;
 	   pm.setAttribute('href', location.href);
      }
-
 });
+		
 {/literal}
 {else}
 {literal}
@@ -83,6 +83,7 @@ $(document).ready(function(){
 	"bInfo" : false,
 	"bProcessing": true,
      });
+
 });
 {/literal}
 {/if}

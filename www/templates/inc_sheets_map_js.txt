@@ -69,9 +69,6 @@ function sheet_onmouseover(sheetid){
 		}
 	}
 
-	$("#map_info").html(html);
-	$("#map_info").show();
-
 	sheet_highlight_tr(sheetid);
 }
 
@@ -91,7 +88,6 @@ function sheet_onmouseout(sheetid){
 		sheet_restore_tr();
 
 	}, 8000);
-
 }
 
 function sheet_highlight_tr(sheetid){

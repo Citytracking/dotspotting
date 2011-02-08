@@ -61,7 +61,8 @@
 			</script>
 			{/literal}		
 			{$stuff.0.value|escape}
-
+		{elseif $label == 'link'}
+			<a href="{$stuff.0.value|escape}" title="photo detail page on flickr">{$stuff.0.value|escape}</a>
 		{else}
 			{foreach from=$stuff item="row"}
 			{$row.value|escape}<br />

@@ -43,7 +43,7 @@ Sheet ID #{$sheet.id|escape}
 <table>
 	<tr>
 		<th>Owner</th>
-		<td><a href="{$owner|@urls_url_for_user}">{$owner.username|escape}</a></td>
+		<td><a href="{$owner|@urls_url_for_user}" title="view {$owner.username|escape}'s page">{$owner.username|escape}</a></td>
 	</tr>
 	<tr>
 		<th>Created</th>
@@ -55,7 +55,7 @@ Sheet ID #{$sheet.id|escape}
 	</tr>
 	<tr>
 		<th>Bounding Box</th>
-		<td>{$sheet.extent.swlat|escape} {$sheet.extent.swlon|escape} {$sheet.extent.nelat|escape} {$sheet.extent.nelon|escape}</td>
+		<td>{$sheet.extent.swlat|escape} {$sheet.extent.swlon|escape} {$sheet.extent.nelat|escape} {$sheet.extent.nelon|escape}<a href="#" onclick="resetBounds();return false;" style="padding-left:20px;" title="reset map bounds to original state">reset map bounds</a></td>
 	</tr>
 	<tr>
 		<th>Permalink</th>

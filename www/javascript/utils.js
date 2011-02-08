@@ -62,7 +62,7 @@ function utils_tile_provider(){
     var rsp = {
 	'template' : template,
 	'hosts' : hosts,
-	'static' : static_tiles,
+	'static' : static_tiles
     };	
 
     return rsp;
@@ -76,7 +76,7 @@ function ensure_valid_url_template(t){
 	return null;
     }
 
-    if (! uri.path.match(/\/{Z}\/{X}\/{Y}\.(?:jpg|png)$/)){
+    if (! uri.path.match(/\/{Z}\/{X}\/{Y}\.(?:jpg|png)$/) ){
 	return null;
     }
 
@@ -109,14 +109,21 @@ function utils_polymap(map_id, more){
 
 	var map = org.polymaps.map();
 	map.container(svg);
-
+	
 	if ((! more) || (! more['static'])){
+		
+		//	inital attempt to add touch support to polymaps
+		if(_dotspotting.enable_touch_support){
+			var touch = org.polymaps.touch();
+			map.add(touch);
+		}else{
+			var drag = org.polymaps.drag();
+			map.add(drag);
 
-		var drag = org.polymaps.drag();
-		map.add(drag);
-
-		var dblclick = org.polymaps.dblclick();	
-		map.add(dblclick);
+			var dblclick = org.polymaps.dblclick();	
+			map.add(dblclick);
+		}
+		
 	}
 
 	var tp = utils_tile_provider();
@@ -162,33 +169,41 @@ function utils_polymaps_assign_dot_properties(e){
 		);
 
 		// Okay! Go!!
-
 		var count_process = to_process.length;
-
+		
 		for (var k = 0; k < count_process; k ++){
 
 			var el = to_process[k][0];
 			var props = to_process[k][1];
-
+			
 			var classes = ['dot'];
 
 			if (props && props.permissions){
 				classes.push('dot_' + props.permissions);
 			}
-
+			
+			//	just add the hover class for single dot pages
+			//	clicking on them doesn't do anything anyways
+			if(props && props.is_page_dot){
+				classes.push('dotHover');
+			}
+			
 			el.setAttribute('class', classes.join(' '));
 			el.setAttribute('r', 8);
 
 			if (props && props.id){
 
 		    		el.setAttribute('id', 'dot_' + props.id);
-
+					utils_svg_title(el,props.id);
+					
 				if (props.is_interactive){
 		    			var enc_id = encodeURIComponent(props.id);
 
 	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
 	    				el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
-	    				el.setAttribute('onclick', 'dot_onclick(' + enc_id + ');return false');
+						// switch inline onclick to jquery bind method
+						// also pass the props & geometry arrays
+						$(el).bind('click', {props: props, geo: f.data.geometry}, dot_onclick); 
 				}
 			}
 
@@ -204,7 +219,7 @@ function utils_polymaps_assign_sheet_properties (e){
 	if (! count){
 		return;
 	}
-
+	
 	for (var i=0; i < count; i++){
 
 		var f = e.features[i];
@@ -213,7 +228,7 @@ function utils_polymaps_assign_sheet_properties (e){
 		var to_process = new Array(
 			[ f.element, data.properties ]
 		);
-
+	
 		// Okay! Go!!
 
 		var count_process = to_process.length;
@@ -222,6 +237,11 @@ function utils_polymaps_assign_sheet_properties (e){
 
 			var el = to_process[k][0];
 			var props = to_process[k][1];
+			
+			/* Move dot to bottom of group */
+			
+			el.parentNode.appendChild(el);
+			
 
 			el.setAttribute('class', 'sheet');
 
@@ -232,10 +252,18 @@ function utils_polymaps_assign_sheet_properties (e){
 				el.setAttribute('id', 'sheet_' + data.properties.id);
 				el.setAttribute('onmouseover', 'sheet_onmouseover(' + enc_id + ');return false');
 				el.setAttribute('onmouseout', 'sheet_onmouseout(' + enc_id + ');return false');
+				el.setAttribute('onclick', 'sheet_onclick(' + enc_id + ');return false');
+				utils_svg_title(el,props.label);
 			}
 
 		}
 	}
+}
+
+// add title to svg elements (dots, sheets)
+function utils_svg_title(el,title){
+	el.setAttribute('title', title);
+	el.appendChild( document.createElementNS(org.polymaps.svg.ns, "title") ).appendChild(document.createTextNode(title));
 }
 
 function utils_modestmap(map_id, more){
@@ -299,4 +327,16 @@ function utils_adjust_bbox(bbox){
 	bbox[1]['lat'] += offset;
 	bbox[1]['lon'] += offset;
 	return bbox;
+}
+
+// 	simple check to detect touch support
+//	not thoughly tested
+function isTouchDevice() {
+   var el = document.createElement('div');
+   el.setAttribute('ongesturestart', 'return;');
+   if(typeof el.ongesturestart == "function"){
+      return true;
+   }else {
+      return false
+   }
 }
