@@ -34,8 +34,9 @@ background-color: pink;
 {assign var="col_idx" value=$smarty.foreach.headers.index}
 	<th class="col_preprocess">
 		{$colname|escape}
-		| <a href="#" onclick="delete_col({$col_idx});return false;">d</a>
-		| <a href="#" onclick="update_col({$col_idx});return false;">e</a>
+		&#160;<a href="#" onclick="update_col({$col_idx});return false;">[e]</a>
+		&#160;<a href="#" onclick="geocode_col({$col_idx});return false;">[g]</a>
+		&#160;<a href="#" onclick="delete_col({$col_idx});return false;" style="color:red;">[x]</a>
 	</th>
 {/foreach}
 </tr>
@@ -256,6 +257,21 @@ function delete_col(idx){
 	});
 
 	return;
+}
+
+function geocode_col(idx){
+
+	alert('please to write me...');
+	return;
+
+	// because these will all be asynchronous api calls, should we block
+	// all the other functions that may affect this column?
+	// (20100207/straup)
+
+	$("#pre_process tbody tr").map(function(i, row){
+
+	});
+
 }
 
 </script>
