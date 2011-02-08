@@ -9,7 +9,7 @@
 		error_404();
 	}
 
-	if (login_is_loggedin()){
+	if ($GLOBALS['cfg']['user']['id']){
 
 		header("location: /");
 		exit();
@@ -72,7 +72,7 @@
 
 		$user = users_get_by_id($user['user_id']);
 
-		login_do_login($user, "/account/?password=1");
+		login_do_login($user);
 		exit();	
 	}
 
