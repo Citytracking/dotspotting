@@ -11,7 +11,7 @@
 
 	#################################################################
 
-	login_ensure_loggedin("{$GLOBALS['cfg']['abs_root_url']}upload");
+	login_ensure_loggedin("{$GLOBALS['cfg']['abs_root_url']}upload2");
 
 	if (! $GLOBALS['cfg']['enable_feature_import']){
 
