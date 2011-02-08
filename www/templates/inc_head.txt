@@ -23,7 +23,7 @@
 		    'maptiles_template_url' : '{$cfg.maptiles_template_url|escape}',
 		    'maptiles_template_hosts' : '{$cfg.maptiles_template_hosts|@join:","|escape}'.split(','),
 		    'use_polymaps' : Modernizr.svg,
-			'enable_touch_support' : isTouchDevice(),
+		    'enable_touch_support' : false,
 		    'js_loadlib' : false,
 
 		    'dots_list_mouseout_timers' : [],
@@ -45,6 +45,7 @@
 		.script(_dotspotting.abs_root_url + 'javascript/polymaps_touch.min.js')
 		.wait(function(){
 			_dotspotting.js_loadlib = true;
+			_dotspotting.enable_touch_support = isTouchDevice();
 		});
 		
     }   
