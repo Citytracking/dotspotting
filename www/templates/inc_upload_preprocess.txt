@@ -30,8 +30,13 @@ background-color: pink;
 <tr>
 <th>{* delete *}</th>
 <th>{* row id *}</th>
-{foreach from=$data.0 item="ignore" key="colname"}
-	<th>{$colname|escape}</th>
+{foreach from=$data.0 item="ignore" key="colname" name="headers"}
+{assign var="col_idx" value=$smarty.foreach.headers.index}
+	<th class="col_preprocess">
+		{$colname|escape}
+		| <a href="#" onclick="delete_col({$col_idx});return false;">d</a>
+		| <a href="#" onclick="update_col({$col_idx});return false;">e</a>
+	</th>
 {/foreach}
 </tr>
 </thead>
@@ -53,11 +58,10 @@ background-color: pink;
 {assign var="col_ok" value="1"}
 
 {if $errors.$row_idx and $errors.$row_idx.column==$columns.$col_idx}
-{assign var="col_class" value="col_preprocess_error"}
 {assign var="col_ok" value="0"}
 {/if}
 
-<td contenteditable="true" class="{$col_class}">{$value|escape}</td>
+<td contenteditable="true" class="{$col_class}{if ! $col_ok} col_preprocess_error{/if}">{$value|escape}</td>
 
 {/foreach}
 
@@ -160,6 +164,8 @@ function delete_row(idx){
 	var dt = $('#pre_process').dataTable();
 	dt.fnDeleteRow(idx);
 
+	// please tell me there's a better way to do this...
+
 	$("#pre_process tbody tr").map(function(i, row){
 
 		var onclick = "delete_row(" + i + "); return false;";
@@ -171,6 +177,85 @@ function delete_row(idx){
 			delete_col.setAttribute('onclick', onclick);
 		}
 	});
+}
+
+function update_col(idx){
+
+	var update = prompt("New stuff");
+
+	if (update == undefined){
+		return;
+	}
+
+	if (! confirm("Are you sure you want to update all the [fix me] columns with: " + update)){
+		return;
+	}
+
+	$("#pre_process tbody tr").map(function(i, row){
+
+		var cols = $(row).find("td.col_preprocess");
+		var col = cols[idx];
+
+		col.innerHTML = update;
+	});
+
+	return;
+}
+
+function delete_col(idx){
+
+	if (! confirm("Are you sure you want to delete the [fix me] columns from all rows?")){
+		return;
+	}
+
+	var headers = $("#pre_process thead tr").map(function(i, row){
+
+		$(row).find("th.col_preprocess:eq(" + idx + ")").remove();
+	});
+
+	$("#pre_process tbody tr").map(function(i, row){
+
+		$(row).find("td.col_preprocess:eq(" + idx + ")").remove();
+	});
+
+	// please tell me there's a better way to do this...
+
+	$("#pre_process thead tr").map(function(i, row){
+
+		var headers = $(row).find("th.col_preprocess");
+		var head_count = headers.length;
+
+		for (var j = 0; j < head_count; j++){
+
+			var anchors = $(headers[j]).find("a");
+			var count = anchors.length;
+	
+			for (var a = 0; a < count; a++){
+
+				var action = anchors[a].getAttribute('onclick');
+
+				if (action.indexOf("delete_col") == 0){
+					action = "delete_col(" + j + "); return false;";
+				}
+
+				else if (action.indexOf("update_col") == 0){
+					action = "update_col(" + j + "); return false;";
+				}
+
+				else if (action.indexOf("geocode_col") == 0){
+					action = "geocode_col(" + j + "); return false;";
+				}
+
+				else {}
+
+				// console.log('i:' + i + ' a:' + a + ' j:' + j + ' -- ' + action);
+				anchors[a].setAttribute('onclick', action);
+			}
+		}
+
+	});
+
+	return;
 }
 
 </script>
