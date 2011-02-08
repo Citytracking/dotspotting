@@ -242,8 +242,8 @@
 			$args['from_name'] = $GLOBALS['cfg']['password_retrieval_from_name'];
 		}
 
-		$ok = email_send($args);
-		return $ok;
+		email_send($args);
+		return 1;
 	}
 
 	#################################################################
