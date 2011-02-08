@@ -43,7 +43,8 @@ background-color: pink;
 <a name="row{$row_idx|escape}"></a>
 
 <tr id="row_preprocess_{$row_idx|escape}">
-<td><a href="#" onclick="delete_row({$row_idx|escape}); return false;" style="font-size:11px; color:red;">[x]</a></td>
+{* see that? we're pass the smarty 0-based count *}
+<td><a href="#" onclick="delete_row({$smarty.foreach.records.index}); return false;" style="font-size:11px; color:red;">[x]</a></td>
 <td><strong style="color:#000;">{$row_idx|escape}</strong></td>
 
 {foreach from=$row item="value" name="columns" key="colname"}
@@ -150,20 +151,26 @@ function collect_data(){
 
 function delete_row(idx){
 
-	var tr = $('#row_preprocess_' + idx);
-
-	if (! tr){
-		alert("Invalid row id!");
-		return;
-	}
-
 	var prompt = "Are you sure you want to delete this row?";
 
 	if (! confirm(prompt)){
 		return;
 	}
 
-	tr.remove();
+	var dt = $('#pre_process').dataTable();
+	dt.fnDeleteRow(idx);
+
+	$("#pre_process tbody tr").map(function(i, row){
+
+		var onclick = "delete_row(" + i + "); return false;";
+
+		var cols = $(row).find("td a");
+
+		if (cols.length){
+			delete_col = cols[0];
+			delete_col.setAttribute('onclick', onclick);
+		}
+	});
 }
 
 </script>
