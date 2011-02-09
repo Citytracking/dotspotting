@@ -31,6 +31,47 @@
 
 	#################################################################
 
+	# this is not finished yet
+	# (20110208/straup)
+
+	function dots_get_bookends_for_dot(&$dot, $viewer_id=0, $count=1){
+
+		$user = users_get_by_id($dot['user_id']);
+
+		$enc_id = AddSlashes($dot['id']);
+		$enc_sheet = AddSlashes($dot['sheet_id']);
+
+		$enc_count = AddSlashes($count);
+
+		# FIX ME: perms
+
+		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_sheet}' AND id < '{$enc_id}' LIMIT {$enc_count}";
+		$rsp_before = db_fetch_users($user['cluster_id'], $sql);
+
+		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_sheet}' AND id > '{$enc_id}' LIMIT {$enc_count}";
+		$rsp_after = db_fetch_users($user['cluster_id'], $sql);
+
+		$before = array();
+		$after = array();
+
+		foreach ($rsp_before['rows'] as $dot){
+			dots_load_details($dot, $viewer_id);
+			$before[] = $dot;
+		}
+
+		foreach ($rsp_after['rows'] as $dot){
+			dots_load_details($dot, $viewer_id);
+			$after[] = $dot;
+		}
+
+		return array(
+			'before' => $before,
+			'after' => $after,
+		);
+	}
+
+	#################################################################
+
 	function dots_import_dots(&$user, &$sheet, &$dots, $more=array()){
 
 		$received = 0;
