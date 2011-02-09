@@ -31,9 +31,6 @@
 
 	#################################################################
 
-	# this is not finished yet
-	# (20110208/straup)
-
 	function dots_get_bookends_for_dot(&$dot, $viewer_id=0, $count=1){
 
 		$user = users_get_by_id($dot['user_id']);
@@ -43,30 +40,40 @@
 
 		$enc_count = AddSlashes($count);
 
-		# FIX ME: perms
+		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_sheet}' AND id < '{$enc_id}'";
+		$sql = _dots_where_public_sql($sql);
 
-		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_sheet}' AND id < '{$enc_id}' LIMIT {$enc_count}";
+		$sql .= " LIMIT {$enc_count}";
+
 		$rsp_before = db_fetch_users($user['cluster_id'], $sql);
 
-		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_sheet}' AND id > '{$enc_id}' LIMIT {$enc_count}";
+		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_sheet}' AND id > '{$enc_id}'";
+		$sql = _dots_where_public_sql($sql);
+
+		$sql .= " LIMIT {$enc_count}";
+
 		$rsp_after = db_fetch_users($user['cluster_id'], $sql);
 
 		$before = array();
 		$after = array();
 
-		foreach ($rsp_before['rows'] as $dot){
-			dots_load_details($dot, $viewer_id);
-			$before[] = $dot;
+		# Note the $_dot so we don't accidentally blow away
+		# $dot which has been passed by reference...
+
+		foreach ($rsp_before['rows'] as $_dot){
+			dots_load_details($_dot, $viewer_id);
+			$before[] = $_dot;
 		}
 
-		foreach ($rsp_after['rows'] as $dot){
-			dots_load_details($dot, $viewer_id);
-			$after[] = $dot;
+		foreach ($rsp_after['rows'] as $_dot){
+			dots_load_details($_dot, $viewer_id);
+			$after[] = $_dot;
 		}
 
 		return array(
 			'before' => $before,
 			'after' => $after,
+			'count' => count($before) + count($after),
 		);
 	}
 
@@ -964,6 +971,7 @@
 		if ($more['load_user']){
 			$dot['user'] = users_get_by_id($dot['user_id']);
 		}
+
 	}
 
 	#################################################################
