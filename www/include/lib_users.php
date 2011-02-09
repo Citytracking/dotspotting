@@ -229,11 +229,20 @@
 
 		$GLOBALS['smarty']->assign('code', $code);
 
-		email_send(array(
+		$args = array(
 			'to_email'	=> $user['email'],
 			'template'	=> 'email_password_reset.txt',
-		));
+		);
 
+		if (isset($GLOBALS['cfg']['password_retrieval_from_email'])){
+			$args['from_email'] = $GLOBALS['cfg']['password_retrieval_from_email'];
+		}
+
+		if (isset($GLOBALS['cfg']['password_retrieval_from_name'])){
+			$args['from_name'] = $GLOBALS['cfg']['password_retrieval_from_name'];
+		}
+
+		email_send($args);
 		return 1;
 	}
 

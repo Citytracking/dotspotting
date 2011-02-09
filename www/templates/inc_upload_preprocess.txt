@@ -1,29 +1,71 @@
-<table id="pre_process">
+{literal}
+<style type="text/css">
+.col_preprocess_error {
+background-color: pink;
+}
+</style>
+{/literal}
+
+<h2>Data Inspector</h2>
+
+	<p>Here are all of the dots we found in your document. You can use this page to update individual columns (just click on a column to edit it) or delete entire rows if necessary. When you're done checking your dots, just hit <a href="#submit">submit button at the bottom of the page</a> and your dots will be added to Dotspotting.</p>
+
+{if $errors|@count}
+
+<p>Hey look! We found the following errors in your data:</p>
+
+<ul>
+{foreach from=$errors item="row"}
+<li><strong>The <q>{$row.column|escape}</q> column in <a href="#row{$row.record|escape}">row #{$row.record|escape}</a>:</strong> {$row.error|escape}</li>
+{/foreach}
+</ul>
+
+{/if}
+
+<p style="font-size:11px;font-style:italic;">TO DO: The ability to select a column and affect all the member rows (geocoding, changing the value).</p>
+
+<table id="pre_process" class="ds_table">
 
 <thead>
 <tr>
-{foreach from=$data.0 item="ignore" key="colname"}
-	<th>{$colname|escape}</th>
+<th>{* delete *}</th>
+<th>{* row id *}</th>
+{foreach from=$data.0 item="ignore" key="colname" name="headers"}
+{assign var="col_idx" value=$smarty.foreach.headers.index}
+	<th class="col_preprocess">
+		<span class="colname">{$colname|escape}</span>
+		&#160;<a href="#" onclick="update_col({$col_idx});return false;">[e]</a>
+		&#160;<a href="#" onclick="geocode_col({$col_idx});return false;">[g]</a>
+		&#160;<a href="#" onclick="delete_col({$col_idx});return false;" style="color:red;">[x]</a>
+	</th>
 {/foreach}
 </tr>
 </thead>
 
 <tbody>
 {foreach from=$data item="row" name="records"}
+{assign var="row_idx" value=$smarty.foreach.records.index+1}
 
-{assign var="idx" value=$smarty.foreach.records.index+1}
-{assign var="css_style" value="row"}
-{if $errors.$idx}
-{assign var="css_style" value="row_error"}
-<tr>
-<td colspan="10">{$errors.$idx|escape}</td>
-</tr>
+<a name="row{$row_idx|escape}"></a>
+
+<tr id="row_preprocess_{$row_idx|escape}">
+{* see that? we're pass the smarty 0-based count *}
+<td><a href="#" onclick="delete_row({$smarty.foreach.records.index}); return false;" style="font-size:11px; color:red;">[x]</a></td>
+<td><strong style="color:#000;">{$row_idx|escape}</strong></td>
+
+{foreach from=$row item="value" name="columns" key="colname"}
+{assign var="col_idx" value=$smarty.foreach.columns.index}
+{assign var="col_class" value="col_preprocess"}
+{assign var="col_ok" value="1"}
+
+{if $errors.$row_idx and $errors.$row_idx.column==$columns.$col_idx}
+{assign var="col_ok" value="0"}
 {/if}
 
-<tr class="{$css_style|escape}">
-{foreach from=$row item="value"}
-<td contenteditable="true">{$value|escape}</td>
+<td contenteditable="true" class="{$col_class}{if ! $col_ok} col_preprocess_error{/if}">{$value|escape}</td>
+
 {/foreach}
+
 </tr>
 
 {/foreach}
@@ -31,19 +73,39 @@
 
 </table>
 
-<form action="{$cfg.abs_root_url}upload" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8" id="processed">
+<a name="#submit"></a>
+
+<form action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8" id="processed">
+
+<div style="margin-bottom:25px;margin-top:30px;padding-top:35px;border-top:solid thin; border-bottom:solid thin;">
+
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="data" value="" />
-	<input type="hidden" name="label" value="{$label|escape}" />
-	<input type="hidden" name="private" value="{$private|escape}" />
-	<input type="hidden" name="dots_index_on" value="{$dots_index_on|escape}" />
-	<input type="hidden" name="mime_type" value="{$mime_type|escape}" />
 	<input type="hidden" name="fingerprint" value="{$fingerprint|escape}" />
-	<input type="SUBMIT" value="IMPORT" />
+
+	{include file="inc_upload_file_attributes.txt"}
+
+</div>
+
+<div style="text-align:right;">
+	<input type="SUBMIT" value="OKAY! IMPORT THIS DATA" />
+</div>
+
 </form>
 
 {literal}
 <script type="text/javascript">
+
+$(document).ready(function(){
+
+     var dt = $('#pre_process').dataTable({
+	"bPaginate": false,
+	"bFilter": true,
+	"bInfo" : false,
+	"bProcessing": true,
+     });
+
+});
 
 $("#processed").submit(function(){
 	var data = collect_data();
@@ -59,8 +121,12 @@ function collect_data(){
 
 		var _headers = [];
 
-		$(row).find("th").each(function(col, th){
-			_headers.push($(th).text().toLowerCase());
+		$(row).find("th").each(function(j, col){
+
+			// method.chaining.is.a.tool.of.the.devil().parent()
+			header = $(col).find('span.colname').text().toLowerCase()
+
+			_headers.push(header);
 		});
 
 		return _headers;
@@ -70,9 +136,11 @@ function collect_data(){
 
 		var _row = {};
 
-		$(row).find("td").each(function(col, td){
+		$(row).find("td").each(function(j, td){
 
-			var key = (headers) ? headers[col].toLowerCase() : null;
+			var key = (headers) ? headers[j].toLowerCase() : null;
+			key = key.replace(/^\s+/, '');
+			key = key.replace(/\s+$/, '');
 
 			if (! key){
 				return;
@@ -88,6 +156,126 @@ function collect_data(){
 	});
 
 	return rows;
+}
+
+function delete_row(idx){
+
+	var prompt = "Are you sure you want to delete this row?";
+
+	if (! confirm(prompt)){
+		return;
+	}
+
+	var dt = $('#pre_process').dataTable();
+	dt.fnDeleteRow(idx);
+
+	// please tell me there's a better way to do this...
+
+	$("#pre_process tbody tr").map(function(i, row){
+
+		var onclick = "delete_row(" + i + "); return false;";
+
+		var cols = $(row).find("td a");
+
+		if (cols.length){
+			delete_col = cols[0];
+			delete_col.setAttribute('onclick', onclick);
+		}
+	});
+}
+
+function update_col(idx){
+
+	var update = prompt("New stuff");
+
+	if (update == undefined){
+		return;
+	}
+
+	if (! confirm("Are you sure you want to update all the [fix me] columns with: " + update)){
+		return;
+	}
+
+	$("#pre_process tbody tr").map(function(i, row){
+
+		var cols = $(row).find("td.col_preprocess");
+		var col = cols[idx];
+
+		col.innerHTML = update;
+	});
+
+	return;
+}
+
+function delete_col(idx){
+
+	if (! confirm("Are you sure you want to delete the [fix me] columns from all rows?")){
+		return;
+	}
+
+	var headers = $("#pre_process thead tr").map(function(i, row){
+
+		$(row).find("th.col_preprocess:eq(" + idx + ")").remove();
+	});
+
+	$("#pre_process tbody tr").map(function(i, row){
+
+		$(row).find("td.col_preprocess:eq(" + idx + ")").remove();
+	});
+
+	// please tell me there's a better way to do this...
+
+	$("#pre_process thead tr").map(function(i, row){
+
+		var headers = $(row).find("th.col_preprocess");
+		var head_count = headers.length;
+
+		for (var j = 0; j < head_count; j++){
+
+			var anchors = $(headers[j]).find("a");
+			var count = anchors.length;
+	
+			for (var a = 0; a < count; a++){
+
+				var action = anchors[a].getAttribute('onclick');
+
+				if (action.indexOf("delete_col") == 0){
+					action = "delete_col(" + j + "); return false;";
+				}
+
+				else if (action.indexOf("update_col") == 0){
+					action = "update_col(" + j + "); return false;";
+				}
+
+				else if (action.indexOf("geocode_col") == 0){
+					action = "geocode_col(" + j + "); return false;";
+				}
+
+				else {}
+
+				// console.log('i:' + i + ' a:' + a + ' j:' + j + ' -- ' + action);
+				anchors[a].setAttribute('onclick', action);
+			}
+		}
+
+	});
+
+	return;
+}
+
+function geocode_col(idx){
+
+	alert('please to write me...');
+	return;
+
+	// because these will all be asynchronous api calls, should we block
+	// all the other functions that may affect this column?
+	// (20100207/straup)
+
+	$("#pre_process tbody tr").map(function(i, row){
+
+	});
+
 }
 
 </script>

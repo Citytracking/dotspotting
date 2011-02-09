@@ -11,7 +11,7 @@
 
 	#################################################################
 
-	login_ensure_loggedin("{$GLOBALS['cfg']['abs_root_url']}upload");
+	login_ensure_loggedin("{$GLOBALS['cfg']['abs_root_url']}upload2");
 
 	if (! $GLOBALS['cfg']['enable_feature_import']){
 
@@ -39,6 +39,8 @@
 	$GLOBALS['smarty']->assign("dots_index_on", $dots_index_on);
 	$GLOBALS['smarty']->assign("mime_type", $mime_type);
 
+	#
+	# First grab the file and do some basic validation
 	#
 
 	if (($crumb_ok) && ($_FILES['upload'])){
@@ -84,8 +86,6 @@
 
 				$pre_process = import_process_file($_FILES['upload'], $more);
 
-# dumper($pre_process);
-
 				# convert any errors from a bag of arrays in to a hash
 				# where the key maps to record number (assuming the count
 				# starts at 1.
@@ -108,9 +108,15 @@
 		}
 	}
 
+	#
+	# Okay, finally try to import the data. Note that we re-validate $data
+	# here and we don't reassign the (Smarty) $step variable until everything
+	# looks like it's okay.
+	#
+
 	else if (($crumb_ok) && (post_str("data"))){
 
-		$GLOBALS['smarty']->assign('step', 'import');
+		$GLOBALS['smarty']->assign('step', 'process');
 
 		$fingerprint = post_str('fingerprint');
 		$mime_type = post_str('mime_type');
@@ -119,13 +125,52 @@
 		$raw_data = post_str("data");
 		$data = json_decode($raw_data, "as hash");
 
+		$ok = 1;
+
 		if (! $data){
 
 			$GLOBALS['error']['missing_data'] = 1;
 			$ok = 0;
 		}
 
-		else {
+		if ($ok){
+
+			$more = array(
+				'dots_index_on' => $dots_index_on,
+			);
+
+			$pre_process = import_ensure_valid_data($data);
+
+			if (! $pre_process['ok']){
+
+				$GLOBALS['error']['invalid_data'] = 1;
+				$ok = 0;
+
+				$pre_process['data'] = $data;
+
+				if (count($pre_process['errors'])){
+
+					$_errors = array();
+
+					foreach ($pre_process['errors'] as $e){
+						$_errors[$e['record']] = $e;
+					}
+
+					$pre_process['errors'] = $_errors;
+				}
+
+				$GLOBALS['smarty']->assign_by_ref("pre_process", $pre_process);
+			}
+		}
+
+		#
+		# Everything looks good, so let's try to talk to the database.
+		# Note the part where we're also re-assign $step (below).
+		#
+
+		if ($ok){
+
+			$GLOBALS['smarty']->assign('step', 'import');
 
 			$more = array(
 				'return_dots' => 0,
@@ -144,9 +189,13 @@
 
 	else {
 
-		$import_formats = formats_valid_import_map('key by extension');
-		$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
+		# nuthin' 
 	}
+
+	$GLOBALS['smarty']->assign("upload_endpoint", "upload2");
+
+	$import_formats = formats_valid_import_map('key by extension');
+	$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
 
 	$smarty->display("page_upload2.txt");
 	exit();
