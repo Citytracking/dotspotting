@@ -167,7 +167,8 @@ function utils_polymaps_assign_dot_properties(e){
 		var to_process = new Array(
 			[ f.element, data.properties ]
 		);
-
+		
+		
 		// Okay! Go!!
 		var count_process = to_process.length;
 		
@@ -189,8 +190,8 @@ function utils_polymaps_assign_dot_properties(e){
 			}
 			
 			el.setAttribute('class', classes.join(' '));
-			el.setAttribute('r', 8);
-
+			el.setAttribute('r', 8);			
+		
 			if (props && props.id){
 
 		    		el.setAttribute('id', 'dot_' + props.id);
@@ -198,18 +199,17 @@ function utils_polymaps_assign_dot_properties(e){
 					
 				if (props.is_interactive){
 		    			var enc_id = encodeURIComponent(props.id);
-
 	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
 	    				el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
-						// switch inline onclick to jquery bind method
-						// also pass the props & geometry arrays
-						$(el).bind('click', {props: props, geo: f.data.geometry}, dot_onclick); 
+						el.setAttribute('onclick', 'dot_onclick(' + enc_id + ','+f.data.geometry.coordinates[0]+','+f.data.geometry.coordinates[1]+');return false');
+
+					//	$(el).bind('click', {props: props, geo: f.data.geometry}, dot_onclick); 
 				}
 			}
 
 		}
 	}
-
+	
 }
 
 function utils_polymaps_assign_sheet_properties (e){
@@ -321,11 +321,15 @@ function utils_adjust_bbox(bbox){
 	}
 
 	else {}
-
+	
+	// not sure if there is good way of doing this while trying to achieve 
+	// a max scale and integer zoom levels, at the same time.
+	offset = 0;
 	bbox[0]['lat'] -= offset;
 	bbox[0]['lon'] -= offset;
 	bbox[1]['lat'] += offset;
 	bbox[1]['lon'] += offset;
+	
 	return bbox;
 }
 

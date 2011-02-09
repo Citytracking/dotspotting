@@ -423,6 +423,7 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 	cursor:pointer;
 }
 
+/*
 .dot:hover {
     fill: #00ddee;
     fill-opacity: .8;
@@ -430,6 +431,7 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
     stroke-width: 5;
     stroke-opacity: 1;	
 }
+*/
 .dotHover{
 	fill: #00ddee;
     fill-opacity: .8;

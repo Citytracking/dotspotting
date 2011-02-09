@@ -106,8 +106,6 @@
         el.remove()
       })
     },
-
-	
     
     move: function(event) {
       this.left(this.props.callbackLeft).top(this.props.callbackTop)

@@ -1,17 +1,100 @@
 {literal}
 <script type="text/javascript">
 
-function dot_onclick(e){
+function dot_onclick(id,lon,lat){
 	// send click event and data to custom markerclick event
 	// creates the tooltip
 
-	jQuery("#map").trigger('markerclick',[e.data.props,e.data.geo]);
+	//jQuery("#map").trigger('markerclick',[e.data.props,e.data.geo]);
+	
+	// only continue if dot is currently not selected
+	if(!_dotspotting.selected_dot || _dotspotting.selected_dot != id){
+		_dotspotting.selected_dot = id;
+		
+		// reset dot styles, just in case
+		dot_unselect(id);
+		
+		// trigger the tooltip
+		jQuery("#map").trigger('markerclick',[id,{lat: lat, lon: lon}]);
+		
+		// add highlight class if it isn't there already
+		dotAddClass(document.getElementById("dot_"+id) ,'dotHover');
+	}
 	
 	/*
 	if (dot['id']){
 		location.href = dot.url;
 	}
 	*/
+}
+
+function dotHasClass(element, $class) {
+    var pattern = new RegExp("(^| )" + $class + "( |$)");
+    //ternary to choose
+    return pattern.test(element.className.baseVal) ? true : false;
+}
+
+
+function dotAddClass(element, $class) {
+    var i,newClass;
+    //is the element array-like?
+    if(element.length) {
+        for (i = 0; i < element.length; i++) {
+			
+            if (!dotHasClass(element[i], $class)) {
+				newClass = element[i].className.baseVal;
+                newClass += element[i].className.baseVal === "" ? 
+                $class : " "+$class;
+				element.setAttribute('class', newClass);
+            }
+        }
+    }
+    else { //not array-like
+        if (!dotHasClass(element, $class)) {
+			newClass = element.className.baseVal;
+            newClass += (element.className.baseVal === "") ? $class : " "+$class;
+			element.setAttribute('class', newClass);
+        }
+    }
+
+	
+    return element;
+}
+
+function dotRemoveClass (element, $class) {
+    var pattern = new RegExp("(^| )" + $class + "( |$)");
+    var i,newClass;
+
+    //is element array-like?
+    if(element.length) {
+        for (i = 0; i < element.length; i++) {
+			newClass = element[i].className.baseVal;
+            newClass = newClass.replace(pattern, "$1");
+            newClass = newClass.replace(/ $/, "");  
+			element.setAttribute('class', newClass);          
+        }
+    }
+    else { //nope
+		newClass = element.className.baseVal;
+        newClass = newClass.replace(pattern, "$1");
+        newClass = newClass.replace(/ $/, ""); 
+		console.log(newClass);
+		element.setAttribute('class', newClass); 
+    }
+    return element;
+}
+
+
+// generic function to check to see if class exists
+function checkForClass(arr,toFind){
+	var r = false;
+	for(var c in arr){
+		if(arr[c] == toFind){
+			r = true;
+			break;
+		}
+	}
+	return r;
 }
 
 
@@ -90,6 +173,7 @@ function dot_tip_body(dotid){
 	return html;
 }
 
+// resets map bounds
 function resetBounds(){
 	jQuery("#map").trigger('resetmapbounds');
 }
@@ -143,24 +227,35 @@ function dot_onmouseover(dotid){
 	*/
 	
 	/* Move dot to bottom of group */
+
 	var element = document.getElementById("dot_"+dotid);
 	element.parentNode.appendChild(element);
 	
-	/* Add dot hover class, because appendChild breaks ':hover' */
-	var classes = (element.className.baseVal).split(' ');
-	classes.push('dotHover');
-	element.setAttribute('class', classes.join(' '));	
+	if(_dotspotting.selected_dot != dotid){
+		
+		/* Add dot hover class, because appendChild breaks ':hover' in FF */
+		dotAddClass(element ,'dotHover');
+		
+	}
 	
 	dot_highlight_tr(dotid);
 }
 
-function dot_onmouseout(dotid){
-	
-	/* Remove dot hover class */
-	var element = document.getElementById("dot_"+dotid);
-	var classes = (element.className.baseVal).split(' ');
-	classes.pop();
+// generic function to reset dot styles
+function dot_unselect(dotid){
+	dotRemoveClass(document.getElementById("dot_"+dotid),'dotHover');
+	/*
+	var element = document.getElementById("dot_"+dotid);	
+	var classes = ['dot'];
 	element.setAttribute('class', classes.join(' '));
+	*/
+}
+
+
+function dot_onmouseout(dotid){
+	if(_dotspotting.selected_dot != dotid){
+		dot_unselect(dotid);
+	}
 
 	/*
 	var html = $("#map_info").html();
@@ -442,6 +537,10 @@ function draw_map_modestmaps(dots){
 function draw_map_polymaps(dots){
 
 	var map = utils_polymap('map');
+	var current_map_zoom,org_extent = null;
+	
+	// init selected dot variable
+	_dotspotting.selected_dot = null;
 
 	if (dots.features.length == 1){
 		map.center(dots.center);
@@ -450,8 +549,11 @@ function draw_map_polymaps(dots){
 	else {
 		var extent = utils_adjust_bbox(dots.extent);
 		map.extent(extent);
+		
+		//store original extent
+		org_extent = map.extent();
 	}
-
+	
 	map.zoom(Math.floor(map.zoom()));
 
 	var po = org.polymaps;
@@ -464,10 +566,29 @@ function draw_map_polymaps(dots){
 	utils_polymaps_add_compass(map);
 	
 	$("#map").bind('resetmapbounds', function(e) {
-		var extent = utils_adjust_bbox(dots.extent);
-		map.extent(extent);
+		if(org_extent)map.extent(org_extent);
+		map.zoom(Math.floor(map.zoom()));
 	});
 	
+	
+	// listens for map changes
+	// using it to keep dot svg element highlighted
+	// throughout zoom ranges
+	function handleMapChanges(){
+		if( current_map_zoom != map.zoom() ){
+			if(_dotspotting.selected_dot && _dotspotting.selected_dot !== null){
+				var element = document.getElementById("dot_"+ _dotspotting.selected_dot);
+				dotAddClass(element,'dotHover');
+			}
+		}
+		current_map_zoom = map.zoom();
+	}
+	
+
+	map.on("move",handleMapChanges);
+	map.on("resize",handleMapChanges);
+
+
 	/* 
 		Add ToolTip & bind marker click event to #map
 		
@@ -481,16 +602,18 @@ function draw_map_polymaps(dots){
 
 	var mapel = $("#map").parent();
 	
-	$("#map").bind('markerclick', function(e,props,geo) {
-		if(mapel.length == 0) return
+	$("#map").bind('markerclick', function(e,dotid,coor) {
+		if(mapel.length == 0) return;
 		
-		var dotid = props.id;
-		var coor = geo.coordinates;
+		var props = new Object();
+		props.location = coor;
+		props.map = map;
+		props.id = dotid;
 		
 		mapel.maptip(this)
 	      .map(map)
 	      .data(props)
-	      .location({lat: coor[1], lon: coor[0]})
+	      .location(coor)
 	      .classNames(function(d) {
 	        return d.code
 	      })
@@ -510,21 +633,22 @@ function draw_map_polymaps(dots){
 	            bdy = $('<p/>'),
 
 	            close = $('<span/>').addClass('close').text('X')
+		        hdr.html(dot_tip_header(props.id));
+		        hdr.append(close);
+			
+				
+		        bdy.html(dot_tip_body(props.id))
 
-	        hdr.html(dot_tip_header(props.id));
-	         hdr.append(close)
-	        
+		        cnt.append($('<div/>').addClass('nub'))
+		        cnt.append(hdr).append(bdy) 
 
-	        bdy.html(dot_tip_body(props.id))
+		        close.click(function() {
+		          self.hide();
+					dot_unselect(props.id);
+					_dotspotting.selected_dot = null;
+		        })   
 
-	        cnt.append($('<div/>').addClass('nub'))
-	        cnt.append(hdr).append(bdy) 
-
-	        close.click(function() {
-	          self.hide()
-	        })   
-
-	        return cnt  
+	        	return cnt;
 	      }).render()
 
 	});
