@@ -180,8 +180,24 @@
 			);
 		}
 
+		if (! trim($http_rsp['body'])){
+
+			return array(
+				'ok' => 0,
+				'error' => 'remote service failed to return any data!',
+			);
+		}
+
 		fwrite($fh, $http_rsp['body']);
 		fclose($fh);
+
+		if (! filesize($fname)){
+
+			return array(
+				'ok' => 0,
+				'error' => 'failed to write any data!',
+			);
+		}
 
 		#
 		# Ima Viking!

@@ -8,7 +8,9 @@
 
 	function kml_parse_fh($fh, $more=array()){
 
-		$data = fread($fh, filesize($more['file']['path']));
+		$fsize = filesize($more['file']['path']);
+
+		$data = fread($fh, $fsize);
 		fclose($fh);
 
 		libxml_use_internal_errors(true);
