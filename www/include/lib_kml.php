@@ -71,7 +71,25 @@
 
 		$record = 1;
 
-		$placemarks = ($ctx->Folder) ? $ctx->Folder->Placemark : $ctx->Placemark;
+		# omg... I hate kml...
+
+		$placemarks = array();
+
+		if ($ctx->Folder){
+
+			foreach ($ctx->Folder as $f){
+				foreach ($f->Placemark as $p){
+					$placemarks[] = $p;
+				}
+			}
+		}
+
+		else {
+
+			$placemarks = $ctx->Placemark;
+		}
+
+		#
 
 		foreach ($placemarks as $p){
 
