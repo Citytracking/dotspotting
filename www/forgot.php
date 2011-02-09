@@ -9,8 +9,7 @@
 		error_404();
 	}
 
-	login_ensure_loggedout();
-
+	login_ensure_loggedout("/forgot", 1);
 
 	#
 	# send the reminder?

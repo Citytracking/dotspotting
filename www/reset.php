@@ -34,13 +34,13 @@
 	if (! $user){
 
 		$GLOBALS['error']['nouser'] = 1;		
-		$smarty->display('page_reset.txt');
+		$GLOBALS['smarty']->display('page_reset.txt');
 		exit();	
 	}
 
 	$new_reset_code = users_generate_password_reset_code($user);
 
-	$smarty->assign('reset_code', $new_reset_code);
+	$GLOBALS['smarty']->assign('reset_code', $new_reset_code);
 
 	if (post_str('reset')){
 
@@ -50,30 +50,31 @@
 		if ((! $new_password1) || (! $new_password2)){
 
 			$GLOBALS['error']['missing_password'] = 1;
-			$smarty->display('page_reset.txt');
+			$GLOBALS['smarty']->display('page_reset.txt');
 			exit();	
 		}
 
 		if ($new_password1 !== $new_password2){
 
 			$GLOBALS['error']['password_mismatch'] = 1;
-			$smarty->display('page_reset.txt');
+			$GLOBALS['smarty']->display('page_reset.txt');
 			exit();	
 		}
 
-		if (! users_update_password($user, $new_password1)){
+		$rsp = users_update_password($user, $new_password1);
+
+		if (! $rsp['ok']){
 
 			$GLOBALS['error']['update_failed'] = 1;
-			$smarty->display('page_reset.txt');
+			$GLOBALS['smarty']->display('page_reset.txt');
 			exit();	
 		}
 
 		users_purge_password_reset_codes($user);
-
-		$user = users_get_by_id($user['user_id']);
+		users_reload_user($user);
 
 		login_do_login($user);
-		exit();	
+		exit();
 	}
 
 
@@ -82,4 +83,5 @@
 	#
 
 	$smarty->display('page_reset.txt');
+	exit();
 ?>
