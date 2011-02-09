@@ -31,7 +31,7 @@
 			$label = filter_strict(post_str('label'));
 			$dots_index_on = filter_strict(post_str('dots_index_on'));
 			$private = (post_str('private')) ? 1 : 0;
-		
+
 			$more = array(
 				'return_dots' => 0,
 				'label' => $label,
