@@ -59,6 +59,10 @@
 			);
 		}
 
+		if ($ctx->Folder){
+			$ctx = $ctx->Folder;
+		}
+
 		$label = (string)$ctx->name;
 		$label = import_scrub($label);
 
@@ -67,7 +71,9 @@
 
 		$record = 1;
 
-		foreach ($ctx->Placemark as $p){
+		$placemarks = ($ctx->Folder) ? $ctx->Folder->Placemark : $ctx->Placemark;
+
+		foreach ($placemarks as $p){
 
 			$record ++;
 
