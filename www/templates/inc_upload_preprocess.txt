@@ -33,7 +33,7 @@ background-color: pink;
 {foreach from=$data.0 item="ignore" key="colname" name="headers"}
 {assign var="col_idx" value=$smarty.foreach.headers.index}
 	<th class="col_preprocess">
-		{$colname|escape}
+		<span class="colname">{$colname|escape}</span>
 		&#160;<a href="#" onclick="update_col({$col_idx});return false;">[e]</a>
 		&#160;<a href="#" onclick="geocode_col({$col_idx});return false;">[g]</a>
 		&#160;<a href="#" onclick="delete_col({$col_idx});return false;" style="color:red;">[x]</a>
@@ -121,8 +121,12 @@ function collect_data(){
 
 		var _headers = [];
 
-		$(row).find("th").each(function(col, th){
-			_headers.push($(th).text().toLowerCase());
+		$(row).find("th").each(function(j, col){
+
+			// method.chaining.is.a.tool.of.the.devil().parent()
+			header = $(col).find('span.colname').text().toLowerCase()
+
+			_headers.push(header);
 		});
 
 		return _headers;
@@ -132,9 +136,9 @@ function collect_data(){
 
 		var _row = {};
 
-		$(row).find("td").each(function(col, td){
+		$(row).find("td").each(function(j, td){
 
-			var key = (headers) ? headers[col].toLowerCase() : null;
+			var key = (headers) ? headers[j].toLowerCase() : null;
 			key = key.replace(/^\s+/, '');
 			key = key.replace(/\s+$/, '');
 
