@@ -29,6 +29,8 @@
 
 {include file="inc_upload_file.txt"}
 
+<p style="font-size:small;font-style:italic;text-align:right;">You can also import files directly by: <a href="{$cfg.abs_root_url}upload/url/">URL</a> or from <a href="{$cfg.abs_root_url}upload/flickr/">Flickr</a>.</p>
+
 {/if}
 
 {include file="inc_foot.txt"}
