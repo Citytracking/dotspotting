@@ -320,7 +320,7 @@ table.ds_table thead tr th{
 	user-select: none;
 	text-decoration:underline;
 	color:#fff;
-	border: 2px solid #333;
+	border: 2px solid #333; 
 	background-color: #333;
 }
 
@@ -402,23 +402,23 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 /* cribbed from the datatables examples */
 
 .sorting_asc {
-	background: url('../images/sort_asc.png') no-repeat center right;
+	background: url('../images/sort_asc_1.png') no-repeat center right;
 }
 
 .sorting_desc {
-	background: url('../images/sort_desc.png') no-repeat center right;
+	background: url('../images/sort_desc_1.png') no-repeat center right;
 }
 
 .sorting {
-	 background: url('../images/sort_both.png') no-repeat center right;
+	 background: url('../images/sort_both_1.png') no-repeat center right;
 }
 
 .sorting_asc_disabled {
-	background: url('../images/sort_asc_disabled.png') no-repeat center right;
+	background: url('../images/sort_asc_disabled_1.png') no-repeat center right;
 }
 
 .sorting_desc_disabled {
-	background: url('../images/sort_desc_disabled.png') no-repeat center right;
+	background: url('../images/sort_desc_disabled_1.png') no-repeat center right;
 }
 
 /* polymaps and modestmaps stuff */
