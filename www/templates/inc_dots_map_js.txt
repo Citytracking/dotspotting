@@ -1,24 +1,32 @@
 {literal}
 <script type="text/javascript">
 
-function dot_onclick(id,lon,lat){
+function dot_onclick(dotid,lon,lat){
 	// send click event and data to custom markerclick event
 	// creates the tooltip
-
-	//jQuery("#map").trigger('markerclick',[e.data.props,e.data.geo]);
-	
+		
 	// only continue if dot is currently not selected
-	if(!_dotspotting.selected_dot || _dotspotting.selected_dot != id){
-		_dotspotting.selected_dot = id;
+	if(!_dotspotting.selected_dot || _dotspotting.selected_dot != dotid){
+		
+		// unselect a selected dot
+		if(_dotspotting.selected_dot)dot_unselect(_dotspotting.selected_dot);
+		
+		// assign dot id to global config
+		_dotspotting.selected_dot = dotid;
 		
 		// reset dot styles, just in case
-		dot_unselect(id);
+		dot_unselect(dotid);
 		
 		// trigger the tooltip
-		jQuery("#map").trigger('markerclick',[id,{lat: lat, lon: lon}]);
+		jQuery("#map").trigger('markerclick',[dotid,{lat: lat, lon: lon}]);
 		
 		// add highlight class if it isn't there already
-		dotAddClass(document.getElementById("dot_"+id) ,'dotHover');
+		/*
+		$("#"+"dot_"+dotid).each(function(){
+			dotAddClass($(this)[0] ,'dotHover');
+		});
+		*/
+		dotAddClass(document.getElementById("dot_"+dotid) ,'dotHover');
 	}
 	
 	/*
@@ -56,8 +64,6 @@ function dotAddClass(element, $class) {
 			element.setAttribute('class', newClass);
         }
     }
-
-	
     return element;
 }
 
@@ -84,19 +90,20 @@ function dotRemoveClass (element, $class) {
     return element;
 }
 
-
-// generic function to check to see if class exists
-function checkForClass(arr,toFind){
-	var r = false;
-	for(var c in arr){
-		if(arr[c] == toFind){
-			r = true;
-			break;
-		}
-	}
-	return r;
+// it does as the name says it does
+function unselectAllDots(){
+	$(".dot").each(function(){
+		dotRemoveClass($(this)[0],'dotHover');
+	});
 }
 
+// generic function to reset dot styles
+function dot_unselect(dotid){
+	//dotRemoveClass(document.getElementById("dot_"+dotid),'dotHover');
+	$("#"+"dot_"+dotid).each(function(){
+		dotRemoveClass($(this)[0],'dotHover');
+	});
+}
 
 // helper function to highlight dot when user hovers over table row
 function dot_tr_hover(el,type){
@@ -114,7 +121,6 @@ function dot_tr_hover(el,type){
 		dot_restore_tr();
 	}
 }
-
 
 // returns string used in tooltip header text
 function dot_tip_header(dotid){
@@ -240,17 +246,6 @@ function dot_onmouseover(dotid){
 	
 	dot_highlight_tr(dotid);
 }
-
-// generic function to reset dot styles
-function dot_unselect(dotid){
-	dotRemoveClass(document.getElementById("dot_"+dotid),'dotHover');
-	/*
-	var element = document.getElementById("dot_"+dotid);	
-	var classes = ['dot'];
-	element.setAttribute('class', classes.join(' '));
-	*/
-}
-
 
 function dot_onmouseout(dotid){
 	if(_dotspotting.selected_dot != dotid){
@@ -576,6 +571,14 @@ function draw_map_polymaps(dots){
 	// throughout zoom ranges
 	function handleMapChanges(){
 		if( current_map_zoom != map.zoom() ){
+			/* 
+			I believe there is a better way 
+			to remove highlight class from dots on previous zoom layers
+			but for now this works
+			*/
+			unselectAllDots();
+			
+			// now add highlight class back to a dot that is selected
 			if(_dotspotting.selected_dot && _dotspotting.selected_dot !== null){
 				var element = document.getElementById("dot_"+ _dotspotting.selected_dot);
 				dotAddClass(element,'dotHover');
