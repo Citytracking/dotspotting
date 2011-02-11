@@ -8,7 +8,9 @@
 
 	function kml_parse_fh($fh, $more=array()){
 
-		$data = fread($fh, filesize($more['file']['path']));
+		$fsize = filesize($more['file']['path']);
+
+		$data = fread($fh, $fsize);
 		fclose($fh);
 
 		libxml_use_internal_errors(true);
@@ -59,6 +61,10 @@
 			);
 		}
 
+		if ($ctx->Folder){
+			$ctx = $ctx->Folder;
+		}
+
 		$label = (string)$ctx->name;
 		$label = import_scrub($label);
 
@@ -67,7 +73,27 @@
 
 		$record = 1;
 
-		foreach ($ctx->Placemark as $p){
+		# omg... I hate kml...
+
+		$placemarks = array();
+
+		if ($ctx->Folder){
+
+			foreach ($ctx->Folder as $f){
+				foreach ($f->Placemark as $p){
+					$placemarks[] = $p;
+				}
+			}
+		}
+
+		else {
+
+			$placemarks = $ctx->Placemark;
+		}
+
+		#
+
+		foreach ($placemarks as $p){
 
 			$record ++;
 
