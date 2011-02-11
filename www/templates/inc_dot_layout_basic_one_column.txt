@@ -11,6 +11,5 @@
    *                                         *
    *******************************************
 *}
-
 {include file="inc_map.txt"}
 {include file="inc_dot_table.txt"}
