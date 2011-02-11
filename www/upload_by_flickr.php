@@ -75,7 +75,7 @@
 			'return_dots' => 0,
 
 			# because flickr returns text/xml
-			'assume_mimetype' => 'application/rss+xml',
+			'assume_mime_type' => 'application/rss+xml',
 		);
 
 		if ($GLOBALS['cfg']['enable_feature_dots_indexing']){

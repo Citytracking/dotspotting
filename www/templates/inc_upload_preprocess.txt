@@ -34,9 +34,9 @@ background-color: pink;
 {assign var="col_idx" value=$smarty.foreach.headers.index}
 	<th class="col_preprocess">
 		<span class="colname">{$colname|escape}</span>
-		&#160;<a href="#" onclick="update_col({$col_idx});return false;">[e]</a>
-		&#160;<a href="#" onclick="geocode_col({$col_idx});return false;">[g]</a>
-		&#160;<a href="#" onclick="delete_col({$col_idx});return false;" style="color:red;">[x]</a>
+		&#160;<a href="#" onclick="preprocess_update_col({$col_idx});return false;">[e]</a>
+		&#160;<a href="#" onclick="preprocess_geocode_col({$col_idx});return false;">[g]</a>
+		&#160;<a href="#" onclick="preprocess_delete_col({$col_idx});return false;" style="color:red;">[x]</a>
 	</th>
 {/foreach}
 </tr>
@@ -93,6 +93,8 @@ background-color: pink;
 
 </form>
 
+<script type="text/javascript" src="{$cfg.abs_root_url}javascript/yqlgeo.js"></script>
+
 {literal}
 <script type="text/javascript">
 
@@ -108,14 +110,12 @@ $(document).ready(function(){
 });
 
 $("#processed").submit(function(){
-	var data = collect_data();
+	var data = preprocess_collect_data();
 	data = JSON.stringify(data);
 	$("input[type=hidden][name=data]").val(data);
 });
 
-function collect_data(){
-
-	var rows = [];
+function preprocess_collect_headers(){
 
 	var headers = $("#pre_process thead tr").map(function(i, row){
 
@@ -131,6 +131,15 @@ function collect_data(){
 
 		return _headers;
 	});
+
+	return headers;
+}
+
+function preprocess_collect_data(){
+
+	var rows = [];
+
+	var headers = preprocess_collect_headers();
 
 	$("#pre_process tbody tr").map(function(i, row){
 
@@ -158,7 +167,7 @@ function collect_data(){
 	return rows;
 }
 
-function delete_row(idx){
+function preprocess_delete_row(idx){
 
 	var prompt = "Are you sure you want to delete this row?";
 
@@ -173,18 +182,21 @@ function delete_row(idx){
 
 	$("#pre_process tbody tr").map(function(i, row){
 
-		var onclick = "delete_row(" + i + "); return false;";
+		var action = "preprocess_delete_row(" + i + "); return false;";
 
 		var cols = $(row).find("td a");
 
 		if (cols.length){
 			delete_col = cols[0];
-			delete_col.setAttribute('onclick', onclick);
+			delete_col.setAttribute('onclick', action);
 		}
 	});
 }
 
-function update_col(idx){
+function preprocess_update_col(idx){
+
+	var headers = preprocess_collect_headers();
+	var colname = headers[idx];
 
 	var update = prompt("New stuff");
 
@@ -192,7 +204,7 @@ function update_col(idx){
 		return;
 	}
 
-	if (! confirm("Are you sure you want to update all the [fix me] columns with: " + update)){
+	if (! confirm("Are you sure you want to update all the \"" + colname + "\" column with: " + update)){
 		return;
 	}
 
@@ -207,13 +219,16 @@ function update_col(idx){
 	return;
 }
 
-function delete_col(idx){
+function preprocess_delete_col(idx){
 
-	if (! confirm("Are you sure you want to delete the [fix me] columns from all rows?")){
+	var headers = preprocess_collect_headers();
+	var colname = headers[idx];
+
+	if (! confirm("Are you sure you want to delete the \"" + colname + "\" column from all rows?")){
 		return;
 	}
 
-	var headers = $("#pre_process thead tr").map(function(i, row){
+	$("#pre_process thead tr").map(function(i, row){
 
 		$(row).find("th.col_preprocess:eq(" + idx + ")").remove();
 	});
@@ -239,16 +254,16 @@ function delete_col(idx){
 
 				var action = anchors[a].getAttribute('onclick');
 
-				if (action.indexOf("delete_col") == 0){
-					action = "delete_col(" + j + "); return false;";
+				if (action.indexOf("preprocess_delete_col") == 0){
+					action = "preprocess_delete_col(" + j + "); return false;";
 				}
 
-				else if (action.indexOf("update_col") == 0){
-					action = "update_col(" + j + "); return false;";
+				else if (action.indexOf("preprocess_update_col") == 0){
+					action = "preprocess_update_col(" + j + "); return false;";
 				}
 
-				else if (action.indexOf("geocode_col") == 0){
-					action = "geocode_col(" + j + "); return false;";
+				else if (action.indexOf("preprocess_geocode_col") == 0){
+					action = "preprocess_geocode_col(" + j + "); return false;";
 				}
 
 				else {}
@@ -263,17 +278,31 @@ function delete_col(idx){
 	return;
 }
 
-function geocode_col(idx){
+function preprocess_geocode_col(idx){
 
-	alert('please to write me...');
+	alert("please make me work...");
 	return;
 
 	// because these will all be asynchronous api calls, should we block
 	// all the other functions that may affect this column?
 	// (20100207/straup)
 
+	var headers = preprocess_collect_headers();
+
 	$("#pre_process tbody tr").map(function(i, row){
 
+		var q = $(row).find("td.col_preprocess:eq(" + idx + ")").text();
+		console.log(q);
+
+		yqlgeo.get(q, function(rsp){
+
+			console.log('rsp for ' + q + ' ... ' + idx);
+			console.log(row);
+
+			if (rsp.error){
+				return;
+			}
+		});
 	});
 
 }

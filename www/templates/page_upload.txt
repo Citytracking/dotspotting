@@ -10,7 +10,7 @@
 	{if $rsp.ok}
 		{include file="inc_upload_success.txt" upload=$rsp}
 	{else}
-	<p class="error">Your upload failed with the following errors:{if $rsp.error} {$rsp.error|escape}{/if}</p>
+	<p class="error">Your upload failed with the following errors:{if $rsp.error} {$rsp.error|escape}{else} Ack! Something's definitely wrong when the error monkeys don't even know what say...{/if}</p>
 
 	{if $rsp.errors|@count}
 	<ul>
@@ -21,11 +21,15 @@
 
 	{/if}
 
+	<p>We're sorry that your upload didn't work and we're actively looking for use cases and files we can add to a test suite for Dotspotting. You can send a copy of your file to <a href="mailto:dotspotting@stamen.com">dotspotting@stamen.com</a> and we will take a look and see what we can do to make it work!</p>
+
 	{/if}
 
 {/if}
 
 {include file="inc_upload_file.txt"}
+
+<p style="font-size:small;font-style:italic;text-align:right;">You can also import files directly by: <a href="{$cfg.abs_root_url}upload/url/">URL</a> or from <a href="{$cfg.abs_root_url}upload/flickr/">Flickr</a>.</p>
 
 {/if}
 
