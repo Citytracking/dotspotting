@@ -617,7 +617,6 @@ table.page_dot {
 	margin:0;
 	padding:12px 0 0;
 	width:100%;
-	border-top:2px dotted #ccc;
 }
 table.page_dot tr{
 } 
@@ -654,8 +653,8 @@ table.page_dot td{
 }
 #flickr_holder{
 	height:300px;
-	margin:15px auto 0 auto;
-	overflow:hidden;
+	margin:15px auto 0;
+	/*overflow:hidden;*/
 	padding:0;
 	text-align:center;
 	background: #DCEFEF url(../images/icon_camera.png) 50% 50% no-repeat;
