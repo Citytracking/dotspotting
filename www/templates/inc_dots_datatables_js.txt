@@ -56,6 +56,9 @@ $(document).ready(function(){
 	"bFilter": true,
 	"bInfo" : false,
 	"bProcessing": true,
+	"bScrollInfinite": true,
+	"bScrollCollapse": true,
+	"sScrollY": "200px",
      });
 
      dt.fnSetFilteringHooks();

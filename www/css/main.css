@@ -289,14 +289,19 @@ li code {
 }
 
 /* cribbed from the tablesorter examples */
+
 table.ds_table {
     font-family:arial;
     background-color: #eeeeee;
-    margin:10px 0pt 15px;
+    margin:0;
     font-size: 8pt;
     width: 100%;
     text-align: left;
 }
+
+.dataTables_scrollHeadInner{background-color: #333;}
+
+.dataTables_scrollHeadInner table.ds_table{margin:10px 0pt 0px;background-color: #333;}
 
 table.ds_table thead tr th, table.ds_table tfoot tr th {
     background-color: #eeeeee;
@@ -313,10 +318,14 @@ table.ds_table thead tr th{
 	-moz-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+	text-decoration:underline;
+	color:#fff;
+	border: 2px solid #333;
+	background-color: #333;
 }
 
 table.ds_table thead tr th:hover{
-	color:#00ddee;
+	/*color:#00ddee;*/
 }
 
 table.ds_table thead tr .header {
@@ -350,7 +359,7 @@ table.ds_table thead tr .headerSortDown, table.ds_table thead tr .headerSortUp {
 }
 
 .dataTables_wrapper {
-    margin-top: 25px;
+    margin-top: 0px;
 }
 
 .dataTables_filter {
