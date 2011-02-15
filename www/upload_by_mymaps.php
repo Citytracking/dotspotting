@@ -45,8 +45,8 @@
 		
 		$parsed_url = utils_parse_url($url);
 
-		if (! preg_match("/maps\.google\.com/", $parsed_url['host'])){
-			$GLOBALS['error']['not_flickr'] = 1;
+		if (! google_is_mymaps_hostname($parsed_url['host'])){
+			$GLOBALS['error']['not_mymaps'] = 1;
 			$ok = 0;
 		}
 
