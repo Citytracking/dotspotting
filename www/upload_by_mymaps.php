@@ -51,6 +51,7 @@
 		}
 
 		$GLOBALS['smarty']->assign("url", $url);
+		$GLOBALS['smarty']->assign("scrubbed_url", utils_scrub_url($url));
 		$GLOBALS['smarty']->assign("parsed_url", $parsed_url);
 	}
 

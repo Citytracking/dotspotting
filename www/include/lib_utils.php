@@ -62,4 +62,23 @@
 
 	#################################################################
 
+	function utils_scrub_url($url){
+
+		$parts = utils_parse_url($url);
+
+		$query = array();
+
+		foreach (explode("&", $parts['query']) as $q){
+
+			list($key, $value) = explode("=", $q);
+			$query[$key] = $value;
+		}
+
+		$url = "{$parts['scheme']}://{$parts['host']}{$parts['path']}?";
+		$url .= http_build_query($query);
+
+		return $url;
+	}
+
+	#################################################################
 ?>

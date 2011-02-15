@@ -40,9 +40,9 @@ INVISIBLE ERROR CAT HISSES AT YOU!
 
 {else}
 {if $feed_title}
-<p class="tx1">Are you sure you want to import the map titled <q class="important">{$feed_title|escape}</q> into Dotspotting?</p>
+<p class="tx1">Are you sure you want to import the map titled <q class="important"><a href="{$scrubbed_url}">{$feed_title|escape}</a></q> into Dotspotting?</p>
 {else}
-<p class="tx1">Are you sure you want to import this map into Dotspotting?</p>
+<p class="tx1">Are you sure you want to import all the data from <a href="{$scrubbed_url}">this Google MyMaps document</a> into Dotspotting?</p>
 {/if}
 
 <form method="POST" action="{$cfg.abs_root_url}upload/mymaps/">
