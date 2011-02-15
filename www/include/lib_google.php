@@ -5,6 +5,7 @@
 	#
 
 	loadlib("utils");
+	loadlib("rss");
 
 	#################################################################
 
@@ -92,6 +93,12 @@
 
 		cache_set($cache_key, $feed_url, "cache locally");
 		return $feed_url;
+	}
+
+	#################################################################
+
+	function google_get_mymaps_title($feed_url){
+		return rss_get_title_from_url($feed_url);
 	}
 
 	#################################################################

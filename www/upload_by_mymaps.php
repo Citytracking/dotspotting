@@ -58,7 +58,17 @@
 
 		$feed_url = google_get_mymaps_georss_feed($url);
 
-		if (! $feed_url){
+		# Note: this is a place where things may break if the GOOG
+		# takes too long to return data. Just something to keep in
+		# mind.
+
+		if ($feed_url){
+
+			$feed_title = google_get_mymaps_title($feed_url);
+			$GLOBALS['smarty']->assign("feed_title", $feed_title);
+		}
+
+		else {
 			$GLOBALS['error']['no_feed_url'] = 1;
 			$ok = 0;
 		}
@@ -66,7 +76,7 @@
 
 	#
 
-	if (($url) && ($ok) && post_str('confirm') && crumb_check($crumb_key)){
+	if (($feed_url) && ($ok) && post_str('confirm') && crumb_check($crumb_key)){
 
 		$label = filter_strict(post_str('label'));
 		$private = (post_str('private')) ? 1 : 0;

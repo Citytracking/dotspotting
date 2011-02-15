@@ -39,7 +39,11 @@ INVISIBLE ERROR CAT HISSES AT YOU!
 </form>
 
 {else}
-<p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from the website <q class="important">{$parsed_url.host|escape}</q> into Dotspotting?</p>
+{if $feed_title}
+<p class="tx1">Are you sure you want to import the map titled <q class="important">{$feed_title|escape}</q> into Dotspotting?</p>
+{else}
+<p class="tx1">Are you sure you want to import this map into Dotspotting?</p>
+{/if}
 
 <form method="POST" action="{$cfg.abs_root_url}upload/mymaps/">
 	{$crumb_key|crumb_input}
