@@ -96,7 +96,10 @@
 	}
 
 	$formats = array_values(formats_valid_export_map());
-	$smarty->assign("export_formats", $formats);
+	$GLOBALS['smarty']->assign("export_formats", $formats);
+
+	$formats_pretty_names = formats_pretty_names_map();
+	$GLOBALS['smarty']->assign_by_ref("formats_pretty_names", $formats_pretty_names);
 
 	$smarty->display("page_sheet.txt");
 	exit;

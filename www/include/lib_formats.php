@@ -6,6 +6,26 @@
 
 	#################################################################
 
+	function formats_pretty_names_map(){
+
+		$map = array(
+			'csv' => 'CSV (comma-separated values)',
+			'gpx' => 'GPX',
+			'json' => 'GeoJSON',
+			'kml' => 'KML (Google Earth)',
+			'pdf' => 'PDF',
+			'png' => 'PNG (image)',
+			'ppt' => 'PowerPoint',
+			'rss' => 'GeoRSS',
+			'shp' => 'Shapefile (ESRI)',
+			'xls' => 'Excel',
+		);
+
+		return $map;
+	}
+
+	#################################################################
+
 	function formats_valid_import_map($key_by_extension=0){
 
 		$map = array(
