@@ -22,12 +22,26 @@
 
 		if (! $shp){
 
+			return array(
+				'ok' => 0,
+				'error' => 'Failed to parse shapefile',
+			);
 		}
 
 		$data = array();
 		$errors = array();
 
+		$record = 0;
+
 		while ($record = $shp->getNext()){
+
+			# This is mostly here if/when we break in $parts loop
+
+			if (($more['max_records']) && ($record > $more['max_records'])){
+				break;
+			}
+
+			# What to do about file specific metadata?
 
 			$shp_data = $record->getShpData();
 
@@ -35,16 +49,42 @@
 
 			foreach ($parts as $pt){
 
+				$record ++;
+
+				if (($more['max_records']) && ($record > $more['max_records'])){
+					break;
+				}
+
 				$lat = $pt['y'];
 				$lon = $pt['x'];
-
-				# sudo do better error handling here
 
 				if ((! $lat) || (! $lon)){
 					continue;
 				}
 
 				# check $more for reprojection nonsense here
+
+				if (! geo_utils_is_valid_latitude($lat)){
+
+					$errors[] = array(
+						'record' => $record,
+						'column' => 'latitude',
+						'error' => 'Invalid latitude',
+					);
+
+					continue;
+				}
+
+				if (! geo_utils_is_valid_longitude($lon)){
+
+					$errors[] = array(
+						'record' => $record,
+						'column' => 'longitude',
+						'error' => 'Invalid longitude',
+					);
+
+					continue;
+				}
 
 				$tmp = array(
 					'latitude' => $lat,
@@ -53,6 +93,14 @@
 
 				$data[] = $tmp;
 			}
+		}
+
+		if (! count($data)){
+
+			return array(
+				'ok' => 0,
+				'error' => '',
+			);
 		}
 
 		return array(
