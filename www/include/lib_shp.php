@@ -63,9 +63,12 @@
 				}
 
 				# check $more for reprojection nonsense here
+				# the projection transformation stuff is very
+				# much bleeding edge still and may turn in to
+				# a yak (20110216/straup)
 
 				# loadlib("geo_proj");
-				# $from = 'EPSG:900913';
+				# $from = 'EPSG:26943';
 
 				# $pt = array('latitude' => $lat, 'longitude' => $lon);
 				# $pt = geo_proj_transform($pt, $from, 'EPSG:4326');

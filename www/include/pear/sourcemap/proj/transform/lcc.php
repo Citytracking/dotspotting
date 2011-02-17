@@ -47,27 +47,27 @@ class Sourcemap_Proj_Transform_Lcc extends Sourcemap_Proj_Transform {
         }
 
         $temp = $this->_proj->b / $this->_proj->a;
-        $this->_proj->e = sqrt(1.0 - temp*temp);
+        $this->_proj->e = sqrt(1.0 - $temp * $temp);
 
         $sin1 = sin($this->_proj->lat1);
         $cos1 = cos($this->_proj->lat1);
-        $ms1 = Sourcemap_Proj::msfnz($this->_proj->e, sin1, cos1);
-        $ts1 = Sourcemap_Proj::tsfnz($this->_proj->e, $this->_proj->lat1, sin1);
+        $ms1 = Sourcemap_Proj::msfnz($this->_proj->e, $sin1, $cos1);
+        $ts1 = Sourcemap_Proj::tsfnz($this->_proj->e, $this->_proj->lat1, $sin1);
 
         $sin2 = sin($this->_proj->lat2);
         $cos2 = cos($this->_proj->lat2);
-        $ms2 = Sourcemap_Proj::msfnz($this->_proj->e, sin2, cos2);
-        $ts2 = Sourcemap_Proj::tsfnz($this->_proj->e, $this->_proj->lat2, sin2);
+        $ms2 = Sourcemap_Proj::msfnz($this->_proj->e, $sin2, $cos2);
+        $ts2 = Sourcemap_Proj::tsfnz($this->_proj->e, $this->_proj->lat2, $sin2);
 
         $ts0 = Sourcemap_Proj::tsfnz($this->_proj->e, $this->_proj->lat0, sin($this->_proj->lat0));
 
         if (abs($this->_proj->lat1 - $this->_proj->lat2) > Sourcemap_Proj::EPSLN) {
-            $this->_proj->ns = log(ms1/ms2)/log(ts1/ts2);
+            $this->_proj->ns = log($ms1/$ms2)/log($ts1/$ts2);
         } else {
-            $this->_proj->ns = sin1;
+            $this->_proj->ns = $sin1;
         }
-        $this->_proj->f0 = ms1 / ($this->_proj->ns * pow(ts1, $this->_proj->ns));
-        $this->_proj->rh = $this->_proj->a * $this->_proj->f0 * pow(ts0, $this->_proj->ns);
+        $this->_proj->f0 = $ms1 / ($this->_proj->ns * pow($ts1, $this->_proj->ns));
+        $this->_proj->rh = $this->_proj->a * $this->_proj->f0 * pow($ts0, $this->_proj->ns);
         if(!$this->_proj->title) $this->_proj->title = "Lambert Conformal Conic";
     }
 

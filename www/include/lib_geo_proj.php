@@ -37,7 +37,7 @@
 	function geo_proj_transform($pt, $from, $to){
 
 		$src_pt = new Sourcemap_Proj_Point($pt['longitude'], $pt['latitude']);
-		$new_pt = Sourcemap_Proj::transform($to, $from, $src_pt);
+		$new_pt = Sourcemap_Proj::transform($from, $to, $src_pt);
 
 		return array(
 			'latitude' => $new_pt->y,
