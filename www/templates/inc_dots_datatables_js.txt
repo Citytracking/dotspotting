@@ -22,7 +22,7 @@
 			location.href = parts[0] + '#' + anControl.val();
 
 			var pm = document.getElementById('permalink');
-			pm.innerHTML = location.href;
+			//pm.innerHTML = location.href;
 			pm.setAttribute('href', location.href);
 
 			if (sPreviousSearch === null || sPreviousSearch != anControl.val()) {
@@ -59,6 +59,7 @@ $(document).ready(function(){
 	"bScrollInfinite": true,
 	"bScrollCollapse": true,
 	"sScrollY": "200px",
+	"oLanguage": {"sSearch": "Filter table:"}
      });
 
      dt.fnSetFilteringHooks();
@@ -85,6 +86,9 @@ $(document).ready(function(){
 	"bSort": false,
 	"bInfo" : false,
 	"bProcessing": true,
+	"bScrollInfinite": true,
+	"bScrollCollapse": true,
+	"sScrollY": "200px",
      });
 
 });

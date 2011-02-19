@@ -50,6 +50,7 @@ $(document).ready(function(){
 	"bScrollInfinite": true,
 	"bScrollCollapse": true,
 	"sScrollY": "200px",
+	"oLanguage": {"sSearch": "Filter table:"},
      }).fnSetFilteringHooks();
 
 });
