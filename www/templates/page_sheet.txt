@@ -18,7 +18,7 @@ An unnamed sheet of dots by {$owner.username|escape}
 {/capture}
 {include file="inc_head.txt"}
 
-<h2>
+<h2 id="sheet_h2">
 {if $sheet.label}
 {$sheet.label|escape}
 {else}
@@ -27,7 +27,7 @@ Sheet ID #{$sheet.id|escape}
 
 <span style="font-size:small;">/ export as
 {foreach from=$export_formats item="fmt" name="formats"}
-<a onclick="sheet_export_visible('{$fmt|escape}', '{$sheet|@urls_url_for_sheet}export.{$fmt|escape}');return false;" href="#">{$fmt}</a>{if ! $smarty.foreach.formats.last}, {/if}
+<a onclick="sheet_export_visible('{$fmt.label|escape}', '{$sheet|@urls_url_for_sheet}export.{$fmt.label|escape}');return false;" href="#" title="{$fmt.desc}">{$fmt.label}</a>{if ! $smarty.foreach.formats.last}, {/if}
 {/foreach}
 </span>
 </h2>
@@ -40,29 +40,30 @@ Sheet ID #{$sheet.id|escape}
 </form>
 {/if}
 
-<table>
+<table id="sheet_meta_info" class="page_dot">
 	<tr>
 		<th>Owner</th>
 		<td><a href="{$owner|@urls_url_for_user}" title="view {$owner.username|escape}'s page">{$owner.username|escape}</a></td>
 	</tr>
 	<tr>
 		<th>Created</th>
-		<td>{$sheet.created|date_format:"%Y-%m-%d %H %M"|escape}</td>
+		<td>{$sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}</td>
 	</tr>
 	<tr>
 		<th>Last Modified</th>
-		<td>{$sheet.created|date_format:"%Y-%m-%d %H %M"|escape}</td>
+		<td>{$sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}</td>
 	</tr>
 	<tr>
 		<th>Bounding Box</th>
-		<td>{$sheet.extent.swlat|escape} {$sheet.extent.swlon|escape} {$sheet.extent.nelat|escape} {$sheet.extent.nelon|escape}<a href="#" onclick="resetBounds();return false;" style="padding-left:20px;" title="reset map bounds to original state">reset map bounds</a></td>
+		<td>{$sheet.extent.swlat|escape} {$sheet.extent.swlon|escape} {$sheet.extent.nelat|escape} {$sheet.extent.nelon|escape}</td>
 	</tr>
-	<tr>
-		<th>Permalink</th>
-		<td><a href="{$sheet|@urls_url_for_sheet}" id="permalink">{$sheet|@urls_url_for_sheet}</a></td>
-	</tr>
-
 </table>
+
+<div id="sheet_utilities">
+	<a href="#" onclick="resetBounds();return false;" style="padding-left:20px;" title="return map to original state">reset map bounds</a>
+	 | 
+	<a href="{$sheet|@urls_url_for_sheet}" id="permalink" title="share this page with others">permalink</a>
+</div>
 
 {include file="inc_dots_list.txt" dots=$sheet.dots is_sheet=1}
 

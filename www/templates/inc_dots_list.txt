@@ -1,6 +1,6 @@
 {include file="inc_map.txt"}
 
-{* hidden for now *}
+{* hidden for now (display:none) *}
 <div id="user_dots_processing" class="dataTables_processing"></div>
 
 <table id="user_dots" class="ds_table">
@@ -29,7 +29,9 @@
 			{if $is_own}
 			<th title="sort by permissions">Permissions</th>
 			{/if}
+			{*
 			<th title="sort by misc fields associated w/ dot">Other</th>
+			*}
 		</tr>
 	</thead>
 	<tbody>
@@ -91,11 +93,13 @@
 				&#8212;
 			{/if}
 				</td>
-
+			
 			{if $is_own}
 				<td class="dotslist_permissions">{$permissions_map.$perms|escape}</td>
 			{/if}
+				{*
 				<td class="dotslist_details" style="font-size:11px;">{if $dot.details_listview}{$dot.details_listview|escape}{else}&#8212;{/if}</td>
+				*}
 			</tr>
 		{/foreach}
 	</tbody>
