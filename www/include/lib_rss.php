@@ -8,11 +8,30 @@
 
 	loadlib("geo_utils");
 
+	include_once("magpie/rss_fetch.inc");
+
+	#################################################################
+
+	function rss_get_title_from_url($url){
+
+		$rsp = http_get($url);
+
+		if (! $rsp['ok']){
+			return null;
+		}
+
+		if (! $rsp['body']){
+			return null;
+		}
+
+		$rss = new MagpieRSS($rsp['body'], 'utf-8', 'utf-8', true );
+
+		return $rss->channel['title'];
+	}
+
 	#################################################################
 
 	function rss_parse_fh($fh, $more=array()){
-
-		include_once("magpie/rss_fetch.inc");
 
 		$xml = fread($fh, filesize($more['file']['path']));
 		fclose($fh);

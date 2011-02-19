@@ -94,9 +94,13 @@
 		$smarty->assign("permissions_map", dots_permissions_map());
 		$smarty->assign("geocoder_map", geo_geocode_service_map());
 	}
-	
-	$formats = array_values(formats_valid_export_map_display());
-	$smarty->assign("export_formats", $formats);
+
+	$formats = array_values(formats_valid_export_map());
+	$GLOBALS['smarty']->assign("export_formats", $formats);
+
+	$formats_pretty_names = formats_pretty_names_map();
+	$GLOBALS['smarty']->assign_by_ref("formats_pretty_names", $formats_pretty_names);
+
 
 	$smarty->display("page_sheet.txt");
 	exit;

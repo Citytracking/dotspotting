@@ -42,7 +42,7 @@
 
 		$data = array();
 		$errors = array();
-		$record = 1;
+		$record = 0;
 
 		for ($i=2; $i < $rows; $i++){
 

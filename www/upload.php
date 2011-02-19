@@ -61,6 +61,9 @@
 	$import_formats = formats_valid_import_map('key by extension');
 	$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
 
+	$formats_pretty_names = formats_pretty_names_map();
+	$GLOBALS['smarty']->assign_by_ref("formats_pretty_names", $formats_pretty_names);
+
 	$GLOBALS['smarty']->display("page_upload.txt");
 	exit();
 ?>

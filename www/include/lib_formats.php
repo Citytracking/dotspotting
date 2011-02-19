@@ -6,6 +6,26 @@
 
 	#################################################################
 
+	function formats_pretty_names_map(){
+
+		$map = array(
+			'csv' => 'CSV (comma-separated values)',
+			'gpx' => 'GPX',
+			'json' => 'GeoJSON',
+			'kml' => 'KML (Google Earth)',
+			'pdf' => 'PDF',
+			'png' => 'PNG (image)',
+			'ppt' => 'PowerPoint',
+			'rss' => 'GeoRSS',
+			'shp' => 'Shapefile (ESRI)',
+			'xls' => 'Excel',
+		);
+
+		return $map;
+	}
+
+	#################################################################
+
 	function formats_valid_import_map($key_by_extension=0){
 
 		$map = array(
@@ -14,6 +34,7 @@
 			'application/x-javascript' => 'json',
 			'application/vnd.google-earth.kml+xml' => 'kml',
 			'application/rss+xml' => 'rss',
+			'application/vnd.esri-shapefile' => 'shp',
 			'application/vnd.ms-excel' => 'xls',
 		);
 
@@ -28,39 +49,7 @@
 	}
 
 	#################################################################
-	
-	/* 
-	 * 	Just trying to map a description to each export type, so they can be used for link titles and such
-	 *	TODO: eliminate this and roll into the regular one below 
-	 *	the array_flip is the hangup
-     *
-	 *	NOTE: when fixed, need to change ref's in 'sheet.php' & 'search.php'
-	*/
-	function formats_valid_export_map_display(){
-		$map = array(
-			'text/csv' => array('label'=>'csv','desc'=>'export sheet in comma separated value file format'),
-			'application/gpx+xml' => array('label'=>'gpx','desc'=>'export sheet in GPS file format'),
-			'application/x-javascript' => array('label'=>'json','desc'=>'export sheet in JavaScript Object Notation format'),
-			'application/vnd.google-earth.kml+xml' => array('label'=>'kml','desc'=>'export sheet in Keyhole Markup Language format'),
-			'application/vnd.ms-powerpoint' => array('label'=>'ppt','desc'=>'export sheet as a Powerpoint'),
-			'application/rss+xml' => array('label'=>'rss','desc'=>'export sheet in Really Simple Syndication format'),
-			'application/vnd.ms-excel' => array('label'=>'xls','desc'=>'export sheet as a Microsoft Excel document'),
-		);
-
-		# Ensure that we can actually generate PNG files
-		# Also, we don't strictly speaking need GD to
-		# generate PDF files except for the part where we
-		# want to include PNG files so it's six of one...
-
-		if (function_exists('imagecreatetruecolor')){
-			$map['image/png'] = array('label'=>'png','desc'=>'export map as a PNG image');
-			$map['application/pdf'] = array('label'=>'pdf','desc'=>'export sheet in Portable Document Format');
-		}
-
-		return $map;
-	}
-	
-
+		
 	function formats_valid_export_map($key_by_extension=0){
 		
 		$map = array(
