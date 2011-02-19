@@ -7,7 +7,7 @@
 {if $cfg.enable_feature_search_export and $dots}
 <span style="font-size:small;">/ export as
 {foreach from=$export_formats item="fmt" name="formats"}
-<a href="{$cfg.abs_root_url}search/export/?{$enc_query_args}&format={$fmt|escape}">{$fmt}</a>{if ! $smarty.foreach.formats.last}, {/if}
+<a href="{$cfg.abs_root_url}search/export/?{$enc_query_args}&format={$fmt|escape}" title="Link to export as a {if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if} file">{$fmt}</a>{if ! $smarty.foreach.formats.last}, {/if}
 {/foreach}
 </span>
 {/if}

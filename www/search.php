@@ -124,6 +124,9 @@
 
 		$formats = array_values(formats_valid_export_map());
 		$GLOBALS['smarty']->assign("export_formats", $formats);
+		
+		$formats_pretty_names = formats_pretty_names_map();
+		$GLOBALS['smarty']->assign_by_ref("formats_pretty_names", $formats_pretty_names);
 
 		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();
