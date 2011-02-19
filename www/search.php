@@ -122,7 +122,7 @@
 		$perms_map = dots_permissions_map();
 		$GLOBALS['smarty']->assign_by_ref('permissions_map', $perms_map);
 
-		$formats = array_values(formats_valid_export_map_display());
+		$formats = array_values(formats_valid_export_map());
 		$GLOBALS['smarty']->assign("export_formats", $formats);
 
 		$GLOBALS['smarty']->display('page_search_results.txt');

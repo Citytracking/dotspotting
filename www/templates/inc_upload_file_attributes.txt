@@ -21,7 +21,7 @@
 <select name="mime_type">
 <option>Select a file type</option>
 {foreach from=$import_formats item="type" key="extension"}
-{capture assign="label"}{if $extension=='xls'}Excel{else}{if $extension=='rss' or $extension=='json'}Geo{/if}{$extension|@strtoupper}{/if}{/capture}
+{capture assign="label"}{if $formats_pretty_names.$extension}{$formats_pretty_names.$extension|escape}{else}{$extension|@strtoupper|escape}{/if}{/capture}
 <option value="{$type|escape}"{if $mime_type and $mime_type==$type} selected{/if}>{$label|escape}</option>
 {/foreach}
 </select>

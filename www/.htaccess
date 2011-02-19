@@ -71,6 +71,9 @@ RewriteRule ^upload2/?$				upload2.php?%{QUERY_STRING} [L]
 RewriteRule ^upload/url/?$			upload_by_url.php?%{QUERY_STRING} [L]
 RewriteRule ^upload/flickr/?$			upload_by_flickr.php?%{QUERY_STRING} [L]
 
+RewriteRule ^upload/google/?$			upload_by_mymaps.php?%{QUERY_STRING} [L]
+RewriteRule ^upload/mymaps/?$			upload_by_mymaps.php?%{QUERY_STRING} [L]
+
 # User stuff
 
 RewriteRule ^me(.*)/?$		                        me.php?url=$1&%{QUERY_STRING} [L]

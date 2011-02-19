@@ -27,7 +27,7 @@ Sheet ID #{$sheet.id|escape}
 
 <span style="font-size:small;">/ export as
 {foreach from=$export_formats item="fmt" name="formats"}
-<a onclick="sheet_export_visible('{$fmt.label|escape}', '{$sheet|@urls_url_for_sheet}export.{$fmt.label|escape}');return false;" href="#" title="{$fmt.desc}">{$fmt.label}</a>{if ! $smarty.foreach.formats.last}, {/if}
+<a onclick="sheet_export_visible('{$fmt|escape}', '{$sheet|@urls_url_for_sheet}export.{$fmt|escape}');return false;" href="#" title="Export as a {if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if} file">{$fmt|escape}</a>{if ! $smarty.foreach.formats.last}, {/if}
 {/foreach}
 </span>
 </h2>
