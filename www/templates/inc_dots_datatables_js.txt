@@ -68,9 +68,9 @@ $(document).ready(function(){
 
      if (parts.length == 2){
 	   dt.fnFilter(parts[1]);
-
+	
 	   var pm = document.getElementById('permalink');
-	   pm.innerHTML = location.href;
+	   //pm.innerHTML = location.href;
 	   pm.setAttribute('href', location.href);
      }
 });

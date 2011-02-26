@@ -109,19 +109,15 @@ background-color: pink;
 </div>
 
 <script type="text/javascript" src="{$cfg.abs_root_url}javascript/yqlgeo.js"></script>
+
 {* used to show a modal window when geocoding *}
 <script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery.reveal.js"></script>
 {* google client geocoder library *}
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
 {* YUI DATATABLE FILES *}
-<!--CSS file (default YUI Sam Skin) -->
-<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/2.8.2r1/build/datatable/assets/skins/sam/datatable.css">
-<!-- Dependencies -->
-<script src="http://yui.yahooapis.com/2.8.2r1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
-<script src="http://yui.yahooapis.com/2.8.2r1/build/element/element-min.js"></script>
-<script src="http://yui.yahooapis.com/2.8.2r1/build/datasource/datasource-min.js"></script>
-<script src="http://yui.yahooapis.com/2.8.2r1/build/datatable/datatable-min.js"></script>
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.8.2r1/build/datatable/assets/skins/sam/datatable.css">
+<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.8.2r1/build/yahoo-dom-event/yahoo-dom-event.js&2.8.2r1/build/element/element-min.js&2.8.2r1/build/datasource/datasource-min.js&2.8.2r1/build/datatable/datatable-min.js"></script>
 
 
 {literal}

@@ -160,14 +160,15 @@ function utils_polymaps_assign_dot_properties(e){
 	}
 
 	for (var i=0; i < count; i++){
+		
 
 		var f = e.features[i];
+		
 		var data = f.data;
 
 		var to_process = new Array(
 			[ f.element, data.properties ]
 		);
-		
 		
 		// Okay! Go!!
 		var count_process = to_process.length;
@@ -196,7 +197,7 @@ function utils_polymaps_assign_dot_properties(e){
 
 		    		el.setAttribute('id', 'dot_' + props.id);
 					utils_svg_title(el,props.id);
-					
+				
 				if (props.is_interactive){
 		    			var enc_id = encodeURIComponent(props.id);
 	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
@@ -301,10 +302,10 @@ function utils_modestmaps_add_compass(map){
 // (20101027/straup)
 
 function utils_adjust_bbox(bbox){
-
+	
 	var sw = new LatLon(bbox[0]['lat'], bbox[0]['lon']);
 	var ne = new LatLon(bbox[1]['lat'], bbox[1]['lon']);
-
+	
 	var offset = 0;
 	var dist = sw.distanceTo(ne);
 
