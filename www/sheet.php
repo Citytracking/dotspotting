@@ -88,7 +88,12 @@
 
 	$to_index = array($sheet['dots'][0]);
 	$dots_indexed = dots_indexed_on($to_index);
+	
 	$GLOBALS['smarty']->assign_by_ref("dots_indexed", $dots_indexed);
+	
+	// create a json object of dots to be used by JS 
+	$dots_json = json_encode($sheet['dots']);
+	$GLOBALS['smarty']->assign_by_ref("dot_json", $dots_json);
 
 	if ($is_own){
 		$smarty->assign("permissions_map", dots_permissions_map());

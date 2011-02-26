@@ -73,7 +73,6 @@ function draw_map_modestmaps(dot){
 }
 
 function draw_map (dot){
-
 	if (_dotspotting.use_polymaps){
 		draw_map_polymaps(dot);
 		return;

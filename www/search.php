@@ -72,6 +72,10 @@
 
 			$dots_indexed = dots_indexed_on($rsp['dots']);
 			$GLOBALS['smarty']->assign_by_ref('dots_indexed', $dots_indexed);
+			
+			// create a json object of dots to be used by JS 
+			$dots_json = json_encode($rsp['dots']);
+			$GLOBALS['smarty']->assign_by_ref("dot_json", $dots_json);
 		}
 
 		#
@@ -127,6 +131,7 @@
 		
 		$formats_pretty_names = formats_pretty_names_map();
 		$GLOBALS['smarty']->assign_by_ref("formats_pretty_names", $formats_pretty_names);
+		
 
 		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();
