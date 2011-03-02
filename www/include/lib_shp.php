@@ -3,14 +3,14 @@
 	# $Id$
 	#
 
+	loadpear("ShapeFile");
+
 	#################################################################
 
 	function shp_parse_fh($fh, $more){
 
 		# See also:
 		# http://vis4.net/blog/de/2010/04/reading-esri-shapefiles-in-php/
-
-		loadpear("ShapeFile");
 
 		fclose($fh);
 
@@ -63,6 +63,15 @@
 				}
 
 				# check $more for reprojection nonsense here
+				# the projection transformation stuff is very
+				# much bleeding edge still and may turn in to
+				# a yak (20110216/straup)
+
+				# loadlib("geo_proj");
+				# $from = 'EPSG:26943';
+
+				# $pt = array('latitude' => $lat, 'longitude' => $lon);
+				# $pt = geo_proj_transform($pt, $from, 'EPSG:4326');
 
 				if (! geo_utils_is_valid_latitude($lat)){
 

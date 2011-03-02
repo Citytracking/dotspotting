@@ -10,3 +10,9 @@
 [submodule "ext/modestmaps-php"]
 	path = ext/modestmaps-php
 	url = git@github.com:Citytracking/modestmaps-php.git
+[submodule "Sourcemap-Proj"]
+	path = Sourcemap-Proj
+	url = git@github.com:Citytracking/Sourcemap-Proj.git
+[submodule "ext/Sourcemap-Proj"]
+	path = ext/Sourcemap-Proj
+	url = git@github.com:Citytracking/Sourcemap-Proj.git
