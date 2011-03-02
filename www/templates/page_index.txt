@@ -1,4 +1,5 @@
-{capture assign="page_title}{if $cfg.user.id}Welcome back!{else}Welcome!{/if}{/capture}
+{capture assign="page_title"}{if $cfg.user.id}Welcome back!{else}Welcome!{/if}{/capture}
+{capture assign="page_name"}home{/capture}
 {include file='inc_head.txt'}
 
 {* inside #content div *}
@@ -6,28 +7,66 @@
 {if $cfg.user.id}
 	<h2>Hi {$cfg.user.username|escape}!</h2>
 {else}
-
-		<div style="margin-left:20%;margin-bottom:25px;">
-		<div><a href="http://www.flickr.com/photos/apelad/3866190995/" title="Laugh-Out-Loud Cats #1223 by Ape Lad, on Flickr" target="_flickr"><img src="http://farm3.static.flickr.com/2093/3866190995_2fa09e50bc.jpg" width="500" height="328" alt="Laugh-Out-Loud Cats #1223" /></a></div>
-
-		<div style="font-size:11px;color:#666;max-width:500px;font-style:italic;">kirby dots courtesy <a href="http://www.flickr.com/photos/apelad/3866190995/">laugh-out-loud cats #1223</a> &#8212; what are <a href="https://secure.wikimedia.org/wikipedia/en/wiki/Kirby_dots" target="_wikipedia">kirby dots</a>?</div>
-		</div>
-
-
-	{if $cfg.enable_feature_import}
-		<h2>Welcome to Dotspotting!</h2>
-		
-		<p><a href="{$cfg.abs_root_url}upload">Get started and upload some dots</a> or find out more by reading the Dotspotting <a href="{$cfg.abs_root_url}about">About</a> and <a href="{$cfg.abs_root_url}faq">FAQ</a> pages.</p>
-
-		<p>You can also see recently created <a href="{$cfg.abs_root_url}recent/">sheets</a> and <a href="{$cfg.abs_root_url}recent/dots/">dots</a>!</p>
-	{/if}
-
+	<div id="home_meezy">
+	<h3>Dotspotting is easy:</h3>
+	<ul class="clearfix">
+		<li><span>1</span> Upload your dots</li>
+		<li><span>2</span> Make a map</li>
+		<li><span>3</span> Export and share</li>
+		<li><a href="{$cfg.abs_root_url}upload">Get started now</a></li>
+	</ul>
+	</div>
+	
+	<p>Dotspotting is the first project Stamen is releasing as part of Citytracking, a project funded by the <a href="http://www.newschallenge.org/" title="view website of Knight News Challenge">Knight News Challenge</a>. We're making tools to help people gather data about cities and make that data more legible. The code for Dotspotting is available for <a href="https://github.com/citytracking" title="Github repo for citytracking">download on Github</a>, and licensed for use under the GNU General Public License.</p>
 {/if}
-
+	<div id="home_recents">
 {if $recent_sheets|@count}
-	<h3>Sheets that have been added to Dotspotting recently:</h3>
-	{include file="inc_sheets_list.txt" sheets=$recent_sheets}
+	<h5>Recent sheets:</h5>
+	<dl class="recent_thumbnails">
+	<dt></dt>
+	<dd class="thumb_title">District 10 Blocked Streets/Sidewalks</dd>
+	<dd class="thumb_owner">cmchugh</dd>
+	</dl>
+	<dl class="recent_thumbnails">
+	<dt></dt>
+	<dd class="thumb_title">Farms</dd>
+	<dd class="thumb_owner">ericrodenbeck</dd>
+	</dl>
+	<dl class="recent_thumbnails">
+	<dt></dt>
+	<dd class="thumb_title">Crimespotting(ESRI)</dd>
+	<dd class="thumb_owner">straup</dd>
+	</dl>
+	<dl class="recent_thumbnails">
+	<dt></dt>
+	<dd class="thumb_title">Walking</dd>
+	<dd class="thumb_owner">ericrodenbeck</dd>
+	</dl>
+	<div class="clear"></div>
 {/if}
+	<h5>Recent Dots:</h5>
+	<dl class="recent_thumbnails">
+	<dt></dt>
+	<dd class="thumb_title">District 10 Blocked Streets/Sidewalks</dd>
+	<dd class="thumb_owner">cmchugh</dd>
+	</dl>
+	<dl class="recent_thumbnails">
+	<dt></dt>
+	<dd class="thumb_title">Farms</dd>
+	<dd class="thumb_owner">ericrodenbeck</dd>
+	</dl>
+	<dl class="recent_thumbnails">
+	<dt></dt>
+	<dd class="thumb_title">Crimespotting(ESRI)</dd>
+	<dd class="thumb_owner">straup</dd>
+	</dl>
+	<dl class="recent_thumbnails">
+	<dt></dt>
+	<dd class="thumb_title">Walking</dd>
+	<dd class="thumb_owner">ericrodenbeck</dd>
+	</dl>
+	<div class="clear"></div>
+	</div>
 
 {* end #content div *}
 
