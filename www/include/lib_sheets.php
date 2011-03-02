@@ -11,6 +11,8 @@
 	loadlib("dots_search");
 	loadlib("dots_search_extras");
 
+	loadlib("export_cache");
+
 	#################################################################
 
 	function sheets_create_sheet(&$user, $more=array()){
@@ -105,6 +107,10 @@
 		$archive_path = archive_path_for_sheet($sheet);
 
 		#
+
+		export_cache_purge_sheet($sheet);
+
+		#
 		# Purge search
 		#
 
@@ -192,7 +198,7 @@
 		}
 
 		#
-		#
+		# Remove the upload (if any)
 		#
 
 		if (file_exists($archive_path)){
@@ -200,6 +206,10 @@
 			$ok = unlink($archive_path);
 			# if not $ok then what?
 		}
+
+		# Remove any cache exports
+
+		export_cache_purge_sheet($sheet);
 
 		#
 		# Happy happy!
@@ -271,6 +281,10 @@
 
 			$more['page'] ++;
 		}
+
+		# TO DO: finish cleaning up any export cache directories left hanging
+		# around. The delete_sheet function will purge any files but all the
+		# zero-padded directories are still in place (20110302/straup)
 
 		return array(
 			'ok' => 1,
@@ -407,6 +421,8 @@
 			foreach ($cache_keys as $key){
 				cache_unset($key);
 			}
+
+			export_cache_purge_sheet($sheet);
 		}
 
 		return $rsp;
