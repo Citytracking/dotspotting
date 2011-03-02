@@ -30,7 +30,10 @@
 			$cache_key .= "_{$extra}";
 		}
 
-		$cache = cache_get($cache_key);
+		# cache sets are also disabled (below)
+		# $cache = cache_get($cache_key);
+
+		$cache = array( 'ok' => 0 );
 
 		#
 
