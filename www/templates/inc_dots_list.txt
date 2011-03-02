@@ -10,7 +10,6 @@
 			{*
 			<th title="sort by dot owner">Owner</th>
 			*}
-			
 			{* 
 				not sure if this is doing what i want,
 				which is checking to see if we are on a sheet page
@@ -52,7 +51,7 @@
 				{*
 				<td class="dotslist_owner" ds:owner_id="{$dot.user_id|escape}" nowrap>
 			{if $owner}
-					<a href="{$owner|@urls_url_for_user}" title="view {if $is_own}Your{else}{$owner.username|escape}'s{/if} page">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
+					<a href="{$owner|@urls_url_for_user}" title="view {if $is_own}Your{else}{$owner.username|escape}'s{/if} page">{if $is_own}You{else}{$owner.username|escape}{/if}</a> 
 			{else}
 					<a href="{$dot.user|@urls_url_for_user}" title="view {if $dot.user.id == $cfg.user.id}Your{else}{$dot.user.username|escape}'s{/if} page">{if $dot.user.id == $cfg.user.id}You{else}{$dot.user.username|escape}{/if}</a>
 			{/if}

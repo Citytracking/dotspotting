@@ -2,7 +2,8 @@
 <script type="text/javascript">
 
 // store json object of dot data
-var all_dots = {/literal}{$dot_json}{literal};
+var all_dots = {/literal}{$dots_simple|@json_encode}{literal};
+
 
 // dot onclick handler
 function dot_onclick(dotid,lon,lat){
@@ -22,7 +23,7 @@ function dot_onclick(dotid,lon,lat){
 		dot_unselect(dotid);
 		
 		// trigger the tooltip
-		jQuery("#map").trigger('markerclick',[dotid,{lat: lat, lon: lon}]);
+		$("#map").trigger('markerclick',[dotid,{lat: lat, lon: lon}]);
 		
 		// add highlight class if it isn't there already
 		/*
@@ -42,10 +43,12 @@ function dot_onclick(dotid,lon,lat){
 
 // dot onmouseover handler
 function dot_onmouseover(dotid){
-
-	//var dot = dot_getinfo(dotid);
+	
 	var dot = dot_getinfo_json(dotid);
-		
+	
+	console.log(dot);
+	
+	//console.log(all_dots2[_dotspotting.dots_list_dots[dotid]]);
 	if (! dot['id']){
 		return;
 	}
@@ -56,40 +59,6 @@ function dot_onmouseover(dotid){
 		clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
 	}
 
-	var html = 'This is dot #<a href="' + dot.url + '">' + dot.id + '</a>';
-
-	if ((dot.ownerid) && (dot.ownerid != _dotspotting.user.id)){
-		html += ', by ' + htmlspecialchars(dot.owner);
-	}
-
-	else {
-		html += ', by you';
-	}
-
-	html += '.';
-
-	if (dot.location){
-		var search_url = _dotspotting.abs_root_url + 'search?l=' + encodeURIComponent(dot.location);
-		html += ' It\'s located at <a href="' + search_url + '">' + htmlspecialchars(dot.location) + '</a>.';
-	}
-
-	else if (dot.latitude && dot.longitude){
-		var search_url = _dotspotting.abs_root_url + 'search?gh=' + encodeGeoHash(dot.latitude, dot.longitude);
-		html += ' It\'s located at <a href="' + search_url + '">' + dot.latitude + ',' + dot.longitude + '</a>.';
-	}
-
-	else {} 
-
-	if (dot.type){
-		var search_url = _dotspotting.abs_root_url + 'search?t=' + encodeURIComponent(dot.type);
-		html += ' It\'s a <q><a href="' + search_url + '">' + htmlspecialchars(dot.type) + '</a></q>.';
-	}
-	
-	/*
-		$("#map_info").html(html);
-		$("#map_info").show();
-	*/
-	
 	/* Move dot to bottom of group */
 
 	var element = document.getElementById("dot_"+dotid);
@@ -110,19 +79,8 @@ function dot_onmouseout(dotid){
 	if(_dotspotting.selected_dot != dotid){
 		dot_unselect(dotid);
 	}
-
-	/*
-	var html = $("#map_info").html();
-	html = html.replace(/^This is/, 'That was');
-
-	$("#map_info").html(html);
-	*/
 	
 	var tid = setTimeout(function(){
-
-		$("#map_info").fadeOut('slow', function(){
-			$("#map_info").html('');
-		});
 
 		dot_restore_tr();
 
@@ -133,7 +91,7 @@ function dot_onmouseout(dotid){
 
 // resets map bounds
 function resetBounds(){
-	jQuery("#map").trigger('resetmapbounds');
+	$("#map").trigger('resetmapbounds');
 }
 
 /* ------------------------------------------------------------------------*/
@@ -214,9 +172,7 @@ function dot_unselect(dotid){
 // returns string used in tooltip header text
 function dot_tip_header(dotid){
 	
-	//var dot = dot_getinfo(dotid);
 	var dot = dot_getinfo_json(dotid);
-	console.log(dot);
 	
 	if (! dot['id']){
 		return "";
@@ -231,22 +187,15 @@ function dot_tip_header(dotid){
 // returns string used in tooltip body text
 function dot_tip_body(dotid){
 
-	//var dot = dot_getinfo(dotid);
 	var dot = dot_getinfo_json(dotid);
 
 	if (! dot['id']){
 		return "";
 	}
 
-	var html = 'It is owned';
-
-	if ((dot.ownerid) && (dot.ownerid != _dotspotting.user.id)){
-		html += ' by ' + htmlspecialchars(dot.owner);
-	}
-
-	else {
-		html += ' by you';
-	}
+	var html = 'It is owned ';
+	
+	html += dot.owner;
 
 	html += '.';
 
@@ -328,8 +277,8 @@ function dot_restore_tr(){
 
 /*
  * "dotspotting.dots_list_dots" is a hash table storing the position of the dot object in JSON object.
- *
 */
+
 function dot_getinfo_json(dotid){
 
 	if (_dotspotting.dots_list_dots[dotid]){	
@@ -359,60 +308,46 @@ function dot_getinfo(dotid){
     return dot;
 }
 
-function strip_text(str){
+function strip_ws_text(str){
 	str = str.replace(/^\s+/, '');
 	str = str.replace(/\s+$/, '');
 	return str
 }
 
 function row2dot_json(i,headers){
-	var dot = {};
+	
 	if(headers === null || headers === undefined)headers = collect_headers();
 	
-	if(!all_dots.length)return dot;
+	if(!all_dots.length)return {};
+	//console.log(all_dots);
 	
-	for(q=0; q<headers.length;q++){
-		var key = headers[q];
-				
-		if (key == 'dotid'){
-			dot[key] = Number(strip_text(all_dots[i].id));
-		}
-		else if (key.match(/(latitude)/)){
-			dot[key] = parseFloat( strip_text(all_dots[i].latitude) );
-		}
-		else if (key.match(/(longitude)/)){
-			dot[key] = parseFloat( strip_text(all_dots[i].longitude) );
-		}
-		
-		else if (key.match(/(?:details|other)/)){
-			dot[key] = "";
-		}
+	var _owner = {/literal}'{if $owner}{$owner.username|escape}{elseif $dot.user}{$dot.user.username|escape}{else}???{/if}'{literal};
 
-		else if (key.match(/(?:location|type)/)){
-			dot[key] = ""
-		}
-		else if (key == "coordinates"){
-			dot['longitude'] = parseFloat( strip_text(all_dots[i].longitude) );
-			dot['latitude'] = parseFloat( strip_text(all_dots[i].latitude) );
-		}
-		else {}
-	}
+	// begin processing dots
+	if(all_dots[i].id)all_dots[i].id = Number(strip_ws_text(all_dots[i].id));
+	if(all_dots[i].longitude)all_dots[i].longitude = parseFloat( strip_ws_text(all_dots[i].longitude) );
+	if(all_dots[i].latitude)all_dots[i].latitude = parseFloat( strip_ws_text(all_dots[i].latitude) );
 	
-	var ownerid = strip_text(all_dots[i].user_id);
+//	dot_search_details(all_dots[i],"title");
+
+	var ownerid = strip_ws_text(all_dots[i].user_id);
 
 	if (ownerid){
-		dot['ownerid'] = Number(ownerid);
+		all_dots[i]['ownerid'] = Number(ownerid);
+		all_dots[i]['owner'] = (ownerid == _dotspotting.user.id) ? "you" : _owner;
 	}
-
-	dot['permissions'] = all_dots[i].perms;
-	dot['id'] = all_dots[i].id;
-	dot['url'] = _dotspotting.abs_root_url + 'u/' + dot['ownerid'] + '/dots/' + dot.id + '/';
-	all_dots[i]['url'] = dot['url'];
 	
-	if (!_dotspotting.dots_list_dots[dot['id']])_dotspotting.dots_list_dots[dot['id']] = i;
+	all_dots[i]['url'] = _dotspotting.abs_root_url + 'u/' + all_dots[i]['ownerid'] + '/dots/' + all_dots[i].id + '/';
+	
+	if (!_dotspotting.dots_list_dots[all_dots[i].id])_dotspotting.dots_list_dots[all_dots[i].id] = i;
     
+	return all_dots[i];
+}
 
-	return dot;
+function dot_search_details(dot, key){
+	for(var hh in dot['details']){
+		if(dot['details'][hh].label == key)console.log(dot['details'][hh].label,dot['details'][hh].value);
+	}
 }
 
 function row2dot(row, headers){
@@ -507,6 +442,7 @@ function collect_dots(){
 
 		//var dot = row2dot(row);
 		var dot = row2dot_json(i,headers);
+		
 		
 		var loc = {
 			lat: dot.latitude,
