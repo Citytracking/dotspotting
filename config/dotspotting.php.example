@@ -42,6 +42,15 @@
 	# $GLOBALS['cfg']['memcache_host'] = 'localhost';
 	# $GLOBALS['cfg']['memcache_port'] = 11211;
 
+	# export caching
+
+	# $GLOBALS['cfg']['enable_feature_export_cache'] = 1;
+	# $GLOBALS['cfg']['export_cache_root'] = '/path/to/where/exports/are/stored';
+	# $GLOBALS['cfg']['export_cache_valid_formats'] = array(
+	# 	'png',
+	# );
+
+
 	#	
 	# If you have the various db_enable_poormans_* config flags set (they are on by default in
 	# dotspotting) you don't need to worry about configs for the 'db_main_slaves', 'db_users'
