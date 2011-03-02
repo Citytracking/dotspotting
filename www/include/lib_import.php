@@ -57,6 +57,13 @@
 		}
 
 		#
+		# Hello new thing
+		#
+
+		$cache_key = "sheets_lookup_fingerprint_{$fingerprint}";
+		cache_unset($cache_key);
+
+		#
 		# store the actual file?
 		#
 

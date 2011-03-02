@@ -32,6 +32,15 @@
 
 	function sheets_lookup_by_fingerprint($fingerprint, $user_id=0){
 
+		$cache_key = "sheets_lookup_fingerprint_{$fingerprint}";
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			return $cache['data'];
+		}
+
+		#
+
 		$enc_fingerprint = AddSlashes($fingerprint);
 		$sql = "SELECT * FROM SheetsLookup WHERE fingerprint='{$enc_fingerprint}'";
 
@@ -55,6 +64,7 @@
 			}		
 		}
 
+		cache_set($cache_key, $sheets);
 		return $sheets;
 	}
 
