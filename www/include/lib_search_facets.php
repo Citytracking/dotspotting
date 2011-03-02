@@ -18,40 +18,65 @@
 
 	function search_facets_by_extras_name($viewer_id=0, $more=array()){
 
-		$sql = "SELECT e.name, COUNT(DISTINCT(e.value)) AS count_values, COUNT(d.dot_id) AS count_dots";
-		$sql .= " FROM DotsSearch d, DotsSearchExtras e WHERE 1"; 
+		# global facets are always public
+		# so are user scoped unless they're your own
 
-		$sql .= " AND d.dot_id=e.dot_id";
+		$cache_key = "facets_extras_name";
 
 		if ($more['user_id']){
-			$enc_user = AddSlashes($more['user_id']);
-			$sql .= " AND d.user_id='{$enc_user}'";
+
+			$extra = ($more['user_id'] == $viewer_id) ? $more['user_id'] : "{$more['user_id']}_public";
+
+			$cache_key .= "_{$extra}";
 		}
 
-		# See those perms? That makes caching hard unless
-		# we only facet on public things...
+		$cache = cache_get($cache_key);
 
-		if ($perms = _search_facets_perms($viewer_id, $more)){
-			$sql .= " AND {$perms}";
+		#
+
+		if ($cache['ok']){
+			$rsp = $cache['data'];
 		}
 
-		$sql .= " GROUP BY e.name";
+		else {
 
-		$rsp = db_fetch($sql, $more);
+			$sql = "SELECT e.name, COUNT(DISTINCT(e.value)) AS count_values, COUNT(d.dot_id) AS count_dots";
+			$sql .= " FROM DotsSearch d, DotsSearchExtras e WHERE 1"; 
 
-		# We sort in memory because ORDER-ing by 'count_values' in MySQL
-		# will always cause a filesort (because we're already grouping on
-		# another column)
+			$sql .= " AND d.dot_id=e.dot_id";
 
-		function cmp($a, $b){
-			if ($a['count_values'] == $b['count_values']) {
-				return 0;
+			if ($more['user_id']){
+				$enc_user = AddSlashes($more['user_id']);
+				$sql .= " AND d.user_id='{$enc_user}'";
 			}
 
-			return ($a['count_values'] > $b['count_values']) ? -1 : 1;
-		}
+			# See those perms? That makes caching hard unless
+			# we only facet on public things...
 
-		usort($rsp['rows'], 'cmp');
+			if ($perms = _search_facets_perms($viewer_id, $more)){
+				$sql .= " AND {$perms}";
+			}
+
+			$sql .= " GROUP BY e.name";
+
+			$rsp = db_fetch($sql, $more);
+
+			# We sort in memory because ORDER-ing by 'count_values' in MySQL
+			# will always cause a filesort (because we're already grouping on
+			# another column)
+
+			function cmp($a, $b){
+				if ($a['count_values'] == $b['count_values']) {
+					return 0;
+				}
+
+				return ($a['count_values'] > $b['count_values']) ? -1 : 1;
+			}
+
+			usort($rsp['rows'], 'cmp');
+
+			# cache_set($cache_key, $rsp);
+		}
 
 		#
 
