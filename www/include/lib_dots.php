@@ -33,6 +33,20 @@
 
 	function dots_get_bookends_for_dot(&$dot, $viewer_id=0, $count=1){
 
+		$cache_key = "dot_bookends_{$dot['id']}";
+
+		if ($viewer_id !== $dot['user_id']){
+			$cache_key .= "_public";
+		}
+
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			return $cache['data'];
+		}
+
+		#
+
 		$user = users_get_by_id($dot['user_id']);
 
 		$enc_id = AddSlashes($dot['id']);
@@ -74,11 +88,15 @@
 			$after[] = $_dot;
 		}
 
-		return array(
+		$rsp = array(
 			'before' => $before,
 			'after' => $after,
 			'count' => count($before) + count($after),
 		);
+
+		cache_set($cache_key, $rsp, 'cache locally');
+
+		return $rsp;
 	}
 
 	#################################################################
@@ -519,6 +537,8 @@
 			# What?
 		}
 
+		# caching...
+
 		# Happy!		
 
 		return $rsp;
@@ -599,8 +619,24 @@
 		#
 
 		if ($rsp['ok']){
-			$cache_key = "dot_{$dot['id']}";
-			cache_unset($cache_key);
+
+			$cache_keys = array(
+				"dot_{$dot['id']}",
+				"dot_bookends_{$dot['id']}",
+				"dot_bookends_{$dot['id']}_public",
+
+				"dots_for_sheet_{$dot['sheet_id']}",
+				"dots_for_sheet_{$dot['sheet_id']}_public",
+				
+				"dots_count_for_sheet_{$dot['sheet_id']}",
+
+				"sheet_extent_{$dot['sheet_id']}",
+				"sheet_extent_{$dot['sheet_id']}_public",
+			);
+
+			foreach ($cache_keys as $key){
+				cache_unset($key);
+			}
 		}
 
 		return $rsp;
@@ -609,6 +645,20 @@
 	#################################################################
 
 	function dots_get_extent_for_sheet(&$sheet, $viewer_id=0){
+
+		$cache_key = "sheet_extent_{$sheet['id']}";
+
+		if ($viewer_id !== $sheet['user_id']){
+			$cache_key .= "_public";
+		}
+
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			return $cache['data'];
+		}
+
+		#
 
 		$enc_id = AddSlashes($sheet['id']);
 
@@ -619,7 +669,13 @@
 			$sql = _dots_where_public_sql($sql);
 		}
 
-		return db_single(db_fetch($sql));
+		$row = db_single(db_fetch($sql));
+
+		if ($row){
+			cache_set($cache_key, $row, 'cache locally');
+		}
+
+		return $row;
 	}
 
 	#################################################################
@@ -721,6 +777,9 @@
 	
 	function dots_get_dots_recently_imported($to_fetch=15){
 
+		# CACHING: This doesn't really lend itself to caching.
+		# That may become an issue (20110301/straup)
+
 		$recent = array();
 
 		$sheet_sql = "SELECT * FROM SheetsLookup WHERE deleted=0 ORDER BY created DESC";
@@ -799,6 +858,20 @@
 
 	function dots_get_dots_for_sheet(&$sheet, $viewer_id=0, $more=array()){
 
+		$cache_key = "dots_for_sheet_{$sheet['id']}";
+
+		if ($sheet['user_id'] != $viewer_id){
+			$cache_key .= "_public";
+		}
+
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			return $cache['data'];
+		}
+
+		#
+
 		$user = users_get_by_id($sheet['user_id']);
 
 		$enc_id = AddSlashes($sheet['id']);
@@ -840,12 +913,15 @@
 			$dots[] = $dot;
 		}
 
+		cache_set($cache_key, $dots, 'cache locally');
 		return $dots;
 	}
 
 	#################################################################
 
 	function dots_get_dots_for_user(&$user, $viewer_id=0, $more=array()) {
+
+		# CACHING: is made sad by pagination...
 
 		$enc_id = AddSlashes($user['id']);
 
@@ -886,6 +962,16 @@
 
 	function dots_count_dots_for_sheet(&$sheet){
 
+		$cache_key = "dots_count_for_sheet_{$sheet['id']}";
+
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			return $cache['data'];
+		}
+
+		#
+
 		$user = users_get_by_id($sheet['user_id']);
 		$enc_id = AddSlashes($sheet['id']);
 
@@ -905,10 +991,14 @@
 
 		$count_public = $row['count_public'];
 
-		return array(
+		$rsp = array(
 			'total' => $count_total,
 			'public' => $count_public,
 		);
+
+		cache_set($cache_key, $rsp, 'cache locally');
+
+		return $rsp;
 	}
 
 	#################################################################

@@ -164,8 +164,18 @@
 		$sql = "DELETE FROM Sheets WHERE id='{$enc_id}'";
 		$rsp = db_write_users($user['cluster_id'], $sql);
 
-		$cache_key = "sheet_{$sheet['id']}";
-		cache_unset($cache_key);
+		# Dot specific caches are purged above when we call
+		# dots_delete_dot.
+
+		$cache_keys = array(
+			"sheet_{$sheet['id']}",
+			"sheets_counts_for_user_{$sheet['user_id']}",
+			"sheets_counts_for_user_{$sheet['user_id']}_public",
+		);
+
+		foreach ($cache_keys as $key){
+			cache_unset($key);
+		}
 
 		#
 		# Update the lookup table
@@ -389,8 +399,14 @@
 		$rsp = db_update_users($user['cluster_id'], 'Sheets', $update, $where);
 
 		if ($rsp['ok']){
-			$cache_key = "sheet_{$sheet['id']}";
-			cache_unset($cache_key);
+
+			$cache_keys = array(
+				"sheet_{$sheet['id']}",
+			);
+
+			foreach ($cache_keys as $key){
+				cache_unset($key);
+			}
 		}
 
 		return $rsp;
@@ -451,6 +467,8 @@
 	#################################################################
 
 	function sheets_sheets_for_user($user, $viewer_id=0, $more=array()){
+
+		# CACHING: pagination makes caching cry
 
 		$enc_id = AddSlashes($user['id']);
 
@@ -514,15 +532,39 @@
 
 	function sheets_counts_for_user(&$user, $viewer_id=0){
 
+		$cache_key = "sheets_counts_for_user_{$user['id']}";
+
+		if ($user['id'] != $viewer_id){
+			$cache_key .= "_public";
+		}
+
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			return $cache['data'];
+		}
+
+		#
+
 		$enc_id = AddSlashes($user['id']);
 
 		if ($viewer_id == $user['id']){
 			$sql = "SELECT COUNT(id) AS count_sheets, SUM(count_dots) AS count_dots FROM Sheets WHERE user_id='{$enc_id}'";
-			return db_single(db_fetch_users($user['cluster_id'], $sql));
 		}
 
-		$sql = "SELECT COUNT(id) AS count_sheets, SUM(count_dots_public) AS count_dots FROM Sheets WHERE user_id='{$enc_id}' AND count_dots_public > 0";
-		return db_single(db_fetch_users($user['cluster_id'], $sql));
+		else {
+			$sql = "SELECT COUNT(id) AS count_sheets, SUM(count_dots_public) AS count_dots FROM Sheets WHERE user_id='{$enc_id}' AND count_dots_public > 0";
+		}
+
+		#
+
+		$row = db_single(db_fetch_users($user['cluster_id'], $sql));
+
+		if ($row){
+			cache_set($cache_key, $row, 'cache locally');
+		}
+
+		return $row;
 	}
 
 	#################################################################

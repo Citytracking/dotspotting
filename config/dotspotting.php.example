@@ -36,6 +36,12 @@
 	$GLOBALS['cfg']['db_main']['user'] = '';
 	$GLOBALS['cfg']['db_main']['pass'] = '';
 
+	# Caching (with memcache for example) if/when you need it
+	#
+	# $GLOBALS['cfg']['cache_remote_engine'] = 'memcache';
+	# $GLOBALS['cfg']['memcache_host'] = 'localhost';
+	# $GLOBALS['cfg']['memcache_port'] = 11211;
+
 	#	
 	# If you have the various db_enable_poormans_* config flags set (they are on by default in
 	# dotspotting) you don't need to worry about configs for the 'db_main_slaves', 'db_users'
