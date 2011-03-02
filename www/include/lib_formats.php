@@ -34,7 +34,7 @@
 			'application/x-javascript' => 'json',
 			'application/vnd.google-earth.kml+xml' => 'kml',
 			'application/rss+xml' => 'rss',
-			'application/vnd.esri-shapefile' => 'shp',
+			# 'application/vnd.esri-shapefile' => 'shp',
 			'application/vnd.ms-excel' => 'xls',
 		);
 
