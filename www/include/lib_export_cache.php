@@ -39,17 +39,30 @@
 
 	######################################################################
 
-	function export_cache_root_for_sheet(&$sheet){
+	function export_cache_root_for_user(&$user){
 
 		$root = $GLOBALS['cfg']['export_cache_root'];
 
-		$user_root = _export_cache_explode_id($sheet['user_id']);
-		$sheet_root = _export_cache_explode_id($sheet['id']);
-
-		$ymd = gmdate('Ymd', $sheet['created']);
+		$user_root = _export_cache_explode_id($user['id']);
 
 		$parts = array(
 			$root,
+			$user_root,
+		);
+
+		return implode( DIRECTORY_SEPARATOR, $parts);
+	}
+
+	######################################################################
+
+	function export_cache_root_for_sheet(&$sheet){
+
+		$user = users_get_by_id($sheet['user_id']);
+
+		$user_root = export_cache_root_for_user($user);
+		$sheet_root = _export_cache_explode_id($sheet['id']);
+
+		$parts = array(
 			$user_root,
 			$sheet_root,
 		);

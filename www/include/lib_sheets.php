@@ -282,6 +282,10 @@
 			$more['page'] ++;
 		}
 
+		# TO DO: finish cleaning up any export cache directories left hanging
+		# around. The delete_sheet function will purge any files but all the
+		# zero-padded directories are still in place (20110302/straup)
+
 		return array(
 			'ok' => 1,
 			'sheets_deleted' => $sheets_deleted,
