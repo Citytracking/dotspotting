@@ -101,9 +101,11 @@
 
 	# caching?
 
-	$ok_cache = 1;
+	$ok_cache = 0;
 
 	if ($GLOBALS['cfg']['enable_feature_export_cache']){
+
+		$ok_cache = 1;
 
 		if (! in_array($format, $GLOBALS['cfg']['export_cache_valid_formats'])){
 			$ok_cache = 0;
