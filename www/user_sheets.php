@@ -20,11 +20,14 @@
 	);
 
 	$sheets = sheets_sheets_for_user($owner, $GLOBALS['cfg']['user']['id'], $args);
+	$counts = sheets_counts_for_user($owner, $GLOBALS['cfg']['user']['id']);
 
 	$is_own = ($owner['id'] == $GLOBALS['cfg']['user']['id']) ? 1 : 0;
 
 	$smarty->assign("is_own", $is_own);
+
 	$smarty->assign_by_ref('sheets', $sheets);
+	$smarty->assign_by_ref('counts', $counts);
 
 	$smarty->assign("pagination_url", urls_sheets_for_user($owner));
 
