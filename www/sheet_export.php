@@ -7,6 +7,8 @@
 	include("include/init.php");
 
 	loadlib("export");
+	loadlib("export_cache");
+
 	loadlib("formats");
 
 	#################################################################
@@ -32,6 +34,8 @@
 	if (! sheets_can_view_sheet($sheet, $GLOBALS['cfg']['user']['id'])){
 		error_403();
 	}
+
+	$is_own = ($sheet['user_id'] == $GLOBALS['cfg']['user']['id']) ? 1 : 0;
 
 	#
 	# Ensure that this is something we can export
@@ -64,21 +68,101 @@
 	$sheet['dots'] = dots_get_dots_for_sheet($sheet, $GLOBALS['cfg']['user']['id'], $more);
 	$bbox = implode(", ", array_values($sheet['extent']));
 
-	# 
+	# valid extras are things like 
 
-	$more = array(
+	$export_more = array(
 		'viewer_id' => $GLOBALS['cfg']['user']['id'],
 	);
 
-	$export = export_dots($sheet['dots'], $format, $more);
+	$valid_extras = array(
+		'height' => null,
+		'width' => null,
+		'dot_size' => null,
+	);
+
+	foreach ($valid_extras as $extra => $details){
+
+		$what = get_str($extra);
+
+		if (! $what){
+			continue;
+		}
+
+		# in case someone decides to be cute and start doing an
+		# auto-incrementing attack on user-supplied parameters...
+		# (20110302/straup)
+
+		if ((is_array($details)) && (! in_array($what, $details))){
+			continue;
+		}
+
+		$export_more[$extra] = $what;
+	}
+
+	# caching?
+
+	$ok_cache = 0;
+
+	if ($GLOBALS['cfg']['enable_feature_export_cache']){
+
+		$ok_cache = 1;
+
+		if (! in_array($format, $GLOBALS['cfg']['export_cache_valid_formats'])){
+			$ok_cache = 0;
+		}
+
+		if (! is_dir($GLOBALS['cfg']['export_cache_root'])){
+			$ok_cache = 0;
+		}
+	}
+
+	# ok, can has file?
+
+	if (! $ok_cache){
+		$export = export_dots($sheet['dots'], $format, $export_more);
+	}
+
+	else {
+
+		$tmp = $export_more;
+		unset($tmp['viewer_id']);
+		$fingerprint = md5(serialize($tmp));
+
+		$filename = "{$sheet['id']}_{$is_own}_{$fingerprint}.{$format}";
+
+		$cache_more = array(
+			'filename' => $filename,
+		);
+
+		$cache_path = export_cache_path_for_sheet($sheet, $cache_more);
+
+		if (file_exists($cache_path)){
+			$export = $cache_path;
+		}
+
+		else {
+
+			$export = export_dots($sheet['dots'], $format, $export_more);
+
+			if ($export){
+				$cache_rsp = export_cache_store_file($export, $cache_path);
+
+				if (! $cache_rsp['ok']){
+					# log an error...
+				}
+			}
+		}
+	}
+
+	# sad face
 
 	if (! $export){
 		error_500();
 	}
 
-	# go!
+	# now send the file to the browser
 
-	$more = array(
+	$send_more = array(
 		'path' => $export,
 		'mimetype' => $map[$format],
 		'filename' => "dotspotting-sheet-{$sheet['id']}.{$format}",
@@ -90,6 +174,15 @@
 		),
 	);
 
-	export_send_file($export, $more);
+	# this is set by default in lib_export
+
+	if ($ok_cache){
+		$send_more['unlink_file'] = 0;
+		$send_more['x-headers']['Cached'] = 1; # basename($cache_path);
+	}
+
+	#
+
+	export_send_file($export, $send_more);
 	exit();
 ?>
