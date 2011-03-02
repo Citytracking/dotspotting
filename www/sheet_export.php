@@ -35,6 +35,8 @@
 		error_403();
 	}
 
+	$is_own = ($sheet['user_id'] == $GLOBALS['cfg']['user']['id']) ? 1 : 0;
+
 	#
 	# Ensure that this is something we can export
 	#
@@ -66,11 +68,36 @@
 	$sheet['dots'] = dots_get_dots_for_sheet($sheet, $GLOBALS['cfg']['user']['id'], $more);
 	$bbox = implode(", ", array_values($sheet['extent']));
 
-	# 
+	# valid extras are things like 
 
 	$export_more = array(
 		'viewer_id' => $GLOBALS['cfg']['user']['id'],
 	);
+
+	$valid_extras = array(
+		'height' => null,
+		'width' => null,
+		'dot_size' => null,
+	);
+
+	foreach ($valid_extras as $extra => $details){
+
+		$what = get_str($extra);
+
+		if (! $what){
+			continue;
+		}
+
+		# in case someone decides to be cute and start doing an
+		# auto-incrementing attack on user-supplied parameters...
+		# (20110302/straup)
+
+		if ((is_array($details)) && (! in_array($what, $details))){
+			continue;
+		}
+
+		$export_more[$extra] = $what;
+	}
 
 	# caching?
 
@@ -90,18 +117,16 @@
 	# ok, can has file?
 
 	if (! $ok_cache){
-		$export = export_dots($sheet['dots'], $format, $more);
+		$export = export_dots($sheet['dots'], $format, $export_more);
 	}
 
 	else {
 
-		$filename = $sheet['id'];
+		$tmp = $export_more;
+		unset($tmp['viewer_id']);
+		$fingerprint = md5(serialize($tmp));
 
-		if ($sheet['user_id'] != $GLOBALS['cfg']['user']['id']){
-			$filename .= "_public";
-		}
-
-		$filename .= ".{$format}";
+		$filename = "{$sheet['id']}_{$is_own}_{$fingerprint}.{$format}";
 
 		$cache_more = array(
 			'filename' => $filename,
@@ -151,6 +176,7 @@
 
 	if ($ok_cache){
 		$send_more['unlink_file'] = 0;
+		$send_more['x-headers']['Cached'] = 1; # basename($cache_path);
 	}
 
 	#
