@@ -39,12 +39,7 @@
 
 	######################################################################
 
-	function export_cache_path_for_sheet(&$sheet, &$more){
-
-		if (! isset($more['filename'])){
-			log_notice('export', 'missing filename for export path');
-			return null;
-		}
+	function export_cache_root_for_sheet(&$sheet){
 
 		$root = $GLOBALS['cfg']['export_cache_root'];
 
@@ -53,16 +48,55 @@
 
 		$ymd = gmdate('Ymd', $sheet['created']);
 
-		$fname = $more['filename'];
-
 		$parts = array(
 			$root,
 			$user_root,
 			$sheet_root,
-			$fname,
 		);
 
-		return implode("/", $parts);
+		return implode( DIRECTORY_SEPARATOR, $parts);
+	}
+
+	######################################################################
+
+	function export_cache_path_for_sheet(&$sheet, &$more){
+
+		if (! isset($more['filename'])){
+			log_notice('export', 'missing filename for export path');
+			return null;
+		}
+
+		$root = export_cache_root_for_sheet($sheet);
+
+		$parts = array(
+			$root,
+			$more['filename'],
+		);
+
+		return implode(DIRECTORY_SEPARATOR, $parts);
+	}
+
+	######################################################################
+
+	function export_cache_purge_sheet(&$sheet){
+
+		$root = export_cache_root_for_sheet($sheet);
+
+		if (! is_dir($root)){
+			return;
+		}
+
+		foreach (scandir($root) as $file){
+
+			if (preg_match("/^\./", $file)){
+				continue;
+			}
+
+			$path = implode(DIRECTORY_SEPARATOR, array($root, $file));
+			unlink($path);
+		}
+
+		rmdir($root);
 	}
 
 	######################################################################
@@ -82,7 +116,7 @@
 			$parts[] = $tmp;
 		}
 
-		return implode("/", $parts);
+		return implode(DIRECTORY_SEPARATOR, $parts);
 	}
 
 	######################################################################
