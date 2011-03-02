@@ -41,17 +41,24 @@
 
 	function export_cache_path_for_sheet(&$sheet, &$more){
 
+		if (! isset($more['filename'])){
+			log_notice('export', 'missing filename for export path');
+			return null;
+		}
+
 		$root = $GLOBALS['cfg']['export_cache_root'];
+
 		$user_root = _export_cache_explode_id($sheet['user_id']);
+		$sheet_root = _export_cache_explode_id($sheet['id']);
 
 		$ymd = gmdate('Ymd', $sheet['created']);
 
-		$fname = "{$sheet['id']}-export.{$more['format']}";
+		$fname = $more['filename'];
 
 		$parts = array(
 			$root,
 			$user_root,
-			$ymd,
+			$sheet_root,
 			$fname,
 		);
 
@@ -62,7 +69,7 @@
 
 	function _export_cache_explode_id($uid){
 
-		$tmp = $uid;
+		$tmp = sprintf("%09d", $uid);
 		$parts = array();
 
 		while (strlen($tmp) > 3){
