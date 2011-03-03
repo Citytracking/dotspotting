@@ -3,7 +3,7 @@
 */
 body,html{width:100%;height:100%;}
 /* elements primary */
-p,h1,h2,h3,h4,h5,ul,ol,dl,dd,dt{margin:0;padding:0;}
+*{margin:0;padding:0;}
 a{text-decoration: none;color:rgb(11,189,255);}
 ul{list-style-type: none;padding:0;}
 h3{font-weight:500;font-size: 19px;}
@@ -42,9 +42,8 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 }
 
 
-/* */
+/* CLEAR FIX */
 .clear{clear:both;height:0;}
-/* CLEAR FIX*/
 .clearfix:after {
 	content: ".";
 	display: block;
@@ -82,6 +81,7 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 #home_meezy{margin:0 0 25px 0;}
 #home_meezy h3{margin-bottom:5px;}
 #home_meezy li{
+	
 	float:left;
 	width:234px;
 	font-size:19px;
@@ -90,27 +90,35 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 	padding: 7px 0;
 	margin:0 9px 0 0;
 }
-#home_meezy li:last-child{
-	margin:0;
-	border-top:1px solid rgb(11,189,255);
-	background-color:rgb(11,189,255);
 
+#home_meezy li.last_meezy{
+	margin:0;
+	width:234px;
+	border-top:1px solid rgb(11,189,255);
+	background:rgb(11,189,255);
+	text-align:center;
+
+}
+#home_meezy li span{
+	padding-left:30px;
+}
+#home_meezy li.first_meezy span{background:url(../images/home/1.png) no-repeat left center;}
+#home_meezy li.second_meezy span{background:url(../images/home/2.png) no-repeat left center;}
+#home_meezy li.third_meezy span{background:url(../images/home/3.png) no-repeat left center;}
+
+#home_meezy li.last_meezy img{
+	vertical-align: middle;
+	padding-left: 10px;
 }
 #home_meezy li a{
 	color:#fff;
+	display:block;
 }
-#home_meezy li span{
-	display:inline-block;
-	margin-right:5px;
-	width: 24px;
-	height: 24px;
-	text-align:center;
-	background-color:rgb(11,189,255);
-	border: none;
-	color:#fff;
-	-moz-border-radius:12px;
-	-webkit-border-radius: 12px;
+#home_meezy li a:hover{
+	color:#000;
 }
+
+
 
 #home_recents{overflow:hidden !important;}
 #home_recents h5{
@@ -138,7 +146,7 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 }
 #home_recents div.map{position:relative;width:234px;height:156px;}
 #home_recents a{display:block;}
-#home_recents div.map a{position:absolute;width:100%;height:100%;background:url('../images/dot_sample.png') no-repeat center center;} 
+#home_recents div.map a{position:absolute;width:100%;height:100%;background:url('../images/generic_blue_dot.png') no-repeat center center;} 
 #home_recents div.map a span{display:none;}
 
 /* sections */
