@@ -3,7 +3,47 @@
 <head>
 	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link rel="stylesheet" type="text/css" media="all" href="{$cfg.abs_root_url}css/main.css" />
+	
+	<style type="text/css">
+		@import url({$cfg.abs_root_url}css/main.css);
+		{if $cfg.dot_color_scheme}
+		.dot{ldelim}
+			fill: rgb({$cfg.dot_color_scheme.fill[0]},{$cfg.dot_color_scheme.fill[1]},{$cfg.dot_color_scheme.fill[2]});
+		    fill-opacity: {$cfg.dot_color_scheme.fill[3]};
+		    stroke: rgb({$cfg.dot_color_scheme.stroke[0]},{$cfg.dot_color_scheme.stroke[1]},{$cfg.dot_color_scheme.stroke[2]});
+		    stroke-width: {$cfg.dot_color_scheme.stroke_width};	
+		    stroke-opacity: {$cfg.dot_color_scheme.stroke[3]};
+		{rdelim}
+		.dotHover{ldelim}
+			fill: rgb({$cfg.dot_color_scheme.fill_hover[0]},{$cfg.dot_color_scheme.fill_hover[1]},{$cfg.dot_color_scheme.fill_hover[2]});
+		    fill-opacity: {$cfg.dot_color_scheme.fill_hover[3]};
+		    stroke: rgb({$cfg.dot_color_scheme.stroke_hover[0]},{$cfg.dot_color_scheme.stroke_hover[1]},{$cfg.dot_color_scheme.stroke_hover[2]});
+		    stroke-width: {$cfg.dot_color_scheme.stroke_width_hover};	
+		    stroke-opacity: {$cfg.dot_color_scheme.stroke_hover[3]};
+		{rdelim}
+		.dot_private{ldelim}
+			fill: rgb({$cfg.dot_color_scheme.private[0]},{$cfg.dot_color_scheme.private[1]},{$cfg.dot_color_scheme.private[2]}) !important;
+			fill-opacity: {$cfg.dot_color_scheme.private[3]} !important;
+		{rdelim}
+		{/if}
+		{if $cfg.sheet_color_scheme}
+		.sheet{ldelim}
+			fill: rgb({$cfg.sheet_color_scheme.fill[0]},{$cfg.sheet_color_scheme.fill[1]},{$cfg.sheet_color_scheme.fill[2]});
+		    fill-opacity: {$cfg.sheet_color_scheme.fill[3]};
+		    stroke: rgb({$cfg.sheet_color_scheme.stroke[0]},{$cfg.sheet_color_scheme.stroke[1]},{$cfg.sheet_color_scheme.stroke[2]});
+		    stroke-width: {$cfg.sheet_color_scheme.stroke_width};	
+		    stroke-opacity: {$cfg.sheet_color_scheme.stroke[3]};
+		{rdelim}
+		.sheet:hover{ldelim}
+			fill: rgb({$cfg.sheet_color_scheme.fill_hover[0]},{$cfg.sheet_color_scheme.fill_hover[1]},{$cfg.sheet_color_scheme.fill_hover[2]});
+		    fill-opacity: {$cfg.sheet_color_scheme.fill_hover[3]};
+		    stroke: rgb({$cfg.sheet_color_scheme.stroke_hover[0]},{$cfg.sheet_color_scheme.stroke_hover[1]},{$cfg.sheet_color_scheme.stroke_hover[2]});
+		    stroke-width: {$cfg.sheet_color_scheme.stroke_width_hover};	
+		    stroke-opacity: {$cfg.sheet_color_scheme.stroke_hover[3]};
+		{rdelim}
+		{/if}
+	</style>
+	
 	{* See this: still no JS compression or other smushing *}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/LAB.min.js"></script>

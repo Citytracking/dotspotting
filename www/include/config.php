@@ -161,14 +161,6 @@
 	$GLOBALS['cfg']['import_by_url_do_head'] = 1;
 
 	$GLOBALS['cfg']['import_archive_root'] = '';
-	
-	# dot color props
-	# fill,stroke array (red,green,blue,alpha)
-	# alpha = value between 0 and 127. 0 indicates completely opaque while 127 indicates completely transparent.
-	$GLOBALS['cfg']['dot_color_scheme'] = array(
-		'fill' => array(11,189,255,0),
-		'stroke' => array(255,255,255,0)
-	);
 
 	# a list of format which might be simplified
 
@@ -294,5 +286,36 @@
 	$GLOBALS['cfg']['check_notices'] = 1;
 
 	$GLOBALS['cfg']['db_profiling'] = 0;
-
+	
+	# 
+	# USER STYLES
+	#
+	# implemented in global styles and include/lib_maps.php
+	# TODO: apply these to other export options
+	#
+	
+	# dot color props
+	# fill,stroke array = rgba
+	# alpha =  0 = completely transparent, 1 = opaque
+	$GLOBALS['cfg']['dot_color_scheme'] = array(
+		'fill' => array(11,189,255,1),
+		'stroke' => array(255,255,255,1),
+		'stroke_width' => 3,
+		'fill_hover' => array(0,221,238,1),
+		'stroke_hover' => array(0,17,45,1),
+		'stroke_width_hover' => 5,
+		'private' => array(255,0,0,1)
+	);
+	
+	# sheet color props
+	# fill,stroke array = rgba
+	# alpha =  0 = completely transparent, 1 = opaque
+	$GLOBALS['cfg']['sheet_color_scheme'] = array(
+		'fill' => array(0,17,45,.5),
+		'stroke' => array(153,204,0,1),
+		'stroke_width' => 4,
+		'fill_hover' => array(0,221,238,.1),
+		'stroke_hover' => array(0,17,45,1),
+		'stroke_width_hover' => 4
+	);
 ?>
