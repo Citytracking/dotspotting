@@ -16,57 +16,43 @@
 		<li><a href="{$cfg.abs_root_url}upload">Get started now</a></li>
 	</ul>
 	</div>
-	
 	<p>Dotspotting is the first project Stamen is releasing as part of Citytracking, a project funded by the <a href="http://www.newschallenge.org/" title="view website of Knight News Challenge">Knight News Challenge</a>. We're making tools to help people gather data about cities and make that data more legible. The code for Dotspotting is available for <a href="https://github.com/citytracking" title="Github repo for citytracking">download on Github</a>, and licensed for use under the GNU General Public License.</p>
 {/if}
-	<div id="home_recents">
-{if $recent_sheets|@count}
-	<h5>Recent sheets:</h5>
-	<dl class="recent_thumbnails">
-	<dt></dt>
-	<dd class="thumb_title">District 10 Blocked Streets/Sidewalks</dd>
-	<dd class="thumb_owner">cmchugh</dd>
-	</dl>
-	<dl class="recent_thumbnails">
-	<dt></dt>
-	<dd class="thumb_title">Farms</dd>
-	<dd class="thumb_owner">ericrodenbeck</dd>
-	</dl>
-	<dl class="recent_thumbnails">
-	<dt></dt>
-	<dd class="thumb_title">Crimespotting(ESRI)</dd>
-	<dd class="thumb_owner">straup</dd>
-	</dl>
-	<dl class="recent_thumbnails">
-	<dt></dt>
-	<dd class="thumb_title">Walking</dd>
-	<dd class="thumb_owner">ericrodenbeck</dd>
-	</dl>
-	<div class="clear"></div>
-{/if}
+<div id="home_recents">
+	{if $recent_sheets|@count}
+		<h5>Recent sheets:</h5>
+		{foreach from=$recent_sheets item=sh name=thumbs}
+			{if $smarty.foreach.thumbs.index < 4}
+			     <dl class="recent_thumbnails">
+				<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
+				<dd class="thumb_title">{$sh.label|escape}</dd>
+				<dd class="thumb_owner">{$sh.user.username|escape}</dd>
+				</dl>
+			{/if}
+		{/foreach}
+		<div class="clear"></div>
+	{/if}
+	
+	{if $recent_dots|@count}
 	<h5>Recent Dots:</h5>
-	<dl class="recent_thumbnails">
-	<dt></dt>
-	<dd class="thumb_title">District 10 Blocked Streets/Sidewalks</dd>
-	<dd class="thumb_owner">cmchugh</dd>
-	</dl>
-	<dl class="recent_thumbnails">
-	<dt></dt>
-	<dd class="thumb_title">Farms</dd>
-	<dd class="thumb_owner">ericrodenbeck</dd>
-	</dl>
-	<dl class="recent_thumbnails">
-	<dt></dt>
-	<dd class="thumb_title">Crimespotting(ESRI)</dd>
-	<dd class="thumb_owner">straup</dd>
-	</dl>
-	<dl class="recent_thumbnails">
-	<dt></dt>
-	<dd class="thumb_title">Walking</dd>
-	<dd class="thumb_owner">ericrodenbeck</dd>
-	</dl>
+	{foreach from=$recent_dots item=sh name=thumbs}
+		{if $smarty.foreach.thumbs.index < 4}
+		     <dl class="recent_thumbnails">
+			<dt>
+					<div class="map" data-center="{$sh.latitude},{$sh.longitude}" data-zoom="12">
+						<div class="layer" data-type="image"
+							data-url="{$cfg.maptiles_template_url|escape}"></div>
+						<a href="{$cfg.abs_root_url}u/{$sh.user_id}/dots/{$sh.id}" title=""><span>{$sh.id|escape}</span></a>
+					</div>
+			</dt>
+			<dd class="thumb_title">Dot: {$sh.id|escape}</dd>
+			<dd class="thumb_owner">{$sh.user.username|escape}</dd>
+			</dl>
+		{/if}
+	{/foreach}
 	<div class="clear"></div>
-	</div>
+	{/if}
+</div>
 
 {* end #content div *}
 
