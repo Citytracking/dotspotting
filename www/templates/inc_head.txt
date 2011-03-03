@@ -35,7 +35,7 @@
 		{literal}};{/literal}
 
 {literal}
-
+	$LAB.setGlobalDefaults({AlwaysPreserveOrder:true});
     if (_dotspotting.use_polymaps){
 
 		$LAB
@@ -43,7 +43,10 @@
 		.script(_dotspotting.abs_root_url + 'javascript/polymaps.min.js')
 		.script(_dotspotting.abs_root_url + 'javascript/polymaps.tilestache.js')
 		.script(_dotspotting.abs_root_url + 'javascript/polymaps_touch.min.js')
+		.script(_dotspotting.abs_root_url + 'javascript/polymaps-htmapl.js')
+		.script(_dotspotting.abs_root_url + "javascript/htmapl.js")
 		.wait(function(){
+			$("div.map").htmapl();
 			_dotspotting.js_loadlib = true;
 			_dotspotting.enable_touch_support = isTouchDevice();
 		});
@@ -58,7 +61,10 @@
        .script(_dotspotting.abs_root_url + 'javascript/modestmaps.markers.js')
        .script(_dotspotting.abs_root_url + 'javascript/modestmaps.compass.js')
        .script(_dotspotting.abs_root_url + 'javascript/modestmaps.tilestache.js')
+		.script(_dotspotting.abs_root_url + 'javascript/modestmaps-htmapl.js')
+		.script(_dotspotting.abs_root_url + "javascript/htmapl.js")
        .wait(function(){
+		$("div.map").htmapl();
 		_dotspotting.js_loadlib = true;
        });
     }
