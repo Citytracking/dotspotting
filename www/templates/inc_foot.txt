@@ -1,5 +1,7 @@
 	</div> {* end #content *}
-
+	<div id="footdown"></div>
+	</div> {* end #main *}
+	
 	<div id="footer">
 		Dotspotting is a thing by <a href="http://www.stamen.com/" class="stamen">Stamen Design</a> / it also has a <a href="{$cfg.abs_root_url}faq/">FAQ</a>
 	</div>
@@ -10,6 +12,5 @@
 </div>
 {/if}
 
-</div> {* end #main *}
 </body>
 </html>
