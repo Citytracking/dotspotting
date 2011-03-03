@@ -1,5 +1,4 @@
 {capture assign="page_title"}{if $cfg.user.id}Welcome back!{else}Welcome!{/if}{/capture}
-{capture assign="page_name"}home{/capture}
 {include file='inc_head.txt'}
 
 {* inside #content div *}
@@ -18,6 +17,7 @@
 	</div>
 	<p>Dotspotting is the first project Stamen is releasing as part of Citytracking, a project funded by the <a href="http://www.newschallenge.org/" title="view website of Knight News Challenge">Knight News Challenge</a>. We're making tools to help people gather data about cities and make that data more legible. The code for Dotspotting is available for <a href="https://github.com/citytracking" title="Github repo for citytracking">download on Github</a>, and licensed for use under the GNU General Public License.</p>
 {/if}
+
 <div id="home_recents">
 	{if $recent_sheets|@count}
 		<h5>Recent sheets:</h5>

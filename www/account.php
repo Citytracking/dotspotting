@@ -10,7 +10,6 @@
 
 	#
 	# output
-	#
-
+	#	
 	$smarty->display("page_account.txt");
 ?>
