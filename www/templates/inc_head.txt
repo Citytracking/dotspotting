@@ -91,7 +91,7 @@
 
 <div id="main">
 
-	<div id="nav">
+	<div id="nav" class="clearfix">
 		
 		<div id="nav_logo">
 			<a href="{$cfg.abs_root_url}"><img src="{$cfg.abs_root_url}images/dotspotting_logo.png" height="86" width="406" alt="Dotspotting" class="logo" /></a>
@@ -132,7 +132,6 @@
 		</div>
 {/if}
 
-		<div class="clear">&nbsp;</div>
 	</div> {* end  nav *}
 
 	<div id="content">
