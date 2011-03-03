@@ -117,11 +117,25 @@
 		}
 
 		#
-
+		
 		if ($more['draw_dots']){
-
-			$fill = imagecolorallocatealpha($img, 0, 17, 45, 96);
-			$stroke = imagecolorallocate($img, 153, 204, 0);
+			
+			if(isset($GLOBALS['cfg']['dot_color_scheme'])){
+				$red_fill_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['fill'][0]) ) ? $GLOBALS['cfg']['dot_color_scheme']['fill'][0] : 11;
+				$green_fill_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['fill'][1]) ) ? $GLOBALS['cfg']['dot_color_scheme']['fill'][1] : 189;
+				$blue_fill_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['fill'][2]) ) ? $GLOBALS['cfg']['dot_color_scheme']['fill'][2] : 255;
+				
+				$red_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][0]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][0] : 255;
+				$green_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][1]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][1] : 255;
+				$blue_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][2]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][2] : 255;
+				
+				$fill = imagecolorallocatealpha($img, $red_fill_val, $green_fill_val, $blue_fill_val, 30);
+				$stroke = imagecolorallocate($img, $red_stroke_val, $green_stroke_val, $blue_stroke_val);
+			}else{
+				$fill = imagecolorallocatealpha($img, 11, 189, 255, 96);
+				$stroke = imagecolorallocate($img, 255, 255, 255);
+			}
+			
 
 			foreach ($dots as $dot){
 

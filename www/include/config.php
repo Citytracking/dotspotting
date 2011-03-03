@@ -161,6 +161,14 @@
 	$GLOBALS['cfg']['import_by_url_do_head'] = 1;
 
 	$GLOBALS['cfg']['import_archive_root'] = '';
+	
+	# dot color props
+	# fill,stroke array (red,green,blue,alpha)
+	# alpha = value between 0 and 127. 0 indicates completely opaque while 127 indicates completely transparent.
+	$GLOBALS['cfg']['dot_color_scheme'] = array(
+		'fill' => array(11,189,255,0),
+		'stroke' => array(255,255,255,0)
+	);
 
 	# a list of format which might be simplified
 
