@@ -267,4 +267,34 @@
 	}
 
 	#################################################################
+
+	function export_collect_user_properties($format){
+
+		$props = array();
+
+		if (! isset($GLOBALS['cfg']['export_valid_extras'][$format])){
+			return $props;
+		}
+
+		$valid_extras = $GLOBALS['cfg']['export_valid_extras'][$format];
+
+		foreach ($valid_extras as $extra => $details){
+
+			$what = get_str($extra);
+
+			if (! $what){
+				continue;
+			}
+
+			if ((is_array($details)) && (! in_array($what, $details))){
+				continue;
+			}
+
+			$props[$extra] = $what;
+		}
+
+		return $props;
+	}
+
+	#################################################################
 ?>

@@ -74,27 +74,8 @@
 		'viewer_id' => $GLOBALS['cfg']['user']['id'],
 	);
 
-	# check for user-defined tweaks to the output
- 
-	if (isset($GLOBALS['cfg']['export_valid_extras'][$format])){
-
-		$valid_extras = $GLOBALS['cfg']['export_valid_extras'][$format];
-
-		foreach ($valid_extras as $extra => $details){
-
-			$what = get_str($extra);
-
-			if (! $what){
-				continue;
-			}
-
-			if ((is_array($details)) && (! in_array($what, $details))){
-				continue;
-			}
-
-			$export_more[$extra] = $what;
-		}
-	}
+	$export_props = export_collect_user_properties($format);
+	$export_more = array_merge($export_props, $export_more);
 
 	# caching?
 
@@ -175,7 +156,7 @@
 
 	if ($ok_cache){
 		$send_more['unlink_file'] = 0;
-		$send_more['x-headers']['Cached'] = 1; # basename($cache_path);
+		$send_more['x-headers']['Cached'] = 1;
 	}
 
 	#
