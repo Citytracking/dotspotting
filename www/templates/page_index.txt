@@ -9,10 +9,10 @@
 	<div id="home_meezy">
 	<h3>Dotspotting is easy:</h3>
 	<ul class="clearfix">
-		<li><span>1</span> Upload your dots</li>
-		<li><span>2</span> Make a map</li>
-		<li><span>3</span> Export and share</li>
-		<li><a href="{$cfg.abs_root_url}upload">Get started now</a></li>
+		<li class="first_meezy"><span>Upload your dots</span></li>
+		<li class="second_meezy"><span>Make a map</span></li>
+		<li class="third_meezy"><span>Export and share</span></li>
+		<li class="last_meezy"><a href="{$cfg.abs_root_url}upload">Get started now<img src="{$cfg.abs_root_url}images/home/blackarrow.png" width="34" height="30"/></a></li>
 	</ul>
 	</div>
 	<p>Dotspotting is the first project Stamen is releasing as part of Citytracking, a project funded by the <a href="http://www.newschallenge.org/" title="view website of Knight News Challenge">Knight News Challenge</a>. We're making tools to help people gather data about cities and make that data more legible. The code for Dotspotting is available for <a href="https://github.com/citytracking" title="Github repo for citytracking">download on Github</a>, and licensed for use under the GNU General Public License.</p>
