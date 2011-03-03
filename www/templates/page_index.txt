@@ -15,7 +15,8 @@
 		<li class="last_meezy"><a href="{$cfg.abs_root_url}upload">Get started now<img src="{$cfg.abs_root_url}images/home/blackarrow.png" width="34" height="30"/></a></li>
 	</ul>
 	</div>
-	<p>Dotspotting is the first project Stamen is releasing as part of Citytracking, a project funded by the <a href="http://www.newschallenge.org/" title="view website of Knight News Challenge">Knight News Challenge</a>. We're making tools to help people gather data about cities and make that data more legible. The code for Dotspotting is available for <a href="https://github.com/citytracking" title="Github repo for citytracking">download on Github</a>, and licensed for use under the GNU General Public License.</p>
+	<p id="home_description" class="txt_body_copy">Dotspotting is the first project Stamen is releasing as part of Citytracking, a project funded by the <a href="http://www.newschallenge.org/" title="view website of Knight News Challenge">Knight News Challenge</a>. We're making tools to help people gather data about cities and make that data more legible. The code for Dotspotting is available for <a href="https://github.com/citytracking" title="Github repo for citytracking">download on Github</a>, and licensed for use under the GNU General Public License.</p>
+	
 {/if}
 
 <div id="home_recents">
@@ -25,8 +26,8 @@
 			{if $smarty.foreach.thumbs.index < 4}
 			     <dl class="recent_thumbnails">
 				<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
-				<dd class="thumb_title">{$sh.label|escape}</dd>
-				<dd class="thumb_owner">{$sh.user.username|escape}</dd>
+				<dd class="txt_small thumb_title">{$sh.label|escape}</dd>
+				<dd class="txt_small">{$sh.user.username|escape}</dd>
 				</dl>
 			{/if}
 		{/foreach}
@@ -45,8 +46,8 @@
 						<a href="{$cfg.abs_root_url}u/{$sh.user_id}/dots/{$sh.id}" title=""><span>{$sh.id|escape}</span></a>
 					</div>
 			</dt>
-			<dd class="thumb_title">Dot: {$sh.id|escape}</dd>
-			<dd class="thumb_owner">{$sh.user.username|escape}</dd>
+			<dd class="txt_small thumb_title">Dot: {$sh.id|escape}</dd>
+			<dd class="txt_small">{$sh.user.username|escape}</dd>
 			</dl>
 		{/if}
 	{/foreach}
