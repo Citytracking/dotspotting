@@ -98,10 +98,14 @@
 
 <div id="main">
 
-	<div id="nav" class="clearfix">
+	<div id="nav" class="clearfix{if $cfg.page_crumb != ""} alt_nav{/if}">
 		
-		<div id="nav_logo">
+		<div id="nav_logo"{if $cfg.page_crumb != ""} class="alt_logo"{/if}>
+			{if $cfg.page_crumb != ""}
+			<a href="{$cfg.abs_root_url}"><img src="{$cfg.abs_root_url}images/dotspotting_logo.png" height="61" width="292" alt="Dotspotting" class="logo" /></a>
+			{else}
 			<a href="{$cfg.abs_root_url}"><img src="{$cfg.abs_root_url}images/dotspotting_logo.png" height="86" width="406" alt="Dotspotting" class="logo" /></a>
+			{/if}
 		</div>
 
 		
