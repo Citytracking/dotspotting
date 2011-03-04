@@ -566,6 +566,7 @@ function draw_map_modestmaps(dots){
 function draw_map_polymaps(dots){
 	var map = utils_polymap('map');
 	var current_map_zoom,org_extent = null;
+	var map_size = "small";
 	
 	// init selected dot variable
 	_dotspotting.selected_dot = null;
@@ -588,13 +589,74 @@ function draw_map_polymaps(dots){
 	points.on("load", utils_polymaps_assign_dot_properties);
 
 	map.add(points);
-
-	utils_polymaps_add_compass(map);
+	
+	// adding our own controls
+	//utils_polymaps_add_compass(map);
+	
+	// create controls
+	$("#map_controls a").each(function(){
+		$(this).click(function(e){
+			e.preventDefault();
+			var type = $(this).attr("id");
+			if(type && type.length){
+				switch(type){
+					case "zoom_in":
+						map.zoomBy(1);
+					break;
+					case "zoom_out":
+						map.zoomBy(-1);
+					break;
+					case "pan_left":
+						map.panBy({x:-100,y:0});
+					break;
+					case "pan_right":
+						map.panBy({x:100,y:0});
+					break;
+					case "pan_up":
+						map.panBy({x:0,y:-100});
+					break;
+					case "pan_down":
+						map.panBy({x:0,y:100});
+					break;
+					case "reset_bounds":
+						if(org_extent)map.extent(org_extent);
+						map.zoom(Math.floor(map.zoom()));
+					break;
+					default:
+					//
+					break;
+				
+				}
+			}
+		})
+	});
 	
 	$("#map").bind('resetmapbounds', function(e) {
 		if(org_extent)map.extent(org_extent);
 		map.zoom(Math.floor(map.zoom()));
 	});
+	
+	// map toggle size button
+	$("#map_toggle_size").click(function(){
+		var _this = $(this);
+		if(map_size == "small"){
+			map_size = "large";	
+			$("#map").animate({
+			    height: 500
+			  }, 100, function() {
+				$(_this).text("Shorter map");
+			    map.resize();
+			  });
+		}else{
+			map_size = "small";
+			$("#map").animate({
+			    height: 300
+			  }, 100, function() {
+				$(_this).text("Taller map");
+			    map.resize();
+			  });
+		}
+	})
 	
 	
 	// listens for map changes

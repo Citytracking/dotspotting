@@ -152,6 +152,8 @@
 
 	$GLOBALS['cfg']['maptiles_template_url'] = 'http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/26490/256/{Z}/{X}/{Y}.png';
 	$GLOBALS['cfg']['maptiles_template_hosts'] = array( 'a.', 'b.', 'c.' );
+	$GLOBALS['cfg']['maptiles_license'] = 'Map data <a href="http://creativecommons.org/licenses/by-sa/3.0/">CCBYSA</a> 2010 <a href="http://openstreetmap.org/">OpenStreetMap.org</a> contributors';
+	
 
 	$GLOBALS['cfg']['pagination_per_page'] = 25;
 	$GLOBALS['cfg']['pagination_spill'] = 5;
