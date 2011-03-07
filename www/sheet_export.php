@@ -74,30 +74,8 @@
 		'viewer_id' => $GLOBALS['cfg']['user']['id'],
 	);
 
-	$valid_extras = array(
-		'height' => null,
-		'width' => null,
-		'dot_size' => null,
-	);
-
-	foreach ($valid_extras as $extra => $details){
-
-		$what = get_str($extra);
-
-		if (! $what){
-			continue;
-		}
-
-		# in case someone decides to be cute and start doing an
-		# auto-incrementing attack on user-supplied parameters...
-		# (20110302/straup)
-
-		if ((is_array($details)) && (! in_array($what, $details))){
-			continue;
-		}
-
-		$export_more[$extra] = $what;
-	}
+	$export_props = export_collect_user_properties($format);
+	$export_more = array_merge($export_props, $export_more);
 
 	# caching?
 
@@ -107,7 +85,7 @@
 
 		$ok_cache = 1;
 
-		if (! in_array($format, $GLOBALS['cfg']['export_cache_valid_formats'])){
+		if (in_array($format, $GLOBALS['cfg']['export_cache_exclude_formats'])){
 			$ok_cache = 0;
 		}
 
@@ -178,7 +156,7 @@
 
 	if ($ok_cache){
 		$send_more['unlink_file'] = 0;
-		$send_more['x-headers']['Cached'] = 1; # basename($cache_path);
+		$send_more['x-headers']['Cached'] = 1;
 	}
 
 	#
