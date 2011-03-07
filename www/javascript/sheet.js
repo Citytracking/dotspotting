@@ -1,13 +1,14 @@
 
 function sheet_export_visible(fmt, export_all){
-    
+
     // Export only those visible dots in a sheet by checking to see
     // if the sheet has been filtered. If it hasn't just let the default
     // sheet_export code handle things.
-	
-    if (_dotspotting.datatables_query == undefined || _dotspotting.datatables_query == ''){
-		location.href = export_all;
-		return;
+
+
+    if ((_dotspotting.datatables_query == undefined) || (_dotspotting.datatables_query == '')){
+	location.href = export_all;
+	return;
     }
 	
     var dots = new Array();

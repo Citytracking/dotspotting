@@ -165,6 +165,39 @@
 
 	$GLOBALS['cfg']['import_archive_root'] = '';
 
+	# this is off by default since we don't necessarily know where
+	# to write the cache files.
+
+	$GLOBALS['cfg']['enable_feature_export_cache'] = 0;
+	$GLOBALS['cfg']['export_cache_root'] = '';
+
+	$GLOBALS['cfg']['export_cache_exclude_formats'] = array(
+		# the list of things that can not be cached
+	);
+
+	# things that users can tweaks exporting a sheet
+
+	$GLOBALS['cfg']['export_valid_extras'] = array(
+
+		# in case someone decides to be cute and start doing an
+		# auto-incrementing attack on user-supplied parameters...
+		# (20110302/straup)
+
+		'png' => array(
+			'height' => array(156, 480, 768),
+			'width' => array(234, 640, 1024),
+			'dot_size' => null,
+		),
+
+		'ppt' => array(
+			'dot_size' => null,
+		),
+
+		'pdf' => array(
+			'dot_size' => null,
+		),
+	);
+
 	# a list of format which might be simplified
 
 	$GLOBALS['cfg']['import_do_simplification'] = array(
