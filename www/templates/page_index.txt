@@ -4,7 +4,7 @@
 {* inside #content div *}
 
 {if $cfg.user.id}
-	<h2>Hi {$cfg.user.username|escape}!</h2>
+	<h2 id="welcome_back">Welcome back {$cfg.user.username|escape}!</h2>
 {else}
 	<div id="home_meezy">
 	<h3>Dotspotting is easy:</h3>
@@ -19,12 +19,13 @@
 	
 {/if}
 
+{* start thumbnail section *}
 <div id="home_recents">
 	{if $recent_sheets|@count}
-		<h5>Recent sheets:</h5>
+		<div class="thumbnail_head clearfix"><h5 class="left">Recent sheets:</h5><a href="{$cfg.abs_root_url}recent/sheets" class="right txt_small">see more</a></div>
 		{foreach from=$recent_sheets item=sh name=thumbs}
 			{if $smarty.foreach.thumbs.index < 4}
-			     <dl class="recent_thumbnails">
+			     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.index == 3} last_thumb{/if}">
 				<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
 				<dd class="txt_small thumb_title">{$sh.label|escape}</dd>
 				<dd class="txt_small">{$sh.user.username|escape}</dd>
@@ -35,15 +36,15 @@
 	{/if}
 	
 	{if $recent_dots|@count}
-	<h5>Recent Dots:</h5>
+	<div class="thumbnail_head clearfix"><h5 class="left">Recent dots:</h5><a href="{$cfg.abs_root_url}recent/dots" class="right txt_small">see more</a></div>
 	{foreach from=$recent_dots item=sh name=thumbs}
 		{if $smarty.foreach.thumbs.index < 4}
-		     <dl class="recent_thumbnails">
+		     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.index == 3} last_thumb{/if}">
 			<dt>
 					<div class="map" data-center="{$sh.latitude},{$sh.longitude}" data-zoom="12">
 						<div class="layer" data-type="image"
 							data-url="{$cfg.maptiles_template_url|escape}"></div>
-						<a href="{$cfg.abs_root_url}u/{$sh.user_id}/dots/{$sh.id}" title=""><span>{$sh.id|escape}</span></a>
+						<a href="{$cfg.abs_root_url}u/{$sh.user_id}/dots/{$sh.id}" title=""><span>{$sh.id|escape}&nbsp;</span></a>
 					</div>
 			</dt>
 			<dd class="txt_small thumb_title">Dot: {$sh.id|escape}</dd>

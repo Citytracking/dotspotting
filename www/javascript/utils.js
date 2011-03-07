@@ -124,6 +124,8 @@ function utils_polymap(map_id, more){
 			map.add(dblclick);
 		}
 		
+	}else{
+		$('#map_controls').remove();
 	}
 
 	var tp = utils_tile_provider();
@@ -144,10 +146,10 @@ function utils_polymap(map_id, more){
 }
 
 function utils_polymaps_add_compass(map){
-
+	/* using our own buttons, but want the shift-click zoomy thing */
 	var compass = org.polymaps.compass();
 	compass.pan('none');
-	compass.zoom('small');
+	compass.zoom('none');
 	map.add(compass);
 }
 
@@ -268,10 +270,11 @@ function utils_svg_title(el,title){
 }
 
 function utils_modestmap(map_id, more){
-
+	if(more && more['static'])$('#map_controls').remove();
 	var tp = utils_tile_provider();
 
 	var provider = null;
+	
 
 	if (tp['static']){
 	    provider = new com.modestmaps.TileStacheStaticMapProvider(tp['template'], tp['hosts']);
@@ -285,15 +288,17 @@ function utils_modestmap(map_id, more){
 
 	var handlers = [
 			// how to disable the scroll wheel ?
-			new com.modestmaps.MouseHandler(),
-			]
+			new com.modestmaps.MouseHandler()
+	];
 
 	var map = new com.modestmaps.Map(map_id, provider, dims, handlers);
+	
+	
 	return map;
 }
 
 function utils_modestmaps_add_compass(map){
-    com.modestmaps.Compass(map);
+    //com.modestmaps.Compass(map);
 }
 
 // quick and dirty function to tweak the extents of a bounding
@@ -334,14 +339,201 @@ function utils_adjust_bbox(bbox){
 	return bbox;
 }
 
-// 	simple check to detect touch support
-//	not thoughly tested
-function isTouchDevice() {
-   var el = document.createElement('div');
-   el.setAttribute('ongesturestart', 'return;');
-   if(typeof el.ongesturestart == "function"){
-      return true;
-   }else {
-      return false
-   }
+
+////////////// seanc dumping ground //////////////////
+
+function get_mm_dot_styles(){
+	var attrs = {
+		'fill' : 'rgb('+_dotspotting['dot_color']['fill'][0]+','+_dotspotting['dot_color']['fill'][1]+','+_dotspotting['dot_color']['fill'][2]+')',
+		'fill-opacity' : _dotspotting['dot_color']['fill'][3],
+		'stroke' : 'rgb('+_dotspotting['dot_color']['stroke'][0]+','+_dotspotting['dot_color']['stroke'][1]+','+_dotspotting['dot_color']['stroke'][2]+')',
+		'stroke-width' : _dotspotting['dot_color']['stroke_width'],
+		'stroke-opacity' :_dotspotting['dot_color']['stroke'][3]
+	};
+
+	var attrs_hover = {
+		'fill' : 'rgb('+_dotspotting['dot_color']['fill_hover'][0]+','+_dotspotting['dot_color']['fill_hover'][1]+','+_dotspotting['dot_color']['fill_hover'][2]+')',
+		'fill-opacity' : _dotspotting['dot_color']['fill_hover'][3],
+		'stroke' : 'rgb('+_dotspotting['dot_color']['stroke_hover'][0]+','+_dotspotting['dot_color']['stroke_hover'][1]+','+_dotspotting['dot_color']['stroke_hover'][2]+')',
+		'stroke-width' : _dotspotting['dot_color']['stroke_width'],
+		'stroke-opacity' :_dotspotting['dot_color']['stroke_hover'][3]
+	};
+	return([attrs,attrs_hover]);
+}
+
+function get_mm_sheet_styles(){
+	var attrs = {
+		'fill' : 'rgb('+_dotspotting['sheet_color']['fill'][0]+','+_dotspotting['sheet_color']['fill'][1]+','+_dotspotting['sheet_color']['fill'][2]+')',
+		'fill-opacity' : _dotspotting['sheet_color']['fill'][3],
+		'stroke' : 'rgb('+_dotspotting['sheet_color']['stroke'][0]+','+_dotspotting['sheet_color']['stroke'][1]+','+_dotspotting['sheet_color']['stroke'][2]+')',
+		'stroke-width' : _dotspotting['sheet_color']['stroke_width'],
+		'stroke-opacity' :_dotspotting['sheet_color']['stroke'][3]
+	};
+
+	var attrs_hover = {
+		'fill' : 'rgb('+_dotspotting['sheet_color']['fill_hover'][0]+','+_dotspotting['sheet_color']['fill_hover'][1]+','+_dotspotting['sheet_color']['fill_hover'][2]+')',
+		'fill-opacity' : _dotspotting['sheet_color']['fill_hover'][3],
+		'stroke' : 'rgb('+_dotspotting['sheet_color']['stroke_hover'][0]+','+_dotspotting['sheet_color']['stroke_hover'][1]+','+_dotspotting['sheet_color']['stroke_hover'][2]+')',
+		'stroke-width' : _dotspotting['sheet_color']['stroke_width'],
+		'stroke-opacity' :_dotspotting['sheet_color']['stroke_hover'][3]
+	};
+	return([attrs,attrs_hover]);
+}
+
+// create handlers for map controls
+function utils_add_map_controls(map,map_type,extent){
+	
+	$('#map_controls').fadeIn();
+	$("#map_controls a").each(function(){
+		$(this).click(function(e){
+			e.preventDefault();
+			var type = $(this).attr("id");
+			if(type && type.length){
+				switch(type){
+					case "zoom_in":
+						(map_type == "mm") ? map.zoomIn() : map.zoomBy(1);
+					break;
+					case "zoom_out":
+						(map_type == "mm") ? map.zoomOut() : map.zoomBy(-1);
+					break;
+					case "pan_left":
+						(map_type == "mm") ? map.panBy(100,0) : map.panBy({x:100,y:0});
+					break;
+					case "pan_right":
+						(map_type == "mm") ? map.panBy(-100,0) : map.panBy({x:-100,y:0});
+					break;
+					case "pan_up":
+						(map_type == "mm") ? map.panBy(0,100) : map.panBy({x:0,y:100});
+					break;
+					case "pan_down":
+						(map_type == "mm") ? map.panBy(0,-100) : map.panBy({x:0,y:-100});
+					break;
+					case "reset_bounds":
+						if(map_type == "mm"){
+							map.setExtent(extent);
+						}
+						else
+						{
+							map.extent(extent);
+							map.zoom(Math.floor(map.zoom()));
+						}
+					break;
+					default:
+					//
+					break;
+				
+				}
+			}
+		})
+	});
+}
+
+
+// map toggle size button
+function utils_map_toggle_size(map,map_type,tallSize,markers){
+	var map_size = "small";
+	
+	$("#map_toggle_size").click(function(e){
+		e.preventDefault();
+		var _this = $(this);
+		var _w = Math.round($("#map").width());
+		if(map_size == "small"){
+			map_size = "large";	
+			$("#map").animate({
+			    height: tallSize
+			  }, 100, function() {
+				$(_this).text("Shorter map");
+				if(map_type == "mm"){
+					map.setSize(_w,tallSize);
+					markers.forceAresize();
+				}
+				else
+				{
+					map.resize();
+				}
+			   
+			  });
+		}else{
+			map_size = "small";
+			$("#map").animate({
+			    height: 300
+			  }, 100, function() {
+				$(_this).text("Taller map");
+			    if(map_type == "mm"){
+					map.setSize(_w,300);
+					markers.forceAresize();
+				}
+				else
+				{
+					map.resize();
+				}
+			  });
+		}
+	});
+}
+
+/* 
+	Add ToolTip & bind marker click event to #map
+	
+	tooltip appears on click
+	
+	#############################################################################
+	code & styles from Portland crime map: https://github.com/Caged/portlandcrime
+	#############################################################################
+*/
+function utils_add_map_tooltip(map,mapel,map_type){
+	
+	$("#map").bind('markerclick', function(e,dotid,coor) {
+		
+		var dot = dot_getinfo_json(dotid);
+		
+		if(mapel.length == 0) return;
+
+		var props = new Object();
+		props.location = (map_type == "mm") ? new com.modestmaps.Location(dot.latitude,dot.longitude) : coor;
+		props.map = map;
+		props.id = dotid;
+		props.map_type = map_type;
+	
+		mapel.maptip(this)
+		  .data(props)
+	      .map(map)
+	      .location(props.location)
+	      .classNames(function(d) {
+	        return d.code
+	      })
+	      .top(function(tip) {
+	        var point = tip.props.map.locationPoint(this.props.location)
+	        return parseFloat(point.y)
+	      }).left(function(tip) {
+	        var radius = tip.target.getAttribute('r'),
+	            point = tip.props.map.locationPoint(this.props.location)
+
+	        return parseFloat(point.x + (radius / 2.0) + 20)
+	      }).content(function(d) {
+	        var self = this,
+	            props = d,
+	            cnt = $('<div/>'),
+	            hdr = $('<h2/>'),
+	            bdy = $('<p/>'),
+
+	            close = $('<span/>').addClass('close').text('X')
+		        hdr.html(dot_tip_header(props.id));
+		        hdr.append(close);
+			
+		        bdy.html(dot_tip_body(props.id))
+
+		        cnt.append($('<div/>').addClass('nub'))
+		        cnt.append(hdr).append(bdy) 
+
+		        close.click(function() {
+		          self.hide();
+					dot_unselect(props.id);
+					_dotspotting.selected_dot = null;
+		        })   
+				
+	        	return cnt;
+	      }).render()
+
+	});
 }

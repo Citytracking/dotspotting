@@ -274,29 +274,13 @@ function draw_map_modestmaps(sheets){
 	var map = utils_modestmap('map');
 	map.setExtent(extent);
 
-	// This is not awesome but in the absence of a reliable way to
-	// read CSS declaration in JS (does one exist now?) it's just
-	// what we're going to do for now. See also: main.css .dot and
-	// .dot:hover (20101207/straup)
-
-	var attrs = {
-		'fill' : '#00112d',
-		'fill-opacity' : .5,
-		'stroke' : '#99cc00',
-		'stroke-width' : 4,
-		'stroke-opacity' : 1,
-	};
-
-	var attrs_hover = {
-		'fill' : '#00ddee',
-		'fill-opacity' : .1,
-		'stroke' : '#00112d',
-		'stroke-width' : 4,
-		'stroke-opacity' : 1,
-	};
+	// writing dot colors set in config file
+	// 0 = attrs , 1 = attrs_hover
+	var attr_array = get_mm_sheet_styles();
+	
 
 	var more = {
-		'attrs' : attrs,
+		'attrs' : attr_array[0],
 
 		// just inline the function mostly so that we don't
 		// have to redeclare the attrs_* hashes again
@@ -305,13 +289,17 @@ function draw_map_modestmaps(sheets){
 		'onload' : function(el, props){
 
 			el.mouseout(function (evt) {
-				this.attr(attrs);
+				this.attr(attr_array[0]);
 				sheet_onmouseout(props.id);
 			});
 
 			el.mouseover(function (evt) {
-				this.attr(attrs_hover);
+				this.attr(attr_array[1]);
 				sheet_onmouseover(props.id);
+			});
+			
+			el.click(function(evt){
+				sheet_onclick(props.id);
 			});
 		},
 	};
@@ -320,6 +308,13 @@ function draw_map_modestmaps(sheets){
 	markers.drawGeoJson(sheets['features'], more);
 
 	utils_modestmaps_add_compass(map);
+	
+	// create controls
+	utils_add_map_controls(map,"mm",extent);
+	
+	// map toggle size button
+	utils_map_toggle_size(map,"mm",500,null);
+	
 	return;
 }
 
@@ -341,6 +336,13 @@ function draw_map_polymaps(sheets){
 	map.add(boxes);
 
 	utils_polymaps_add_compass(map);
+	
+	// create controls
+	utils_add_map_controls(map,"po",extent);
+	
+	// map toggle size button
+	utils_map_toggle_size(map,"po",500,null);
+	
 	return 1;
 }
 

@@ -4,7 +4,7 @@
 body,html{width:100%;height:100%;}
 /* elements primary */
 *{margin:0;padding:0;}
-a{text-decoration: none;color:rgb(0,0,0);}
+a{text-decoration: none;color:rgb(0,0,0);cursor:pointer;}
 ul{list-style-type: none;padding:0;}
 h3{font-weight:500;font-size: 19px;}
 h5{font-weight:500;font-size:15px;}
@@ -14,12 +14,14 @@ img{border:none;}
 /* blocks */
 body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;color: #000;}
 
-#main {position:relative;margin:0 auto -40px auto;padding:0;width:980px;min-height:100%;height:auto !important;height:100%;text-align:left;background-color:#fff;}
+#main {position:relative;margin:0 auto -30px auto;padding:0;width:980px;min-height:100%;height:auto !important;height:100%;text-align:left;background:#fff;}
 
-#content{}
+#nav{text-align:right;margin-bottom:25px;padding-top:10px;border:1px solid #fff;}
 
-#footdown{height:40px;clear:both;}
-#footer{position:relative;width:100%;margin:10px 0 0;line-height:30px;height:30px;background:#fff;font-size:14px;color:#666;clear:both;}
+#content{position:relative;border:1px solid #fff;}
+
+#footdown{height:30px;clear:both;}
+#footer{position:relative;width:980px;margin:0 auto;text-align:left;line-height:30px;height:30px;background:#fff;color:#666;clear:both;}
 
 /* CLEAR FIX */
 .clear{clear:both;height:0;}
@@ -36,6 +38,12 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 .clearfix {display: block;}
 /* End hide from IE-mac */
 
+#main .left{float:left;}
+#main .right{float:right;}
+#main .last_list_item{margin-right:0;}
+#main .blue_links{color:rgb(11,189,255);}
+#main .green_links{color:rgb(45,115,43);}
+
 .txt_small{
 	font-size:12px;
 	font-weight:400;
@@ -47,22 +55,22 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 }
 
 /* nav */
-#nav{text-align:right;margin-bottom:25px;padding-top:10px;}
-#nav.alt_nav{margin-bottom:10px;}
-#nav_logo{position:absolute;left:-22px;top:10px;}
-#nav_logo.alt_logo{left:-15px;top:15px;}
+#nav_logo{position:relative;left:-22px;top:10px;float:left;}
+#nav_logo.alt_logo{left:-16px;top:15px;}
 #nav_logo_alt{left:-22px;top:15px;}
 #nav_logo a{display:block;background:transparent;}
-#nav_links{float: right;margin:0 20px 0 0;}
+#nav_links{float: right;margin:0 10px 0 0;}
 #nav_links a{text-align:center;font-weight: 300;font-size:14px;padding:2px 6px 4px;margin-right:4px;color:#000;}
 #nav_links a:hover{background:#000;color:#fff;}
-#nav_links .nav_links_lower{margin-bottom:20px;}
+#nav_links .nav_links_lower{margin-bottom:15px;}
 #nav_links .nav_links_upper{margin-bottom:20px;}
-#nav_links .nav_links_upper span{font-size:12px;font-weight:normal;color:red;}
+#nav_links .nav_links_upper span{font-size:14px;font-weight: 300;padding:0 6px 0 0;}
+#nav_links .nav_links_upper span span{font-weight: 600;}
 #nav_links .nav_select{background:#000;color:#fff;}
 
 
 /* home page*/
+#welcome_back{}
 /* dotspotting is easy section */
 #home_meezy{margin:0 0 25px 0;}
 #home_meezy h3{margin-bottom:5px;}
@@ -80,33 +88,59 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 
 /* recent thumbnails section */
 #home_recents{overflow:hidden !important;}
-#home_recents h5{margin:20px 0 5px;}
-.recent_thumbnails dl:last-child{margin:0;}
-.recent_thumbnails{margin:0 9px 0 0;float:left;width:234px;}
-.recent_thumbnails dt{height:156px;border:1px solid #000;overflow:hidden;}
-.recent_thumbnails dd.thumb_title{margin-top:3px;font-weight:500;}
-#home_recents div.map{position:relative;width:234px;height:156px;}
+#home_recents div.thumbnail_head{margin:20px 0 5px;}
+#home_recents div.thumbnail_head a{padding-top:4px;margin-right:10px;}
+#home_recents h5{}
+#home_recents .recent_thumbnails{margin:0 11px 0 0;float:left;width:235px;}
+#home_recents dl.last_thumb{margin:0;}
+#home_recents .recent_thumbnails dt{height:156px;border:1px solid #000;overflow:hidden;}
+#home_recents .recent_thumbnails dd.thumb_title{margin-top:3px;font-weight:500;}
+#home_recents div.map{position:relative;width:235px;height:156px;}
 #home_recents a{display:block;}
-#home_recents div.map a{position:absolute;width:100%;height:100%;background:url('../images/generic_blue_dot.png') no-repeat center center;} 
+#home_recents div.map a{position:absolute;width:100%;height:100%;background:url('../images/generic_blue_dot.png') no-repeat center center;z-index:6000;} 
 #home_recents div.map a span{display:none;}
 
 /* sections */
 
 /* sheet page */
-#sheet_title{margin-bottom:2px;}
+#sheet_head{margin:0 0 2px;}
+#sheet_head li{margin:0 10px 0 0;}
 #sheet_title span{font-weight:400;}
 
+/* single dot page */
+/* PAGE LAYOUT CSS */
+
+.right_column{width:45%;float:right;}
+.left_column{width:54%;float:left;}
+table.page_dot{margin:0;padding:12px 0 0;width:100%;}
+table.page_dot tr{}
+table.page_dot th{background-color:#e8e8e8;background:rgba(200,200,200,.4);text-transform:uppercase;text-align:left;font-weight:200;padding:5px 10px 5px 5px;}
+table.page_dot td{text-align:left;padding:5px;}
+#page_dot_pagination{text-align:left;margin:5px 10px 10px 0;font-size:11px;text-transform:uppercase;}
+
+/* for flickr */
+.left_column_flickr{width:10%;float:left;}
+.right_column_flickr{width:89%;float:right;}
+#flickr_holder{height:300px;margin:5px auto 0;/*overflow:hidden;*/
+padding:0;text-align:center;background:#DCEFEF url(../images/icon_camera.png) 50% 50% no-repeat;}
+#flickr_holder img{position:relative;}
+/* end flickr */
+
+/* end page layout css */
+
+
+
 /* polymaps and modestmaps stuff */
-#map{
-    width:100%;
-    height:300px;
-    margin:5px 0;
-    border: 1px solid #000; 
+#map_wrapper {
+	margin:5px 0px 0;
 	position:relative;
 }
 
-#map_wrapper {
-	margin-bottom: 0px;
+#map{
+    width:100%;
+    height:300px;
+    margin:0;
+    border: 1px solid #000; 
 	position:relative;
 }
 
@@ -152,67 +186,20 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 }
 
 .sheet {
-    fill: #00112d;
+    fill: rgb(11,189,255);
     fill-opacity: .5;
-    stroke: #99cc00;
+    stroke: rgb(11,189,255);
     stroke-opacity: 1;
     stroke-width: 4;	
 }
 
 .sheet:hover {
-    fill: #00ddee;
+    fill: rgb(11,189,255);
     fill-opacity: .1;
-    stroke: #00112d;
+    stroke: rgb(11,189,255);
     stroke-width: 4;
     stroke-opacity: 1;	
 	cursor:pointer;
-}
-
-.compass .back {
-  fill: #fff;
-  fill-opacity: 1;
-}
-
-.compass .fore {
-  stroke: #999;
-  stroke-width: 1.5px;
-}
-
-.compass rect.back.fore {
-  fill: #999;
-  fill-opacity: .3;
-  stroke: #eee;
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
-}
-
-.compass .direction {
-  fill: none;
-}
-
-.compass .chevron {
-  fill: none;
-  stroke: #999;
-  stroke-width: 5px;
-}
-
-.compass .zoom .chevron {
-  stroke-width: 4px;
-}
-
-.compass .active .chevron, .compass .chevron.active {
-  stroke: #fff;
-}
-
-.compass.active .active .direction {
-  fill: #999;
-}
-
-.magicpony {
-    fill: yellow;
-    opacity: 1 !important;
-    stroke: #000;
-    stroke-width: 2px;
 }
 
 .highlighted {
@@ -220,7 +207,7 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 }
 
 /* map buttons */
-#map_controls{position:absolute;z-index:6000;top:5px;left:5px;width:100%;}
+#map_controls{position:absolute;z-index:6000;top:10px;left:10px;width:100%;display:none;} /* hide controls first, in case map is a single dot map, which has no controls */
 #map_controls a{display:block;position:absolute;}
 #map_controls #pan_left{left:0;top:13px;}
 #map_controls #pan_right{left:58px;top:13px;}
@@ -228,8 +215,8 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 #map_controls #pan_down{left:29px;top:29px;}
 #map_controls #zoom_in{left:94px;top:0;}
 #map_controls #zoom_out{left:94px;top:29px;}
-#map_controls #reset_bounds{right:10px;top:0;}
-#map_toggle_size{position:absolute;z-index:6000;width:100px;height:24px;bottom:0;right:-2px;background-color:white;border-top:1px solid black;border-left:1px solid black;font-size:12px;font-weight:500;text-align:center;line-height:24px;cursor:pointer;}
+#map_controls #reset_bounds{right:20px;top:0;}
+/*#map_toggle_size{position:absolute;z-index:6000;width:100px;height:24px;bottom:0;right:-2px;background-color:white;border-top:1px solid black;border-left:1px solid black;font-size:12px;font-weight:500;text-align:center;line-height:24px;cursor:pointer;}*/
 
 
 /*
@@ -237,7 +224,7 @@ MAP TOOLTIP
 co-opted from Portland crime map: https://github.com/Caged/portlandcrime
 */
 
-div.maptip {
+#map_wrapper div.maptip {
   background: rgba(20,20,20,0.5);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -319,12 +306,10 @@ div.maptip-cnt {
  * cribbed from the tablesorter examples 
 */
 /*main*/
-.dataTables_wrapper {margin-top: 0px;}
+.dataTables_wrapper {margin-top: 15px;}
 table.ds_table{font-family:arial;background-color:#fff;color:#000;margin:0;font-size:11px;width:100%;text-align:left;border:none;border-spacing:5px 0px;}
-.dataTables_scrollHeadInner{}
-.dataTables_scrollHeadInner table.ds_table{margin:10px 0pt 0px;}
-.dataTables_scrollBody thead{}
 table.ds_table thead tr th,table.ds_table tfoot tr th,table.ds_table tbody td{border-bottom:1px solid #000;padding:8px 2px;cursor:pointer;}
+table.ds_table thead tr th{border-width:2px;}
 table.ds_table thead tr th{padding-bottom:4px;font-size:12px;}
 table.ds_table thead tr th{-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none;}
 table.ds_table thead tr th:hover{/*color:#00ddee;*/}
@@ -334,9 +319,12 @@ table.ds_table tbody tr.odd td{background-color:#fff;}
 table.ds_table thead tr .headerSortUp{}
 table.ds_table thead tr .headerSortDown{}
 table.ds_table thead tr .headerSortDown,table.ds_table thead tr .headerSortUp{}
+.dataTables_scrollHeadInner{}
+.dataTables_scrollHeadInner table.ds_table{margin:10px 0pt 0px;}
+.dataTables_scrollBody thead{}
 
 /* search box for dataTables*/
-.dataTables_filter{margin-bottom:5px;font-size:11px;font-weight:bold;text-transform:uppercase;color:#00;text-align:right;}
+.dataTables_filter{margin-bottom:5px;font-size:11px;font-weight:bold;text-transform:uppercase;color:#000;text-align:right;}
 .dataTables_filter input{padding:2px;margin-left:5px;border:solid 1px #000;outline:0;font:normal 12px/100%;width:200px;color:#333;}
 .dataTables_filter input:hover,.dataTables_filter input:focus{border-color:#666;box-shadow:rgba(0,0,0,0.3) 0px 0px 8px;-moz-box-shadow:rgba(0,0,0,0.3) 0px 0px 8px;-webkit-box-shadow:rgba(0,0,0,0.3) 0px 0px 8px;}
 .dataTables_processing{font-style:italic;font-weight:700;text-align:right;display:none;}
