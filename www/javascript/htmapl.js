@@ -343,7 +343,7 @@
 			},
 			interact: function() {
 				return {};
-			},
+			}
 		};
 	})();
 

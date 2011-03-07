@@ -46,7 +46,7 @@
 		#
 		# Go!
 		#
-
+		
 		if ($display == 'sheets'){
 
 			$rsp = search_sheets($_GET, $GLOBALS['cfg']['user']['id'], $more);
@@ -60,7 +60,6 @@
 		}
 
 		else {
-
 			$rsp = search_dots($_GET, $GLOBALS['cfg']['user']['id'], $more);
 
 			if ((! $rsp['ok']) || (! count($rsp['dots']))){

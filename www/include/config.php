@@ -1,3 +1,4 @@
+
 <?php
 
 	# This file has been copied from the Citytracking fork of flamework.
@@ -313,11 +314,11 @@
 	# fill,stroke array = rgba
 	# alpha =  0 = completely transparent, 1 = opaque
 	$GLOBALS['cfg']['sheet_color_scheme'] = array(
-		'fill' => array(0,17,45,.5),
-		'stroke' => array(153,204,0,1),
+		'fill' => array(11,189,255,.5),
+		'stroke' => array(11,189,255,1),
 		'stroke_width' => 4,
-		'fill_hover' => array(0,221,238,.1),
-		'stroke_hover' => array(0,17,45,1),
+		'fill_hover' => array(11,189,255,.1),
+		'stroke_hover' => array(11,189,255,1),
 		'stroke_width_hover' => 4
 	);
 ?>

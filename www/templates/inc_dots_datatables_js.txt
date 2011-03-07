@@ -12,7 +12,7 @@
 		var oTimerId = null;
 		var sPreviousSearch = null;
 		var anControl = $('input', _that.fnSettings().aanFeatures.f);
-		
+
 		anControl.unbind('keyup').bind( 'keyup', function(){
 			var $$this = $this;
 
@@ -50,7 +50,8 @@
 {if $is_sheet}
 {literal}
 $(document).ready(function(){ 
-
+	_dotspotting.datatables_query == '';
+	
      var dt = $('#user_dots').dataTable({
 	"bPaginate": false,
 	"bFilter": true,

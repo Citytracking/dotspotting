@@ -45,10 +45,9 @@ function dot_onclick(dotid,lon,lat){
 function dot_onmouseover(dotid){
 	
 	var dot = dot_getinfo_json(dotid);
-	
-	console.log(dot);
-	
+		
 	//console.log(all_dots2[_dotspotting.dots_list_dots[dotid]]);
+	
 	if (! dot['id']){
 		return;
 	}
@@ -58,17 +57,18 @@ function dot_onmouseover(dotid){
 	for (var i = 0; i < tlen; i++){
 		clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
 	}
-
-	/* Move dot to bottom of group */
-
-	var element = document.getElementById("dot_"+dotid);
-	element.parentNode.appendChild(element);
 	
-	if(_dotspotting.selected_dot != dotid){
+	if (_dotspotting.use_polymaps){	
+		/* Move dot to bottom of group */
+		var element = document.getElementById("dot_"+dotid);
+		element.parentNode.appendChild(element);
+	
+		if(_dotspotting.selected_dot != dotid){
 		
-		/* Add dot hover class, because appendChild breaks ':hover' in FF */
-		dotAddClass(element ,'dotHover');
+			/* Add dot hover class, because appendChild breaks ':hover' in FF */
+			dotAddClass(element ,'dotHover');
 		
+		}
 	}
 	
 	dot_highlight_tr(dotid);
@@ -105,6 +105,7 @@ function dotHasClass(element, $class) {
 
 
 function dotAddClass(element, $class) {
+	if(!element)return;
     var i,newClass;
     //is the element array-like?
     if(element.length) {
@@ -129,6 +130,8 @@ function dotAddClass(element, $class) {
 }
 
 function dotRemoveClass (element, $class) {
+	if(!element)return;
+
     var pattern = new RegExp("(^| )" + $class + "( |$)");
     var i,newClass;
 
@@ -309,6 +312,7 @@ function dot_getinfo(dotid){
 }
 
 function strip_ws_text(str){
+	if(!str.length)return '';
 	str = str.replace(/^\s+/, '');
 	str = str.replace(/\s+$/, '');
 	return str
@@ -338,7 +342,7 @@ function row2dot_json(i,headers){
 	}
 	
 	all_dots[i]['url'] = _dotspotting.abs_root_url + 'u/' + all_dots[i]['ownerid'] + '/dots/' + all_dots[i].id + '/';
-	
+
 	if (!_dotspotting.dots_list_dots[all_dots[i].id])_dotspotting.dots_list_dots[all_dots[i].id] = i;
     
 	return all_dots[i];
@@ -346,7 +350,7 @@ function row2dot_json(i,headers){
 
 function dot_search_details(dot, key){
 	for(var hh in dot['details']){
-		if(dot['details'][hh].label == key)console.log(dot['details'][hh].label,dot['details'][hh].value);
+		//if(dot['details'][hh].label == key)console.log(dot['details'][hh].label,dot['details'][hh].value);
 	}
 }
 
@@ -438,15 +442,17 @@ function collect_dots(){
 	var nelat = null;
 	var nelon = null;
 	
+	
 	var features = $(all_dots).map(function(i){
-
-		//var dot = row2dot(row);
-		var dot = row2dot_json(i,headers);
 		
+		//var dot = row2dot(row);
+		
+		// if it has a url property, then it's already been processed
+		var dot = (all_dots[i]['url']) ? all_dots[i] : row2dot_json(i,headers);
 		
 		var loc = {
 			lat: dot.latitude,
-			lon: dot.longitude,
+			lon: dot.longitude
 		};
 
 		swlat = (swlat) ? Math.min(swlat, loc.lat) : loc.lat;
@@ -459,28 +465,28 @@ function collect_dots(){
 		return {
 			'geometry' : {
 				'type' : 'Point',
-				'coordinates' : [ loc.lon, loc.lat ],
+				'coordinates' : [ loc.lon, loc.lat ]
 			},
 
-			'properties' : dot,
+			'properties' : dot
 		};
 
 	});
 
 	var extent = [
 		{ lat: swlat, lon: swlon },
-		{ lat: nelat, lon: nelon },
+		{ lat: nelat, lon: nelon }
 	];
 
 	var center = {
 		'lat' : swlat + ((nelat - swlat) / 2),
-		'lon' : swlon + ((nelon - swlon) / 2),
+		'lon' : swlon + ((nelon - swlon) / 2)
 	};
 
 	return {
 		'features': features,
 		'extent' : extent,
-		'center' : center,
+		'center' : center
 	};
 }
 
@@ -488,7 +494,8 @@ function draw_map_modestmaps(dots){
 
 	var mm = com.modestmaps;
 	var map = utils_modestmap('map');
-
+	
+	var org_extent = null;
 	if (dots.features.length == 1){
 
 		var center = dots['center'];
@@ -498,41 +505,25 @@ function draw_map_modestmaps(dots){
     		map.setCenterZoom(loc, zoom);
 
 	}
-
 	else {
+		
 		var _extent = utils_adjust_bbox(dots['extent']);
-
+		
 		var extent = [
 			new mm.Location(_extent[0]['lat'], _extent[0]['lon']),
-			new mm.Location(_extent[1]['lat'], _extent[1]['lon']),
+			new mm.Location(_extent[1]['lat'], _extent[1]['lon'])
 		];
-
+		org_extent = extent;
 		map.setExtent(extent);
 	}
 
-	// This is not awesome but in the absence of a reliable way to
-	// read CSS declaration in JS (does one exist now?) it's just
-	// what we're going to do for now. See also: main.css .dot and
-	// .dot:hover (20101207/straup)
+	// writing dot colors set in config file
+	// 0 = attrs , 1 = attrs_hover
+	var attr_array = get_mm_dot_styles();
 
-	var attrs = {
-		'fill' : '#00112d',
-		'fill-opacity' : .5,
-		'stroke' : '#99cc00',
-		'stroke-width' : 3,
-		'stroke-opacity' : 1,
-	};
-
-	var attrs_hover = {
-		'fill' : '#00ddee',
-		'fill-opacity' : .8,
-		'stroke' : '#00112d',
-		'stroke-width' : 5,
-		'stroke-opacity' : 1,
-	};
 
 	var more = {
-		'attrs' : attrs,
+		'attrs' : attr_array[0],
 
 		// just inline the function mostly so that we don't
 		// have to redeclare the attrs_* hashes again
@@ -541,32 +532,43 @@ function draw_map_modestmaps(dots){
 		'onload' : function(el, props){
 
 			el.mouseout(function (evt) {
-				this.attr(attrs);
+				this.attr(attr_array[0]);
 				dot_onmouseout(props.id);
 			});
 
 			el.mouseover(function (evt) {
-				this.attr(attrs_hover);
+				this.attr(attr_array[1]);
 				dot_onmouseover(props.id);
 			});
 
 			el.click(function(evt){
 				dot_onclick(props.id);
 			});
-		},
+		}
 	};
 
 	var markers = new mm.Markers(map);
 	markers.drawGeoJson(dots['features'], more);
 
+	// not really doing anything right now because we have our own controls.
 	utils_modestmaps_add_compass(map);	
+	
+	// create controls
+	utils_add_map_controls(map,"mm",org_extent);
+	
+	// map toggle size button
+	utils_map_toggle_size(map,"mm",500,markers);
+	
+	// map tooltip
+	utils_add_map_tooltip(map,$("#map").parent(),"mm");
+
+	
 	return;
 }
 
 function draw_map_polymaps(dots){
 	var map = utils_polymap('map');
 	var current_map_zoom,org_extent = null;
-	var map_size = "small";
 	
 	// init selected dot variable
 	_dotspotting.selected_dot = null;
@@ -591,72 +593,16 @@ function draw_map_polymaps(dots){
 	map.add(points);
 	
 	// adding our own controls
-	//utils_polymaps_add_compass(map);
+	utils_polymaps_add_compass(map);
 	
 	// create controls
-	$("#map_controls a").each(function(){
-		$(this).click(function(e){
-			e.preventDefault();
-			var type = $(this).attr("id");
-			if(type && type.length){
-				switch(type){
-					case "zoom_in":
-						map.zoomBy(1);
-					break;
-					case "zoom_out":
-						map.zoomBy(-1);
-					break;
-					case "pan_left":
-						map.panBy({x:-100,y:0});
-					break;
-					case "pan_right":
-						map.panBy({x:100,y:0});
-					break;
-					case "pan_up":
-						map.panBy({x:0,y:-100});
-					break;
-					case "pan_down":
-						map.panBy({x:0,y:100});
-					break;
-					case "reset_bounds":
-						if(org_extent)map.extent(org_extent);
-						map.zoom(Math.floor(map.zoom()));
-					break;
-					default:
-					//
-					break;
-				
-				}
-			}
-		})
-	});
-	
-	$("#map").bind('resetmapbounds', function(e) {
-		if(org_extent)map.extent(org_extent);
-		map.zoom(Math.floor(map.zoom()));
-	});
+	utils_add_map_controls(map,"po",org_extent);
 	
 	// map toggle size button
-	$("#map_toggle_size").click(function(){
-		var _this = $(this);
-		if(map_size == "small"){
-			map_size = "large";	
-			$("#map").animate({
-			    height: 500
-			  }, 100, function() {
-				$(_this).text("Shorter map");
-			    map.resize();
-			  });
-		}else{
-			map_size = "small";
-			$("#map").animate({
-			    height: 300
-			  }, 100, function() {
-				$(_this).text("Taller map");
-			    map.resize();
-			  });
-		}
-	})
+	utils_map_toggle_size(map,"po",500,null);
+
+	// map tooltip
+	utils_add_map_tooltip(map,$("#map").parent(),"po");
 	
 	
 	// listens for map changes
@@ -685,77 +631,15 @@ function draw_map_polymaps(dots){
 	map.on("resize",handleMapChanges);
 
 
-	/* 
-		Add ToolTip & bind marker click event to #map
-		
-		tooltip appears on click
-		
-		#############################################################################
-		code & styles from Portland crime map: https://github.com/Caged/portlandcrime
-		#############################################################################
-	*/
-
-	var mapel = $("#map").parent();
-	
-	$("#map").bind('markerclick', function(e,dotid,coor) {
-		if(mapel.length == 0) return;
-		
-		var props = new Object();
-		props.location = coor;
-		props.map = map;
-		props.id = dotid;
-		
-		mapel.maptip(this)
-	      .map(map)
-	      .data(props)
-	      .location(coor)
-	      .classNames(function(d) {
-	        return d.code
-	      })
-	      .top(function(tip) {
-	        var point = tip.props.map.locationPoint(this.props.location)
-	        return parseFloat(point.y)
-	      }).left(function(tip) {
-	        var radius = tip.target.getAttribute('r'),
-	            point = tip.props.map.locationPoint(this.props.location)
-
-	        return parseFloat(point.x + (radius / 2.0) + 20)
-	      }).content(function(d) {
-	        var self = this,
-	            props = d,
-	            cnt = $('<div/>'),
-	            hdr = $('<h2/>'),
-	            bdy = $('<p/>'),
-
-	            close = $('<span/>').addClass('close').text('X')
-		        hdr.html(dot_tip_header(props.id));
-		        hdr.append(close);
-			
-				
-		        bdy.html(dot_tip_body(props.id))
-
-		        cnt.append($('<div/>').addClass('nub'))
-		        cnt.append(hdr).append(bdy) 
-
-		        close.click(function() {
-		          self.hide();
-					dot_unselect(props.id);
-					_dotspotting.selected_dot = null;
-		        })   
-
-	        	return cnt;
-	      }).render()
-
-	});
-
 	return 1;
 }
 	
 function draw_map(){
-	utils_scrub_map();
 
+	utils_scrub_map();
 	var dots = collect_dots();
 	
+		
 	if (_dotspotting.use_polymaps){	
 		draw_map_polymaps(dots);
 		return;

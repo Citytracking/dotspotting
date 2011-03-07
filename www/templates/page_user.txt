@@ -46,7 +46,7 @@
 {/capture}
 
 {* see this? you're expected to have escaped $headline by now *}
-<h2 id="headline">{$headline}</h2>
+<h3>{$headline}</h3>
 
 {capture assign="header"}{if $is_own}Your recently created sheets{else}{$owner.username|@possess} recently created sheets{/if}{/capture}
 {include file="inc_sheets_list.txt" header=$header}
