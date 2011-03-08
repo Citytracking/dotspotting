@@ -2,16 +2,33 @@
 {capture assign="page_title"}{if $smarty.get.nearby}Dots nearby{else}Search results{/if}{/capture}
 {include file="inc_head.txt"}
 
-<h2>
-{$page_title|escape}
-{if $cfg.enable_feature_search_export and $dots}
-<span style="font-size:small;">/ export as
-{foreach from=$export_formats item="fmt" name="formats"}
-<a href="{$cfg.abs_root_url}search/export/?{$enc_query_args}&format={$fmt|escape}" title="Link to export as a {if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if} file">{$fmt}</a>{if ! $smarty.foreach.formats.last}, {/if}
-{/foreach}
-</span>
-{/if}
-</h2>
+
+{* sheet title area *}
+<ul id="sheet_head" class="clearfix">
+	<li>
+		<h3>
+		{$page_title|escape}
+		</h3>
+	</li>	
+	
+	{if $cfg.enable_feature_search_export and $dots}
+	<li id="sheet_user_options">
+	<form>
+		<select onchange="prep_sheet_export(this);return false;">
+			<option selected>Export options</option>
+			{foreach from=$export_formats item="fmt" name="formats"}
+			<option value="{$sheet|@urls_url_for_sheet}export.{$fmt|escape}" title="{$fmt|escape}">{if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if}</option>
+			{/foreach}
+		</select>
+	</form>
+	</li>
+	{/if}
+	
+	<li id="map_toggle_size" class="last_list_item">
+		<a href="#" title="toggle map height" class="txt_small green_links taller">Taller Map</a>
+	</li>
+	
+</ul>
 
 {if $query_all_url}<div id="search_see_all"><a href="{$query_all_url|escape}">see results for all users</a></div>{/if}
 

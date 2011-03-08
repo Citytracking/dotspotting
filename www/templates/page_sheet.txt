@@ -20,7 +20,7 @@ An unnamed sheet of dots by {$owner.username|escape}
 
 {* sheet title area *}
 <ul id="sheet_head" class="clearfix">
-	<li class="left">
+	<li>
 		<h3>
 		{if $sheet.label} 
 			{$sheet.label|escape}
@@ -30,20 +30,21 @@ An unnamed sheet of dots by {$owner.username|escape}
 		<span class="txt_small">by <a href="{$owner|@urls_url_for_user}" title="view {$owner.username|escape}'s page" class="blue_links">{$owner.username|escape}</a></span>
 		 | <span class="txt_small sheet_date">created {$sheet.created|date_format:"%B %e, %Y at %I:%M %p"|escape}</span>
 		</h3>
-	</li>
+	</li>	
 	
-	<li class="right last_list_item">
-		<a href="#" id="map_toggle_size" title="toggle map height" class="txt_small green_links">Taller Map</a>
+	
+	<li id="map_toggle_size" class="last_list_item">
+		<a href="#" title="toggle map height" class="txt_small green_links taller">Taller Map</a>
 	</li>
 	
 	{if $is_own}
-	<li class="right">
-	<form method="POST" style="float:right;">
+	<li id="sheet_user_options">
+	<form method="POST">
 		{$crumb_key|crumb_input}
 		<input type="hidden" name="delete" value="1" />
 		<input type="submit" value="DELETE THIS SHEET" />
 		
-		<select onchange="sheet_export_visible( (this.options[this.selectedIndex].title) , (this.options[this.selectedIndex].value) );return false;">
+		<select onchange="prep_sheet_export(this);return false;">
 		<option selected>Export options</option>
 		{foreach from=$export_formats item="fmt" name="formats"}
 		<option value="{$sheet|@urls_url_for_sheet}export.{$fmt|escape}" title="{$fmt|escape}">{if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if}</option>
@@ -54,7 +55,6 @@ An unnamed sheet of dots by {$owner.username|escape}
 	</form>
 	</li>
 	{/if}
-	
 	
 </ul>
 

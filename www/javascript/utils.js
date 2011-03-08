@@ -433,7 +433,7 @@ function utils_add_map_controls(map,map_type,extent){
 function utils_map_toggle_size(map,map_type,tallSize,markers){
 	var map_size = "small";
 	
-	$("#map_toggle_size").click(function(e){
+	$("#map_toggle_size a").click(function(e){
 		e.preventDefault();
 		var _this = $(this);
 		var _w = Math.round($("#map").width());
@@ -442,7 +442,7 @@ function utils_map_toggle_size(map,map_type,tallSize,markers){
 			$("#map").animate({
 			    height: tallSize
 			  }, 100, function() {
-				$(_this).text("Shorter map");
+				$(_this).text("Shorter map").removeClass('taller').addClass('shorter');
 				if(map_type == "mm"){
 					map.setSize(_w,tallSize);
 					markers.forceAresize();
@@ -458,7 +458,7 @@ function utils_map_toggle_size(map,map_type,tallSize,markers){
 			$("#map").animate({
 			    height: 300
 			  }, 100, function() {
-				$(_this).text("Taller map");
+				$(_this).text("Taller map").removeClass('shorter').addClass('taller');
 			    if(map_type == "mm"){
 					map.setSize(_w,300);
 					markers.forceAresize();

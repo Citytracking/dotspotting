@@ -23,7 +23,7 @@
 
 			var pm = document.getElementById('permalink');
 			//pm.innerHTML = location.href;
-			pm.setAttribute('href', location.href);
+			if(pm)pm.setAttribute('href', location.href);
 
 			if (sPreviousSearch === null || sPreviousSearch != anControl.val()) {
 				window.clearTimeout(oTimerId);
@@ -72,7 +72,7 @@ $(document).ready(function(){
 	
 	   var pm = document.getElementById('permalink');
 	   //pm.innerHTML = location.href;
-	   pm.setAttribute('href', location.href);
+	   if(pm)pm.setAttribute('href', location.href);
      }
 });
 		
