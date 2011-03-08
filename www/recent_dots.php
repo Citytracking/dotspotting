@@ -34,7 +34,7 @@
 
 			}
 
-			$to_json[] =$bb;
+			$to_json[] = $temp;
 
 		}
 		//if( isset($owner.username) )$ddd[] = array('owner'=>$owner.username);

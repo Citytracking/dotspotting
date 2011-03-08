@@ -100,9 +100,9 @@
 	// create a simplfied object for js
 	$json_fields = array("id","created","details","geohash","is_interactive","latitude","longitude","user_id","perms","sheet_id");
 	if($sheet['dots']){
-		$ddd = array();
+		$to_json = array();
 		foreach ($sheet['dots'] as $dot) {
-			$bb = array();
+			$tmp = array();
 			foreach($json_fields as $fi){
 				if(isset($dot[$fi])){
 					if($fi == "details"){
@@ -113,19 +113,19 @@
 								'value' => $de[0]['value']
 							);
 						}
-						$bb[$fi] = $_details;
+						$tmp[$fi] = $_details;
 					}else{
-						$bb[$fi] = $dot[$fi];
+						$tmp[$fi] = $dot[$fi];
 					}
 				}
 				
 			}
 
-			$ddd[] =$bb;
+			$to_json[] =$tmp;
 			
 		}
 		//if( isset($owner.username) )$ddd[] = array('owner'=>$owner.username);
-		$smarty->assign("dots_simple", $ddd);
+		$smarty->assign("dots_simple", $to_json);
 	}
 	
 

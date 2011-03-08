@@ -43,6 +43,7 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 #main .last_list_item{margin-right:0;}
 #main .blue_links{color:rgb(11,189,255);}
 #main .green_links{color:rgb(45,115,43);}
+#main .success{background-color:#B5D6D8;text-align:center;padding:5px;margin:10px 0;}
 
 .txt_small{
 	font-size:12px;
@@ -103,9 +104,11 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 /* sections */
 
 /* sheet page */
-#sheet_head{margin:0 0 2px;}
+#sheet_head{margin:0 0 2px;position:relative;}
 #sheet_head li{margin:0 10px 0 0;}
 #sheet_title span{font-weight:400;}
+
+#sheet_head li#sheet_user_options{position:absolute;right:90px;bottom:2px;}
 
 /* single dot page */
 /* PAGE LAYOUT CSS */
@@ -159,7 +162,7 @@ padding:0;text-align:center;background:#DCEFEF url(../images/icon_camera.png) 50
 	margin-top:5px;
 	text-align:right;
 	font-size:11px;
-	position:relative;
+	position:absolute;
 	bottom:27px;
 	right:12px;
 }
@@ -216,6 +219,10 @@ padding:0;text-align:center;background:#DCEFEF url(../images/icon_camera.png) 50
 #map_controls #zoom_in{left:94px;top:0;}
 #map_controls #zoom_out{left:94px;top:29px;}
 #map_controls #reset_bounds{right:20px;top:0;}
+#map_toggle_size{position:absolute;bottom:2px;right:10px;}
+#map_toggle_size a{padding-left:14px;}
+#map_toggle_size a.taller{background:url(../images/map/enlarge-map-arrow.png) no-repeat 0 center;}
+#map_toggle_size a.shorter{background:url(../images/map/shrink-map-arrow.png) no-repeat 0 center;}
 /*#map_toggle_size{position:absolute;z-index:6000;width:100px;height:24px;bottom:0;right:-2px;background-color:white;border-top:1px solid black;border-left:1px solid black;font-size:12px;font-weight:500;text-align:center;line-height:24px;cursor:pointer;}*/
 
 
@@ -306,7 +313,10 @@ div.maptip-cnt {
  * cribbed from the tablesorter examples 
 */
 /*main*/
-.dataTables_wrapper {margin-top: 15px;}
+
+
+
+.dataTables_wrapper {position: relative;z-index: 9999;margin-top:-31px;}
 table.ds_table{font-family:arial;background-color:#fff;color:#000;margin:0;font-size:11px;width:100%;text-align:left;border:none;border-spacing:5px 0px;}
 table.ds_table thead tr th,table.ds_table tfoot tr th,table.ds_table tbody td{border-bottom:1px solid #000;padding:8px 2px;cursor:pointer;}
 table.ds_table thead tr th{border-width:2px;}
@@ -324,8 +334,9 @@ table.ds_table thead tr .headerSortDown,table.ds_table thead tr .headerSortUp{}
 .dataTables_scrollBody thead{}
 
 /* search box for dataTables*/
-.dataTables_filter{margin-bottom:5px;font-size:11px;font-weight:bold;text-transform:uppercase;color:#000;text-align:right;}
-.dataTables_filter input{padding:2px;margin-left:5px;border:solid 1px #000;outline:0;font:normal 12px/100%;width:200px;color:#333;}
+.dataTables_filter{position:relative;left: 2px;line-height:30px;margin:0;font-size:11px;font-weight:bold;text-transform:uppercase;color:#000;text-align:right;overflow:hidden;}
+.dataTables_filter span{display:inline-block;padding:0 8px;background: white;border-left: 1px solid black;border-top: 1px solid black;zoom: 1;*display: inline;}
+.dataTables_filter input{padding:2px 0;margin-left:5px;border:solid 1px #000;outline:0;font:normal 12px/100%;width:200px;color:#333;}
 .dataTables_filter input:hover,.dataTables_filter input:focus{border-color:#666;box-shadow:rgba(0,0,0,0.3) 0px 0px 8px;-moz-box-shadow:rgba(0,0,0,0.3) 0px 0px 8px;-webkit-box-shadow:rgba(0,0,0,0.3) 0px 0px 8px;}
 .dataTables_processing{font-style:italic;font-weight:700;text-align:right;display:none;}
 

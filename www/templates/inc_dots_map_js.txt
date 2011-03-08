@@ -323,7 +323,6 @@ function row2dot_json(i,headers){
 	if(headers === null || headers === undefined)headers = collect_headers();
 	
 	if(!all_dots.length)return {};
-	//console.log(all_dots);
 	
 	var _owner = {/literal}'{if $owner}{$owner.username|escape}{elseif $dot.user}{$dot.user.username|escape}{else}???{/if}'{literal};
 
@@ -443,13 +442,13 @@ function collect_dots(){
 	var nelon = null;
 	
 	
-	var features = $(all_dots).map(function(i){
+	var features = $("#user_dots tbody tr").map(function(i){
 		
 		//var dot = row2dot(row);
-		
 		// if it has a url property, then it's already been processed
 		var dot = (all_dots[i]['url']) ? all_dots[i] : row2dot_json(i,headers);
-		
+
+
 		var loc = {
 			lat: dot.latitude,
 			lon: dot.longitude
