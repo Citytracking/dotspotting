@@ -1,11 +1,13 @@
-<p id="page_dot_pagination">
+<p>
 {if $dot.bookends.before|@count}
-	<a href="{$dot.bookends.before.0|@urls_url_for_dot}" title="link to dot #{$dot.bookends.before.0.id|escape}">previous</a> /
+	<span class="dot_pag_prev"><a href="{$dot.bookends.before.0|@urls_url_for_dot}" title="link to dot #{$dot.bookends.before.0.id|escape}">prev</a></span>
 {else}
-	<span style="color:#ccc;">first dot</span> / 
+	<span style="color:#ccc;">first dot</span> 
 {/if}
+
+
 {if $dot.bookends.after|@count}
- <a href="{$dot.bookends.after.0|@urls_url_for_dot}" title="link to dot #{$dot.bookends.after.0.id|escape}">next</a>
+ <span class="dot_pag_next"><a href="{$dot.bookends.after.0|@urls_url_for_dot}" title="link to dot #{$dot.bookends.after.0.id|escape}">next</a></span>
 {else}
 	<span style="color:#ccc;">last dot</span>
 {/if}

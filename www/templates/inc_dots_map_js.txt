@@ -448,7 +448,6 @@ function collect_dots(){
 		// if it has a url property, then it's already been processed
 		var dot = (all_dots[i]['url']) ? all_dots[i] : row2dot_json(i,headers);
 
-
 		var loc = {
 			lat: dot.latitude,
 			lon: dot.longitude
