@@ -91,7 +91,17 @@
 	
 	$GLOBALS['smarty']->assign_by_ref("dots_indexed", $dots_indexed);
 	
-	
+	# define the selected title field
+	$title_field = "";
+	if(isset($sheet['dots'][0]['details']['title_internal'])){
+		preg_match_all("/\{(.*)\}/i", $sheet['dots'][0]['details']['title_internal'][0]['value'], $title_matches);
+		if(isset($title_matches[1]) && !empty($title_matches[1])){
+			$title_field = $title_matches[1][0];
+		}
+	}
+	$GLOBALS['smarty']->assign_by_ref("assigned_title", $title_field);
+
+	//var_dump($sheet['dots'][0]['details']);
 	if ($is_own){
 		$smarty->assign("permissions_map", dots_permissions_map());
 		$smarty->assign("geocoder_map", geo_geocode_service_map());

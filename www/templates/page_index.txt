@@ -26,7 +26,7 @@
 		{foreach from=$recent_sheets item=sh name=thumbs}
 			{if $smarty.foreach.thumbs.index < 4}
 			     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.index == 3} last_thumb{/if}">
-				<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
+				<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="http://dev.dotspotting.stamen.com/u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
 				<dd class="txt_small thumb_title">{$sh.label|escape}</dd>
 				<dd class="txt_small">{$sh.user.username|escape}</dd>
 				</dl>
@@ -34,6 +34,8 @@
 		{/foreach}
 		<div class="clear"></div>
 	{/if}
+	
+	
 	
 	{if $recent_dots|@count}
 	<div class="thumbnail_head clearfix"><h5 class="left">Recent dots:</h5><a href="{$cfg.abs_root_url}recent/dots" class="right txt_small">see more</a></div>

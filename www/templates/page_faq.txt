@@ -1,6 +1,6 @@
 {assign var="page_title" value="Frequently Asked Questions"}
 {include file="inc_head.txt"}
-
+<div id="section_faq" class="section_bunch_o_text">
 <h2>{$page_title|escape}</h2>
 
 <a name="discoball"></a>
@@ -97,10 +97,9 @@ latitude,longitude,perms,created,title,address
 
 <h3>Source Code</h3>
 
-<p></p>
 
 <p class="tx1">Dotspotting is an open-source project licensed under the <a href="http://www.gnu.org/licenses/gpl.html" class="important">GNU Public License, version 3.0</a>.</p>
 
 <p class="tx1">It is available for download on Github: <a href="https://github.com/citytracking/dotspotting">https://github.com/citytracking/dotspotting</a>.</p>
-
+</div>
 {include file="inc_foot.txt"}

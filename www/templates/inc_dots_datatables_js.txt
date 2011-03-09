@@ -52,6 +52,7 @@
 $(document).ready(function(){ 
 	_dotspotting.datatables_query == '';
 	
+
      var dt = $('#user_dots').dataTable({
 	"bPaginate": false,
 	"bFilter": true,
@@ -62,6 +63,7 @@ $(document).ready(function(){
 	"sScrollY": "200px",
 	"oLanguage": {"sSearch": "Filter table:"}
      });
+	$("#user_dots_wrapper").addClass("filter_adj");
 
      dt.fnSetFilteringHooks();
 
@@ -74,6 +76,7 @@ $(document).ready(function(){
 	   //pm.innerHTML = location.href;
 	   if(pm)pm.setAttribute('href', location.href);
      }
+
 });
 		
 {/literal}

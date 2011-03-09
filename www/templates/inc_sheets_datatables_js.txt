@@ -53,6 +53,8 @@ $(document).ready(function(){
 	"oLanguage": {"sSearch": "Filter table:"},
      }).fnSetFilteringHooks();
 
+	$("#user_sheets_wrapper").addClass("filter_adj");
+
 });
 {/literal}
 

@@ -25,7 +25,6 @@
 	<script type="text/javascript">
 		
 		{literal}var _dotspotting = {{/literal}
-		
 			    'abs_root_url' : '{$cfg.abs_root_url}',
 			    'user' : {ldelim} id : {if $cfg.user.id}{$cfg.user.id|escape}{else}null{/if} {rdelim},
 			    'maptiles_template_url' : '{$cfg.maptiles_template_url|escape}',

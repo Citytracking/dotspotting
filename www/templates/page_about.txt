@@ -1,6 +1,6 @@
 {assign var="page_title" value="About Dotspotting"}
 {include file="inc_head.txt"}
-
+<div id="section_about" class="section_bunch_o_text">
 <h2>About Dotspotting</h2>
 
 <div style="float:right;margin-left:20px;margin-bottom:10px;">
@@ -36,6 +36,6 @@
 <p class="tx1" style="font-size:11px;">[1] You can read more about Citytracking & the Knight Foundation <a href="http://content.stamen.com/knight_news_challenge_update">here</a> and <a href="http://www.pbs.org/idealab/2010/11/citytracking-presents-data-on-cities-for-maps-visualizations302.html">here</a>.</p>
 
 <p class="tx1" style="font-size:11px;">[2] An <q>Application Programming Interface</q> (or API) is a structured way to talk to machines about data.</p>
-
+</div>
 {include file="inc_foot.txt"}
 

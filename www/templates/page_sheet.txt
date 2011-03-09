@@ -28,7 +28,7 @@ An unnamed sheet of dots by {$owner.username|escape}
 			Sheet ID #{$sheet.id|escape}
 		{/if}
 		<span class="txt_small">by <a href="{$owner|@urls_url_for_user}" title="view {$owner.username|escape}'s page" class="blue_links">{$owner.username|escape}</a></span>
-		 | <span class="txt_small sheet_date">created {$sheet.created|date_format:"%B %e, %Y at %I:%M %p"|escape}</span>
+		  <span class="txt_small sheet_date">created {$sheet.created|date_format:"%B %e, %Y at %I:%M %p"|escape}</span>
 		</h3>
 	</li>	
 	

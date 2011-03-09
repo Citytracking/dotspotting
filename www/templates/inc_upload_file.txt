@@ -2,30 +2,53 @@
 	{* display something here? *}
 {else}
 
-<h3>Upload some dots</h3>
+{literal}
+<script type="text/javascript">
+	function upload_add_file(val){
+		if(val == undefined || val == null || val == "")return;
+		$('.upload_selected_file').html('');
+		var val_elements = val.split("\\");
+		var img = $("<img/>").attr("src",_dotspotting.abs_root_url+"images/upload_file.png");
+		var info = $("<span/>").text(val_elements[val_elements.length-1]);
+		
+		$('.upload_selected_file').append(img).append(info);
+	}
+</script>
+{/literal}
 
-<div style="margin-top:15px;">
+<h3>Upload to Dotspotting</h3>
 
-<p class="tx1">Dotspotting is able to import the following types of files: <strong>{", "|@formats_valid_import_list|escape}</strong>. At the moment, only the first {$cfg.import_max_records|escape} records in a file will be imported. For all the details about uploading data into Dotspotting, <a href="{$cfg.abs_root_url}faq/#uploads">click here</a>.</p>
-
-<p class="tx1" style="text-align:left;"><strong>All dots are made public by default.</strong> You can override this behaviour in your CSV file by including a <code>perms</code> column and assign the relevant rows a value of <q>private</q> or by ticking the <q>make all these dots private</q> checkbox below. There is currently no way to toggle privacy settings for individual dots but that be done shortly.</p>
-
-<p class="tx1" style="text-align:left;">You should not consider any data you put in to Dotspotting to be permanent. <strong>Yet.</strong> Dotspotting is still very much a work in motion and we may need to purge data or simply make mistakes before we bless the whole thing as <q>stable</q>.</p>
-
+<div id="upload_meezy">
+<ul class="clearfix">
+	<li class="first_meezy"><span>Upload your file</span></li>
+	<li class="second_meezy show_30"><span>Check your dots</span></li>
+	<!-- <li class="last_meezy"><a href="{$cfg.abs_root_url}upload">Get started now<img src="{$cfg.abs_root_url}images/home/blackarrow.png" width="34" height="30"/></a></li> -->
+</ul>
 </div>
 
-<br />
-
-<form action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
+<form id="upload_file" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
 	{$crumb_key|crumb_input}
 
-	<input type="file" size="40" name="upload" />
-	<br />
-	<label for="upload">Choose a file to upload</label>
-	<br /><br />
+	<p class="no_border"><input type="file" size="40" name="upload" class="upload_choose"/></p>
 
-	{include file="inc_upload_file_attributes.txt"}
+	{* {include file="inc_upload_file_attributes.txt"} *}
 
-	<input type="SUBMIT" value="UPLOAD YOUR DOTS!" />
+	<span class="upload_submit"><input type="SUBMIT" value="Upload" /></span>
 </form>
+
+<div id="upload_basics" class="section_bunch_o_text">
+<p>At the moment, only the first 1000 records in a file will be imported</p>
+<ul>
+<li>Dotspotting is able to import the following types of files:</li>
+{foreach from=$import_formats item="type" key="extension"}
+{capture assign="label"}{if $formats_pretty_names.$extension}{$formats_pretty_names.$extension|escape}{else}{$extension|@strtoupper|escape}{/if}{/capture}
+<li><b>{$label|@strtoupper|escape}</b> - {$type|escape}</li>
+{/foreach}
+</ul>
+<p>For all the details about uploading data into Dotspotting, <a href="{$cfg.abs_root_url}faq">click here</a>.</p>
+</div>
+<br />
+
+
+
 {/if}
