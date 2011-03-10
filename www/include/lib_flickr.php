@@ -82,6 +82,10 @@
 		$doc = new DOMDocument();
 		$ok = $doc->loadHTML($html);
 
+		if (! $ok){
+			return null;
+		}
+
 		$feed_url = null;
 
 		foreach ($doc->getElementsByTagName('link') as $link){
