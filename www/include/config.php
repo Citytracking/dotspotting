@@ -1,4 +1,3 @@
-
 <?php
 
 	# This file has been copied from the Citytracking fork of flamework.

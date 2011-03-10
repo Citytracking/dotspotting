@@ -229,7 +229,7 @@
 		# basic headers
 
 		if (preg_match("/^image/", $more['mimetype'])){
-			header("Content-Type: " . htmlspecialchars($more['mimetype']));
+  			header("Content-Type: " . htmlspecialchars($more['mimetype']));
 		}
 
 		else if (! $more['inline']){
@@ -246,6 +246,9 @@
 
 		foreach ($more['x-headers'] as $k => $v){
 
+			$v = trim($v);
+			$k = trim($k);
+
 			$header = htmlspecialchars("X-Dotspotting-{$k}");
 			$value = htmlspecialchars($v);
 
@@ -255,7 +258,6 @@
 		# go!
 
 		$fh = fopen($path, 'r');
-
 		echo fread($fh, $fsize);
 		fclose($fh);
 

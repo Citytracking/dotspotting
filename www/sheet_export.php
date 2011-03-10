@@ -79,7 +79,7 @@
 
 	# caching?
 
-	$ok_cache = 0;
+	$ok_cache = 1;
 
 	if ($GLOBALS['cfg']['enable_feature_export_cache']){
 
@@ -114,7 +114,17 @@
 
 		$cache_path = export_cache_path_for_sheet($sheet, $cache_more);
 
-		if (file_exists($cache_path)){
+		#
+
+		$cache_ok = 1;
+
+		if (! file_exists($cache_path)){
+			$cache_ok = 0;
+		}
+
+		#
+
+		if ($cache_ok){
 			$export = $cache_path;
 		}
 
@@ -123,10 +133,12 @@
 			$export = export_dots($sheet['dots'], $format, $export_more);
 
 			if ($export){
+
 				$cache_rsp = export_cache_store_file($export, $cache_path);
 
-				if (! $cache_rsp['ok']){
-					# log an error...
+				if ($cache_rsp['ok']){
+					unlink($export);
+					$export = $cache_rsp['path'];	
 				}
 			}
 		}
