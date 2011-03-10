@@ -1,16 +1,17 @@
 {assign var="page_title" value="Magic Words"}
 {include file="inc_head.txt"}
 
+<div class="section_bunch_o_text">
 <h2><q>Magic Words</q></h2>
 
-<p class="tx1">Dotspotting has support for the idea of "magic words" which are user-defined non-standard properties assigned to a dot that are treated as foreign key lookups in to a third-party database or API.</p>
+<p>Dotspotting has support for the idea of "magic words" which are user-defined non-standard properties assigned to a dot that are treated as foreign key lookups in to a third-party database or API.</p>
 
-<p class="tx1">For example, if a dot has <code>flickr:id</code> key whose value is a valid Flickr photo ID then (and only if magic words support is <em>enabled</em>) Dotspotting will call the <a href="http://www.flickr.com/services/api">Flickr API</a> to ask for, and then display, that photo's thumbnail when the page for that dot is loaded. Like this:</p>
+<p>For example, if a dot has <code>flickr:id</code> key whose value is a valid Flickr photo ID then (and only if magic words support is <em>enabled</em>) Dotspotting will call the <a href="http://www.flickr.com/services/api">Flickr API</a> to ask for, and then display, that photo's thumbnail when the page for that dot is loaded. Like this:</p>
 
 <img src="{$cfg.abs_root_url}images/TPA.png" height="514" width="627" alt="magic words" style="border:1px dotted #ccc;padding:10px;margin:40px;margin-left:75px;width:627px;display:block;"/>
 
-<p class="tx1">Here is a list of all the supported magic word keys:</p>
-
+<p>Here is a list of all the supported magic word keys:</p>
+</div>
 {include file="inc_magicwords_enabled.txt"}
 
 {include file="inc_foot.txt"}
