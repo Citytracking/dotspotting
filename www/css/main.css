@@ -4,7 +4,7 @@
 body,html{width:100%;height:100%;}
 /* elements primary */
 *{margin:0;padding:0;}
-a{text-decoration: none;color:rgb(0,0,0);cursor:pointer;outline:none;}
+a{color:rgb(0,0,0);cursor:pointer;outline:none;text-decoration:underline;}
 a:hover{text-decoration:underline;}
 ul{list-style-type: none;padding:0;}
 h2{font-weight:500;font-size: 24px;}
@@ -62,7 +62,7 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 #nav_links .nav_links_upper{margin-bottom:20px;}
 #nav_links .nav_links_upper span{font-size:14px;font-weight: 300;padding:0 6px 0 0;}
 #nav_links .nav_links_upper span span{font-weight: 600;}
-#nav_links .nav_select{background:#000;color:#fff;}
+#nav_links .nav_select{background:#000;color:#fff;text-decoration:none;}
 
 #pagination {
 	margin-top: 30px;
@@ -91,7 +91,7 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 /* recent thumbnails section */
 #home_recents{overflow:hidden !important;}
 #home_recents div.thumbnail_head{margin:20px 0 5px;}
-#home_recents div.thumbnail_head a:hover{text-decoration:none;text-shadow:0px 1px 1px #9c9c9c;}
+#home_recents div.thumbnail_head a:hover{text-shadow:0px 1px 1px #9c9c9c;}
 #home_recents div.thumbnail_head a{padding-top:4px;margin-right:10px;}
 #home_recents h5{}
 #home_recents .recent_thumbnails{margin:0 11px 0 0;float:left;width:235px;}
@@ -99,9 +99,12 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 #home_recents .recent_thumbnails dt{height:156px;border:1px solid #000;overflow:hidden;}
 #home_recents .recent_thumbnails dd.thumb_title{margin-top:3px;font-weight:500;}
 #home_recents div.map{position:relative;width:235px;height:156px;}
-#home_recents a{display:block;}
+#home_recents dt a{display:block;}
 #home_recents div.map a{position:absolute;width:100%;height:100%;background:url('../images/generic_blue_dot.png') no-repeat center center;z-index:6000;} 
 #home_recents div.map a span{display:none;}
+
+#home_recents.recent_sheets_grid .recent_thumbnails{margin-bottom:15px;}
+#home_recents.recent_sheets_grid{margin:20px 0;}
 
 /* sections */
 /* general styles for a page with alot text */
@@ -152,6 +155,7 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 #sheet_head li{margin:0 10px 0 0;}
 #sheet_title span{font-weight:400;}
 #sheet_head li#sheet_user_options{position:absolute;right:90px;bottom:2px;}
+#sheet_head li#sheet_user_options input{margin-right:10px;}
 
 /* single dot page */
 #dot_wrapper{margin-top:5px;}
@@ -163,7 +167,8 @@ table.page_dot tr{}
 table.page_dot th{border-right: 2px solid black;background:rgb(255,255,255);text-align:left;padding:5px 10px 5px 5px;}
 table.page_dot td{text-align:left;padding:5px;}
 
-#page_dot_pagination{position:absolute;bottom:2px;right:0;text-align:left;margin:5px 10px 10px 0;font-size:11px;text-transform:uppercase;}
+#page_dot_pagination{position:absolute;bottom:2px;right:0;text-align:left;margin:5px 10px 10px 0;text-transform:uppercase;}
+#page_dot_pagination p{font-size:11px;}
 #page_dot_pagination a{color:#fff;}
 #page_dot_pagination span{padding:5px;background:#000;margin-left:2px;}
 #page_dot_pagination span a:hover{color:rgb(11,189,255);}
@@ -194,7 +199,7 @@ table.page_dot td{text-align:left;padding:5px;}
 .highlighted{background-color:#ccffff !important;}
 
 /* map buttons */
-#map_controls{position:absolute;z-index:6000;top:10px;left:10px;width:100%;display:none;} /* hide controls first, in case map is a single dot map, which has no controls */
+#map_controls{position:absolute;z-index:6000;top:10px;left:10px;width:100%;display:none;} /* hide controls first, in case map is a single dot map, which has only zoom controls */
 #map_controls a{display:block;position:absolute;}
 #map_controls #pan_left{left:0;top:13px;}
 #map_controls #pan_right{left:58px;top:13px;}
@@ -204,7 +209,7 @@ table.page_dot td{text-align:left;padding:5px;}
 #map_controls #zoom_out{left:94px;top:29px;}
 #map_controls #reset_bounds{right:20px;top:0;}
 #map_toggle_size{position:absolute;bottom:2px;right:10px;}
-#map_toggle_size a{padding-left:14px;}
+#map_toggle_size a{padding-left:14px;text-decoration:none;}
 #map_toggle_size a:hover{text-decoration:none;text-shadow:0px 1px 1px #9c9c9c;}
 #map_toggle_size a.taller{background:url(../images/map/enlarge-map-arrow.png) no-repeat 0 center;}
 #map_toggle_size a.shorter{background:url(../images/map/shrink-map-arrow.png) no-repeat 0 center;}

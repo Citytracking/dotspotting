@@ -92,7 +92,7 @@
 	$GLOBALS['smarty']->assign_by_ref("dots_indexed", $dots_indexed);
 	
 	# define the selected title field
-	$title_field = "";
+	$title_field = NULL;
 	#$sheet['dots'][0]['details']['title_internal'][0]['value'] = "{title} on {date}";
 	if(isset($sheet['dots'][0]['details']['title_internal'])){
 		preg_match_all("/[\{](.+?)[\}]/i", $sheet['dots'][0]['details']['title_internal'][0]['value'], $title_matches);

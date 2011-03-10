@@ -19,15 +19,6 @@
 
 			_dotspotting.datatables_query = anControl.val();
 
-			var parts = location.href.split('#');
-			//location.href = parts[0] + '#' + anControl.val();
-
-			var pm = document.getElementById('permalink');
-			//pm.innerHTML = location.href;
-			if(pm)pm.setAttribute('href', location.href);
-			
-			
-
 			if (sPreviousSearch === null || sPreviousSearch != anControl.val()) {
 				window.clearTimeout(oTimerId);
 				sPreviousSearch = anControl.val();
@@ -54,7 +45,6 @@
 $(document).ready(function(){ 
 	_dotspotting.datatables_query = '';
 	
-
      var dt = $('#user_dots').dataTable({
 	"bPaginate": false,
 	"bFilter": true,
@@ -68,19 +58,9 @@ $(document).ready(function(){
 	$("#user_dots_wrapper").addClass("filter_adj");
 
      dt.fnSetFilteringHooks();
-/*
-     var parts = location.href.split('#');
-	if (parts.length == 2){
-	   dt.fnFilter(parts[1]);
 
-	   var pm = document.getElementById('permalink');
-	   //pm.innerHTML = location.href;
-	   if(pm)pm.setAttribute('href', location.href);
-     }
-*/
-
+	// check to see if there incoming coordinates 
 	var qs = doHashSetup();
-
 	if(qs && qs.contains('s')){
 		dt.fnFilter(qs.get('s'));
 		_dotspotting.datatables_query = qs.get('s');

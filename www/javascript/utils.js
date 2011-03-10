@@ -154,122 +154,6 @@ function utils_polymap(map_id, more){
 	// we add the map compass on a case-by-case 
 	return map;
 }
-function utils_hash(map,type){
-	this.coords = '';
-	this.search = '';
-	this.hashInterval = null;
-	this.currentHash = '';
-	var self = this;
-	
-	if(type == "po"){
-		map.on("move", function() {
-			self.coords = self.hashCoordFormatter( map.center(), map.zoom());
-			self.doDrawn();
-		});		
-		
-	}else if(type == "mm"){
-		map.addCallback("drawn", function(){
-			self.coords = self.hashCoordFormatter( map.getCenter(), map.getZoom());
-			self.doDrawn();
-		});
-	}
-	
-	this.doDrawn = function(){
-		clearInterval(this.hashInterval);
-		this.hashInterval = setInterval(function(){self.updateHash();}, 100);
-	}
-	
-	this.updateHash = function(){
-		clearInterval(this.hashInterval);
-		//console.log(this.coords,this.search);
-		this.search = (!_dotspotting.datatables_query) ? '': _dotspotting.datatables_query;
-		var newHash = '';
-		if(this.search.length){
-			newHash  += "s="+this.search;
-		}
-		if(this.coords.length){
-			newHash  += (newHash.length) ? "&" : "";
-			newHash  += "c="+this.coords;
-		}
-
-		if(this.currentHash != newHash && newHash.length){
-			window.location.hash = newHash;
-			this.currentHash = newHash;
-		}
-	}
-	
-	// formats coordinates for hash
-	this.hashCoordFormatter = function(center,zoom){
-		var precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
-		return zoom.toFixed(2)
-	         + "/" + center.lat.toFixed(precision)
-	         + "/" + center.lon.toFixed(precision);
-	}
-	
-	this.setSearch = function(str){
-		this.search = str;
-		this.updateHash();
-	}
-	
-}
-
-function Querystring(qs) { // optionally pass a querystring to parse
-	this.params = {};
-	
-	if (qs == null) qs = location.search.substring(1, location.search.length);
-	if (qs.length == 0) return;
-
-	// Turn <plus> back to <space>
-	// See: http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1
-	qs = qs.replace(/\+/g, ' ');
-	var args = qs.split('&'); // parse out name/value pairs separated via &
-	
-	// split out each name=value pair
-	for (var i = 0; i < args.length; i++) {
-		var pair = args[i].split('=');
-		var name = decodeURIComponent(pair[0]);
-		
-		var value = (pair.length==2)
-			? decodeURIComponent(pair[1])
-			: name;
-		
-		this.params[name] = value;
-	}
-	
-	/**/
-	this.get = function(key, default_) {
-		var value = this.params[key];
-		return (value != null) ? value : default_;
-	}
-	
-	this.contains = function(key) {
-		var value = this.params[key];
-		return (value != null);
-	}
-}
-
-
-function doHashSetup(){
-	qs = (window.location.hash != '') ? window.location.hash.substring(1) : window.location.search.substring(1);
-    if (qs){
-		qs = new Querystring(qs);
-		/*
-		var t = (qs.contains('v')) ? qs.get('v') : null;
-		if(t && config.hashes){
-			var vals = t.split("/");
-			for(var i in vals){
-				if(config.hashes[vals[i]] >= 0){
-					config.mapSelection[ config.hashes[vals[i]] ] = vals[i];
-					setFilter(vals[i]);
-				}
-			}
-		}
-		*/
-	}else{
-		qs = null;
-	}
-	return qs;
-}
 
 
 function utils_polymaps_add_compass(map){
@@ -710,8 +594,118 @@ function utils_add_map_tooltip(map,mapel,map_type){
 
 	});
 }
-/////
 
+// Hash functions
+function utils_hash(map,type){
+	this.coords = '';
+	this.search = '';
+	this.hashInterval = null;
+	this.currentHash = '';
+	this.perm = document.getElementById('permalink');
+	var self = this;
+
+	if(type == "po"){
+		map.on("move", function() {
+			self.coords = self.hashCoordFormatter( map.center(), map.zoom());
+			self.doDrawn();
+		});		
+		
+	}else if(type == "mm"){
+		map.addCallback("drawn", function(){
+			self.coords = self.hashCoordFormatter( map.getCenter(), map.getZoom());
+			self.doDrawn();
+		});
+	}
+	
+	this.doDrawn = function(){
+		clearInterval(this.hashInterval);
+		this.hashInterval = setInterval(function(){self.updateHash();}, 100);
+	}
+	
+	this.updateHash = function(){
+		clearInterval(this.hashInterval);
+		//console.log(this.coords,this.search);
+		this.search = (!_dotspotting.datatables_query) ? '': _dotspotting.datatables_query;
+		var newHash = '';
+		if(this.search.length){
+			newHash  += "s="+this.search;
+		}
+		if(this.coords.length){
+			newHash  += (newHash.length) ? "&" : "";
+			newHash  += "c="+this.coords;
+		}
+
+		if(this.currentHash != newHash && newHash.length){
+			window.location.hash = newHash;
+			this.currentHash = newHash;
+			
+			// set permalink
+			if(this.pm)this.pm.setAttribute('href', location.href);
+		}
+	}
+	
+	// formats coordinates for hash
+	this.hashCoordFormatter = function(center,zoom){
+		var precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
+		return zoom.toFixed(2)
+	         + "/" + center.lat.toFixed(precision)
+	         + "/" + center.lon.toFixed(precision);
+	}
+	
+	this.setSearch = function(str){
+		this.search = str;
+		this.updateHash();
+	}
+	
+}
+
+function Querystring(qs) { // optionally pass a querystring to parse
+	this.params = {};
+	
+	if (qs == null) qs = location.search.substring(1, location.search.length);
+	if (qs.length == 0) return;
+
+	// Turn <plus> back to <space>
+	// See: http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1
+	qs = qs.replace(/\+/g, ' ');
+	var args = qs.split('&'); // parse out name/value pairs separated via &
+	
+	// split out each name=value pair
+	for (var i = 0; i < args.length; i++) {
+		var pair = args[i].split('=');
+		var name = decodeURIComponent(pair[0]);
+		
+		var value = (pair.length==2)
+			? decodeURIComponent(pair[1])
+			: name;
+		
+		this.params[name] = value;
+	}
+	
+	/**/
+	this.get = function(key, default_) {
+		var value = this.params[key];
+		return (value != null) ? value : default_;
+	}
+	
+	this.contains = function(key) {
+		var value = this.params[key];
+		return (value != null);
+	}
+}
+// probably don't need this, call Querystring on it's own
+// left incase needed to do anything else during this phase (seanc | 03112011)
+function doHashSetup(){
+	qs = (window.location.hash != '') ? window.location.hash.substring(1) : window.location.search.substring(1);
+    if (qs){
+		qs = new Querystring(qs);
+	}else{
+		qs = null;
+	}
+	return qs;
+}
+
+////
 /* fix for missing Array methods in IE */
 if (!Array.prototype.map) {
     Array.prototype.map= function(mapper, that /*opt*/) {
