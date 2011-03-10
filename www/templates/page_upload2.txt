@@ -11,15 +11,15 @@
 	{else}
 		<p class="error">Your upload failed with the following errors:{if $rsp.error} {$rsp.error|escape}{/if}</p>
 
-	{if $rsp.errors|@count}
-	{*
-	<ul>
-		{foreach from=$rsp.errors item="row"}
-			<li><q>{$row.error|escape}</q> at record #{$row.record|escape}</li>
-		{/foreach}
-	</ul>
-	*}
-	{/if}
+		{if $rsp.errors|@count}
+		{*
+		<ul>
+			{foreach from=$rsp.errors item="row"}
+				<li><q>{$row.error|escape}</q> at record #{$row.record|escape}</li>
+			{/foreach}
+		</ul>
+		*}
+		{/if}
 
 	{/if}
 

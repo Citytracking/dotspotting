@@ -196,11 +196,25 @@
 	# mainly used for setting navigation
 	# added a special check for dashboard (user page)
 	if(isset($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_URI'])){
-		$page_crumb_raw = trim($_SERVER['REQUEST_URI'],"/");
-		$page_crumb_raw = explode("/",$page_crumb_raw);
-		if(isset($page_crumb_raw[0]) && !empty($page_crumb_raw[0])){
+		$incoming = trim($_SERVER['REQUEST_URI'],"/");
+		if(isset($incoming) && !empty($incoming)){
+			if(preg_match('/^u\/([0-9]+)$/',$incoming)){
+				$GLOBALS['cfg']['page_crumb'] = array("dashboard");
+			}else{
+				$GLOBALS['cfg']['page_crumb'] = explode("/",$incoming);
+			}
 			
-			if(preg_match('/^u\/([0-9]+)$/',$page_crumb_raw[0])){
+		}else{
+			$GLOBALS['cfg']['page_crumb'] = array();
+		}
+	}
+		
+		
+		
+		/*
+		$page_crumb_raw = explode("/",$page_crumb_extract);
+		if(isset($page_crumb_raw[0]) && !empty($page_crumb_raw[0])){
+			if(preg_match('/^u\/([0-9]+)$/',$page_crumb_extract)){
 				$GLOBALS['cfg']['page_crumb'] = "dashboard";
 			}else{
 				$GLOBALS['cfg']['page_crumb'] = $page_crumb_raw[0];
@@ -211,6 +225,7 @@
 	}else{
 		$GLOBALS['cfg']['page_crumb'] = "";
 	}
+	*/
 	
 	# More stuff from Flamework (see above)
 

@@ -14,30 +14,30 @@
 		{if !$cfg.user.id}
 		<div class="nav_links_upper">
 			{if $cfg.enable_feature_signin}
-			<a href="{$cfg.abs_root_url}signin/" {if $cfg.page_crumb == "signin"}class="nav_select"{/if}>Log In</a> 
+			<a href="{$cfg.abs_root_url}signin/" {if $cfg.page_crumb.0 == "signin"}class="nav_select"{/if}>Log In</a> 
 			{if $cfg.enable_feature_signup}
-			<a href="{$cfg.abs_root_url}signup/" {if $cfg.page_crumb == "signup"}class="nav_select"{/if}>Sign Up</a>{/if}
+			<a href="{$cfg.abs_root_url}signup/" {if $cfg.page_crumb.0 == "signup"}class="nav_select"{/if}>Sign Up</a>{/if}
 			{/if}
 		</div>
 		<div class="nav_links_lower">
-			<a href="{$cfg.abs_root_url}" {if $cfg.page_crumb == ""}class="nav_select"{/if}>Home</a>	
-			<a href="{$cfg.abs_root_url}nearby/" {if $cfg.page_crumb == "nearby"}class="nav_select"{/if}>Nearby</a>
-			<a href="{$cfg.abs_root_url}about/" {if $cfg.page_crumb == "about"}class="nav_select"{/if}>About</a>
-			<a href="{$cfg.abs_root_url}faq/" {if $cfg.page_crumb == "faq"}class="nav_select"{/if}>FAQ</a>
+			<a href="{$cfg.abs_root_url}" {if $cfg.page_crumb.0 == ""}class="nav_select"{/if}>Home</a>	
+			<a href="{$cfg.abs_root_url}nearby/" {if $cfg.page_crumb.0 == "nearby"}class="nav_select"{/if}>Nearby</a>
+			<a href="{$cfg.abs_root_url}about/" {if $cfg.page_crumb.0 == "about"}class="nav_select"{/if}>About</a>
+			<a href="{$cfg.abs_root_url}faq/" {if $cfg.page_crumb.0 == "faq"}class="nav_select"{/if}>FAQ</a>
 		</div>
 		{else}
 		<div class="nav_links_upper">
 			<span>Hello <span>{$cfg.user.username|escape}!</span></span>
-			<a href="{$cfg.abs_root_url}account/" {if $cfg.page_crumb == "account"}class="nav_select"{/if}>Account</a>
-			<a href="{$cfg.abs_root_url}signout/" {if $cfg.page_crumb == "signout"}class="nav_select"{/if}>Logout</a>
+			<a href="{$cfg.abs_root_url}account/" {if $cfg.page_crumb.0 == "account"}class="nav_select"{/if}>Account</a>
+			<a href="{$cfg.abs_root_url}signout/" {if $cfg.page_crumb.0 == "signout"}class="nav_select"{/if}>Logout</a>
 		</div>
 		<div class="nav_links_lower">
-			<a href="{$cfg.abs_root_url}" {if $cfg.page_crumb  == ""}class="nav_select"{/if}>Home</a>	
-			<a href="{$cfg.abs_root_url}u/{$cfg.user.id}/" {if $cfg.page_crumb == "dashboard"}class="nav_select"{/if}>Dashboard</a>	
-			<a href="{$cfg.abs_root_url}upload/" {if $cfg.page_crumb == "upload" || $cfg.page_crumb == "upload2"}class="nav_select"{/if}>Upload</a>
-			<a href="{$cfg.abs_root_url}nearby/" {if $cfg.page_crumb == "nearby"}class="nav_select"{/if}>Nearby</a>
-			<a href="{$cfg.abs_root_url}about/" {if $cfg.page_crumb == "about"}class="nav_select"{/if}>About</a>
-			<a href="{$cfg.abs_root_url}faq/" {if $cfg.page_crumb == "faq"}class="nav_select"{/if}>FAQ</a>
+			<a href="{$cfg.abs_root_url}" {if $cfg.page_crumb.0  == ""}class="nav_select"{/if}>Home</a>	
+			<a href="{$cfg.abs_root_url}u/{$cfg.user.id}/" {if $cfg.page_crumb.0 == "dashboard"}class="nav_select"{/if}>Dashboard</a>	
+			<a href="{$cfg.abs_root_url}upload/" {if $cfg.page_crumb.0 == "upload" || $cfg.page_crumb == "upload2"}class="nav_select"{/if}>Upload</a>
+			<a href="{$cfg.abs_root_url}nearby/" {if $cfg.page_crumb.0 == "nearby"}class="nav_select"{/if}>Nearby</a>
+			<a href="{$cfg.abs_root_url}about/" {if $cfg.page_crumb.0 == "about"}class="nav_select"{/if}>About</a>
+			<a href="{$cfg.abs_root_url}faq/" {if $cfg.page_crumb.0 == "faq"}class="nav_select"{/if}>FAQ</a>
 		</div>
 		{/if}
 	</div>
