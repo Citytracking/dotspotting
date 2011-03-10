@@ -18,12 +18,13 @@ background-color: pink;
 
 {if $errors|@count}
 
-<p>Hey look! We found the following errors in your data:</p>
-
+<p class="error">There was an error while processing your upload</p>
+{*
 <ul>
 {foreach from=$errors item="row"}
 <li><strong>The <q>{$row.column|escape}</q> column in <a href="#row{$row.record|escape}">row #{$row.record|escape}</a>:</strong> {$row.error|escape}</li>
 {/foreach}
+*}
 </ul>
 
 {/if}
