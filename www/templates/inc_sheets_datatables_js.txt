@@ -47,6 +47,10 @@ $(document).ready(function(){
 	"bSort": false,
 	"bInfo" : false,
 	"bProcessing": true,
+	"bScrollInfinite": true,
+	"bScrollCollapse": true,
+	"sScrollY": "200px",
+	"oLanguage": {"sSearch": "Filter table:"},
      }).fnSetFilteringHooks();
 
 });

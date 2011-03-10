@@ -35,7 +35,7 @@
 	}
 
 	$dot['bookends'] = dots_get_bookends_for_dot($dot, $GLOBALS['cfg']['user']['id']);
-
+		
 	// quickly determine if dot is a magical one
 
 	$smarty->assign("dot_is_flickr", ((isset($dot['details']['flickr:id']) && !empty($dot['details']['flickr:id']) ) ? true : false) );

@@ -1,3 +1,4 @@
+
 <?php
 
 	# This file has been copied from the Citytracking fork of flamework.
@@ -152,6 +153,8 @@
 
 	$GLOBALS['cfg']['maptiles_template_url'] = 'http://{S}tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/26490/256/{Z}/{X}/{Y}.png';
 	$GLOBALS['cfg']['maptiles_template_hosts'] = array( 'a.', 'b.', 'c.' );
+	$GLOBALS['cfg']['maptiles_license'] = 'Map data <a href="http://creativecommons.org/licenses/by-sa/3.0/">CCBYSA</a> 2010 <a href="http://openstreetmap.org/">OpenStreetMap.org</a> contributors';
+	
 
 	$GLOBALS['cfg']['pagination_per_page'] = 25;
 	$GLOBALS['cfg']['pagination_spill'] = 5;
@@ -319,5 +322,36 @@
 	$GLOBALS['cfg']['check_notices'] = 1;
 
 	$GLOBALS['cfg']['db_profiling'] = 0;
-
+	
+	# 
+	# USER STYLES
+	#
+	# implemented in global styles and include/lib_maps.php
+	# TODO: apply these to other export options
+	#
+	
+	# dot color props
+	# fill,stroke array = rgba
+	# alpha =  0 = completely transparent, 1 = opaque
+	$GLOBALS['cfg']['dot_color_scheme'] = array(
+		'fill' => array(11,189,255,1),
+		'stroke' => array(255,255,255,1),
+		'stroke_width' => 3,
+		'fill_hover' => array(0,221,238,1),
+		'stroke_hover' => array(0,17,45,1),
+		'stroke_width_hover' => 5,
+		'private' => array(255,0,0,1)
+	);
+	
+	# sheet color props
+	# fill,stroke array = rgba
+	# alpha =  0 = completely transparent, 1 = opaque
+	$GLOBALS['cfg']['sheet_color_scheme'] = array(
+		'fill' => array(11,189,255,.5),
+		'stroke' => array(11,189,255,1),
+		'stroke_width' => 4,
+		'fill_hover' => array(11,189,255,.1),
+		'stroke_hover' => array(11,189,255,1),
+		'stroke_width_hover' => 4
+	);
 ?>

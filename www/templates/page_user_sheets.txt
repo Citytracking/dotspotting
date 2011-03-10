@@ -5,27 +5,41 @@
 <p class="success">Your sheet has been deleted.</p>
 {/if}
 
-{if $is_own}
 
-<h2><a href="{$owner|@urls_url_for_user}">Your</a>{if $counts.count_sheets > 1} {$counts.count_sheets|escape} sheets{else}sheet{/if}</h2>
-{else}
-
-<h2><a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> {if $counts.count_sheets > 1}{$counts.count_sheets|escape} sheets{else} 1 sheet{/if}</h2>
-{/if}
 
 {if $sheets|@count == 0}
-
-{if $owner.id != $cfg.user.id}
-<p>{$owner.username|escape} hasn't uploaded any dots yet.</p>
+	<h3>
+	{if $owner.id != $cfg.user.id}
+	{$owner.username|escape} hasn't uploaded any dots yet.
+	{else}
+	You haven't uploaded any dots yet.
+	{/if}
+	</h3>
 {else}
-<p>You haven't uploaded any dots yet.</p>
-{/if}
+	
+	{* sheet title area *}
+	<ul id="sheet_head" class="clearfix">
+		<li>
+			<h3>
+			{if $is_own}
+			<a href="{$owner|@urls_url_for_user}" class="blue_links" title="view your user page">Your</a>{if $smarty.get.deleted} remaining{/if} {if $counts.count_sheets > 1} {$counts.count_sheets|escape} sheets{else} sheet{/if}
+			{else}
+			<a href="{$owner|@urls_url_for_user}" class="blue_links" title="view {$owner.username|possess|escape} user page">{$owner.username|possess|escape}</a>{if $smarty.get.deleted} remaining{/if} {if $counts.count_sheets > 1} {$counts.count_sheets|escape} sheets{else} 1 sheet{/if}
+			{/if}
+			</h3>
+		</li>	
 
-{else}
+		<li id="map_toggle_size" class="last_list_item">
+			<a href="#" title="toggle map height" class="txt_small green_links taller">Taller Map</a>
+		</li>
 
-{include file="inc_sheets_list.txt"}
-{pagination}
+	</ul>
+	
+	{include file="inc_sheets_list.txt"}
+	{pagination}
 
 {/if}
 
 {include file='inc_foot.txt'}
+
+

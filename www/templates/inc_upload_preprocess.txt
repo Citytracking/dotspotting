@@ -22,21 +22,27 @@ background-color: pink;
 
 {/if}
 
-<p style="font-size:11px;font-style:italic;">TO DO: The ability to select a column and affect all the member rows (geocoding, changing the value).</p>
+<p style="font-size:11px;font-style:italic;">TO DO: Geocoding still needs some work.</p>
 
+{* begin creation of table *}
+<div>
+<div class="dataTables_filter"><label for="filter">Filter:</label><input type="text" id="filter" value=""></div>
+<div id="pre_process_container" class="yui-skin-sam">
 <table id="pre_process" class="ds_table">
 
 <thead>
 <tr>
 <th>{* delete *}</th>
-<th>{* row id *}</th>
+<th>{* row id *}row id</th>
 {foreach from=$data.0 item="ignore" key="colname" name="headers"}
 {assign var="col_idx" value=$smarty.foreach.headers.index}
 	<th class="col_preprocess">
 		<span class="colname">{$colname|escape}</span>
+		<span>
 		&#160;<a href="#" onclick="preprocess_update_col({$col_idx});return false;">[e]</a>
 		&#160;<a href="#" onclick="preprocess_geocode_col({$col_idx});return false;">[g]</a>
 		&#160;<a href="#" onclick="preprocess_delete_col({$col_idx});return false;" style="color:red;">[x]</a>
+		</span>
 	</th>
 {/foreach}
 </tr>
@@ -50,8 +56,8 @@ background-color: pink;
 
 <tr id="row_preprocess_{$row_idx|escape}">
 {* see that? we're pass the smarty 0-based count *}
-<td><a href="#" onclick="delete_row({$smarty.foreach.records.index}); return false;" style="font-size:11px; color:red;">[x]</a></td>
-<td><strong style="color:#000;">{$row_idx|escape}</strong></td>
+<td><a href="#" onclick="preprocess_delete_row({$smarty.foreach.records.index}); return false;" style="font-size:11px; color:red;">[x]</a></td>
+<td>{$row_idx}</td>
 
 {foreach from=$row item="value" name="columns" key="colname"}
 {assign var="col_idx" value=$smarty.foreach.columns.index}
@@ -72,12 +78,14 @@ background-color: pink;
 </tbody>
 
 </table>
+</div>
+</div>
 
 <a name="#submit"></a>
 
 <form action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8" id="processed">
 
-<div style="margin-bottom:25px;margin-top:30px;padding-top:35px;border-top:solid thin; border-bottom:solid thin;">
+<div id="file_attributes">
 
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="data" value="" />
@@ -93,21 +101,216 @@ background-color: pink;
 
 </form>
 
+{* MODAL WINDOW *}
+<div id="myModal" class="reveal-modal">
+	<h1>Geocoding a column</h1>
+	<p>This may take a moment. I am here to prevent you from harming my process. Please don't leave until I tell you to.</p>
+	<p id="modal_status"></p>
+</div>
+
 <script type="text/javascript" src="{$cfg.abs_root_url}javascript/yqlgeo.js"></script>
+
+{* used to show a modal window when geocoding *}
+<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery.reveal.js"></script>
+{* google client geocoder library *}
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+{* YUI DATATABLE FILES *}
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.8.2r1/build/datatable/assets/skins/sam/datatable.css">
+<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.8.2r1/build/yahoo-dom-event/yahoo-dom-event.js&2.8.2r1/build/element/element-min.js&2.8.2r1/build/datasource/datasource-min.js&2.8.2r1/build/datatable/datatable-min.js"></script>
+
 
 {literal}
 <script type="text/javascript">
-
+var mo,geocoder,dt;
 $(document).ready(function(){
-
-     var dt = $('#pre_process').dataTable({
-	"bPaginate": false,
-	"bFilter": true,
-	"bInfo" : false,
-	"bProcessing": true,
-     });
-
+	mo = $('#myModal').reveal({closeonbackgroundclick: false,animation:'fade'});
+	geocoder = new google.maps.Geocoder();
 });
+
+
+// build data table
+YAHOO.util.Event.addListener(window, "load", function() {
+
+	var YT = YAHOO.namespace('yahooTable');
+	YT.headers = preprocess_collect_headers();
+	YT.keys = [];
+	YT.schema = [];
+	
+	
+	YT.sortRowId = function(a, b, desc) {
+		if(desc){
+			return a.getData("row id") - b.getData("row id");
+		}else{
+			return b.getData("row id") - a.getData("row id");
+		}
+       };
+			
+	/* create table header scheme */
+	for(i=0;i< YT.headers.length;i++){
+		var title = (i == 1) ? "row id" : YT.headers[i];
+		
+		if(i == 0){
+			YT.keys.push( {key:title,sortable:false} );
+		}else if(i == 1){
+			YT.keys.push( {key:title,sortable:true,formatter: "number",sortOptions:{sortFunction:YT.sortRowId}} );
+		}else{
+			YT.keys.push( {key:title,sortable:true,editor: new YAHOO.widget.TextareaCellEditor()} );
+		}
+		
+		YT.schema.push({key:title});
+	}
+	
+	YT.columnDefs = YT.keys;
+
+	YT.dataSource = new YAHOO.util.DataSource(YAHOO.util.Dom.get("pre_process"));
+	YT.dataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
+	YT.dataSource.responseSchema = {
+	    fields: YT.schema
+	};
+	
+	
+	/* this is the filter function */
+	YT.dataSource.doBeforeCallback = function (req,raw,res,cb) {
+		// This is the filter function
+ 			var data = res.results || [],
+     		filtered = [],
+     		i,l,j,regEx;
+		
+		
+		if (req) {
+		req = req.toLowerCase();
+		regEx =  new RegExp( YT.createRegex( req ) , "i" );
+		
+		for (i = 0, l = data.length; i < l; ++i) {
+			
+			for(j in data[i]){
+				if(j.length){
+					if ( regEx.test(data[i][j]) ) {
+				        filtered.push(data[i]);
+						break;
+				    }
+				}
+			}
+
+		}
+     		res.results = filtered;
+ 			}
+
+ 			return res;
+	};
+	
+	/* filter function helper */
+	YT.createRegex = function( str ){
+		var esc = [ '/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\', '$', '^' ];
+	  	var rep = new RegExp( '(\\' + esc.join('|\\') + ')', 'g' );
+	  	return str.replace(rep, '\\$1');
+	}
+
+	/* CREATE TABLE from column definitions & dataSource */
+	YT.dataTable = new YAHOO.widget.ScrollingDataTable("pre_process_container", YT.columnDefs, YT.dataSource,{width:"100%", height:"300px",renderLoopSize: 125});
+	
+	// for the public
+	dt = YT;
+	
+	/* general methods */
+	YT.preprocess_add_col_options = function(){
+		// reset column options
+		$(".yui-dt-hd th").each(function(i){
+			if(i > 1){
+				var target = $(this).find('div').eq(0);
+				var str = '<span class="col_options">';
+				str += '<a href="#" onclick="preprocess_update_col('+i+');return false;">[e]</a>';
+				str += '&#160;<a href="#" onclick="preprocess_geocode_col('+i+');return false;">[g]</a>';
+				str += '&#160;<a href="#" onclick="preprocess_delete_col('+i+');return false;" style="color:red;">[x]</a>';
+				str += '</span>';
+				$(target).append(str);
+			}
+	 	});
+	}
+	
+	/* Collection of event callback functions */
+	YT.tableReady = function(e){
+		YT.dataTable.unsubscribe('initEvent',YT.tableReady);
+		YT.preprocess_add_col_options();
+		
+		if(typeof preprocess_create_index == 'function') { 
+			preprocess_create_index();
+		}
+	}
+	
+    YT.highlightEditableCell = function(oArgs) {
+        var elCell = oArgs.target;
+        if(YAHOO.util.Dom.hasClass(elCell, "yui-dt-editable")) {
+            this.highlightCell(elCell);
+        }
+    };
+	
+	YT.rowDeleteHandler =function(oArgs){
+		$(".yui-dt-data tr").map(function(i, row){
+
+			var oRecord = dt.dataTable.getRecord(i);
+			var newRowId = i+1;
+			var action = "preprocess_delete_row(" + i + "); return false;";
+			var delCol = $(row).find("td a").eq(0);
+
+			console.log(newRowId);
+			YT.dataTable.updateCell(oRecord,'row id',newRowId);
+			
+			if (delCol.length){
+				delete_col = delCol[0];
+				delete_col.setAttribute('onclick', action);
+			}
+			
+		});
+	};
+	
+	YT.columnChangeHandler = function(oArgs){
+		YT.preprocess_add_col_options();
+
+		if(typeof preprocess_create_index == 'function') { 
+			preprocess_create_index();
+		}	
+	}
+	
+	
+	/* Event group */
+	YT.dataTable.subscribe('initEvent',YT.tableReady);
+    YT.dataTable.subscribe("cellMouseoverEvent", YT.highlightEditableCell);
+    YT.dataTable.subscribe("cellMouseoutEvent", YT.dataTable.onEventUnhighlightCell);
+    YT.dataTable.subscribe("cellClickEvent", YT.dataTable.onEventShowCellEditor);
+	YT.dataTable.subscribe("rowDeleteEvent", YT.rowDeleteHandler);
+	YT.dataTable.subscribe("columnInsertEvent", YT.columnChangeHandler);
+	YT.dataTable.subscribe("columnRemoveEvent", YT.columnChangeHandler);
+
+
+	/* Filter-ish things */
+	YT.filterTimeout = null;
+	YT.updateFilter  = function () {
+		// Reset timeout
+		YT.filterTimeout = null;
+
+		// Reset sort
+		var state = YT.dataTable.getState();
+		state.sortedBy = {key:'row id', dir:YAHOO.widget.DataTable.CLASS_ASC};
+
+		// Get filtered data
+		YT.dataSource.sendRequest(YAHOO.util.Dom.get('filter').value,{
+			success : YT.dataTable.onDataReturnInitializeTable,
+			failure : YT.dataTable.onDataReturnInitializeTable,
+			scope   : YT.dataTable,
+			argument: state
+		});
+	};
+
+	YAHOO.util.Event.on('filter','keyup',function (e) {
+		clearTimeout(YT.filterTimeout);
+		setTimeout(YT.updateFilter,600);
+	});
+	
+});
+
+
 
 $("#processed").submit(function(){
 	var data = preprocess_collect_data();
@@ -115,86 +318,96 @@ $("#processed").submit(function(){
 	$("input[type=hidden][name=data]").val(data);
 });
 
+function preprocess_create_index(){
+	var headers = preprocess_collect_headers();
+	var target = $('label[for="dots_index_on"]');
+	
+	$("#preprocess_indexOptions").html("");
+	
+	var _html = '<p id="preprocess_indexOptions">Available field names: ';
+	for(i = 0;i<headers.length;i++){
+		if(headers[i] && headers[i] != "row id"){
+			_html += "<span>"+headers[i]+"</span>";
+		}
+	}
+	
+	_html += "</p>";
+	
+	$(target).after(_html);
+}
+
+
 function preprocess_collect_headers(){
+	var headers;
+	// is it pre yui markup
+	if( $(".yui-dt-hd thead").length ){
+	
+		headers = $(".yui-dt-hd thead tr").map(function(i, row){
 
-	var headers = $("#pre_process thead tr").map(function(i, row){
+			var _headers = [];
 
-		var _headers = [];
+			$(row).find("th").each(function(j, col){
 
-		$(row).find("th").each(function(j, col){
+				// method.chaining.is.a.tool.of.the.devil().parent()
+				var header = $(col).find('span.yui-dt-label').text().toLowerCase()
 
-			// method.chaining.is.a.tool.of.the.devil().parent()
-			header = $(col).find('span.colname').text().toLowerCase()
+				_headers.push(header);
+			});
 
-			_headers.push(header);
+			return _headers;
 		});
+	}else{
+		headers = $("#pre_process thead tr").map(function(i, row){
 
-		return _headers;
-	});
+			var _headers = [];
+
+			$(row).find("th").each(function(j, col){
+
+				// method.chaining.is.a.tool.of.the.devil().parent()
+				header = $(col).find('span.colname').text().toLowerCase()
+
+				_headers.push(header);
+			});
+
+			return _headers;
+		});
+	}
 
 	return headers;
 }
 
 function preprocess_collect_data(){
-
+	if(!dt.dataTable)return;
+	
 	var rows = [];
 
 	var headers = preprocess_collect_headers();
 
-	$("#pre_process tbody tr").map(function(i, row){
-
-		var _row = {};
-
-		$(row).find("td").each(function(j, td){
-
-			var key = (headers) ? headers[j].toLowerCase() : null;
-			key = key.replace(/^\s+/, '');
-			key = key.replace(/\s+$/, '');
-
-			if (! key){
-				return;
-			}
-
-			var value = $(td).text();
-			value = value.replace(/^\s+/, '');
-			value = value.replace(/\s+$/, '');
-			_row[key] = value;
-		});
-
-		rows.push(_row);
+	$(".yui-dt-data tr").map(function(i, row){
+		
+		var oRecord = dt.dataTable.getRecord(i);
+		rows.push(oRecord._oData);		
 	});
 
 	return rows;
 }
 
+// delete row
 function preprocess_delete_row(idx){
-
+	if(!dt.dataTable)return;
+	
 	var prompt = "Are you sure you want to delete this row?";
 
 	if (! confirm(prompt)){
 		return;
 	}
+	
+	dt.dataTable.deleteRow(Number(idx));
 
-	var dt = $('#pre_process').dataTable();
-	dt.fnDeleteRow(idx);
-
-	// please tell me there's a better way to do this...
-
-	$("#pre_process tbody tr").map(function(i, row){
-
-		var action = "preprocess_delete_row(" + i + "); return false;";
-
-		var cols = $(row).find("td a");
-
-		if (cols.length){
-			delete_col = cols[0];
-			delete_col.setAttribute('onclick', action);
-		}
-	});
 }
 
 function preprocess_update_col(idx){
-
+	if(!dt.dataTable)return;
 	var headers = preprocess_collect_headers();
 	var colname = headers[idx];
 
@@ -208,103 +421,124 @@ function preprocess_update_col(idx){
 		return;
 	}
 
-	$("#pre_process tbody tr").map(function(i, row){
-
-		var cols = $(row).find("td.col_preprocess");
-		var col = cols[idx];
-
-		col.innerHTML = update;
+	$(".yui-dt-data tr").map(function(i, row){
+		var oRecord = dt.dataTable.getRecord(i);
+		dt.dataTable.updateCell(oRecord,colname,update);
 	});
 
 	return;
 }
 
 function preprocess_delete_col(idx){
-
+	if(!dt.dataTable)return;
+	
 	var headers = preprocess_collect_headers();
 	var colname = headers[idx];
 
 	if (! confirm("Are you sure you want to delete the \"" + colname + "\" column from all rows?")){
 		return;
 	}
-
-	$("#pre_process thead tr").map(function(i, row){
-
-		$(row).find("th.col_preprocess:eq(" + idx + ")").remove();
-	});
-
-	$("#pre_process tbody tr").map(function(i, row){
-
-		$(row).find("td.col_preprocess:eq(" + idx + ")").remove();
-	});
-
-	// please tell me there's a better way to do this...
-
-	$("#pre_process thead tr").map(function(i, row){
-
-		var headers = $(row).find("th.col_preprocess");
-		var head_count = headers.length;
-
-		for (var j = 0; j < head_count; j++){
-
-			var anchors = $(headers[j]).find("a");
-			var count = anchors.length;
 	
-			for (var a = 0; a < count; a++){
-
-				var action = anchors[a].getAttribute('onclick');
-
-				if (action.indexOf("preprocess_delete_col") == 0){
-					action = "preprocess_delete_col(" + j + "); return false;";
-				}
-
-				else if (action.indexOf("preprocess_update_col") == 0){
-					action = "preprocess_update_col(" + j + "); return false;";
-				}
-
-				else if (action.indexOf("preprocess_geocode_col") == 0){
-					action = "preprocess_geocode_col(" + j + "); return false;";
-				}
-
-				else {}
-
-				// console.log('i:' + i + ' a:' + a + ' j:' + j + ' -- ' + action);
-				anchors[a].setAttribute('onclick', action);
-			}
-		}
-
-	});
-
+	// Remove Column
+	var col = dt.dataTable.getColumn(idx);
+	var myRemovedColumn = dt.dataTable.removeColumn(col);
+	
 	return;
 }
 
-function preprocess_geocode_col(idx){
+function addExtraColumns(arr,idx){
+	if(!dt.dataTable)return;
+	for(i in arr){
+		// Insert a new Column
+		dt.dataTable.insertColumn({
+		    key: arr[i],
+			sortable:true
+		}, idx+1);
+	}
+}
 
-	alert("please make me work...");
-	return;
+
+function preprocess_geocode_col(idx){
+	if(!dt.dataTable)return;
+	
+	//alert("please make me work...");
+	//return;
 
 	// because these will all be asynchronous api calls, should we block
 	// all the other functions that may affect this column?
 	// (20100207/straup)
-
+	
 	var headers = preprocess_collect_headers();
+	var colname = headers[idx];
+	
+	var queueDone = false;
+	var queue = $(".yui-dt-data tr").length;
+	var queueTotal = queue;
+	var thisClass = this;
+	this.intTimer = window.setTimeout(function(e) {thisClass.closeModal()},3000);
+	if(mo)mo.show();
+	
+	addExtraColumns(['latitude','longitude'],idx);
 
-	$("#pre_process tbody tr").map(function(i, row){
+	$(".yui-dt-data tr").map(function(i, row){
+		
+		var oRecord = dt.dataTable.getRecord(i);
+		
+		var q = oRecord._oData[colname];
+		
+		// geocode using woeid or physical address
+		if (q.match(/^woeid\:(\d+)$/)){
+			yqlgeo.get(q, function(rsp){
+				checkQueue();
+				if(rsp.place.centroid){
+				 if(window.console)console.log('rsp for ' + q + ' ... ' + rsp.place.centroid.latitude + "," + rsp.place.centroid.longitude);
+				}else{
+					if(window.console)console.log('No point location for ' + q + ' ... ');
+				}
 
-		var q = $(row).find("td.col_preprocess:eq(" + idx + ")").text();
-		console.log(q);
-
-		yqlgeo.get(q, function(rsp){
-
-			console.log('rsp for ' + q + ' ... ' + idx);
-			console.log(row);
-
-			if (rsp.error){
-				return;
-			}
-		});
+				if (rsp.error){
+					queueDone = true;
+					if(window.console)console.log("error");
+					return;
+				}
+			});
+		}else if(q.length > 5){
+			geocoder.geocode( { 'address': q}, function(results, status) {
+				checkQueue();
+				if (status == google.maps.GeocoderStatus.OK) {
+					dt.dataTable.updateCell(oRecord,"latitude",results[0].geometry.location.lat());
+					dt.dataTable.updateCell(oRecord,"longitude",results[0].geometry.location.lng());
+					//if(window.console)console.log("Geocode successful: "+results[0].geometry.location.lat()); //lng
+				} else {
+					dt.dataTable.updateCell(oRecord,"latitude","-");
+					dt.dataTable.updateCell(oRecord,"longitude","-");
+					//if(window.console)console.log("Geocode was not successful for the following reason: " + status);
+				}
+			});
+		}else{
+			checkQueue();
+		}
+		
 	});
-
+	
+	function checkQueue(){
+		queue--;
+		if(queue <= 0){
+			queueDone = true;
+		}
+		$("#modal_status").text(queue+"/"+queueTotal+" records left.");
+		//if(window.console)console.log(queue);
+	}
+	
+	this.closeModal = function(){
+		if(queueDone){
+			// close modal overlay
+			if(mo)mo.close();
+		}else{
+			this.intTimer = window.setTimeout(function(e) {thisClass.closeModal()},3000);
+		}
+	}
+	
 }
 
 </script>

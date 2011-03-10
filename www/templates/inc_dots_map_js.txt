@@ -1,11 +1,38 @@
 {literal}
 <script type="text/javascript">
 
-function dot_onclick(e){
+// store json object of dot data
+var all_dots = {/literal}{$dots_simple|@json_encode}{literal};
+
+
+// dot onclick handler
+function dot_onclick(dotid,lon,lat){
 	// send click event and data to custom markerclick event
 	// creates the tooltip
-
-	jQuery("#map").trigger('markerclick',[e.data.props,e.data.geo]);
+		
+	// only continue if dot is currently not selected
+	if(!_dotspotting.selected_dot || _dotspotting.selected_dot != dotid){
+		
+		// unselect a selected dot
+		if(_dotspotting.selected_dot)dot_unselect(_dotspotting.selected_dot);
+		
+		// assign dot id to global config
+		_dotspotting.selected_dot = dotid;
+		
+		// reset dot styles, just in case
+		dot_unselect(dotid);
+		
+		// trigger the tooltip
+		$("#map").trigger('markerclick',[dotid,{lat: lat, lon: lon}]);
+		
+		// add highlight class if it isn't there already
+		/*
+		$("#"+"dot_"+dotid).each(function(){
+			dotAddClass($(this)[0] ,'dotHover');
+		});
+		*/
+		dotAddClass(document.getElementById("dot_"+dotid) ,'dotHover');
+	}
 	
 	/*
 	if (dot['id']){
@@ -14,29 +41,141 @@ function dot_onclick(e){
 	*/
 }
 
-
-// helper function to highlight dot when user hovers over table row
-function dot_tr_hover(el,type){
-	var raw_dotid = (el.id).split("_");
-	var dotid = raw_dotid[raw_dotid.length-1];
-	if(type == "over"){
-		dot_onmouseover(dotid);
-	}else{
-		dot_onmouseout(dotid);
-		var tlen = _dotspotting.dots_list_mouseout_timers.length;
-
-		for (var i = 0; i < tlen; i++){
-			clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
-		}
-		dot_restore_tr();
+// dot onmouseover handler
+function dot_onmouseover(dotid){
+	
+	var dot = dot_getinfo_json(dotid);
+		
+	//console.log(all_dots2[_dotspotting.dots_list_dots[dotid]]);
+	
+	if (! dot['id']){
+		return;
 	}
+
+	var tlen = _dotspotting.dots_list_mouseout_timers.length;
+
+	for (var i = 0; i < tlen; i++){
+		clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
+	}
+	
+	if (_dotspotting.use_polymaps){	
+		/* Move dot to bottom of group */
+		var element = document.getElementById("dot_"+dotid);
+		element.parentNode.appendChild(element);
+	
+		if(_dotspotting.selected_dot != dotid){
+		
+			/* Add dot hover class, because appendChild breaks ':hover' in FF */
+			dotAddClass(element ,'dotHover');
+		
+		}
+	}
+	
+	dot_highlight_tr(dotid);
 }
 
+// dot onmouseout handler
+function dot_onmouseout(dotid){
+	if(_dotspotting.selected_dot != dotid){
+		dot_unselect(dotid);
+	}
+	
+	var tid = setTimeout(function(){
+
+		dot_restore_tr();
+
+	}, 8000);
+
+	_dotspotting.dots_list_mouseout_timers.push(tid);
+}
+
+// resets map bounds
+function resetBounds(){
+	$("#map").trigger('resetmapbounds');
+}
+
+/* ------------------------------------------------------------------------*/
+/* Series of helper classes to manage add and deleting classes on SVG dots */
+/* ------------------------------------------------------------------------*/
+
+function dotHasClass(element, $class) {
+    var pattern = new RegExp("(^| )" + $class + "( |$)");
+    return pattern.test(element.className.baseVal) ? true : false;
+}
+
+
+function dotAddClass(element, $class) {
+	if(!element)return;
+    var i,newClass;
+    //is the element array-like?
+    if(element.length) {
+        for (i = 0; i < element.length; i++) {
+			
+            if (!dotHasClass(element[i], $class)) {
+				newClass = element[i].className.baseVal;
+                newClass += element[i].className.baseVal === "" ? 
+                $class : " "+$class;
+				element.setAttribute('class', newClass);
+            }
+        }
+    }
+    else { //not array-like
+        if (!dotHasClass(element, $class)) {
+			newClass = element.className.baseVal;
+            newClass += (element.className.baseVal === "") ? $class : " "+$class;
+			element.setAttribute('class', newClass);
+        }
+    }
+    return element;
+}
+
+function dotRemoveClass (element, $class) {
+	if(!element)return;
+
+    var pattern = new RegExp("(^| )" + $class + "( |$)");
+    var i,newClass;
+
+    //is element array-like?
+    if(element.length) {
+        for (i = 0; i < element.length; i++) {
+			newClass = element[i].className.baseVal;
+            newClass = newClass.replace(pattern, "$1");
+            newClass = newClass.replace(/ $/, "");  
+			element.setAttribute('class', newClass);          
+        }
+    }
+    else { //nope
+		newClass = element.className.baseVal;
+        newClass = newClass.replace(pattern, "$1");
+        newClass = newClass.replace(/ $/, ""); 
+		element.setAttribute('class', newClass); 
+    }
+    return element;
+}
+
+// it does as the name says it does
+function unselectAllDots(){
+	$(".dot").each(function(){
+		dotRemoveClass($(this)[0],'dotHover');
+	});
+}
+
+// generic function to reset dot styles
+function dot_unselect(dotid){
+	//dotRemoveClass(document.getElementById("dot_"+dotid),'dotHover');
+	$("#"+"dot_"+dotid).each(function(){
+		dotRemoveClass($(this)[0],'dotHover');
+	});
+}
+
+/* ------------------------------------------------------------------------*/
+/* 	 	Create text for tooltip											   */
+/* ------------------------------------------------------------------------*/
 
 // returns string used in tooltip header text
 function dot_tip_header(dotid){
 	
-	var dot = dot_getinfo(dotid);
+	var dot = dot_getinfo_json(dotid);
 	
 	if (! dot['id']){
 		return "";
@@ -50,21 +189,16 @@ function dot_tip_header(dotid){
 
 // returns string used in tooltip body text
 function dot_tip_body(dotid){
-	var dot = dot_getinfo(dotid);
+
+	var dot = dot_getinfo_json(dotid);
 
 	if (! dot['id']){
 		return "";
 	}
 
-	var html = 'It is owned';
-
-	if ((dot.ownerid) && (dot.ownerid != _dotspotting.user.id)){
-		html += ' by ' + htmlspecialchars(dot.owner);
-	}
-
-	else {
-		html += ' by you';
-	}
+	var html = 'It is owned ';
+	
+	html += dot.owner;
 
 	html += '.';
 
@@ -90,96 +224,26 @@ function dot_tip_body(dotid){
 	return html;
 }
 
-function resetBounds(){
-	jQuery("#map").trigger('resetmapbounds');
-}
+/* ------------------------------------------------------------------------*/
+/* 		Manipulate Table rows											   */
+/* ------------------------------------------------------------------------*/
 
-function dot_onmouseover(dotid){
+// helper function to highlight dot when user hovers over table row
+function dot_tr_hover(el,type){
 
-	var dot = dot_getinfo(dotid);
+	var raw_dotid = (el.id).split("_");
+	var dotid = raw_dotid[raw_dotid.length-1];
+	if(type == "over"){
+		dot_onmouseover(dotid);
+	}else{
+		dot_onmouseout(dotid);
+		var tlen = _dotspotting.dots_list_mouseout_timers.length;
 
-	if (! dot['id']){
-		return;
-	}
-
-	var tlen = _dotspotting.dots_list_mouseout_timers.length;
-
-	for (var i = 0; i < tlen; i++){
-		clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
-	}
-
-	var html = 'This is dot #<a href="' + dot.url + '">' + dot.id + '</a>';
-
-	if ((dot.ownerid) && (dot.ownerid != _dotspotting.user.id)){
-		html += ', by ' + htmlspecialchars(dot.owner);
-	}
-
-	else {
-		html += ', by you';
-	}
-
-	html += '.';
-
-	if (dot.location){
-		var search_url = _dotspotting.abs_root_url + 'search?l=' + encodeURIComponent(dot.location);
-		html += ' It\'s located at <a href="' + search_url + '">' + htmlspecialchars(dot.location) + '</a>.';
-	}
-
-	else if (dot.latitude && dot.longitude){
-		var search_url = _dotspotting.abs_root_url + 'search?gh=' + encodeGeoHash(dot.latitude, dot.longitude);
-		html += ' It\'s located at <a href="' + search_url + '">' + dot.latitude + ',' + dot.longitude + '</a>.';
-	}
-
-	else {} 
-
-	if (dot.type){
-		var search_url = _dotspotting.abs_root_url + 'search?t=' + encodeURIComponent(dot.type);
-		html += ' It\'s a <q><a href="' + search_url + '">' + htmlspecialchars(dot.type) + '</a></q>.';
-	}
-	
-	/*
-		$("#map_info").html(html);
-		$("#map_info").show();
-	*/
-	
-	/* Move dot to bottom of group */
-	var element = document.getElementById("dot_"+dotid);
-	element.parentNode.appendChild(element);
-	
-	/* Add dot hover class, because appendChild breaks ':hover' */
-	var classes = (element.className.baseVal).split(' ');
-	classes.push('dotHover');
-	element.setAttribute('class', classes.join(' '));	
-	
-	dot_highlight_tr(dotid);
-}
-
-function dot_onmouseout(dotid){
-	
-	/* Remove dot hover class */
-	var element = document.getElementById("dot_"+dotid);
-	var classes = (element.className.baseVal).split(' ');
-	classes.pop();
-	element.setAttribute('class', classes.join(' '));
-
-	/*
-	var html = $("#map_info").html();
-	html = html.replace(/^This is/, 'That was');
-
-	$("#map_info").html(html);
-	*/
-	
-	var tid = setTimeout(function(){
-
-		$("#map_info").fadeOut('slow', function(){
-			$("#map_info").html('');
-		});
-
+		for (var i = 0; i < tlen; i++){
+			clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
+		}
 		dot_restore_tr();
-
-	}, 8000);
-
-	_dotspotting.dots_list_mouseout_timers.push(tid);
+	}
 }
 
 function dot_highlight_tr(dotid){
@@ -214,6 +278,26 @@ function dot_restore_tr(){
 	_dotspotting['highlighted'] = null;
 }
 
+/*
+ * "dotspotting.dots_list_dots" is a hash table storing the position of the dot object in JSON object.
+*/
+
+function dot_getinfo_json(dotid){
+
+	if (_dotspotting.dots_list_dots[dotid]){	
+       return all_dots[_dotspotting.dots_list_dots[dotid]];
+    }
+	
+	var dot = {};
+	for(i=0;i<all_dots.length;i++){
+		if(all_dots[i].id == dotid){
+			_dotspotting.dots_list_dots[dotid] = i;
+			return all_dots[i];
+		}
+	}
+	return dot;
+}
+
 function dot_getinfo(dotid){
 
     if (_dotspotting.dots_list_dots[dotid]){	
@@ -225,6 +309,48 @@ function dot_getinfo(dotid){
 
     _dotspotting.dots_list_dots[dotid] = dot;
     return dot;
+}
+
+function strip_ws_text(str){
+	if(!str.length)return '';
+	str = str.replace(/^\s+/, '');
+	str = str.replace(/\s+$/, '');
+	return str
+}
+
+function row2dot_json(i,headers){
+	
+	if(headers === null || headers === undefined)headers = collect_headers();
+	
+	if(!all_dots.length)return {};
+	
+	var _owner = {/literal}'{if $owner}{$owner.username|escape}{elseif $dot.user}{$dot.user.username|escape}{else}???{/if}'{literal};
+
+	// begin processing dots
+	if(all_dots[i].id)all_dots[i].id = Number(strip_ws_text(all_dots[i].id));
+	if(all_dots[i].longitude)all_dots[i].longitude = parseFloat( strip_ws_text(all_dots[i].longitude) );
+	if(all_dots[i].latitude)all_dots[i].latitude = parseFloat( strip_ws_text(all_dots[i].latitude) );
+	
+//	dot_search_details(all_dots[i],"title");
+
+	var ownerid = strip_ws_text(all_dots[i].user_id);
+
+	if (ownerid){
+		all_dots[i]['ownerid'] = Number(ownerid);
+		all_dots[i]['owner'] = (ownerid == _dotspotting.user.id) ? "you" : _owner;
+	}
+	
+	all_dots[i]['url'] = _dotspotting.abs_root_url + 'u/' + all_dots[i]['ownerid'] + '/dots/' + all_dots[i].id + '/';
+
+	if (!_dotspotting.dots_list_dots[all_dots[i].id])_dotspotting.dots_list_dots[all_dots[i].id] = i;
+    
+	return all_dots[i];
+}
+
+function dot_search_details(dot, key){
+	for(var hh in dot['details']){
+		//if(dot['details'][hh].label == key)console.log(dot['details'][hh].label,dot['details'][hh].value);
+	}
 }
 
 function row2dot(row, headers){
@@ -292,18 +418,17 @@ function row2dot(row, headers){
 }
 
 function collect_headers(){
-
-	var headers = $("#user_dots thead tr").map(function(i, row){
-
+	// need to check if dataTable is rendered
+	var headerStr = ( $(".dataTables_scrollHead").length ) ? ".dataTables_scrollHead thead tr" : "#user_dots thead tr";
+	
+	var headers = $(headerStr).map(function(i, row){
 		var _headers = [];
-
 		$(row).find("th").each(function(col, th){
 			_headers.push($(th).text().toLowerCase());
 		});
-
 		return _headers;
 	});
-
+	
 	return headers;
 }
 
@@ -315,14 +440,18 @@ function collect_dots(){
 	var swlon = null;
 	var nelat = null;
 	var nelon = null;
+	
+	
+	var features = $("#user_dots tbody tr").map(function(i){
+		
+		//var dot = row2dot(row);
+		// if it has a url property, then it's already been processed
+		var dot = (all_dots[i]['url']) ? all_dots[i] : row2dot_json(i,headers);
 
-	var features = $("#user_dots tbody tr").map(function(i, row){
-
-		var dot = row2dot(row);
 
 		var loc = {
 			lat: dot.latitude,
-			lon: dot.longitude,
+			lon: dot.longitude
 		};
 
 		swlat = (swlat) ? Math.min(swlat, loc.lat) : loc.lat;
@@ -335,28 +464,28 @@ function collect_dots(){
 		return {
 			'geometry' : {
 				'type' : 'Point',
-				'coordinates' : [ loc.lon, loc.lat ],
+				'coordinates' : [ loc.lon, loc.lat ]
 			},
 
-			'properties' : dot,
+			'properties' : dot
 		};
 
 	});
 
 	var extent = [
 		{ lat: swlat, lon: swlon },
-		{ lat: nelat, lon: nelon },
+		{ lat: nelat, lon: nelon }
 	];
 
 	var center = {
 		'lat' : swlat + ((nelat - swlat) / 2),
-		'lon' : swlon + ((nelon - swlon) / 2),
+		'lon' : swlon + ((nelon - swlon) / 2)
 	};
 
 	return {
 		'features': features,
 		'extent' : extent,
-		'center' : center,
+		'center' : center
 	};
 }
 
@@ -364,7 +493,8 @@ function draw_map_modestmaps(dots){
 
 	var mm = com.modestmaps;
 	var map = utils_modestmap('map');
-
+	
+	var org_extent = null;
 	if (dots.features.length == 1){
 
 		var center = dots['center'];
@@ -374,41 +504,25 @@ function draw_map_modestmaps(dots){
     		map.setCenterZoom(loc, zoom);
 
 	}
-
 	else {
+		
 		var _extent = utils_adjust_bbox(dots['extent']);
-
+		
 		var extent = [
 			new mm.Location(_extent[0]['lat'], _extent[0]['lon']),
-			new mm.Location(_extent[1]['lat'], _extent[1]['lon']),
+			new mm.Location(_extent[1]['lat'], _extent[1]['lon'])
 		];
-
+		org_extent = extent;
 		map.setExtent(extent);
 	}
 
-	// This is not awesome but in the absence of a reliable way to
-	// read CSS declaration in JS (does one exist now?) it's just
-	// what we're going to do for now. See also: main.css .dot and
-	// .dot:hover (20101207/straup)
+	// writing dot colors set in config file
+	// 0 = attrs , 1 = attrs_hover
+	var attr_array = get_mm_dot_styles();
 
-	var attrs = {
-		'fill' : '#00112d',
-		'fill-opacity' : .5,
-		'stroke' : '#99cc00',
-		'stroke-width' : 3,
-		'stroke-opacity' : 1,
-	};
-
-	var attrs_hover = {
-		'fill' : '#00ddee',
-		'fill-opacity' : .8,
-		'stroke' : '#00112d',
-		'stroke-width' : 5,
-		'stroke-opacity' : 1,
-	};
 
 	var more = {
-		'attrs' : attrs,
+		'attrs' : attr_array[0],
 
 		// just inline the function mostly so that we don't
 		// have to redeclare the attrs_* hashes again
@@ -417,41 +531,57 @@ function draw_map_modestmaps(dots){
 		'onload' : function(el, props){
 
 			el.mouseout(function (evt) {
-				this.attr(attrs);
+				this.attr(attr_array[0]);
 				dot_onmouseout(props.id);
 			});
 
 			el.mouseover(function (evt) {
-				this.attr(attrs_hover);
+				this.attr(attr_array[1]);
 				dot_onmouseover(props.id);
 			});
 
 			el.click(function(evt){
 				dot_onclick(props.id);
 			});
-		},
+		}
 	};
 
 	var markers = new mm.Markers(map);
 	markers.drawGeoJson(dots['features'], more);
 
+	// not really doing anything right now because we have our own controls.
 	utils_modestmaps_add_compass(map);	
+	
+	// create controls
+	utils_add_map_controls(map,"mm",org_extent);
+	
+	// map toggle size button
+	utils_map_toggle_size(map,"mm",500,markers);
+	
+	// map tooltip
+	utils_add_map_tooltip(map,$("#map").parent(),"mm");
+
+	
 	return;
 }
 
 function draw_map_polymaps(dots){
-
 	var map = utils_polymap('map');
+	var current_map_zoom,org_extent = null;
+	
+	// init selected dot variable
+	_dotspotting.selected_dot = null;
 
 	if (dots.features.length == 1){
 		map.center(dots.center);
 	}
-
 	else {
 		var extent = utils_adjust_bbox(dots.extent);
 		map.extent(extent);
+		
+		//store original extent
+		org_extent = map.extent();
 	}
-
 	map.zoom(Math.floor(map.zoom()));
 
 	var po = org.polymaps;
@@ -460,74 +590,45 @@ function draw_map_polymaps(dots){
 	points.on("load", utils_polymaps_assign_dot_properties);
 
 	map.add(points);
-
+	
+	// adding our own controls
 	utils_polymaps_add_compass(map);
 	
-	$("#map").bind('resetmapbounds', function(e) {
-		var extent = utils_adjust_bbox(dots.extent);
-		map.extent(extent);
-	});
+	// create controls
+	utils_add_map_controls(map,"po",org_extent);
 	
-	/* 
-		Add ToolTip & bind marker click event to #map
-		
-		tooltip appears on click
-		
-		#############################################################################
-		Because they look so good,
-		code & styles from Portland crime map: https://github.com/Caged/portlandcrime
-		#############################################################################
-	*/
+	// map toggle size button
+	utils_map_toggle_size(map,"po",500,null);
 
-	var mapel = $("#map").parent();
+	// map tooltip
+	utils_add_map_tooltip(map,$("#map").parent(),"po");
 	
-	$("#map").bind('markerclick', function(e,props,geo) {
-		if(mapel.length == 0) return
-		
-		var dotid = props.id;
-		var coor = geo.coordinates;
-		
-		mapel.maptip(this)
-	      .map(map)
-	      .data(props)
-	      .location({lat: coor[1], lon: coor[0]})
-	      .classNames(function(d) {
-	        return d.code
-	      })
-	      .top(function(tip) {
-	        var point = tip.props.map.locationPoint(this.props.location)
-	        return parseFloat(point.y)
-	      }).left(function(tip) {
-	        var radius = tip.target.getAttribute('r'),
-	            point = tip.props.map.locationPoint(this.props.location)
+	
+	// listens for map changes
+	// using it to keep dot svg element highlighted
+	// throughout zoom ranges
+	function handleMapChanges(){
+		if( current_map_zoom != map.zoom() ){
+			/* 
+			I believe there is a better way 
+			to remove highlight class from dots on previous zoom layers
+			but for now this works
+			*/
+			unselectAllDots();
+			
+			// now add highlight class back to a dot that is selected
+			if(_dotspotting.selected_dot && _dotspotting.selected_dot !== null){
+				var element = document.getElementById("dot_"+ _dotspotting.selected_dot);
+				dotAddClass(element,'dotHover');
+			}
+		}
+		current_map_zoom = map.zoom();
+	}
+	
 
-	        return parseFloat(point.x + (radius / 2.0) + 20)
-	      }).content(function(d) {
-	        var self = this,
-	            props = d,
-	            cnt = $('<div/>'),
-	            hdr = $('<h2/>'),
-	            bdy = $('<p/>'),
+	map.on("move",handleMapChanges);
+	map.on("resize",handleMapChanges);
 
-	            close = $('<span/>').addClass('close').text('X')
-
-	        hdr.html(dot_tip_header(props.id));
-	         hdr.append(close)
-	        
-
-	        bdy.html(dot_tip_body(props.id))
-
-	        cnt.append($('<div/>').addClass('nub'))
-	        cnt.append(hdr).append(bdy) 
-
-	        close.click(function() {
-	          self.hide()
-	        })   
-
-	        return cnt  
-	      }).render()
-
-	});
 
 	return 1;
 }
@@ -535,9 +636,9 @@ function draw_map_polymaps(dots){
 function draw_map(){
 
 	utils_scrub_map();
-
 	var dots = collect_dots();
-
+	
+		
 	if (_dotspotting.use_polymaps){	
 		draw_map_polymaps(dots);
 		return;

@@ -46,7 +46,7 @@
 		#
 		# Go!
 		#
-
+		
 		if ($display == 'sheets'){
 
 			$rsp = search_sheets($_GET, $GLOBALS['cfg']['user']['id'], $more);
@@ -60,7 +60,6 @@
 		}
 
 		else {
-
 			$rsp = search_dots($_GET, $GLOBALS['cfg']['user']['id'], $more);
 
 			if ((! $rsp['ok']) || (! count($rsp['dots']))){
@@ -72,6 +71,7 @@
 
 			$dots_indexed = dots_indexed_on($rsp['dots']);
 			$GLOBALS['smarty']->assign_by_ref('dots_indexed', $dots_indexed);
+			
 		}
 
 		#
@@ -124,6 +124,44 @@
 
 		$formats = array_values(formats_valid_export_map());
 		$GLOBALS['smarty']->assign("export_formats", $formats);
+		
+		$formats_pretty_names = formats_pretty_names_map();
+		$GLOBALS['smarty']->assign_by_ref("formats_pretty_names", $formats_pretty_names);
+		
+		
+		// create a simplfied object for js
+		$json_fields = array("id","created","details","geohash","is_interactive","latitude","longitude","user_id","perms","sheet_id");
+		if($rsp['dots']){
+			$ddd = array();
+			foreach ($rsp['dots'] as $dot) {
+				$bb = array();
+				foreach($json_fields as $fi){
+					if(isset($dot[$fi])){
+						if($fi == "details"){
+							$_details = array();
+							foreach($dot[$fi] as $de){
+								$_details[] = array(
+									'label' => $de[0]['label'],
+									'value' => $de[0]['value']
+								);
+							}
+							$bb[$fi] = $_details;
+						}else{
+							$bb[$fi] = $dot[$fi];
+						}
+					}
+
+				}
+
+				$ddd[] =$bb;
+
+			}
+			//if( isset($owner.username) )$ddd[] = array('owner'=>$owner.username);
+			$smarty->assign("dots_simple", $ddd);
+		}else if($rsp['sheets']){
+			// TODO: need to figure out output for sheets
+		}
+		
 
 		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();

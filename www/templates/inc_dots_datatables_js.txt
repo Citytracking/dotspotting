@@ -12,7 +12,7 @@
 		var oTimerId = null;
 		var sPreviousSearch = null;
 		var anControl = $('input', _that.fnSettings().aanFeatures.f);
-		
+
 		anControl.unbind('keyup').bind( 'keyup', function(){
 			var $$this = $this;
 
@@ -22,8 +22,8 @@
 			location.href = parts[0] + '#' + anControl.val();
 
 			var pm = document.getElementById('permalink');
-			pm.innerHTML = location.href;
-			pm.setAttribute('href', location.href);
+			//pm.innerHTML = location.href;
+			if(pm)pm.setAttribute('href', location.href);
 
 			if (sPreviousSearch === null || sPreviousSearch != anControl.val()) {
 				window.clearTimeout(oTimerId);
@@ -50,12 +50,17 @@
 {if $is_sheet}
 {literal}
 $(document).ready(function(){ 
-
+	_dotspotting.datatables_query == '';
+	
      var dt = $('#user_dots').dataTable({
 	"bPaginate": false,
 	"bFilter": true,
 	"bInfo" : false,
 	"bProcessing": true,
+	"bScrollInfinite": true,
+	"bScrollCollapse": true,
+	"sScrollY": "200px",
+	"oLanguage": {"sSearch": "Filter table:"}
      });
 
      dt.fnSetFilteringHooks();
@@ -64,10 +69,10 @@ $(document).ready(function(){
 
      if (parts.length == 2){
 	   dt.fnFilter(parts[1]);
-
+	
 	   var pm = document.getElementById('permalink');
-	   pm.innerHTML = location.href;
-	   pm.setAttribute('href', location.href);
+	   //pm.innerHTML = location.href;
+	   if(pm)pm.setAttribute('href', location.href);
      }
 });
 		
@@ -82,6 +87,9 @@ $(document).ready(function(){
 	"bSort": false,
 	"bInfo" : false,
 	"bProcessing": true,
+	"bScrollInfinite": true,
+	"bScrollCollapse": true,
+	"sScrollY": "200px",
      });
 
 });

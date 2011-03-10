@@ -49,9 +49,9 @@
 	}
 
 	#################################################################
-
+		
 	function formats_valid_export_map($key_by_extension=0){
-
+		
 		$map = array(
 			'text/csv' => 'csv',
 			'application/gpx+xml' => 'gpx',
@@ -61,7 +61,7 @@
 			'application/rss+xml' => 'rss',
 			'application/vnd.ms-excel' => 'xls',
 		);
-
+	
 		# Ensure that we can actually generate PNG files
 		# Also, we don't strictly speaking need GD to
 		# generate PDF files except for the part where we

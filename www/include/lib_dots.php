@@ -56,6 +56,11 @@
 
 		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_sheet}' AND id < '{$enc_id}'";
 		$sql = _dots_where_public_sql($sql);
+		
+		// added ORDER BY to SQL to grab previous dot, not the first dot (seanc | 02.11.2011)
+		$order_by = AddSlashes('id');
+		$order_sort = AddSlashes('DESC');
+		$sql .= " ORDER BY {$order_by} {$order_sort}";
 
 		$sql .= " LIMIT {$enc_count}";
 
@@ -73,7 +78,6 @@
 
 		# Note the $_dot so we don't accidentally blow away
 		# $dot which has been passed by reference...
-
 		foreach ($rsp_before['rows'] as $_dot){
 			dots_load_details($_dot, $viewer_id);
 			$before[] = $_dot;
