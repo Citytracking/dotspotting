@@ -1,5 +1,6 @@
 {"HTTP/1.1 404 Not Found"|header}{include file='inc_head.txt' page_title='Page Not Found'}
 
+<div class="section_bunch_o_text">
 <h1>Page not found</h1>
 
 <p>We can't find the page you requested.</p>
@@ -9,5 +10,6 @@
 	<pre class="admin-debug">{$debug_block}</pre>
 </div>
 {/if}
+</div>
 
 {include file='inc_foot.txt'}

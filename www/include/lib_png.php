@@ -18,7 +18,6 @@
 		$more = array_merge($defaults, $more);
 
 		list($map, $img) = maps_image_for_dots($dots, $more);
-
 		imagepng($img, $more['path']);
 		imagedestroy($img);
 

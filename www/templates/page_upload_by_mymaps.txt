@@ -22,40 +22,40 @@ INVISIBLE ERROR CAT HISSES AT YOU!
 {/if}
 
 {if !$url or $error|@count}
+<div class="section_bunch_o_text">
+<h3>Import dots from Google MyMaps</h3>
 
-<h2>Import dots from Google MyMaps</h2>
+<p>Use this form to import data from Google's <a href="http://maps.google.com/support/bin/static.py?hl=en&page=guide.cs&guide=21670&topic=21676">MyMaps</a> service. Just copy and paste the URL for a MyMaps webpage in to the form below. For example:</p>
 
-<p class="tx1">Use this form to import data from Google's <a href="http://maps.google.com/support/bin/static.py?hl=en&page=guide.cs&guide=21670&topic=21676">MyMaps</a> service. Just copy and paste the URL for a MyMaps webpage in to the form below. For example:</p>
+<p><code><a href="http://maps.google.com/maps/ms?ie=UTF8&hl=en&msa=0&msid=106670048759200881360.0004565744030ff07d00e&z=11">http://maps.google.com/maps/ms?ie=UTF8&hl=en&msa=0&msid=106670048759200881360.0004565744030ff07d00e&z=11</a></code></p>
 
-<p class="tx1" style="text-align:center;"><code><a href="http://maps.google.com/maps/ms?ie=UTF8&hl=en&msa=0&msid=106670048759200881360.0004565744030ff07d00e&z=11">http://maps.google.com/maps/ms?ie=UTF8&hl=en&msa=0&msid=106670048759200881360.0004565744030ff07d00e&z=11</a></code></p>
+<p>Dotspotting will do the rest and import any dots it finds in to a new sheet!</p>
 
-<p class="tx1">Dotspotting will do the rest and import any dots it finds in to a new sheet!</p>
 
-<br />
-
-<form method="POST" action="{$cfg.abs_root_url}upload/google/">
-	<input type="text" size="40" name="url" value="" />
-	<input type="submit" value="IMPORT FROM MYMAPS" />
+<form id="upload_file" method="POST" action="{$cfg.abs_root_url}upload/google/">
+	<p class="no_border"><input type="text" size="40" name="url" value="" /></p>
+	<span class="upload_submit"><input type="submit" value="IMPORT FROM MYMAPS" /></span>
 </form>
+</div>
 
 {else}
+<div class="section_bunch_o_text">
 {if $feed_title}
-<p class="tx1">Are you sure you want to import the map titled <q class="important"><a href="{$scrubbed_url}">{$feed_title|escape}</a></q> into Dotspotting?</p>
+<h3>Are you sure you want to import the map titled <q class="important"><a href="{$scrubbed_url}">{$feed_title|escape}</a></q> into Dotspotting?</h3>
 {else}
-<p class="tx1">Are you sure you want to import all the data from <a href="{$scrubbed_url}">this Google MyMaps document</a> into Dotspotting?</p>
+<h3>Are you sure you want to import all the data from <a href="{$scrubbed_url}">this Google MyMaps document</a> into Dotspotting?</h3>
 {/if}
 
-<form method="POST" action="{$cfg.abs_root_url}upload/google/">
+<form id="upload_file" method="POST" action="{$cfg.abs_root_url}upload/google/">
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="confirm" value="1" />
 	<input type="hidden" name="url" value="{$url|escape}" />
 
-	<br />
-
 	{include file="inc_upload_file_attributes.txt"}
 
-	<input type="submit" value="YES, PLEASE TO IMPORT" />
+	<span class="upload_submit"><input type="submit" value="YES, PLEASE TO IMPORT" /></span>
 </form>
+</div>
 {/if}
 
 {/if}

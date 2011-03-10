@@ -6,13 +6,13 @@
 	{/if}
 	<div id="map_info"></div>
 	<div id="map_controls">
-		<a href="#" id="pan_left" title=""><img src="{$cfg.abs_root_url}images/map/pan-left.png"/></a>
-		<a href="#" id="pan_up"><img src="{$cfg.abs_root_url}images/map/pan-up.png"/></a>
-		<a href="#" id="pan_right"><img src="{$cfg.abs_root_url}images/map/pan-right.png"/></a>
-		<a href="#" id="pan_down"><img src="{$cfg.abs_root_url}images/map/pan-down.png"/></a>
-		<a href="#" id="zoom_in"><img src="{$cfg.abs_root_url}images/map/zoom-in.png"/></a>
-		<a href="#" id="zoom_out"><img src="{$cfg.abs_root_url}images/map/zoom-out.png"/></a>
-		<a href="#" id="reset_bounds"><img src="{$cfg.abs_root_url}images/map/expand-extent.png"/></a> 
+		<a href="#" id="pan_left" title="pan left"><img src="{$cfg.abs_root_url}images/map/pan-left.png"/></a>
+		<a href="#" id="pan_up" title="pan up"><img src="{$cfg.abs_root_url}images/map/pan-up.png"/></a>
+		<a href="#" id="pan_right" title="pan right"><img src="{$cfg.abs_root_url}images/map/pan-right.png"/></a>
+		<a href="#" id="pan_down" title="pan down"><img src="{$cfg.abs_root_url}images/map/pan-down.png"/></a>
+		<a href="#" id="zoom_in" title="zoom in"><img src="{$cfg.abs_root_url}images/map/zoom-in.png"/></a>
+		<a href="#" id="zoom_out" title="zoom in"><img src="{$cfg.abs_root_url}images/map/zoom-out.png"/></a>
+		<a href="#" id="reset_bounds" title="reset map to original state"><img src="{$cfg.abs_root_url}images/map/expand-extent.png"/></a> 
 	</div>
 	<!-- <div id="filter_table_container">Taller map</div> -->
 </div>

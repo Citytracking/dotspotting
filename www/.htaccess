@@ -65,7 +65,7 @@ RewriteRule  ^account/delete/?$			account_delete.php?%{QUERY_STRING} [L]
 
 # Uploads
 
-RewriteRule ^upload/?$				upload.php?%{QUERY_STRING} [L]
+RewriteRule ^upload/?$				upload2.php?%{QUERY_STRING} [L]
 RewriteRule ^upload2/?$				upload2.php?%{QUERY_STRING} [L]
 RewriteRule ^upload3/?$				upload3.php?%{QUERY_STRING} [L]
 

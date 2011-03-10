@@ -1,6 +1,7 @@
 {"HTTP/1.1 403 Forbidden"|header}{include file='inc_head.txt' page_title='Permission Denied'}
 
-<h1>Page not available</h1>
+<div class="section_bunch_o_text">
+<h2>Page not available</h2>
 
 <p>Sorry, you do not have permission to view this page.</p>
 
@@ -9,5 +10,6 @@
 	<pre class="admin-debug">{$debug_block}</pre>
 </div>
 {/if}
+</div>
 
 {include file='inc_foot.txt'}

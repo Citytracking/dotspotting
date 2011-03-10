@@ -6,45 +6,47 @@ background-color: pink;
 </style>
 {/literal}
 
-<h2>Data Inspector</h2>
 
-	<p>Here are all of the dots we found in your document. You can use this page to update individual columns (just click on a column to edit it) or delete entire rows if necessary. When you're done checking your dots, just hit <a href="#submit">submit button at the bottom of the page</a> and your dots will be added to Dotspotting.</p>
+<h3>Upload to Dotspotting</h3>
+
+<div id="upload_meezy">
+<ul class="clearfix">
+	<li class="first_meezy show_30"><span>Upload your file</span></li>
+	<li class="second_meezy"><span>Check your dots</span></li>
+</ul>
+</div>
 
 {if $errors|@count}
 
-<p>Hey look! We found the following errors in your data:</p>
-
+<p class="error">There was an error while processing your upload</p>
+{*
 <ul>
 {foreach from=$errors item="row"}
 <li><strong>The <q>{$row.column|escape}</q> column in <a href="#row{$row.record|escape}">row #{$row.record|escape}</a>:</strong> {$row.error|escape}</li>
 {/foreach}
+*}
 </ul>
 
 {/if}
 
-<p style="font-size:11px;font-style:italic;">TO DO: Geocoding still needs some work.</p>
-
 {* begin creation of table *}
 <div>
-<div class="dataTables_filter"><label for="filter">Filter:</label><input type="text" id="filter" value=""></div>
+<!-- <div class="dataTables_filter"><label for="filter">Filter:</label><input type="text" id="filter" value=""></div> -->
 <div id="pre_process_container" class="yui-skin-sam">
 <table id="pre_process" class="ds_table">
 
 <thead>
 <tr>
-<th>{* delete *}</th>
 <th>{* row id *}row id</th>
 {foreach from=$data.0 item="ignore" key="colname" name="headers"}
 {assign var="col_idx" value=$smarty.foreach.headers.index}
 	<th class="col_preprocess">
 		<span class="colname">{$colname|escape}</span>
-		<span>
-		&#160;<a href="#" onclick="preprocess_update_col({$col_idx});return false;">[e]</a>
-		&#160;<a href="#" onclick="preprocess_geocode_col({$col_idx});return false;">[g]</a>
-		&#160;<a href="#" onclick="preprocess_delete_col({$col_idx});return false;" style="color:red;">[x]</a>
-		</span>
+		<a href="#" onclick="preprocess_delete_col({$col_idx});return false;""><img src="{$cfg.abs_root_url}images/x.png"/></a>
 	</th>
 {/foreach}
+{* hidden title *}
+<th><span class="colname">title_internal</span></th>
 </tr>
 </thead>
 
@@ -56,8 +58,7 @@ background-color: pink;
 
 <tr id="row_preprocess_{$row_idx|escape}">
 {* see that? we're pass the smarty 0-based count *}
-<td><a href="#" onclick="preprocess_delete_row({$smarty.foreach.records.index}); return false;" style="font-size:11px; color:red;">[x]</a></td>
-<td>{$row_idx}</td>
+<td>{$row_idx}<a href="#" onclick="preprocess_delete_row({$smarty.foreach.records.index}); return false;"><img src="{$cfg.abs_root_url}images/x.png"/></a></td>
 
 {foreach from=$row item="value" name="columns" key="colname"}
 {assign var="col_idx" value=$smarty.foreach.columns.index}
@@ -68,10 +69,10 @@ background-color: pink;
 {assign var="col_ok" value="0"}
 {/if}
 
-<td contenteditable="true" class="{$col_class}{if ! $col_ok} col_preprocess_error{/if}">{$value|escape}</td>
+<td class="{$col_class}{if ! $col_ok} col_preprocess_error{/if}">{$value|escape}</td>
 
 {/foreach}
-
+<td>{* hidden title *}</td>
 </tr>
 
 {/foreach}
@@ -81,28 +82,68 @@ background-color: pink;
 </div>
 </div>
 
+
+{literal}
+<script type="text/javascript">
+	function update_dots_index_field(){
+		var str="";
+	
+		str+= $('#dots_index_on_1').val();
+		
+		var _secondOne = $("#dots_index_on_2").val();
+		if(_secondOne.length && _secondOne != str){
+			if(str.length) str += ",";
+			str += _secondOne;
+		}
+
+		$("input[name='dots_index_on']").val(str);
+	}
+
+</script>
+{/literal}
+
+
 <a name="#submit"></a>
-
-<form action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8" id="processed">
-
-<div id="file_attributes">
-
+<div class="section_bunch_o_text">
+<form id="upload_file" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="data" value="" />
 	<input type="hidden" name="fingerprint" value="{$fingerprint|escape}" />
+	
+	
+	{* name sheet *}
+	<p>
+	<label for="label">Give your upload a name:</label>
+	<input type="text" size="40" name="label" value="{$label|escape}" />
+	</p>
+	
+	{* select a title *}
+	<p>
+	<label for="title">Select a title column:</label>
+	<select id="dots_upload_title" onchange="" name="title"></select>
+	</p>
 
-	{include file="inc_upload_file_attributes.txt"}
+	{* searchable columns *}
+	{if $cfg.enable_feature_dots_indexing}
+		<p>
+		<label for="dots_index_opt">Select searchable columns (max:{$cfg.dots_indexing_max_cols|escape}):</label>
+		<select id="dots_index_on_1" name="dots_index_opt" onchange="update_dots_index_field();"></select> <select id="dots_index_on_2" onchange="update_dots_index_field();"></select>
+		<input type="hidden" name="dots_index_on" value="" />
+		</p>
+	{/if}
 
-</div>
-
-<div style="text-align:right;">
-	<input type="SUBMIT" value="OKAY! IMPORT THIS DATA" />
-</div>
-
+	
+	{* private option *}
+	<p class="no_border">
+	<label for="private">Make dots private</label>
+	<input type="checkbox" name="private"{if $private} checked="true"{/if}/>
+	</p>
+	
+	<span class="upload_submit"><input type="SUBMIT" value="Submit" /></span>
 </form>
-
+</div>
 {* MODAL WINDOW *}
-<div id="myModal" class="reveal-modal">
+<div id="myModal" class="reveal-modal no_show">
 	<h1>Geocoding a column</h1>
 	<p>This may take a moment. I am here to prevent you from harming my process. Please don't leave until I tell you to.</p>
 	<p id="modal_status"></p>
@@ -137,28 +178,33 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	YT.keys = [];
 	YT.schema = [];
 	
-	
+	// TODO: filter out delete link before sort
 	YT.sortRowId = function(a, b, desc) {
+		
+		var $a = a.getData("row id").split(/^(\d+)/);
+		var $b = b.getData("row id").split(/^(\d+)/);
+		
 		if(desc){
-			return a.getData("row id") - b.getData("row id");
+			return Number($a[1]) - Number($b[1]);
 		}else{
-			return b.getData("row id") - a.getData("row id");
+			return Number($b[1]) - Number($a[1]);
 		}
        };
 			
 	/* create table header scheme */
 	for(i=0;i< YT.headers.length;i++){
-		var title = (i == 1) ? "row id" : YT.headers[i];
+		var title = (i == 0) ? "row id" : YT.headers[i];
+		if(title.length){
+			if(i == 0){
+				YT.keys.push( {key:title,sortable:true,sortOptions:{sortFunction:YT.sortRowId}, minWidth:50} );
+			}else if(title == "title_internal"){
+				YT.keys.push( {key:title,sortable:false,hidden:true} );
+			}else{
+				YT.keys.push( {key:title,sortable:true,editor: new YAHOO.widget.TextareaCellEditor(),minWidth:100} );
+			}
 		
-		if(i == 0){
-			YT.keys.push( {key:title,sortable:false} );
-		}else if(i == 1){
-			YT.keys.push( {key:title,sortable:true,formatter: "number",sortOptions:{sortFunction:YT.sortRowId}} );
-		}else{
-			YT.keys.push( {key:title,sortable:true,editor: new YAHOO.widget.TextareaCellEditor()} );
+			YT.schema.push({key:title});
 		}
-		
-		YT.schema.push({key:title});
 	}
 	
 	YT.columnDefs = YT.keys;
@@ -217,13 +263,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	YT.preprocess_add_col_options = function(){
 		// reset column options
 		$(".yui-dt-hd th").each(function(i){
-			if(i > 1){
+			if(i > 0){
 				var target = $(this).find('div').eq(0);
-				var str = '<span class="col_options">';
-				str += '<a href="#" onclick="preprocess_update_col('+i+');return false;">[e]</a>';
-				str += '&#160;<a href="#" onclick="preprocess_geocode_col('+i+');return false;">[g]</a>';
-				str += '&#160;<a href="#" onclick="preprocess_delete_col('+i+');return false;" style="color:red;">[x]</a>';
-				str += '</span>';
+				var str = '';
+				str += '<a href="#" onclick="preprocess_delete_col('+i+');return false;"><img src="'+_dotspotting.abs_root_url+'images/x.png"/></a>';
+			
 				$(target).append(str);
 			}
 	 	});
@@ -237,6 +281,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		if(typeof preprocess_create_index == 'function') { 
 			preprocess_create_index();
 		}
+		
 	}
 	
     YT.highlightEditableCell = function(oArgs) {
@@ -246,15 +291,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }
     };
 	
-	YT.rowDeleteHandler =function(oArgs){
+	YT.rowDeleteHandler = function(oArgs){
 		$(".yui-dt-data tr").map(function(i, row){
 
 			var oRecord = dt.dataTable.getRecord(i);
 			var newRowId = i+1;
 			var action = "preprocess_delete_row(" + i + "); return false;";
 			var delCol = $(row).find("td a").eq(0);
-
-			console.log(newRowId);
+			
+			newRowId += '<a href="#" onclick="preprocess_delete_row('+i+'); return false;"><img src="'+_dotspotting.abs_root_url+'images/x.png"/></a>';
+			
 			YT.dataTable.updateCell(oRecord,'row id',newRowId);
 			
 			if (delCol.length){
@@ -312,7 +358,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-$("#processed").submit(function(){
+$("#upload_file").submit(function(e){
+	//e.preventDefault();
 	var data = preprocess_collect_data();
 	data = JSON.stringify(data);
 	$("input[type=hidden][name=data]").val(data);
@@ -320,22 +367,32 @@ $("#processed").submit(function(){
 
 function preprocess_create_index(){
 	var headers = preprocess_collect_headers();
-	var target = $('label[for="dots_index_on"]');
+	//dots_index_on_2
+	var target1 = $('#dots_index_on_1');
+	var target2 = $('#dots_index_on_2');
+	var target3 = $('#dots_upload_title');
 	
-	$("#preprocess_indexOptions").html("");
 	
-	var _html = '<p id="preprocess_indexOptions">Available field names: ';
+	var _html = '<option value=""></option>';
 	for(i = 0;i<headers.length;i++){
-		if(headers[i] && headers[i] != "row id"){
-			_html += "<span>"+headers[i]+"</span>";
+		if(headers[i] && headers[i] != "row id" && headers[i] != "title_internal"){
+			_html += "<option value='"+headers[i]+"'>"+headers[i]+"</option>";
 		}
 	}
 	
-	_html += "</p>";
+	$(target1).html("").append(_html);
+	$(target2).html("").append(_html);
+	$(target3).html("").append(_html);
 	
-	$(target).after(_html);
-}
+	// look for a title field already in there
+	$('#dots_upload_title').children().each(function(i){
+		if($(this).val().toLowerCase() == "title"){
+			$(this).attr("selected","selected");
+		}
+	});
 
+	
+}
 
 function preprocess_collect_headers(){
 	var headers;
@@ -379,13 +436,21 @@ function preprocess_collect_headers(){
 function preprocess_collect_data(){
 	if(!dt.dataTable)return;
 	
+	var _title = $("#dots_upload_title option:selected").text();
 	var rows = [];
-
 	var headers = preprocess_collect_headers();
-
+	
 	$(".yui-dt-data tr").map(function(i, row){
-		
 		var oRecord = dt.dataTable.getRecord(i);
+		
+		// strip link out of row id
+		var $a = oRecord.getData("row id").split(/^(\d+)/);
+		dt.dataTable.updateCell(oRecord,"row id",$a[1]);
+		
+		// add title
+		if(_title.length){
+			dt.dataTable.updateCell(oRecord,"title_internal","{"+_title+"}");
+		}
 		rows.push(oRecord._oData);		
 	});
 
