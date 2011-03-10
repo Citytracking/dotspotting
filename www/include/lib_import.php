@@ -84,7 +84,7 @@
 
 	#################################################################
 
-	function import_import_uri(&$user, $uri, $more=array()){
+	function import_fetch_uri(&$user, $uri, $more=array()){
 
 		# QUESTION: do a HEAD here to check the content-type and file-size ?
 
@@ -233,15 +233,22 @@
 			else { }
 		}
 
-		#
-		# Okay, now hand off to the regular process
-		# file uploads functionality
-		#
-
-		$upload = array(
+		return array(
+			'ok' => 1,
 			'type' => $type,
 			'path' => $fname,
 		);
+	}
+
+	#################################################################
+
+	function import_import_uri(&$user, $uri, $more=array()){
+
+		$upload = import_fetch_uri($user, $uri, $more);
+
+		if (! $upload['ok']){
+			return $upload;
+		}
 
 		return import_import_file($user, $upload, $more);
 	}
