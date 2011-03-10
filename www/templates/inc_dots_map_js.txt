@@ -567,21 +567,39 @@ function draw_map_modestmaps(dots){
 function draw_map_polymaps(dots){
 	var map = utils_polymap('map');
 	var current_map_zoom,org_extent = null;
-	
+	var incomingState=false;
 	// init selected dot variable
 	_dotspotting.selected_dot = null;
+	
+	var qs = doHashSetup();
 
-	if (dots.features.length == 1){
-		map.center(dots.center);
+	if(qs && qs.contains('c')){
+		var _mapstate = qs.get('c');
+		var args = _mapstate.split("/").map(Number);
+	   if (args.length < 3 || args.some(isNaN)){
+	     	args = defaultCoord.split("/").map(Number);
+	   } else {
+			incomingState = true;
+			map.center({lon: args[2], lat: args[1]});
+			map.zoom(args[0]);
+			//store original extent
+			org_extent = map.extent();
+	   }
+	
 	}
-	else {
-		var extent = utils_adjust_bbox(dots.extent);
-		map.extent(extent);
+ 	if(!incomingState){
+		if (dots.features.length == 1){
+			map.center(dots.center);
+		}
+		else {
+			var extent = utils_adjust_bbox(dots.extent);
+			map.extent(extent);
 		
-		//store original extent
-		org_extent = map.extent();
+			//store original extent
+			org_extent = map.extent();
+		}
+		map.zoom(Math.floor(map.zoom()));
 	}
-	map.zoom(Math.floor(map.zoom()));
 
 	var po = org.polymaps;
 	var points = po.geoJson();
