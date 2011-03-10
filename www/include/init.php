@@ -191,18 +191,27 @@
 
 	}
 	
+	# (seanc | 03102011)
 	# creating a global variable to store current page name
 	# mainly used for setting navigation
 	# added a special check for dashboard (user page)
 	if(isset($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_URI'])){
 		$page_crumb_raw = trim($_SERVER['REQUEST_URI'],"/");
-		$GLOBALS['cfg']['page_crumb'] = (preg_match('/^u\/([0-9]+)$/',$page_crumb_raw)) ? "dashboard" : $page_crumb_raw;
+		$page_crumb_raw = explode("/",$page_crumb_raw);
+		if(isset($page_crumb_raw[0]) && !empty($page_crumb_raw[0])){
+			
+			if(preg_match('/^u\/([0-9]+)$/',$page_crumb_raw[0])){
+				$GLOBALS['cfg']['page_crumb'] = "dashboard";
+			}else{
+				$GLOBALS['cfg']['page_crumb'] = $page_crumb_raw[0];
+			}
+		}else{
+			$GLOBALS['cfg']['page_crumb'] = "";
+		}
 	}else{
 		$GLOBALS['cfg']['page_crumb'] = "";
 	}
 	
-	
-
 	# More stuff from Flamework (see above)
 
 	loadlib('error');

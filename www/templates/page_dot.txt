@@ -35,24 +35,34 @@ A dot by {$cfg.user.username|escape}
 
 {include file="inc_head.txt"}
 
-{* headline *}
-{if $dot.sheet.label}
-<h3>Dot: #{$dot.id} / Sheet: <a href="{$dot.sheet|@urls_url_for_sheet}" title="view {$dot.sheet.label|truncate:20:"..."|escape} sheet">{$dot.sheet.label|escape}</a> / Created: {$dot.sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}</h3>
-{else}
-<h3>Dot: #{$dot.id} / Sheet: <a href="{$dot.sheet|@urls_url_for_sheet}" title="view unnamed sheet">unnamed sheet</a> / Created: {$dot.sheet.created|date_format:"%Y-%m-%d %H:%M"|escape}</h3>
-{/if}
 
-{* pagination *}
-{if $dot.bookends && $dot.bookends.count}
-	{include file="inc_dot_pagination.txt"}
-{/if}
 
+{* sheet title area *}
+<ul id="sheet_head" class="clearfix">
+	{* headline *}
+	<li>	
+		{if $dot.sheet.label}
+		<h3>Dot: #{$dot.id} <span class="txt_small">This dot belongs to sheet <a href="{$dot.sheet|@urls_url_for_sheet}" title="view {$dot.sheet.label|truncate:20:"..."|escape} sheet" class="blue_links">{$dot.sheet.label|escape}</a> by <a href="{$owner|@urls_url_for_user}" title="all dots owned by, {$owner.username|escape}" class="blue_links">{$owner.username|escape}</a> created on {$dot.sheet.created|date_format:"%B %e, %Y at %I:%M %p"|escape}</span></h3>
+		{else}
+		<h3>Dot: #{$dot.id} <span class="txt_small">This dot belongs to an <a href="{$dot.sheet|@urls_url_for_sheet}" title="view unnamed sheet" class="blue_links">unnamed sheet</a> by <a href="{$owner|@urls_url_for_user}" title="all dots owned by, {$owner.username|escape}" class="blue_links">{$owner.username|escape}</a> created on {$dot.sheet.created|date_format:"%B %e, %Y at %I:%M %p"|escape}</span></h3>
+		{/if}
+	</li>	
+	
+	
+	{* pagination *}
+	{if $dot.bookends && $dot.bookends.count}
+		<li id="page_dot_pagination" class="last_list_item">{include file="inc_dot_pagination.txt"}</li>
+	{/if}
+</ul>
+
+<div id="dot_wrapper">
 {* check magical type, as defined in 'dot.php', then decide layout *}
 {if $dot_is_flickr and $cfg.enable_feature_magicwords.flickr.id}
 	{include file="inc_dot_layout_flickr.txt"}
 {else}
 	{include file="inc_dot_layout_basic_two_column.txt"}
 {/if}
+</div>
 
 {include file="inc_dot_map_js.txt" dot=$dot}
 {include file="inc_foot.txt"}

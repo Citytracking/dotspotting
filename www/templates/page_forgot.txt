@@ -5,12 +5,13 @@
 {if $error_deleted}	<p class="error">Your account has been deleted.</p>{/if}
 {if $error_notsent}	<p class="error">Something went wrong :(</p>{/if}
 
-
-<form action="{$cfg.abs_root_url}password/forgot" method="post" accept-encoding="UTF-8">
+<div class="section_bunch_o_text">
+<h3>Forgotten password</h3>
+<form id="upload_file" action="{$cfg.abs_root_url}password/forgot" method="post" accept-encoding="UTF-8">
 	<input type="hidden" name="remind" value="1" />
-	<label for="email">Email:</label> <input type="text" name="email" size="40" value="" /><br />
-	<input type="SUBMIT" value="SEND PASSWORD REMINDER" />
+	<p class="no_border"><label for="email">Email:</label> <input type="text" name="email" size="40" value="" /></p>
+	<span class="upload_submit"><input type="SUBMIT" value="SEND PASSWORD REMINDER" /></span>
 </form>
-
+</div>
 
 {include file="inc_foot.txt"}

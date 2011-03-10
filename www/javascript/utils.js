@@ -109,9 +109,19 @@ function utils_polymap(map_id, more){
 
 	var map = org.polymaps.map();
 	map.container(svg);
-	
-	if ((! more) || (! more['static'])){
+			
 		
+ 	if(more && more['justzoom']){
+		$('#pan_left').remove();
+		$('#pan_right').remove();
+		$('#pan_up').remove();
+		$('#pan_down').remove();
+		$('#reset_bounds').remove();
+		$('#zoom_in').css('left','0px');
+		$('#zoom_out').css('left','0px');
+	}else if(more && more['static']){
+		$('#map_controls').remove();
+	}else{
 		//	inital attempt to add touch support to polymaps
 		if(_dotspotting.enable_touch_support){
 			var touch = org.polymaps.touch();
@@ -123,9 +133,9 @@ function utils_polymap(map_id, more){
 			var dblclick = org.polymaps.dblclick();	
 			map.add(dblclick);
 		}
-		
-	}else{
-		$('#map_controls').remove();
+	
+		utils_hash(map,"po");
+
 	}
 
 	var tp = utils_tile_provider();
@@ -144,6 +154,7 @@ function utils_polymap(map_id, more){
 	// we add the map compass on a case-by-case 
 	return map;
 }
+
 
 function utils_polymaps_add_compass(map){
 	/* using our own buttons, but want the shift-click zoomy thing */
@@ -270,7 +281,20 @@ function utils_svg_title(el,title){
 }
 
 function utils_modestmap(map_id, more){
-	if(more && more['static'])$('#map_controls').remove();
+
+	if(more && more['static']){
+		$('#map_controls').remove();
+	}else if(more && more['justzoom']){
+		$('#pan_left').remove();
+		$('#pan_right').remove();
+		$('#pan_up').remove();
+		$('#pan_down').remove();
+		$('#reset_bounds').remove();
+		$('#zoom_in').css('left','0px');
+		$('#zoom_out').css('left','0px');
+	}else{
+		//
+	}
 	var tp = utils_tile_provider();
 
 	var provider = null;
@@ -293,7 +317,7 @@ function utils_modestmap(map_id, more){
 
 	var map = new com.modestmaps.Map(map_id, provider, dims, handlers);
 	
-	
+	utils_hash(map,"mm");
 	return map;
 }
 
@@ -483,6 +507,7 @@ function utils_map_toggle_size(map,map_type,tallSize,markers){
 */
 function utils_add_map_tooltip(map,mapel,map_type){
 	
+	
 	$("#map").bind('markerclick', function(e,dotid,coor) {
 		
 		var dot = dot_getinfo_json(dotid);
@@ -511,13 +536,20 @@ function utils_add_map_tooltip(map,mapel,map_type){
 
 	        return parseFloat(point.x + (radius / 2.0) + 20)
 	      }).content(function(d) {
+			var _timer,
+			_clickTime,
+			_tip = null;
+			
+			$('#map').unbind('mousedown');
+			$('#map').unbind('mouseup');
+			
 	        var self = this,
 	            props = d,
 	            cnt = $('<div/>'),
 	            hdr = $('<h2/>'),
 	            bdy = $('<p/>'),
-
-	            close = $('<span/>').addClass('close').text('X')
+				
+	            close = $('<span/>').addClass('close').html('<img src="'+_dotspotting.abs_root_url+'images/x.png"/>')
 		        hdr.html(dot_tip_header(props.id));
 		        hdr.append(close);
 			
@@ -525,15 +557,209 @@ function utils_add_map_tooltip(map,mapel,map_type){
 
 		        cnt.append($('<div/>').addClass('nub'))
 		        cnt.append(hdr).append(bdy) 
-
+				
 		        close.click(function() {
 		          self.hide();
 					dot_unselect(props.id);
 					_dotspotting.selected_dot = null;
+					if(_timer)clearInterval(_timer);
+					_tip = null;
 		        })   
+				
+				/* close tip if map is clicked but not dragged */
+				_timer = setInterval(function(){
+					_tip = self;
+					clearInterval(_timer);
+				}, 2000);
+				
+				 $("#map").mousedown(function () {
+					_clickTime = new Date();
+				});
+				
+				$("#map").mouseup(function () {
+					var _endTime = new Date();
+					var _diff = _endTime.getTime() - _clickTime.getTime();
+					
+					if(_tip && (_diff < 150) ){
+						_tip.hide();
+						_tip = null;
+						dot_unselect(props.id);
+						_dotspotting.selected_dot = null;
+						if(_timer)clearInterval(_timer);
+					}
+				});
 				
 	        	return cnt;
 	      }).render()
 
 	});
+}
+
+// Hash functions
+function utils_hash(map,type){
+	this.coords = '';
+	this.search = '';
+	this.hashInterval = null;
+	this.currentHash = '';
+	this.perm = document.getElementById('permalink');
+	var self = this;
+
+	if(type == "po"){
+		map.on("move", function() {
+			self.coords = self.hashCoordFormatter( map.center(), map.zoom());
+			self.doDrawn();
+		});		
+		
+	}else if(type == "mm"){
+		map.addCallback("drawn", function(){
+			self.coords = self.hashCoordFormatter( map.getCenter(), map.getZoom());
+			self.doDrawn();
+		});
+	}
+	
+	this.doDrawn = function(){
+		clearInterval(this.hashInterval);
+		this.hashInterval = setInterval(function(){self.updateHash();}, 100);
+	}
+	
+	this.updateHash = function(){
+		clearInterval(this.hashInterval);
+		//console.log(this.coords,this.search);
+		this.search = (!_dotspotting.datatables_query) ? '': _dotspotting.datatables_query;
+		var newHash = '';
+		if(this.search.length){
+			newHash  += "s="+this.search;
+		}
+		if(this.coords.length){
+			newHash  += (newHash.length) ? "&" : "";
+			newHash  += "c="+this.coords;
+		}
+
+		if(this.currentHash != newHash && newHash.length){
+			window.location.hash = newHash;
+			this.currentHash = newHash;
+			
+			// set permalink
+			if(this.pm)this.pm.setAttribute('href', location.href);
+		}
+	}
+	
+	// formats coordinates for hash
+	this.hashCoordFormatter = function(center,zoom){
+		var precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
+		return zoom.toFixed(2)
+	         + "/" + center.lat.toFixed(precision)
+	         + "/" + center.lon.toFixed(precision);
+	}
+	
+	this.setSearch = function(str){
+		this.search = str;
+		this.updateHash();
+	}
+	
+}
+
+function Querystring(qs) { // optionally pass a querystring to parse
+	this.params = {};
+	
+	if (qs == null) qs = location.search.substring(1, location.search.length);
+	if (qs.length == 0) return;
+
+	// Turn <plus> back to <space>
+	// See: http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1
+	qs = qs.replace(/\+/g, ' ');
+	var args = qs.split('&'); // parse out name/value pairs separated via &
+	
+	// split out each name=value pair
+	for (var i = 0; i < args.length; i++) {
+		var pair = args[i].split('=');
+		var name = decodeURIComponent(pair[0]);
+		
+		var value = (pair.length==2)
+			? decodeURIComponent(pair[1])
+			: name;
+		
+		this.params[name] = value;
+	}
+	
+	/**/
+	this.get = function(key, default_) {
+		var value = this.params[key];
+		return (value != null) ? value : default_;
+	}
+	
+	this.contains = function(key) {
+		var value = this.params[key];
+		return (value != null);
+	}
+}
+// probably don't need this, call Querystring on it's own
+// left incase needed to do anything else during this phase (seanc | 03112011)
+function doHashSetup(){
+	qs = (window.location.hash != '') ? window.location.hash.substring(1) : window.location.search.substring(1);
+    if (qs){
+		qs = new Querystring(qs);
+	}else{
+		qs = null;
+	}
+	return qs;
+}
+
+////
+/* fix for missing Array methods in IE */
+if (!Array.prototype.map) {
+    Array.prototype.map= function(mapper, that /*opt*/) {
+        var other= new Array(this.length);
+        for (var i= 0, n= this.length; i<n; i++)
+            if (i in this)
+                other[i]= mapper.call(that, this[i], i, this);
+        return other;
+    };
+}
+if (!Array.prototype.some) {
+    Array.prototype.some = function(tester, that /*opt*/) {
+        for (var i= 0, n= this.length; i<n; i++)
+            if (i in this && tester.call(that, this[i], i, this))
+                return true;
+        return false;
+    };
+}
+if (!Array.prototype.indexOf)
+{
+  Array.prototype.indexOf = function(searchElement /*, fromIndex */)
+  {
+    "use strict";
+
+    if (this === void 0 || this === null)
+      throw new TypeError();
+
+    var t = Object(this);
+    var len = t.length >>> 0;
+    if (len === 0)
+      return -1;
+
+    var n = 0;
+    if (arguments.length > 0)
+    {
+      n = Number(arguments[1]);
+      if (n !== n) // shortcut for verifying if it's NaN
+        n = 0;
+      else if (n !== 0 && n !== (1 / 0) && n !== -(1 / 0))
+        n = (n > 0 || -1) * Math.floor(Math.abs(n));
+    }
+
+    if (n >= len)
+      return -1;
+
+    var k = n >= 0
+          ? n
+          : Math.max(len - Math.abs(n), 0);
+
+    for (; k < len; k++)
+    {
+      if (k in t && t[k] === searchElement)
+        return k;
+    }
+    return -1;
+  };
 }

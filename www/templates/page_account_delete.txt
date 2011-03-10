@@ -3,12 +3,14 @@
 
 {if $error_deleting}<p class="error">Something went wrong. Try again later pls.</p>{/if}
 
-<p>Are you sure you want to delete your account?</p>
+<div class="section_bunch_o_text">
+<h3>Are you sure you want to delete your account?</h3>
 
-<form action="{$cfg.abs_root_url}account/delete/" method="post">
+<form id="upload_file" action="{$cfg.abs_root_url}account/delete/" method="post">
 	<input type="hidden" name="delete" value="1" />
 	{$crumb_key|crumb_input}
-	<input type="SUBMIT" value="DELETE MY ACCOUNT" />
+	<span class="upload_submit"><input type="SUBMIT" value="DELETE MY ACCOUNT" /></span>
 </form>
+</div>
 	
 {include file="inc_foot.txt"}

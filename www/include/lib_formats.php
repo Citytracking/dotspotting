@@ -23,6 +23,18 @@
 
 		return $map;
 	}
+	
+	function formats_pretty_import_names_map(){
+		$pretty = formats_pretty_names_map();
+		$map = formats_valid_import_map('key by extension');
+		foreach (array_keys($map) as $format){
+			if(isset($pretty[$format])){
+				$map[$format] = $pretty[$format];
+			}
+		}
+		
+		return $map;
+	}
 
 	#################################################################
 

@@ -1,4 +1,5 @@
 {assign var="page_title" value="Recently created sheets"}
+{assign var="sheets_view_style" value="grid"}
 {include file="inc_head.txt"}
 
 
@@ -6,15 +7,20 @@
 <ul id="sheet_head" class="clearfix">
 	<li>
 		<h3>{$page_title|escape}</h3>
-	</li>	
-	
+	</li>
+		
+	{if $sheets_view_style == "map"}
 	<li id="map_toggle_size" class="last_list_item">
 		<a href="#" title="toggle map height" class="txt_small green_links taller">Taller Map</a>
 	</li>
+	{/if}
 	
 </ul>
 
-
+{if $sheets_view_style == "map"}
 {include file="inc_sheets_list.txt" sheets=$recent_sheets}
+{else}
+{include file="inc_recent_sheets_grid.txt" sheets=$recent_sheets}
+{/if}
 
 {include file="inc_foot.txt"}

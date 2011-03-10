@@ -1,0 +1,21 @@
+{* beginnings of a page specific js handler / included into footer *}
+
+{* home *}
+{if $cfg.page_crumb == "" || $cfg.page_crumb == "recent"}
+	
+	{literal}
+	<script type="text/javascript">
+	$(document).ready(function(){ 
+		$(".recent_thumbnails dt").hover(
+			function () {
+			    $(this).css("border-color","#999");
+			  }, 
+			  function () {
+			    $(this).css("border-color","#000");
+			  }
+		);
+	});
+	</script>
+	{/literal}
+
+{/if}

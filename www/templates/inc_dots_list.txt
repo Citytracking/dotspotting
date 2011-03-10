@@ -6,6 +6,9 @@
 <table id="user_dots" class="ds_table">
 	<thead>
 		<tr>
+			{if $assigned_title|@count}
+			<th title="sort by dot title">Title</th>
+			{/if}
 			<th title="sort by dot ID">Dot</th>
 			{*
 			<th title="sort by dot owner">Owner</th>
@@ -23,7 +26,9 @@
 			
 {if $cfg.enable_feature_dots_indexing}
 	{foreach from=$dots_indexed item="label"}
+			{if $label != $assigned_title}
 			<th title="sort by {$label|escape}">{$label|escape}</th>
+			{/if}
 	{/foreach}
 {/if}
 			<th title="sort by created date of dots">Created</th>
@@ -43,7 +48,26 @@
 		
 			{* remove dot class from tr, also not sure why dot_public is needed *}
 			<tr class="dot_{$permissions_map.$perms|escape}" id="dotslist_dot_{$dot.id|escape}">
-
+			
+			{* check if user defined title exists, then check if it is an indexed field *}
+			{if $assigned_title|@count}
+				<td class="dotslist_title_internal" nowrap>
+				{if $cfg.enable_feature_dots_indexing}
+					{if $dot.$assigned_title}
+						{if $dot.$assigned_title|count_characters < 40}
+							<a href="{$cfg.abs_root_url}search?u={$dot.user_id|escape}&e={$assigned_title|escape:'url'}:{$dot.$assigned_title|escape:'url'}" title="search for dots containing {$dot.$assigned_title|escape}">{$dot.$assigned_title|escape}</a>
+						{else}
+							{$dot.$assigned_title|escape|truncate:40:"..."}
+						{/if}
+					{else}
+						<a href="{$dot|@urls_url_for_dot}" title="view dot #{$dot.id|escape} page">{if $dot.details.$assigned_title.0.value|@count}{$dot.details.$assigned_title.0.value|truncate:40:"..."}{/if}</a>
+					{/if}
+				{else}
+					<a href="{$dot|@urls_url_for_dot}" title="view dot #{$dot.id|escape} page">{if $dot.details.$assigned_title.0.value|@count}{$dot.details.$assigned_title.0.value|truncate:40:"..."}{/if}</a>
+				{/if}
+				</td>
+			{/if}
+				
 				<td class="dotslist_id" nowrap>
 					<a href="{$dot|@urls_url_for_dot}" title="view dot #{$dot.id|escape} page">{$dot.id|escape}</a>
 				</td>
@@ -87,14 +111,18 @@
 
 {if $cfg.enable_feature_dots_indexing}
 	{foreach from=$dots_indexed item="label"}
-				<td class="dotlist_{$label|escape}">
-				{if $dot.$label}
-					{if $dot.$label|count_characters < 40}
-						<a href="{$cfg.abs_root_url}search?u={$dot.user_id|escape}&e={$label|escape:'url'}:{$dot.$label|escape:'url'}" title="search for dots containing {$dot.$label|escape}">{$dot.$label|escape}</a>
+				{if $label != $assigned_title}
+					<td class="dotlist_{$label|escape}">
+					{if $dot.$label}
+						{if $dot.$label|count_characters < 40}
+							<a href="{$cfg.abs_root_url}search?u={$dot.user_id|escape}&e={$label|escape:'url'}:{$dot.$label|escape:'url'}" title="search for dots containing {$dot.$label|escape}">{$dot.$label|escape}</a>
+						{else}
+							{$dot.$label|escape}
+						{/if}
 					{else}
-						{$dot.$label|escape}
+					&#8212;
 					{/if}
-				{else}&#8212;{/if}
+				{/if}
 				</td>
 	{/foreach}
 {/if}
