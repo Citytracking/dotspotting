@@ -52,10 +52,6 @@
 	# First grab the file and do some basic validation
 	#
 
-dumper($_POST);
-
-dumper($_FILES);
-
 	# Ideally the front end should remove the 'upload' parameter but
 	# just in case...
 
@@ -142,7 +138,7 @@ dumper($_FILES);
 		$parsed = utils_parse_url($url);
 		$ok = $parsed['ok'];
 
-		dumper($parsed);
+		# dumper($parsed);
 
 		$error_details = '';
 
@@ -267,7 +263,7 @@ dumper($_FILES);
 
 		$upload = import_fetch_uri($GLOBALS['cfg']['user'], $url, $more);
 
-dumper($upload);
+		# dumper($upload);
 
 		if (! $upload['ok']){
 
@@ -285,7 +281,7 @@ dumper($upload);
 
 		$pre_process = import_process_file($upload, $more);
 
-		dumper($pre_process);
+		# dumper($pre_process);
 
 		# convert any errors from a bag of arrays in to a hash
 		# where the key maps to record number (assuming the count
