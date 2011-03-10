@@ -169,6 +169,7 @@ function utils_hash(map,type){
 		
 	}else if(type == "mm"){
 		map.addCallback("drawn", function(){
+			self.coords = self.hashCoordFormatter( map.getCenter(), map.getZoom());
 			self.doDrawn();
 		});
 	}
@@ -432,7 +433,7 @@ function utils_modestmap(map_id, more){
 
 	var map = new com.modestmaps.Map(map_id, provider, dims, handlers);
 	
-	
+	utils_hash(map,"mm");
 	return map;
 }
 
