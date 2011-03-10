@@ -33,7 +33,7 @@
 
 		return array(
 			'ok' => 1,
-			'path' => $archived_path,
+			'path' => $cache_path,
 		);
 	}
 
