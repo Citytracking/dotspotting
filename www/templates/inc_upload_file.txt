@@ -24,6 +24,13 @@
 	<label for="upload">Choose a file to upload</label>
 	<br /><br />
 
+{if $include_url_upload}	
+	<input type="text" size="40" name="url" />
+	<br />
+	<label for="upload">Or choose a URL to upload</label>
+	<br /><br />
+{/if}
+
 	{include file="inc_upload_file_attributes.txt"}
 
 	<input type="SUBMIT" value="UPLOAD YOUR DOTS!" />
