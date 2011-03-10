@@ -10,5 +10,8 @@
 <div style="padding: 2em;">{timings}</div>
 {/if}
 
+{* load page specific js handler (seanc|03102011) *}
+{include file='inc_js_includes.txt'}
+
 </body>
 </html>

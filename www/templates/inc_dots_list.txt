@@ -6,7 +6,7 @@
 <table id="user_dots" class="ds_table">
 	<thead>
 		<tr>
-			{if $dots.0.details.title_internal}
+			{if $assigned_title|@count}
 			<th title="sort by dot title">Title</th>
 			{/if}
 			<th title="sort by dot ID">Dot</th>
@@ -48,12 +48,25 @@
 		
 			{* remove dot class from tr, also not sure why dot_public is needed *}
 			<tr class="dot_{$permissions_map.$perms|escape}" id="dotslist_dot_{$dot.id|escape}">
-				
-				{if $dot.details.title_internal}
+			
+			{* check if user defined title exists, then check if it is an indexed field *}
+			{if $assigned_title|@count}
 				<td class="dotslist_title_internal" nowrap>
-					<a href="{$dot|@urls_url_for_dot}" title="view dot #{$dot.id|escape} page">{if $dot.details.$assigned_title.0.value|count}{$dot.details.$assigned_title.0.value|truncate:40:"..."}{/if}</a>
-				</td>
+				{if $cfg.enable_feature_dots_indexing}
+					{if $dot.$assigned_title}
+						{if $dot.$assigned_title|count_characters < 40}
+							<a href="{$cfg.abs_root_url}search?u={$dot.user_id|escape}&e={$assigned_title|escape:'url'}:{$dot.$assigned_title|escape:'url'}" title="search for dots containing {$dot.$assigned_title|escape}">{$dot.$assigned_title|escape}</a>
+						{else}
+							{$dot.$assigned_title|escape|truncate:40:"..."}
+						{/if}
+					{else}
+						<a href="{$dot|@urls_url_for_dot}" title="view dot #{$dot.id|escape} page">{if $dot.details.$assigned_title.0.value|@count}{$dot.details.$assigned_title.0.value|truncate:40:"..."}{/if}</a>
+					{/if}
+				{else}
+					<a href="{$dot|@urls_url_for_dot}" title="view dot #{$dot.id|escape} page">{if $dot.details.$assigned_title.0.value|@count}{$dot.details.$assigned_title.0.value|truncate:40:"..."}{/if}</a>
 				{/if}
+				</td>
+			{/if}
 				
 				<td class="dotslist_id" nowrap>
 					<a href="{$dot|@urls_url_for_dot}" title="view dot #{$dot.id|escape} page">{$dot.id|escape}</a>

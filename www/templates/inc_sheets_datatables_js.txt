@@ -15,6 +15,8 @@
 		
 		anControl.unbind('keyup').bind( 'keyup', function(){
 			var $$this = $this;
+			
+			_dotspotting.datatables_query = anControl.val();
 
 			if (sPreviousSearch === null || sPreviousSearch != anControl.val()) {
 				window.clearTimeout(oTimerId);
@@ -41,7 +43,9 @@
     }
 $(document).ready(function(){ 
 
-     $('#user_sheets').dataTable({
+	_dotspotting.datatables_query = '';
+
+     var dt = $('#user_sheets').dataTable({
 	"bPaginate": false,
 	"bFilter": true,
 	"bSort": false,
@@ -51,9 +55,21 @@ $(document).ready(function(){
 	"bScrollCollapse": true,
 	"sScrollY": "200px",
 	"oLanguage": {"sSearch": "Filter table:"},
-     }).fnSetFilteringHooks();
+     });
 
 	$("#user_sheets_wrapper").addClass("filter_adj");
+	dt.fnSetFilteringHooks();
+	
+	
+	// check to see if there incoming coordinates 
+	var qs = doHashSetup();
+	if(qs && qs.contains('s')){
+		dt.fnFilter(qs.get('s'));
+		_dotspotting.datatables_query = qs.get('s');
+		var pm = document.getElementById('permalink');
+		//pm.innerHTML = location.href;
+		if(pm)pm.setAttribute('href', location.href);
+	}
 
 });
 {/literal}

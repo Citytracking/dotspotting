@@ -492,10 +492,11 @@ function draw_map_modestmaps(dots){
 
 	var mm = com.modestmaps;
 	var map = utils_modestmap('map');
-	var org_extent = null;
+	var extent = null;
 	var incomingState=false;
+	
+	// check to see if there incoming coordinates 
 	var qs = doHashSetup();
-
 	if(qs && qs.contains('c')){
 		var _mapstate = qs.get('c');
 		var args = _mapstate.split("/").map(Number);
@@ -506,7 +507,7 @@ function draw_map_modestmaps(dots){
 			var loc = new mm.Location(args[1], args[2]);
 	    	map.setCenterZoom(loc, args[0]);
 			//store original extent
-			org_extent = map.getExtent();
+			extent = map.getExtent();
 	   }
 	
 	}
@@ -524,11 +525,10 @@ function draw_map_modestmaps(dots){
 		
 			var _extent = utils_adjust_bbox(dots['extent']);
 		
-			var extent = [
+			extent = [
 				new mm.Location(_extent[0]['lat'], _extent[0]['lon']),
 				new mm.Location(_extent[1]['lat'], _extent[1]['lon'])
 			];
-			org_extent = extent;
 			map.setExtent(extent);
 		}
 	}
@@ -570,7 +570,7 @@ function draw_map_modestmaps(dots){
 	utils_modestmaps_add_compass(map);	
 	
 	// create controls
-	utils_add_map_controls(map,"mm",org_extent);
+	utils_add_map_controls(map,"mm",extent);
 	
 	// map toggle size button
 	utils_map_toggle_size(map,"mm",500,markers);
@@ -584,7 +584,7 @@ function draw_map_modestmaps(dots){
 
 function draw_map_polymaps(dots){
 	var map = utils_polymap('map');
-	var current_map_zoom,org_extent = null;
+	var current_map_zoom,extent = null;
 	var incomingState=false;
 	// init selected dot variable
 	_dotspotting.selected_dot = null;
@@ -601,7 +601,7 @@ function draw_map_polymaps(dots){
 			map.center({lon: args[2], lat: args[1]});
 			map.zoom(args[0]);
 			//store original extent
-			org_extent = map.extent();
+			extent = map.extent();
 	   }
 	
 	}
@@ -610,11 +610,11 @@ function draw_map_polymaps(dots){
 			map.center(dots.center);
 		}
 		else {
-			var extent = utils_adjust_bbox(dots.extent);
+			extent = utils_adjust_bbox(dots.extent);
 			map.extent(extent);
 		
 			//store original extent
-			org_extent = map.extent();
+			extent = map.extent();
 		}
 		map.zoom(Math.floor(map.zoom()));
 	}
@@ -630,7 +630,7 @@ function draw_map_polymaps(dots){
 	utils_polymaps_add_compass(map);
 	
 	// create controls
-	utils_add_map_controls(map,"po",org_extent);
+	utils_add_map_controls(map,"po",extent);
 	
 	// map toggle size button
 	utils_map_toggle_size(map,"po",500,null);
