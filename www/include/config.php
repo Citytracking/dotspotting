@@ -347,7 +347,7 @@
 	# fill,stroke array = rgba
 	# alpha =  0 = completely transparent, 1 = opaque
 	$GLOBALS['cfg']['sheet_color_scheme'] = array(
-		'fill' => array(11,189,255,.5),
+		'fill' => array(11,189,255,.4),
 		'stroke' => array(11,189,255,1),
 		'stroke_width' => 4,
 		'fill_hover' => array(11,189,255,.1),

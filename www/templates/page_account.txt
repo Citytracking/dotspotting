@@ -1,20 +1,19 @@
 {assign var="page_title" value="Your account"}
 {include file="inc_head.txt"}
+<div class="section_bunch_o_text">
+	<h3>Your Stuff</h3>
+	<ul>
+		<li><a href="{$cfg.user|@urls_sheets_for_user}">All your sheets</a></li>
+		<li><a href="{$cfg.user|@urls_dots_for_user}">All your dots</a></li>
+	</ul>
+	<h3>Your Account</h3>
 
-<h2>Your Stuff</h2>
+	{if $smarty.get.password}<p class="message">Your password has been updated.</p>{/if}
 
-<ul>
-	<li><a href="{$cfg.user|@urls_sheets_for_user}">All your sheets</a></li>
-	<li><a href="{$cfg.user|@urls_dots_for_user}">All your dots</a></li>
-</ul>
-
-<h2>Your Account</h2>
-
-{if $smarty.get.password}<p class="message">Your password has been updated.</p>{/if}
-
-<ul>
-	<li><a href="{$cfg.abs_root_url}account/password/">Change your password</a></li>
-	<li><a href="{$cfg.abs_root_url}account/delete/">Delete your account</a></li>
-</ul>
+	<ul>
+		<li><a href="{$cfg.abs_root_url}account/password/">Change your password</a></li>
+		<li><a href="{$cfg.abs_root_url}account/delete/">Delete your account</a></li>
+	</ul>
+</div>
 
 {include file="inc_foot.txt"}

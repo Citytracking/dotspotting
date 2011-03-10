@@ -3,7 +3,7 @@
 
 function draw_map_polymaps(dot){
 
-	var more = { 'static': 1 };
+	var more = { 'justzoom':1 };
 	var map = utils_polymap('map', more);
 
 	map.center({lat: dot.latitude, lon: dot.longitude});
@@ -33,10 +33,13 @@ function draw_map_polymaps(dot){
 	$("#map").bind('mapresize', function(e) {
 		map.resize();
 	});
+	
+	// create controls
+	utils_add_map_controls(map,"po",null);
 }
 
 function draw_map_modestmaps(dot){
-	var more = { 'static' : 1 };	 
+	var more = { 'justzoom':1 };	 
 	var map = utils_modestmap('map', more);
 
 	var loc = new com.modestmaps.Location(dot.latitude, dot.longitude);
@@ -67,6 +70,9 @@ function draw_map_modestmaps(dot){
 		map.setSize(_w,_h);
 		markers.forceAresize();
 	});
+	
+	// create controls
+	utils_add_map_controls(map,"mm",null);
 
 }
 

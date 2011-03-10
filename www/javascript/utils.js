@@ -109,9 +109,19 @@ function utils_polymap(map_id, more){
 
 	var map = org.polymaps.map();
 	map.container(svg);
-	
-	if ((! more) || (! more['static'])){
+			
 		
+ 	if(more && more['justzoom']){
+		$('#pan_left').remove();
+		$('#pan_right').remove();
+		$('#pan_up').remove();
+		$('#pan_down').remove();
+		$('#reset_bounds').remove();
+		$('#zoom_in').css('left','0px');
+		$('#zoom_out').css('left','0px');
+	}else if(more && more['static']){
+		$('#map_controls').remove();
+	}else{
 		//	inital attempt to add touch support to polymaps
 		if(_dotspotting.enable_touch_support){
 			var touch = org.polymaps.touch();
@@ -124,8 +134,6 @@ function utils_polymap(map_id, more){
 			map.add(dblclick);
 		}
 		
-	}else{
-		$('#map_controls').remove();
 	}
 
 	var tp = utils_tile_provider();
@@ -270,7 +278,20 @@ function utils_svg_title(el,title){
 }
 
 function utils_modestmap(map_id, more){
-	if(more && more['static'])$('#map_controls').remove();
+
+	if(more && more['static']){
+		$('#map_controls').remove();
+	}else if(more && more['justzoom']){
+		$('#pan_left').remove();
+		$('#pan_right').remove();
+		$('#pan_up').remove();
+		$('#pan_down').remove();
+		$('#reset_bounds').remove();
+		$('#zoom_in').css('left','0px');
+		$('#zoom_out').css('left','0px');
+	}else{
+		//
+	}
 	var tp = utils_tile_provider();
 
 	var provider = null;
@@ -483,6 +504,7 @@ function utils_map_toggle_size(map,map_type,tallSize,markers){
 */
 function utils_add_map_tooltip(map,mapel,map_type){
 	
+	
 	$("#map").bind('markerclick', function(e,dotid,coor) {
 		
 		var dot = dot_getinfo_json(dotid);
@@ -511,13 +533,20 @@ function utils_add_map_tooltip(map,mapel,map_type){
 
 	        return parseFloat(point.x + (radius / 2.0) + 20)
 	      }).content(function(d) {
+			var _timer,
+			_clickTime,
+			_tip = null;
+			
+			$('#map').unbind('mousedown');
+			$('#map').unbind('mouseup');
+			
 	        var self = this,
 	            props = d,
 	            cnt = $('<div/>'),
 	            hdr = $('<h2/>'),
 	            bdy = $('<p/>'),
-
-	            close = $('<span/>').addClass('close').text('X')
+				
+	            close = $('<span/>').addClass('close').html('<img src="'+_dotspotting.abs_root_url+'images/x.png"/>')
 		        hdr.html(dot_tip_header(props.id));
 		        hdr.append(close);
 			
@@ -525,12 +554,37 @@ function utils_add_map_tooltip(map,mapel,map_type){
 
 		        cnt.append($('<div/>').addClass('nub'))
 		        cnt.append(hdr).append(bdy) 
-
+				
 		        close.click(function() {
 		          self.hide();
 					dot_unselect(props.id);
 					_dotspotting.selected_dot = null;
+					if(_timer)clearInterval(_timer);
+					_tip = null;
 		        })   
+				
+				/* close tip if map is clicked but not dragged */
+				_timer = setInterval(function(){
+					_tip = self;
+					clearInterval(_timer);
+				}, 2000);
+				
+				 $("#map").mousedown(function () {
+					_clickTime = new Date();
+				});
+				
+				$("#map").mouseup(function () {
+					var _endTime = new Date();
+					var _diff = _endTime.getTime() - _clickTime.getTime();
+					
+					if(_tip && (_diff < 150) ){
+						_tip.hide();
+						_tip = null;
+						dot_unselect(props.id);
+						_dotspotting.selected_dot = null;
+						if(_timer)clearInterval(_timer);
+					}
+				});
 				
 	        	return cnt;
 	      }).render()

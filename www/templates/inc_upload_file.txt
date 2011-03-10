@@ -19,34 +19,49 @@
 <h3>Upload to Dotspotting</h3>
 
 <div id="upload_meezy">
-<ul class="clearfix">
-	<li class="first_meezy"><span>Upload your file</span></li>
-	<li class="second_meezy show_30"><span>Check your dots</span></li>
-	<!-- <li class="last_meezy"><a href="{$cfg.abs_root_url}upload">Get started now<img src="{$cfg.abs_root_url}images/home/blackarrow.png" width="34" height="30"/></a></li> -->
-</ul>
+	<ul class="clearfix">
+		<li class="first_meezy"><span>Upload</span></li>
+		<li class="second_meezy show_30"><span>Check your dots</span></li>
+	</ul>
 </div>
 
-<form id="upload_file" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
-	{$crumb_key|crumb_input}
+<div id="upload_forms" class="clearfix">
+	<div id="upload_section_left">
+		<h3>File from your computer</h3>
+		<form id="upload_file" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
+			{$crumb_key|crumb_input}
 
-	<p class="no_border"><input type="file" size="40" name="upload" class="upload_choose"/></p>
+			<p class="no_border"><input type="file" size="40" name="upload" class="upload_choose"/></p>
 
-	{* {include file="inc_upload_file_attributes.txt"} *}
+			{* {include file="inc_upload_file_attributes.txt"} *}
 
-	<span class="upload_submit"><input type="SUBMIT" value="Upload" /></span>
-</form>
+			<span class="upload_submit"><input type="SUBMIT" value="Upload" /></span>
+		</form>
 
-<div id="upload_basics" class="section_bunch_o_text">
-<p>At the moment, only the first 1000 records in a file will be imported</p>
-<ul>
-<li>Dotspotting is able to import the following types of files:</li>
-{foreach from=$import_formats item="type" key="extension"}
-{capture assign="label"}{if $formats_pretty_names.$extension}{$formats_pretty_names.$extension|escape}{else}{$extension|@strtoupper|escape}{/if}{/capture}
-<li><b>{$label|@strtoupper|escape}</b> - {$type|escape}</li>
-{/foreach}
-</ul>
-<p>For all the details about uploading data into Dotspotting, <a href="{$cfg.abs_root_url}faq">click here</a>.</p>
+		<div id="upload_basics" class="section_bunch_o_text">
+			<p>At the moment, only the first 1000 records in a file will be imported</p>
+			<ul>
+			<li>Dotspotting is able to import the following types of files:</li>
+			{foreach from=$import_formats_pretty item="type" key="extension"}
+			{capture assign="label"}{if $formats_pretty_names.$extension}{$formats_pretty_names.$extension|escape}{else}{$extension|@strtoupper|escape}{/if}{/capture}
+			<li><b>{$label|@strtoupper|escape}</b> - {$type|escape}</li>
+			{/foreach}
+			</ul>
+			<p>For all the details about uploading data into Dotspotting, <a href="{$cfg.abs_root_url}faq">click here</a>.</p>
+		</div>
+	</div>
+	
+	<div id="upload_section_right" class="section_bunch_o_text">
+		<h3>File not on your computer</h3>
+		<ul>
+			<li><h5>You can also upload from:</h5></li>
+			<li><h5><a href="{$cfg.abs_root_url}upload/url/">URL</a></h5></li>
+			<li><h5><a href="{$cfg.abs_root_url}upload/flickr/">Flickr</a></h5></li>
+			<li><h5><a href="{$cfg.abs_root_url}upload/google/">Google's MyMaps</a></h5></li>
+		</ul>
+	</div>
 </div>
+	
 <br />
 
 
