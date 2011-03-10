@@ -88,12 +88,46 @@
 
 	$to_index = array($sheet['dots'][0]);
 	$dots_indexed = dots_indexed_on($to_index);
+	
 	$GLOBALS['smarty']->assign_by_ref("dots_indexed", $dots_indexed);
-
+	
+	
 	if ($is_own){
 		$smarty->assign("permissions_map", dots_permissions_map());
 		$smarty->assign("geocoder_map", geo_geocode_service_map());
 	}
+	
+	// create a simplfied object for js
+	$json_fields = array("id","created","details","geohash","is_interactive","latitude","longitude","user_id","perms","sheet_id");
+	if($sheet['dots']){
+		$to_json = array();
+		foreach ($sheet['dots'] as $dot) {
+			$tmp = array();
+			foreach($json_fields as $fi){
+				if(isset($dot[$fi])){
+					if($fi == "details"){
+						$_details = array();
+						foreach($dot[$fi] as $de){
+							$_details[] = array(
+								'label' => $de[0]['label'],
+								'value' => $de[0]['value']
+							);
+						}
+						$tmp[$fi] = $_details;
+					}else{
+						$tmp[$fi] = $dot[$fi];
+					}
+				}
+				
+			}
+
+			$to_json[] =$tmp;
+			
+		}
+		//if( isset($owner.username) )$ddd[] = array('owner'=>$owner.username);
+		$smarty->assign("dots_simple", $to_json);
+	}
+	
 
 	$formats = array_values(formats_valid_export_map());
 	$GLOBALS['smarty']->assign("export_formats", $formats);

@@ -28,8 +28,17 @@
     map: function(el) {
       var self = this
       this.props.map = el
-      this.props.map.on('move', function() { self.move() })    
-      this.props.map.on('resize', function() { self.resize() })
+
+		if(this.props.data.map_type == "mm"){
+			this.props.map.addCallback('drawn', function() { self.move() })    
+      		this.props.map.addCallback('resized', function() { self.resize() })	
+		}
+		else
+		{
+	
+      		this.props.map.on('move', function() { self.move() })    
+      		this.props.map.on('resize', function() { self.resize() })
+		}
                 
       return this
     },
@@ -50,7 +59,7 @@
     },
     
     location: function(latlon) {
-      this.props.location = latlon
+      this.props.location = latlon;
       return this
     },
     
@@ -106,12 +115,10 @@
         el.remove()
       })
     },
-
-	
     
     move: function(event) {
       this.left(this.props.callbackLeft).top(this.props.callbackTop)
-		var size = this.props.map.size();
+		var size = (this.props.data.map_type == "mm") ? {x:this.props.map.parent.offsetWidth,y:this.props.map.parent.offsetHeight} : this.props.map.size();
 	
 	if( (this.props.left > 0 && this.props.left < size.x) && (this.props.top > 0 && this.props.top < size.y) ){
       this.el.css({left: this.props.left + 'px', top: this.props.top + 'px'}) 

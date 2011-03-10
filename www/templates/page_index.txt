@@ -1,33 +1,60 @@
-{capture assign="page_title}{if $cfg.user.id}Welcome back!{else}Welcome!{/if}{/capture}
+{capture assign="page_title"}{if $cfg.user.id}Welcome back!{else}Welcome!{/if}{/capture}
 {include file='inc_head.txt'}
 
 {* inside #content div *}
 
 {if $cfg.user.id}
-	<h2>Hi {$cfg.user.username|escape}!</h2>
+	<h2 id="welcome_back">Welcome back {$cfg.user.username|escape}!</h2>
 {else}
+	<div id="home_meezy">
+	<h3>Dotspotting is easy:</h3>
+	<ul class="clearfix">
+		<li class="first_meezy"><span>Upload your dots</span></li>
+		<li class="second_meezy"><span>Make a map</span></li>
+		<li class="third_meezy"><span>Export and share</span></li>
+		<li class="last_meezy"><a href="{$cfg.abs_root_url}upload">Get started now<img src="{$cfg.abs_root_url}images/home/blackarrow.png" width="34" height="30"/></a></li>
+	</ul>
+	</div>
+	<p id="home_description" class="txt_body_copy">Dotspotting is the first project Stamen is releasing as part of Citytracking, a project funded by the <a href="http://www.newschallenge.org/" title="view website of Knight News Challenge">Knight News Challenge</a>. We're making tools to help people gather data about cities and make that data more legible. The code for Dotspotting is available for <a href="https://github.com/citytracking" title="Github repo for citytracking">download on Github</a>, and licensed for use under the GNU General Public License.</p>
+	
+{/if}
 
-		<div style="margin-left:20%;margin-bottom:25px;">
-		<div><a href="http://www.flickr.com/photos/apelad/3866190995/" title="Laugh-Out-Loud Cats #1223 by Ape Lad, on Flickr" target="_flickr"><img src="http://farm3.static.flickr.com/2093/3866190995_2fa09e50bc.jpg" width="500" height="328" alt="Laugh-Out-Loud Cats #1223" /></a></div>
-
-		<div style="font-size:11px;color:#666;max-width:500px;font-style:italic;">kirby dots courtesy <a href="http://www.flickr.com/photos/apelad/3866190995/">laugh-out-loud cats #1223</a> &#8212; what are <a href="https://secure.wikimedia.org/wikipedia/en/wiki/Kirby_dots" target="_wikipedia">kirby dots</a>?</div>
-		</div>
-
-
-	{if $cfg.enable_feature_import}
-		<h2>Welcome to Dotspotting!</h2>
-		
-		<p><a href="{$cfg.abs_root_url}upload">Get started and upload some dots</a> or find out more by reading the Dotspotting <a href="{$cfg.abs_root_url}about">About</a> and <a href="{$cfg.abs_root_url}faq">FAQ</a> pages.</p>
-
-		<p>You can also see recently created <a href="{$cfg.abs_root_url}recent/">sheets</a> and <a href="{$cfg.abs_root_url}recent/dots/">dots</a>!</p>
+{* start thumbnail section *}
+<div id="home_recents">
+	{if $recent_sheets|@count}
+		<div class="thumbnail_head clearfix"><h5 class="left">Recent sheets:</h5><a href="{$cfg.abs_root_url}recent/sheets" class="right txt_small">see more</a></div>
+		{foreach from=$recent_sheets item=sh name=thumbs}
+			{if $smarty.foreach.thumbs.index < 4}
+			     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.index == 3} last_thumb{/if}">
+				<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
+				<dd class="txt_small thumb_title">{$sh.label|escape}</dd>
+				<dd class="txt_small">{$sh.user.username|escape}</dd>
+				</dl>
+			{/if}
+		{/foreach}
+		<div class="clear"></div>
 	{/if}
-
-{/if}
-
-{if $recent_sheets|@count}
-	<h3>Sheets that have been added to Dotspotting recently:</h3>
-	{include file="inc_sheets_list.txt" sheets=$recent_sheets}
-{/if}
+	
+	{if $recent_dots|@count}
+	<div class="thumbnail_head clearfix"><h5 class="left">Recent dots:</h5><a href="{$cfg.abs_root_url}recent/dots" class="right txt_small">see more</a></div>
+	{foreach from=$recent_dots item=sh name=thumbs}
+		{if $smarty.foreach.thumbs.index < 4}
+		     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.index == 3} last_thumb{/if}">
+			<dt>
+					<div class="map" data-center="{$sh.latitude},{$sh.longitude}" data-zoom="12">
+						<div class="layer" data-type="image"
+							data-url="{$cfg.maptiles_template_url|escape}"></div>
+						<a href="{$cfg.abs_root_url}u/{$sh.user_id}/dots/{$sh.id}" title=""><span>{$sh.id|escape}&nbsp;</span></a>
+					</div>
+			</dt>
+			<dd class="txt_small thumb_title">Dot: {$sh.id|escape}</dd>
+			<dd class="txt_small">{$sh.user.username|escape}</dd>
+			</dl>
+		{/if}
+	{/foreach}
+	<div class="clear"></div>
+	{/if}
+</div>
 
 {* end #content div *}
 

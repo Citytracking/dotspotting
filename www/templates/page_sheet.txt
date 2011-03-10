@@ -18,52 +18,54 @@ An unnamed sheet of dots by {$owner.username|escape}
 {/capture}
 {include file="inc_head.txt"}
 
-<h2>
-{if $sheet.label}
-{$sheet.label|escape}
-{else}
-Sheet ID #{$sheet.id|escape}
-{/if}
+{* sheet title area *}
+<ul id="sheet_head" class="clearfix">
+	<li>
+		<h3>
+		{if $sheet.label} 
+			{$sheet.label|escape}
+		{else}
+			Sheet ID #{$sheet.id|escape}
+		{/if}
+		<span class="txt_small">by <a href="{$owner|@urls_url_for_user}" title="view {$owner.username|escape}'s page" class="blue_links">{$owner.username|escape}</a></span>
+		 | <span class="txt_small sheet_date">created {$sheet.created|date_format:"%B %e, %Y at %I:%M %p"|escape}</span>
+		</h3>
+	</li>	
+	
+	
+	<li id="map_toggle_size" class="last_list_item">
+		<a href="#" title="toggle map height" class="txt_small green_links taller">Taller Map</a>
+	</li>
+	
+	{if $is_own}
+	<li id="sheet_user_options">
+	<form method="POST">
+		{$crumb_key|crumb_input}
+		<input type="hidden" name="delete" value="1" />
+		<input type="submit" value="DELETE THIS SHEET" />
+		
+		<select onchange="prep_sheet_export(this);return false;">
+		<option selected>Export options</option>
+		{foreach from=$export_formats item="fmt" name="formats"}
+		<option value="{$sheet|@urls_url_for_sheet}export.{$fmt|escape}" title="{$fmt|escape}">{if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if}</option>
+		{/foreach}
+		</select>
+		
+	
+	</form>
+	</li>
+	{/if}
+	
+</ul>
 
-<span style="font-size:small;">/ export as
-{foreach from=$export_formats item="fmt" name="formats"}
-<a onclick="sheet_export_visible('{$fmt|escape}', '{$sheet|@urls_url_for_sheet}export.{$fmt|escape}');return false;" href="#" title="Export as a {if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if} file">{$fmt|escape}</a>{if ! $smarty.foreach.formats.last}, {/if}
-{/foreach}
-</span>
-</h2>
 
-{if $is_own}
-<form method="POST" style="float:right;">
-	{$crumb_key|crumb_input}
-	<input type="hidden" name="delete" value="1" />
-	<input type="submit" value="DELETE THIS SHEET" />
-</form>
-{/if}
-
-<table>
-	<tr>
-		<th>Owner</th>
-		<td><a href="{$owner|@urls_url_for_user}" title="view {$owner.username|escape}'s page">{$owner.username|escape}</a></td>
-	</tr>
-	<tr>
-		<th>Created</th>
-		<td>{$sheet.created|date_format:"%Y-%m-%d %H %M"|escape}</td>
-	</tr>
-	<tr>
-		<th>Last Modified</th>
-		<td>{$sheet.created|date_format:"%Y-%m-%d %H %M"|escape}</td>
-	</tr>
-	<tr>
-		<th>Bounding Box</th>
-		<td>{$sheet.extent.swlat|escape} {$sheet.extent.swlon|escape} {$sheet.extent.nelat|escape} {$sheet.extent.nelon|escape}<a href="#" onclick="resetBounds();return false;" style="padding-left:20px;" title="reset map bounds to original state">reset map bounds</a></td>
-	</tr>
-	<tr>
-		<th>Permalink</th>
-		<td><a href="{$sheet|@urls_url_for_sheet}" id="permalink">{$sheet|@urls_url_for_sheet}</a></td>
-	</tr>
-
-</table>
-
+{*
+<div id="sheet_utilities">
+	<a href="#" onclick="resetBounds();return false;" style="padding-left:20px;" title="return map to original state">reset map bounds</a>
+	 | 
+	<a href="{$sheet|@urls_url_for_sheet}" id="permalink" title="share this page with others">permalink</a>
+</div>
+*}
 {include file="inc_dots_list.txt" dots=$sheet.dots is_sheet=1}
 
 {include file="inc_foot.txt"}

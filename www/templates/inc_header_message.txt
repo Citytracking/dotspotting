@@ -1,3 +1,3 @@
 <div id="header_message">
-{include file="inc_discoball.txt"}
+
 </div>
