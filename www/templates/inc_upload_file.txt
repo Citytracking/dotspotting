@@ -32,6 +32,13 @@
 			{$crumb_key|crumb_input}
 
 			<p class="no_border"><input type="file" size="40" name="upload" class="upload_choose"/></p>
+			
+			{if $include_url_upload}	
+				<p class="no_border"><input type="text" size="40" name="url" />
+			
+				<label for="upload">Or choose a URL to upload</label></p>
+				
+			{/if}
 
 			{* {include file="inc_upload_file_attributes.txt"} *}
 
@@ -63,7 +70,6 @@
 </div>
 	
 <br />
-
 
 
 {/if}

@@ -1,0 +1,67 @@
+{assign var="page_title" value="Upload some dots!"}
+{include file="inc_head.txt"}
+
+{if $error|@count}
+{$error|@dumper}
+{/if}
+
+{if $error.uploads_disabled}
+<p class="error">Uploads are currently disabled.</p>
+
+{elseif $step=='import'}
+
+	{if $import.ok}
+		{include file="inc_upload_success.txt" upload=$import}
+	{else}
+	<p class="error">Your upload failed with the following errors:{if $rsp.error} {$rsp.error|escape}{/if}</p>
+
+	{if $rsp.errors|@count}
+	<ul>
+	{foreach from=$rsp.errors item="row"}
+		<li><q>{$row.error|escape}</q> at record #{$row.record|escape}</li>
+	{/foreach}
+	</ul>
+
+	{/if}
+
+	{/if}
+
+{elseif $step=='confirm'}
+
+{if $is_flickr}
+<p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from <q class="important">Flickr</q> into Dotspotting?</p>
+{elseif $is_google}
+<p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from <q class="important">Google</q> into Dotspotting?</p>
+{else}
+<p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from the website <q class="important">{$parsed_url.host|escape}</q> into Dotspotting?</p>
+{/if}
+
+<p class="tx1"><span style="font-style:italic;">The complete URL of the file you are about to import is: <code>{$url|escape}</code></span></p>
+
+<form method="POST" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}">
+	{$crumb_key|crumb_input}
+	<input type="hidden" name="confirm" value="1" />
+	<input type="hidden" name="url" value="{$url|escape}" />
+
+	<br />
+
+	{include file="inc_upload_file_attributes.txt"}
+
+	<input type="submit" value="YES, PLEASE TO IMPORT" />
+</form>
+
+{elseif $step=='process'}
+
+{if $sheets|@count}
+
+{/if}
+
+{include file="inc_upload_preprocess.txt data=$pre_process.data columns=$pre_process.data.0|@array_keys errors=$pre_process.errors}
+
+{else}
+
+{include file="inc_upload_file.txt"}
+
+{/if}
+
+{include file="inc_foot.txt"}
