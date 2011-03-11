@@ -62,12 +62,24 @@
 
 	#################################################################
 
-	function cache_memcache_set($cache_key, $data){
+	function cache_memcache_set($cache_key, $data=null){
+
+		if (! isset($data)){
+
+			return array(
+				'ok' => 0,
+				'error' => 'No data to cache',
+			);
+		}
 
 		$memcache = cache_memcache_connect();
 
 		if (! $memcache){
-			return array( 'ok' => 0, 'error' => 'failed to connect to memcache' );
+
+			return array(
+				'ok' => 0,
+				'error' => 'failed to connect to memcache'
+			);
 		}
 
 		$ok = $memcache->set($cache_key, serialize($data));
