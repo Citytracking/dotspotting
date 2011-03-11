@@ -55,7 +55,15 @@
 
 {/if}
 
+{* 
+	was getting array_keys, first parameter must not be NULL error
+	temp fix, need to look through upload3.php or somewhere (seanc | 031112011)
+*}
+{if $pre_process.data.0}
 {include file="inc_upload_preprocess.txt data=$pre_process.data columns=$pre_process.data.0|@array_keys errors=$pre_process.errors}
+{else}
+{include file="inc_upload_preprocess.txt data=$pre_process.data columns=$pre_process.data|@array_keys errors=$pre_process.errors}
+{/if}
 
 {else}
 

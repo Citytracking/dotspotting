@@ -19,13 +19,13 @@ background-color: pink;
 {if $errors|@count}
 
 <p class="error">There was an error while processing your upload</p>
-{*
+
 <ul>
 {foreach from=$errors item="row"}
 <li><strong>The <q>{$row.column|escape}</q> column in <a href="#row{$row.record|escape}">row #{$row.record|escape}</a>:</strong> {$row.error|escape}</li>
 {/foreach}
-*}
 </ul>
+
 
 {/if}
 
@@ -112,20 +112,20 @@ background-color: pink;
 	
 	
 	{* name sheet *}
-	<p>
+	<p class="form_btm_border">
 	<label for="label">Give your upload a name:</label>
 	<input type="text" size="40" name="label" value="{$label|escape}" />
 	</p>
 	
 	{* select a title *}
-	<p>
+	<p class="form_btm_border">
 	<label for="title">Select a title column:</label>
 	<select id="dots_upload_title" onchange="" name="title"></select>
 	</p>
 
 	{* searchable columns *}
 	{if $cfg.enable_feature_dots_indexing}
-		<p>
+		<p class="form_btm_border">
 		<label for="dots_index_opt">Select searchable columns (max:{$cfg.dots_indexing_max_cols|escape}):</label>
 		<select id="dots_index_on_1" name="dots_index_opt" onchange="update_dots_index_field();"></select> <select id="dots_index_on_2" onchange="update_dots_index_field();"></select>
 		<input type="hidden" name="dots_index_on" value="" />
@@ -134,7 +134,7 @@ background-color: pink;
 
 	
 	{* private option *}
-	<p class="no_border">
+	<p class="form_btm_border">
 	<label for="private">Make dots private</label>
 	<input type="checkbox" name="private"{if $private} checked="true"{/if}/>
 	</p>
@@ -154,7 +154,7 @@ background-color: pink;
 {* used to show a modal window when geocoding *}
 <script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery.reveal.js"></script>
 {* google client geocoder library *}
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+{* <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> *}
 
 {* YUI DATATABLE FILES *}
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.8.2r1/build/datatable/assets/skins/sam/datatable.css">
@@ -166,7 +166,8 @@ background-color: pink;
 var mo,geocoder,dt;
 $(document).ready(function(){
 	mo = $('#myModal').reveal({closeonbackgroundclick: false,animation:'fade'});
-	geocoder = new google.maps.Geocoder();
+	//geocoder = new google.maps.Geocoder();
+	geocoder = null;
 });
 
 
@@ -546,7 +547,7 @@ function preprocess_geocode_col(idx){
 	addExtraColumns(['latitude','longitude'],idx);
 
 	$(".yui-dt-data tr").map(function(i, row){
-		
+		if(!geocoder)return;
 		var oRecord = dt.dataTable.getRecord(i);
 		
 		var q = oRecord._oData[colname];

@@ -86,7 +86,7 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 #home_meezy li.second_meezy span{background:url(../images/home/2.png) no-repeat left center;}
 #home_meezy li.third_meezy span{background:url(../images/home/3.png) no-repeat left center;}
 #home_meezy li.last_meezy img{vertical-align: middle;padding-left: 10px;}
-#home_meezy li a{color:#fff;display:block;}
+#home_meezy li a{color:#fff;display:block;text-decoration:none;}
 #home_meezy li a:hover{color:#000;text-decoration:none;}
 #home_description p{margin:0 10px 0 0;}
 #home_description a{color:rgb(11,189,255);}
@@ -144,13 +144,13 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 #upload_file select,#upload_file_url select{margin-right:15px;}
 #upload_file .upload_choose,#upload_file_url .upload_choose{cursor:pointer;border:none;}
 
-.upload_submit{background:#0BBDFF;display:inline-block;padding:0 15px;line-height:34px;zoom:1;*display:inline;}
+.upload_submit{background:#0BBDFF;display:inline-block;padding:0 15px;line-height:34px !important;zoom:1;*display:inline;}
 .upload_submit input{border:#0BBDFF;color:white;font-size:19px;padding-right:25px;font-weight:500;/*width:100px;*/text-align:center;cursor:pointer;background:#0BBDFF url(../images/blackarrow2.png) no-repeat right center;}
 .upload_basics{margin:0;}
 .upload_basics .upload_padder{margin:10px 0 20px;}
 .upload_basics.section_bunch_o_text p,.upload_basics.section_bunch_o_text li{font-size:12px;font-weight:400;line-height:18px;}
 .upload_basics.section_bunch_o_text li{margin-bottom:3px;}
-.upload_file p{padding:15px 0;border-bottom:1px solid #ccc;}
+.form_btm_border{padding:15px 0;border-bottom:1px solid #ccc;}
 
 .helper_instr{background:#FFFDCC;}
 .helper_instr p{padding:5px;word-wrap:break-word;margin: 0;}
