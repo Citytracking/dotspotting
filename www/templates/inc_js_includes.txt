@@ -21,7 +21,7 @@
 {/if}
 
 {* upload page *}
-{if $cfg.page_crumb.0 == "upload" || $cfg.page_crumb == "upload2" || $cfg.page_crumb == "upload3"}
+{if $cfg.page_crumb.0 == "upload" || $cfg.page_crumb.0 == "upload2" || $cfg.page_crumb.0 == "upload3"}
 	{literal}
 	<script type="text/javascript">
 		$(document).ready(function(){ 
