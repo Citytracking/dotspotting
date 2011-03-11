@@ -203,7 +203,6 @@
 			}else{
 				$GLOBALS['cfg']['page_crumb'] = explode("/",$incoming);
 			}
-			
 		}else{
 			$GLOBALS['cfg']['page_crumb'] = array();
 		}
