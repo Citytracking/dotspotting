@@ -14,12 +14,11 @@
 
 	#################################################################
 
-	login_ensure_loggedin("{$GLOBALS['cfg']['abs_root_url']}upload3");
+	login_ensure_loggedin("{$GLOBALS['cfg']['abs_root_url']}upload");
 
 	# temporary bits until everything gets merged in to one
 	# magic upload box...
 
-	$GLOBALS['smarty']->assign("upload_endpoint", "upload3");
 	$GLOBALS['smarty']->assign("include_url_upload", 1);
 
 	if (! $GLOBALS['cfg']['enable_feature_import']){
