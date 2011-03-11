@@ -30,11 +30,11 @@
 {elseif $step=='confirm'}
 <div class="section_bunch_o_text">
 {if $is_flickr}
-<p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from <q class="important">Flickr</q> into Dotspotting?</p>
+<h3>Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from <q class="important">Flickr</q> into Dotspotting?</h3>
 {elseif $is_google}
-<p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from <q class="important">Google</q> into Dotspotting?</p>
+<h3>Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from <q class="important">Google</q> into Dotspotting?</h3>
 {else}
-<p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from the website <q class="important">{$parsed_url.host|escape}</q> into Dotspotting?</p>
+<h3>Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from the website <q class="important">{$parsed_url.host|escape}</q> into Dotspotting?</h3>
 {/if}
 <p class="tx1"><span style="font-style:italic;">The complete URL of the file you are about to import is: <code>{$url|escape}</code></span></p>
 
@@ -43,7 +43,6 @@
 	<input type="hidden" name="confirm" value="1" />
 	<input type="hidden" name="url" value="{$url|escape}" />
 
-	<br />
 
 	{* {include file="inc_upload_file_attributes.txt"} *}
 
