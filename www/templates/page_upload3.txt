@@ -9,7 +9,7 @@
 <p class="error">Uploads are currently disabled.</p>
 
 {elseif $step=='import'}
-
+	<div class="section_bunch_o_text">
 	{if $import.ok}
 		{include file="inc_upload_success.txt" upload=$import}
 	{else}
@@ -25,9 +25,10 @@
 	{/if}
 
 	{/if}
+	</div>
 
 {elseif $step=='confirm'}
-
+<div class="section_bunch_o_text">
 {if $is_flickr}
 <p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from <q class="important">Flickr</q> into Dotspotting?</p>
 {elseif $is_google}
@@ -35,21 +36,20 @@
 {else}
 <p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from the website <q class="important">{$parsed_url.host|escape}</q> into Dotspotting?</p>
 {/if}
-
 <p class="tx1"><span style="font-style:italic;">The complete URL of the file you are about to import is: <code>{$url|escape}</code></span></p>
 
-<form method="POST" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}">
+<form id="upload_file" method="POST" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}">
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="confirm" value="1" />
 	<input type="hidden" name="url" value="{$url|escape}" />
 
 	<br />
 
-	{include file="inc_upload_file_attributes.txt"}
+	{* {include file="inc_upload_file_attributes.txt"} *}
 
-	<input type="submit" value="YES, PLEASE TO IMPORT" />
+	<span class="upload_submit"><input type="submit" value="YES, PLEASE TO IMPORT" /></span>
 </form>
-
+</div>
 {elseif $step=='process'}
 
 {if $sheets|@count}
