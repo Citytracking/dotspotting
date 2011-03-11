@@ -11,7 +11,7 @@
 		<a href="#" id="pan_right" title="pan right"><img src="{$cfg.abs_root_url}images/map/pan-right.png"/></a>
 		<a href="#" id="pan_down" title="pan down"><img src="{$cfg.abs_root_url}images/map/pan-down.png"/></a>
 		<a href="#" id="zoom_in" title="zoom in"><img src="{$cfg.abs_root_url}images/map/zoom-in.png"/></a>
-		<a href="#" id="zoom_out" title="zoom in"><img src="{$cfg.abs_root_url}images/map/zoom-out.png"/></a>
+		<a href="#" id="zoom_out" title="zoom out"><img src="{$cfg.abs_root_url}images/map/zoom-out.png"/></a>
 		<a href="#" id="reset_bounds" title="reset map to original state"><img src="{$cfg.abs_root_url}images/map/expand-extent.png"/></a> 
 	</div>
 	<!-- <div id="filter_table_container">Taller map</div> -->
