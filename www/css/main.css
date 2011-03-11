@@ -4,13 +4,16 @@
 body,html{width:100%;height:100%;}
 /* elements primary */
 *{margin:0;padding:0;}
-a{color:rgb(0,0,0);cursor:pointer;outline:none;text-decoration:underline;}
+a{color:rgb(0,0,0);cursor:pointer;text-decoration:underline;}
 a:hover{text-decoration:underline;}
 ul{list-style-type: none;padding:0;}
 h2{font-weight:500;font-size: 24px;}
 h3{font-weight:500;font-size: 19px;}
 h5{font-weight:500;font-size:15px;}
 p{font-size:14px;font-weight:300;line-height:20px;}
+input,img,a,select{outline:none;}
+:focus {outline:none;}
+::-moz-focus-inner {border:0;}
 img{border:none;}
 
 
@@ -120,9 +123,9 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 
 /* upload */
 #upload_forms{position:relative;width:100%;}
-#upload_section_right,#upload_section_left{float:left;}
-#upload_section_right{padding-left:6%;width:auto;}
-#upload_section_left{border-right:1px solid #ccc;width:49%;}
+#upload_section_right,#upload_section_left{float:left;width:450px;}
+#upload_section_right{padding-left:0;}
+#upload_section_left{padding-right:30px;}
 #upload_meezy{margin:25px 0 15px 0;}
 #upload_meezy ul{border-bottom:1px solid #000;}
 #upload_meezy li{float:left;width:234px;font-size:19px;font-weight:500;padding:7px 0 7px 1px;margin:0 9px 0 0;}
@@ -136,18 +139,21 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 #upload_meezy li a:hover{color:#000;text-decoration:none;}
 
 #upload_success_content{padding-top:10px;}
-#upload_file{position:relative;margin-bottom:30px;}
-#upload_file select{margin-right:15px;}
-#upload_file .upload_choose{cursor:pointer;border:none;margin-bottom:30px;}
-#upload_file p.upload_choose_faux{position:relative;margin-top:-25px;line-height:26px;font-size:19px;font-weight:400;background:transparent;cursor:pointer;border:1px solid #fff;text-decoration:underline;}
-#upload_file p.upload_selected_file{line-height:24px;height:32px;font-size:11px;font-weight:400;margin:5px 0 10px;}
-#upload_file p.upload_selected_file img{vertical-align:bottom;padding-right:4px;}
-.upload_submit{background:#0BBDFF;display:inline-block;padding:0 15px;zoom:1;*display:inline;}
-.upload_submit input{border:#0BBDFF;color:white;font-size:19px;padding-right:25px;line-height:34px;font-weight:500;/*width:100px;*/text-align:center;cursor:pointer;background:#0BBDFF url(../images/blackarrow2.png) no-repeat right center;}
-#upload_basics{margin:40px 0 0;}
-#upload_basics.section_bunch_o_text p,#upload_basics.section_bunch_o_text li{font-size:12px;font-weight:400;line-height:18px;}
-#upload_basics.section_bunch_o_text li{margin-bottom:3px;}
-#upload_file p{padding:15px 0;border-bottom:1px solid #ccc;}
+/* need to rework these, ugggh */
+#upload_file,#upload_file_url{position:relative;margin-bottom:30px;}
+#upload_file select,#upload_file_url select{margin-right:15px;}
+#upload_file .upload_choose,#upload_file_url .upload_choose{cursor:pointer;border:none;}
+
+.upload_submit{background:#0BBDFF;display:inline-block;padding:0 15px;line-height:34px;zoom:1;*display:inline;}
+.upload_submit input{border:#0BBDFF;color:white;font-size:19px;padding-right:25px;font-weight:500;/*width:100px;*/text-align:center;cursor:pointer;background:#0BBDFF url(../images/blackarrow2.png) no-repeat right center;}
+.upload_basics{margin:0;}
+.upload_basics .upload_padder{margin:10px 0 20px;}
+.upload_basics.section_bunch_o_text p,.upload_basics.section_bunch_o_text li{font-size:12px;font-weight:400;line-height:18px;}
+.upload_basics.section_bunch_o_text li{margin-bottom:3px;}
+.upload_file p{padding:15px 0;border-bottom:1px solid #ccc;}
+
+.helper_instr{background:#FFFDCC;}
+.helper_instr p{padding:5px;word-wrap:break-word;margin: 0;}
 
 
 /* sheet page */
