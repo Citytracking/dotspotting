@@ -388,6 +388,9 @@
 
 	$import_formats = formats_valid_import_map('key by extension');
 	$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
+	
+	$import_formats_pretty = formats_pretty_import_names_map();
+	$GLOBALS['smarty']->assign_by_ref("import_formats_pretty", $import_formats_pretty);
 
 	$smarty->display("page_upload3.txt");
 	exit();

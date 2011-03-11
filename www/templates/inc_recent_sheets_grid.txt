@@ -13,7 +13,7 @@
 		{foreach from=$recent_sheets item='sh' name=thumbs}
 		
 			     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.iteration % 4 == 0} last_thumb{/if}">
-					<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="http://dev.dotspotting.stamen.com/u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
+					<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
 					<dd class="txt_small thumb_title">
 					{if $sh.label}
 						<a href="{$sh|@urls_url_for_sheet}">{$sh.label|escape}</a>
