@@ -7,7 +7,7 @@
 	<thead>
 		<tr>
 			{if $assigned_title|@count}
-			<th title="sort by dot title">Title</th>
+			<th title="sort by dot title">{$assigned_title|escape}</th>
 			{/if}
 			<th title="sort by dot ID">Dot</th>
 			{*

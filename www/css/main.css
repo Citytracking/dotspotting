@@ -149,8 +149,12 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 #upload_success_content{padding-top:10px;}
 /* need to rework these, ugggh */
 #upload_file,#upload_file_url{position:relative;margin-bottom:30px;}
-#upload_file select,#upload_file_url select{margin-right:15px;}
+#upload_file select,#upload_file_url select{}
 #upload_file .upload_choose,#upload_file_url .upload_choose{cursor:pointer;border:none;}
+
+#upload_file #dots_index_on_1{margin-left:5px;}
+#upload_file #dots_index_on_2{margin-left:40px;}
+
 
 .upload_submit{background:#0BBDFF;display:inline-block;padding:2px 15px 0;line-height:34px !important;zoom:1;*display:inline;}
 .upload_submit input{border:#0BBDFF;color:white;font-size:19px;padding-right:25px;font-weight:500;/*width:100px;*/text-align:center;cursor:pointer;background:#0BBDFF url(../images/blackarrow2.png) no-repeat right center;}

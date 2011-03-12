@@ -40,6 +40,8 @@
 			    'sheets_list_sheets' : {literal}{}{/literal},
 				'dot_color' : {$cfg.dot_color_scheme|@json_encode},
 				'sheet_color' : {$cfg.sheet_color_scheme|@json_encode}
+				
+				
 
 		{literal}};{/literal}
 		

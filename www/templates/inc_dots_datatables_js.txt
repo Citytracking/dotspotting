@@ -41,7 +41,14 @@
 {/literal}
 
 {if $is_sheet}
+
+{if $assigned_title|@count}
+	_dotspotting.assigned_title = '{$assigned_title}';
+{/if}
+
 {literal}
+
+
 $(document).ready(function(){ 
 	_dotspotting.datatables_query = '';
 	
