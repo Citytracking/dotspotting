@@ -87,13 +87,23 @@ background-color: pink;
 <script type="text/javascript">
 	function update_dots_index_field(){
 		var str="";
+		var _title = $("#dots_upload_title").val();
+
 	
-		str+= $('#dots_index_on_1').val();
+		str += $('#dots_index_on_1').val();
 		
-		var _secondOne = $("#dots_index_on_2").val();
-		if(_secondOne.length && _secondOne != str){
+		if(_title && _title.length){
+			$("#dots_index_on_2").hide();
 			if(str.length) str += ",";
-			str += _secondOne;
+			str += _title;
+		}else{
+			$("#dots_index_on_2").show();
+		
+			var _secondOne = $("#dots_index_on_2").val();
+			if(_secondOne.length && _secondOne != str){
+				if(str.length) str += ",";
+				str += _secondOne;
+			}
 		}
 
 		$("input[name='dots_index_on']").val(str);
@@ -112,32 +122,40 @@ background-color: pink;
 	
 	
 	{* name sheet *}
-	<p class="form_btm_border">
+	<p>
 	<label for="label">Give your upload a name:</label>
 	<input type="text" size="40" name="label" value="{$label|escape}" />
 	</p>
 	
+	<hr/>
+	
 	{* select a title *}
-	<p class="form_btm_border">
+	<p>
 	<label for="title">Select a title column:</label>
-	<select id="dots_upload_title" onchange="" name="title"></select>
+	<select id="dots_upload_title" onchange="update_dots_index_field();" name="title"></select><br/>
 	</p>
+	<p class="txt_helper">Values in this column will be used as the title for dots in both listings and individual <a href="{$cfg.abs_root_url}recent/dots" title="jump to recent dots">dot pages</a>. We suggest something short but descriptive.</p>
+	
+	<hr/>
 
 	{* searchable columns *}
 	{if $cfg.enable_feature_dots_indexing}
-		<p class="form_btm_border">
+		<p>
 		<label for="dots_index_opt">Select searchable columns (max:{$cfg.dots_indexing_max_cols|escape}):</label>
 		<select id="dots_index_on_1" name="dots_index_opt" onchange="update_dots_index_field();"></select> <select id="dots_index_on_2" onchange="update_dots_index_field();"></select>
-		<input type="hidden" name="dots_index_on" value="" />
+		<input type="hidden" name="dots_index_on" value="" /><br/>
 		</p>
+		<p class="txt_helper">The values of these columns will be indexed for searching both on sheets pages and in site-wide <a href="{$cfg.abs_root_url}search" title="jump to search page">search pages</a>. Street names, categorical columns, and tag or keyword lists are good candidates for search indexing. Note: The title column (above) is always searchable, so if a title is selected you will get one selection above</p>
+		<hr/>
 	{/if}
-
 	
 	{* private option *}
-	<p class="form_btm_border">
+	<p>
 	<label for="private">Make dots private</label>
 	<input type="checkbox" name="private"{if $private} checked="true"{/if}/>
 	</p>
+	
+	<hr/>
 	
 	<span class="upload_submit"><input type="SUBMIT" value="Submit" /></span>
 </form>
@@ -391,7 +409,7 @@ function preprocess_create_index(){
 			$(this).attr("selected","selected");
 		}
 	});
-
+update_dots_index_field();
 	
 }
 
