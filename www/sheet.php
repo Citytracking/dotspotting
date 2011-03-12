@@ -137,6 +137,12 @@
 					}
 				}
 				
+				if(isset($dots_indexed)){
+					foreach($dots_indexed as $ifield){
+						if(isset($dot[$ifield])) $tmp[$ifield] = $dot[$ifield];
+					}
+				}
+				
 			}
 
 			$to_json[] =$tmp;

@@ -1,5 +1,9 @@
 {* beginnings of a page specific js handler / included into footer *}
 
+
+
+
+
 {* home & recent pages *}
 {if $cfg.page_crumb.0 == "" || ($cfg.page_crumb.0 == "recent" && $cfg.page_crumb.1 == "sheets") }
 	

@@ -1,9 +1,11 @@
 	{foreach from=$dot.details item="stuff" key="label"}
-	{if !$dot.$label}
+	{* skips *}
+	{if !$dot.$label && $label != 'title_internal'}
 	<tr>
 		<th>{$label|escape}</th>
 		<td class="dot_details" id="details_{$label|escape}">
 		{* this shouldn't be inlined here *}
+	
 		{if $label=='flickr:id' and $cfg.enable_feature_magicwords.flickr.id}
 			<script type="text/javascript">
 			var photo_id={$stuff.0.value|escape};
