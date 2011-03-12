@@ -30,7 +30,7 @@
 	function dots_derive_location_data($data){
 
 		$derived = array(
-			'ok' => 0,
+			'ok' => 1,
 		);
 
 		$rsp = array(
@@ -46,11 +46,19 @@
 		else if (isset($data['address'])){
 
 			$rsp = dots_derive_location_from_address($data);
+
+			if (! isset($rsp['error'])){
+				$rsp['error'] = 'failed to geocode address';
+			}
 		}
 
 		else if (isset($data['geohash'])){
 
 			$rsp = dots_derive_location_from_geohash($data);
+
+			if (! isset($rsp['error'])){
+				$rsp['error'] = 'failed to convert geohash into a latitude and longitude';
+			}
 		}
 
 		else {}
@@ -58,8 +66,6 @@
 		#
 
 		if ($rsp['ok']){
-
-			$derived['ok'] = 1;
 
 			#
 			# See this? We're not checking to see $derived[$key]
@@ -69,6 +75,11 @@
 			foreach ($rsp['keys'] as $key => $from){
 				$derived[$key] = $from;
 			}
+		}
+
+		else {
+			$derived['ok'] = 0;
+			$derived['error'] = $rsp['error'];
 		}
 
 		#

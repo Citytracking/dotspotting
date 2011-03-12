@@ -1,12 +1,38 @@
 {assign var="page_title" value="Upload some dots!"}
 {include file="inc_head.txt"}
 
-{if $error|@count}
-{$error|@dumper}
-{/if}
-
 {if $error.uploads_disabled}
 <p class="error">Uploads are currently disabled.</p>
+
+{elseif $error.uploads_by_url_disabled}
+<p class="error">Uploads by URL are currently disabled.</p>
+
+{elseif $error.upload_error}
+<p class="error">The server was unable to upload your file.</p>
+
+{elseif $error.invalid_mimetype}
+<p class="error">That's either an invalid file format or, more likely, Dotspotting can't figure out what kind of file it is. Is it missing an extension (like <q>.xls</a>?)</p>
+
+{elseif $error.invalid_url}
+<p class="error">That's not any kind of URL that Dotspotting understands. {if $error.details} ({$error.details|escape}){/if}</p>
+
+{elseif $error.no_feed_url}
+<p class="error">There was a problem fetching the remote URL.</p>
+
+{elseif $error.upload_by_url_error}
+<p class="error">There was a problem fetching the remote URL: {$error_details|escape}</p>
+
+{elseif $error.missing_data}
+<p class="error">Hey! All the data Dotspotting was supposed to import disappeared! That's not right.</p>
+
+{elseif $error.invalid_data}
+<p class="error">Hey! That doesn't look like valid data.</p>
+
+{* unknown errors *}
+{elseif $error|@count}
+<p class="error">Hey, that's not right: There was unexpected expected error importing your data. We're really sorry about that and will try to fix that, shortly!</p>
+
+{* end of errors *}
 
 {elseif $step=='import'}
 	<div class="section_bunch_o_text">
@@ -21,7 +47,6 @@
 		<li><q>{$row.error|escape}</q> at record #{$row.record|escape}</li>
 	{/foreach}
 	</ul>
-
 	{/if}
 
 	{/if}
@@ -55,14 +80,8 @@
 
 {/if}
 
-{* 
-	was getting array_keys, first parameter must not be NULL error
-	temp fix, need to look through upload3.php or somewhere (seanc | 031112011)
-*}
-{if $pre_process.data.0}
+{if $pre_process.data}
 {include file="inc_upload_preprocess.txt data=$pre_process.data columns=$pre_process.data.0|@array_keys errors=$pre_process.errors}
-{else}
-{include file="inc_upload_preprocess.txt data=$pre_process.data columns=$pre_process.data|@array_keys errors=$pre_process.errors}
 {/if}
 
 {else}

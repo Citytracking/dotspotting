@@ -24,7 +24,7 @@
 	if (! $GLOBALS['cfg']['enable_feature_import']){
 
 		$GLOBALS['error']['uploads_disabled'] = 1;
-		$smarty->display("page_upload.txt");
+		$smarty->display("page_upload_disabled.txt");
 		exit();
 	}
 
@@ -77,6 +77,7 @@
 
 			if (! import_is_valid_mimetype($_FILES['upload'], $more)){
 				$GLOBALS['error']['invalid_mimetype'] = 1;
+				$ok = 0;
 			}
 
 			# okay. try to pre-process the data
