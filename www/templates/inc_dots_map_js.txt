@@ -358,6 +358,38 @@ function dot_search_details(dot, key){
 	}
 }
 
+
+function row2dot_id(row, headers){
+	var _id = "";
+	$(row).find("td").each(function(col, td){
+		var classes = $(td).attr("class");
+		var key = (headers) ? headers[col] : null;
+
+		if (classes){
+
+			var match = classes.match(/\bdotslist_([a-z_]+)\b/);
+
+			if (match){
+				key = match[1];
+			}
+		}
+
+		if (! key){
+			return {};
+		}
+
+		console.log(key);
+
+		if (key == 'id'){
+			var value = $(td).text()
+			value = value.replace(/^\s+/, '');
+			value = value.replace(/\s+$/, '');
+			_id = Number(value);
+		}
+
+	});
+	return _id;
+}
 function row2dot(row, headers){
 
 	var dot = {};
@@ -446,12 +478,25 @@ function collect_dots(){
 	var nelat = null;
 	var nelon = null;
 	
-	
-	var features = $("#user_dots tbody tr").map(function(i){
+	$(all_dots).each(function(i){
+		if (!all_dots[i]['url'])row2dot_json(i,headers);
+	});
 		
+	var features = $("#user_dots tbody tr").map(function(i,row){
+	
 		//var dot = row2dot(row);
 		// if it has a url property, then it's already been processed
-		var dot = (all_dots[i]['url']) ? all_dots[i] : row2dot_json(i,headers);
+		//var dot = (all_dots[i]['url']) ? all_dots[i] : row2dot_json(i,headers);
+		//var dot = (all_dots[i]['url']) ? _dotspotting.dots_list_dots[all_dots[i].id] : row2dot_json(i,headers);
+		
+		
+		if(_dotspotting.datatables_query){
+			var _tid = row2dot_id(row,headers)
+			var dot = all_dots[_dotspotting.dots_list_dots[_tid]];
+		}else{
+			var dot = (all_dots[i]['url']) ? all_dots[i] : row2dot_json(i,headers);
+		}
+		
 
 		var loc = {
 			lat: dot.latitude,
