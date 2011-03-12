@@ -215,6 +215,15 @@ table.page_dot td{text-align:left;padding:5px;}
 .sheet:hover{fill:rgb(11,189,255);fill-opacity:.1;stroke:rgb(11,189,255);stroke-width:4;stroke-opacity:1;cursor:pointer;}
 .highlighted{background-color:#ccffff !important;}
 
+/**/
+.compass rect.back.fore {
+  fill: #999;
+  fill-opacity: .3;
+  stroke: #eee;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+
 /* map buttons */
 #map_controls{position:absolute;z-index:6000;top:10px;left:10px;width:100%;display:none;} /* hide controls first, in case map is a single dot map, which has only zoom controls */
 #map_controls a{display:block;position:absolute;}
