@@ -507,7 +507,7 @@ function utils_map_toggle_size(map,map_type,tallSize,markers){
 */
 function utils_add_map_tooltip(map,mapel,map_type){
 	
-	
+	$("#map").unbind('markerclick');
 	$("#map").bind('markerclick', function(e,dotid,coor) {
 		
 		var dot = dot_getinfo_json(dotid);
@@ -562,11 +562,12 @@ function utils_add_map_tooltip(map,mapel,map_type){
 		          self.hide();
 					dot_unselect(props.id);
 					_dotspotting.selected_dot = null;
-					if(_timer)clearInterval(_timer);
+					//if(_timer)clearInterval(_timer);
 					_tip = null;
 		        })   
 				
 				/* close tip if map is clicked but not dragged */
+				/*
 				_timer = setInterval(function(){
 					_tip = self;
 					clearInterval(_timer);
@@ -588,6 +589,7 @@ function utils_add_map_tooltip(map,mapel,map_type){
 						if(_timer)clearInterval(_timer);
 					}
 				});
+				*/
 				
 	        	return cnt;
 	      }).render()

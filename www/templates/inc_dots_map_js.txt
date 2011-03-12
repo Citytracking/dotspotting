@@ -183,8 +183,6 @@ function dot_tip_header(dotid){
 	
 	var html = "";
 	if(_dotspotting.assigned_title && dot[_dotspotting.assigned_title]){
-	console.log(dot);
-	console.log(dot[_dotspotting.assigned_title]);
 	 	html += '<a href="' + dot.url + '">' + dot[_dotspotting.assigned_title] + '</a>';
 	}else{
 		html += 'This is dot #<a href="' + dot.url + '">' + dot.id + '</a>';
