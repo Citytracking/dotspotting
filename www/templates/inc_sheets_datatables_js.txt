@@ -31,7 +31,7 @@
 					// Dunno... maybe... it's kind of weird (20101202/straup)
 					// (sPreviousSearch == '') ? $("#headline").show() : $("#headline").hide();
 
-					draw_map();
+					draw_map(true);
 				}, iDelay);
 			}
 		});

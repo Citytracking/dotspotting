@@ -28,7 +28,7 @@
 					_that.fnFilter( anControl.val() );
 
 					
-					draw_map();
+					draw_map(true);
 				}, iDelay);
 			}
 		});
