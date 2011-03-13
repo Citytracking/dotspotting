@@ -262,26 +262,28 @@ function collect_sheets(){
 	};
 }
 
-function draw_map_modestmaps(sheets){
+function draw_map_modestmaps(sheets,update_from_search){
 	var incomingState=false;
 	var _extent = null;
 	var map = utils_modestmap('map');
 	
 	// check to see if there incoming coordinates 
 	var qs = doHashSetup();
-	if(qs && qs.contains('c')){
-		var _mapstate = qs.get('c');
-		var args = _mapstate.split("/").map(Number);
-	   if (args.length < 3 || args.some(isNaN)){
-		//
-	   } else {
-			incomingState = true;
-			var loc = new mm.Location(args[1], args[2]);
-	    	map.setCenterZoom(loc, args[0]);
-			//store original extent
-			_extent = map.getExtent();
-	   }
+	if(!update_from_search){
+		if(qs && qs.contains('c')){
+			var _mapstate = qs.get('c');
+			var args = _mapstate.split("/").map(Number);
+		   if (args.length < 3 || args.some(isNaN)){
+			//
+		   } else {
+				incomingState = true;
+				var loc = new mm.Location(args[1], args[2]);
+		    	map.setCenterZoom(loc, args[0]);
+				//store original extent
+				_extent = map.getExtent();
+		   }
 	
+		}
 	}
 	
 	if(!incomingState){
@@ -339,26 +341,28 @@ function draw_map_modestmaps(sheets){
 	return;
 }
 
-function draw_map_polymaps(sheets){
+function draw_map_polymaps(sheets,update_from_search){
 	var incomingState=false;
 	var extent = null;
 	var map = utils_polymap('map');
 	
 	// check to see if there incoming coordinates 
 	var qs = doHashSetup();
-	if(qs && qs.contains('c')){
-		var _mapstate = qs.get('c');
-		var args = _mapstate.split("/").map(Number);
-	   if (args.length < 3 || args.some(isNaN)){
-			//
-	   } else {
-			incomingState = true;
-			map.center({lon: args[2], lat: args[1]});
-			map.zoom(args[0]);
-			//store original extent
-			extent = map.extent();
-	   }
+	if(!update_from_search){
+		if(qs && qs.contains('c')){
+			var _mapstate = qs.get('c');
+			var args = _mapstate.split("/").map(Number);
+		   if (args.length < 3 || args.some(isNaN)){
+				//
+		   } else {
+				incomingState = true;
+				map.center({lon: args[2], lat: args[1]});
+				map.zoom(args[0]);
+				//store original extent
+				extent = map.extent();
+		   }
 	
+		}
 	}
 	if(!incomingState){
 		extent = utils_adjust_bbox(sheets['extent']);
@@ -386,18 +390,18 @@ function draw_map_polymaps(sheets){
 	return 1;
 }
 
-function draw_map(){
+function draw_map(update_from_search){
 
 	utils_scrub_map();
 
 	var sheets = collect_sheets();
 
 	if (_dotspotting.use_polymaps){	
-		draw_map_polymaps(sheets);
+		draw_map_polymaps(sheets,update_from_search);
 		return;
 	}
 
-	draw_map_modestmaps(sheets);
+	draw_map_modestmaps(sheets,update_from_search);
 }
 	
 utils_load_map();
