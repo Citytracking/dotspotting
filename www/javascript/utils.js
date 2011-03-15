@@ -498,29 +498,35 @@ function utils_map_toggle_size(map,map_type,tallSize,markers){
 
 /* 
 	Add ToolTip & bind marker click event to #map
-	
-	tooltip appears on click
-	
-	#############################################################################
-	code & styles from Portland crime map: https://github.com/Caged/portlandcrime
-	#############################################################################
+	not activated on sheet views, only dots view
+
+	** modified from Portland crime map: https://github.com/Caged/portlandcrime **
+
+	@param 	map			reference to either modestmap or polymap instance
+	@param	mapel		jQuery object of map parent
+	@parem	map_type	either "mm" , "po"
 */
 function utils_add_map_tooltip(map,mapel,map_type){
 	
+	$(".maptip").each(function(){
+		$(this).remove();
+	});
+	
 	$("#map").unbind('markerclick');
-	$("#map").bind('markerclick', function(e,dotid,coor) {
-		
-		var dot = dot_getinfo_json(dotid);
+	$("#map").bind('markerclick', function(e,dotid) {
 		
 		if(mapel.length == 0) return;
-
+		
+		var dot = dot_getinfo_json(dotid);
+		if(!dot.latitude && !dot.longitude) return;
+		
 		var props = new Object();
-		props.location = (map_type == "mm") ? new com.modestmaps.Location(dot.latitude,dot.longitude) : coor;
+		props.location = (map_type == "mm") ? new com.modestmaps.Location(dot.latitude,dot.longitude) : {lat: dot.latitude, lon: dot.longitude};
 		props.map = map;
 		props.id = dotid;
 		props.map_type = map_type;
 	
-		mapel.maptip(this)
+		 mapel.maptip(this)
 		  .data(props)
 	      .map(map)
 	      .location(props.location)
@@ -536,12 +542,10 @@ function utils_add_map_tooltip(map,mapel,map_type){
 
 	        return parseFloat(point.x + (radius / 2.0) + 20)
 	      }).content(function(d) {
+
 			var _timer,
 			_clickTime,
 			_tip = null;
-			
-			$('#map').unbind('mousedown');
-			$('#map').unbind('mouseup');
 			
 	        var self = this,
 	            props = d,
@@ -551,50 +555,97 @@ function utils_add_map_tooltip(map,mapel,map_type){
 				
 	            close = $('<span/>').addClass('close').html('<img src="'+_dotspotting.abs_root_url+'images/x.png"/>')
 		        hdr.html(dot_tip_header(props.id));
-		        hdr.append(close);
-			
+		        //hdr.append(close);
+				
+				cnt.append(close);
+				
 		        bdy.html(dot_tip_body(props.id))
 
 		        cnt.append($('<div/>').addClass('nub'))
 		        cnt.append(hdr).append(bdy) 
 				
 		        close.click(function() {
-		          self.hide();
+					closeTip(self);
+		        })   
+		
+				
+				/* 	attempt to allow clicking anywhere on map as a way to close tooltip
+					seems to be working
+				*/	
+				
+				// put a delay on creating handlers
+				_timer = setInterval(function(){
+					setupMapCloseHandlers();
+					console.log("timer: ",_timer);
+					clearInterval(_timer);
+				}, 1000);
+				
+				function setupMapCloseHandlers(){
+					_tip = self;
+					
+					
+					$('#map').unbind('mousedown');
+					$('#map').unbind('mouseup');
+					
+					 $("#map").mousedown(function () {
+						_clickTime = new Date();
+					});
+
+					$("#map").mouseup(function (e) {
+						// check to see if mouseup came from dot
+						// if so, don't execute
+						if(dotHasClass(e.target,"dot"))return;
+						
+						// no clickTime, no go
+						if(!_clickTime)return;
+						
+						//calculate time between mousedown & mouseup
+						var _endTime = new Date();
+						var _diff = _endTime.getTime() - _clickTime.getTime();
+						
+						// check to see if this is a click or drag
+						if(_tip && (_diff < 150) ){
+							closeTip(_tip);
+						}
+					});
+				}
+				
+				
+				
+				function closeTip(_tipRef){
+					if(!_tipRef)return;
+					if(_timer){
+						clearInterval(_timer);
+						_timer = null;
+					}
+					$('#map').unbind('mousedown');
+					$('#map').unbind('mouseup');
+					_tipRef.hide();
+				
 					dot_unselect(props.id);
 					_dotspotting.selected_dot = null;
-					//if(_timer)clearInterval(_timer);
-					_tip = null;
-		        })   
+				}
+			
 				
-				/* close tip if map is clicked but not dragged */
-				/*
-				_timer = setInterval(function(){
-					_tip = self;
-					clearInterval(_timer);
-				}, 2000);
-				
-				 $("#map").mousedown(function () {
-					_clickTime = new Date();
-				});
-				
-				$("#map").mouseup(function () {
-					var _endTime = new Date();
-					var _diff = _endTime.getTime() - _clickTime.getTime();
-					
-					if(_tip && (_diff < 150) ){
-						_tip.hide();
-						_tip = null;
-						dot_unselect(props.id);
-						_dotspotting.selected_dot = null;
-						if(_timer)clearInterval(_timer);
-					}
-				});
-				*/
 				
 	        	return cnt;
 	      }).render()
+	
 
 	});
+	
+	/* 	could do something like this if you wanted a selected dot to stay active during filtering
+		would also need to check if dot is bound box 
+		and also not reset _dotspotting.selected_dot global to null during draw_map_... function
+		
+		
+	if(_dotspotting.selected_dot){
+		console.log("DOT ID: ",_dotspotting.selected_dot);
+		var _tmp = _dotspotting.selected_dot;
+		_dotspotting.selected_dot = null;
+		dot_onclick(_tmp);
+	}
+	*/
 }
 
 // Hash functions

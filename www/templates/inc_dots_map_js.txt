@@ -23,7 +23,7 @@ function dot_onclick(dotid,lon,lat){
 		dot_unselect(dotid);
 		
 		// trigger the tooltip
-		$("#map").trigger('markerclick',[dotid,{lat: lat, lon: lon}]);
+		$("#map").trigger('markerclick',dotid);
 		
 		// add highlight class if it isn't there already
 		/*
@@ -34,7 +34,7 @@ function dot_onclick(dotid,lon,lat){
 		dotAddClass(document.getElementById("dot_"+dotid) ,'dotHover');
 	}
 	
-	/*
+	/* 
 	if (dot['id']){
 		location.href = dot.url;
 	}
@@ -45,8 +45,6 @@ function dot_onclick(dotid,lon,lat){
 function dot_onmouseover(dotid){
 	
 	var dot = dot_getinfo_json(dotid);
-		
-	//console.log(all_dots2[_dotspotting.dots_list_dots[dotid]]);
 	
 	if (! dot['id']){
 		return;
@@ -283,6 +281,10 @@ function dot_restore_tr(){
 	_dotspotting['highlighted'] = null;
 }
 
+/* ------------------------------------------------------------------------*/
+/* 		Dot Lookups														   */
+/* ------------------------------------------------------------------------*/
+
 /*
  * "dotspotting.dots_list_dots" is a hash table storing the position of the dot object in JSON object.
 */
@@ -296,8 +298,9 @@ function dot_getinfo_json(dotid){
 	var dot = {};
 	for(i=0;i<all_dots.length;i++){
 		if(all_dots[i].id == dotid){
+			var _dot = (!all_dots[i]['url']) ? row2dot_json(i) : all_dots[i];
 			_dotspotting.dots_list_dots[dotid] = i;
-			return all_dots[i];
+			return _dot;
 		}
 	}
 	return dot;
@@ -324,7 +327,7 @@ function strip_ws_text(str){
 }
 
 function row2dot_json(i,headers){
-	
+
 	if(headers === null || headers === undefined)headers = collect_headers();
 	
 	if(!all_dots.length)return {};
@@ -336,8 +339,8 @@ function row2dot_json(i,headers){
 	if(all_dots[i].longitude)all_dots[i].longitude = parseFloat( strip_ws_text(all_dots[i].longitude) );
 	if(all_dots[i].latitude)all_dots[i].latitude = parseFloat( strip_ws_text(all_dots[i].latitude) );
 	
-//	dot_search_details(all_dots[i],"title");
-
+	/*var _adetail = dot_search_details(all_dots[i],"magnitude");*/
+	
 	var ownerid = strip_ws_text(all_dots[i].user_id);
 
 	if (ownerid){
@@ -352,42 +355,17 @@ function row2dot_json(i,headers){
 	return all_dots[i];
 }
 
+// search through dot details
 function dot_search_details(dot, key){
 	for(var hh in dot['details']){
-		//if(dot['details'][hh].label == key)console.log(dot['details'][hh].label,dot['details'][hh].value);
+		if(dot['details'][hh].label == key){
+			return dot['details'][hh].value;
+		}
 	}
+	return "";
 }
 
 
-function row2dot_id(row, headers){
-	var _id = "";
-	$(row).find("td").each(function(col, td){
-		var classes = $(td).attr("class");
-		var key = (headers) ? headers[col] : null;
-
-		if (classes){
-
-			var match = classes.match(/\bdotslist_([a-z_]+)\b/);
-
-			if (match){
-				key = match[1];
-			}
-		}
-
-		if (! key){
-			return {};
-		}
-
-		if (key == 'id'){
-			var value = $(td).text()
-			value = value.replace(/^\s+/, '');
-			value = value.replace(/\s+$/, '');
-			_id = Number(value);
-		}
-
-	});
-	return _id;
-}
 function row2dot(row, headers){
 
 	var dot = {};
@@ -476,13 +454,15 @@ function collect_dots(){
 	var nelat = null;
 	var nelon = null;
 	
-	// parse all the dots into lookup table
+	// parse all the dots which also creates a lookup table
+	// should only run once per page load
 	if(_dotspotting.dots_list_dots[all_dots[0].id] == undefined){
 		$(all_dots).each(function(i){
 			if (!all_dots[i]['url'])row2dot_json(i,headers);
 		});
 	}
 	
+	// now create dots object to feed to map
 	var features = $("#user_dots tbody tr").map(function(i,row){
 		var classes = $(this).attr("id");
 		var match = classes.match(/\bdotslist_dot_([0-9]+)\b/);
@@ -492,20 +472,6 @@ function collect_dots(){
 		}
 		
 		var dot = (_rowid != null) ? all_dots[_dotspotting.dots_list_dots[_rowid]] : {};
-		
-		/*
-		//var dot = row2dot(row);
-		// if it has a url property, then it's already been processed
-		//var dot = (all_dots[i]['url']) ? all_dots[i] : row2dot_json(i,headers);
-		//var dot = (all_dots[i]['url']) ? _dotspotting.dots_list_dots[all_dots[i].id] : row2dot_json(i,headers);
-		
-		if(_dotspotting.datatables_query){
-			var _tid = row2dot_id(row,headers)
-			dot = all_dots[_dotspotting.dots_list_dots[_tid]];
-		}else{
-			dot = (all_dots[i]['url']) ? all_dots[i] : row2dot_json(i,headers);
-		}
-		*/
 
 		var loc = {
 			lat: dot.latitude,
@@ -647,6 +613,7 @@ function draw_map_polymaps(dots,update_from_search){
 	var map = utils_polymap('map');
 	var current_map_zoom,extent = null;
 	var incomingState=false;
+	
 	// init selected dot variable
 	_dotspotting.selected_dot = null;
 
@@ -733,11 +700,15 @@ function draw_map_polymaps(dots,update_from_search){
 	
 function draw_map(update_from_search){
 
+	//console.log("DOT ID: ",_dotspotting.selected_dot);
+	
+	//if(_dotspotting.selected_dot)$("#map").trigger('killAllTips');
+
 	utils_scrub_map();
 	
 	var dots = collect_dots();
 	
-		
+	
 	if (_dotspotting.use_polymaps){	
 		draw_map_polymaps(dots,update_from_search);
 		return;

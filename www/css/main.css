@@ -179,10 +179,10 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 
 .right_column{width:45%;float:right;margin:0;}
 .left_column{width:54%;float:left;margin:0;}
-table.page_dot{margin:0;padding:0;width:100%;border-color:#fff;font-size:13px;}
+table.page_dot{margin:5px 0 0;padding:0;width:100%;border-color:#fff;font-size:13px;border-spacing:0 0;}
 table.page_dot tr{}
-table.page_dot th{border-right: 2px solid black;background:rgb(255,255,255);text-align:left;padding:5px 10px 5px 5px;}
-table.page_dot td{text-align:left;padding:5px;}
+table.page_dot th{border-right: 2px solid black;background:rgb(255,255,255);text-align:left;padding:5px 10px 5px 5px;border-top:1px solid #000;}
+table.page_dot td{text-align:left;padding:5px;border-top:1px solid #000;}
 
 #page_dot_pagination{position:absolute;bottom:2px;right:0;text-align:left;margin:5px 10px 10px 0;text-transform:uppercase;}
 #page_dot_pagination p{font-size:11px;}
@@ -248,7 +248,7 @@ co-opted from Portland crime map: https://github.com/Caged/portlandcrime
 div.maptip-cnt{margin:5px;width:200px;background:#fff;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}
 .maptip h2{min-height:14px;font-size:14px;border-bottom:1px solid #ccc;padding:5px;margin:0;position:relative;}
 .maptip h2 a{color:#333;}
-.maptip span.close{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;top:5px;right:5px;position:absolute;font-weight:800;color:rgb(11,189,255);cursor:pointer;}
+.maptip span.close{position:absolute;display:block;top:-6px;right:-2px;height:10px;width:10px;color:rgb(11,189,255);cursor:pointer;}
 .maptip span.close:hover{}
 .maptip p{padding:5px;line-height:1.2em;font-size:11px;margin:0;}
 .maptip span.date{display:block;color:#999;margin-top:5px;}
