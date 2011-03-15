@@ -36,17 +36,25 @@ A dot by {$cfg.user.username|escape}
 {include file="inc_head.txt"}
 
 
+{capture assign='dotTitle'}
+{if $assigned_title|@count}
+	{$dot.$assigned_title}
+{else}
+	'Dot: #$dot.id'
+{/if}
+{/capture}
 
 {* sheet title area *}
 <ul id="sheet_head" class="clearfix">
 	{* headline *}
 	<li>	
 		{if $dot.sheet.label}
-		<h3>Dot: #{$dot.id} <span class="txt_small">This dot belongs to sheet <a href="{$dot.sheet|@urls_url_for_sheet}" title="view {$dot.sheet.label|truncate:20:"..."|escape} sheet" class="blue_links">{$dot.sheet.label|escape}</a> by <a href="{$owner|@urls_url_for_user}" title="all dots owned by, {$owner.username|escape}" class="blue_links">{$owner.username|escape}</a> created on {$dot.sheet.created|date_format:"%B %e, %Y at %I:%M %p"|escape}</span></h3>
+		<h3>{$dotTitle|escape} <span class="txt_small">This dot belongs to sheet <a href="{$dot.sheet|@urls_url_for_sheet}" title="view {$dot.sheet.label|truncate:20:"..."|escape} sheet" class="blue_links">{$dot.sheet.label|escape}</a> by <a href="{$owner|@urls_url_for_user}" title="all dots owned by, {$owner.username|escape}" class="blue_links">{$owner.username|escape}</a> created on {$dot.sheet.created|date_format:"%B %e, %Y at %I:%M %p"|escape}</span></h3>
 		{else}
-		<h3>Dot: #{$dot.id} <span class="txt_small">This dot belongs to an <a href="{$dot.sheet|@urls_url_for_sheet}" title="view unnamed sheet" class="blue_links">unnamed sheet</a> by <a href="{$owner|@urls_url_for_user}" title="all dots owned by, {$owner.username|escape}" class="blue_links">{$owner.username|escape}</a> created on {$dot.sheet.created|date_format:"%B %e, %Y at %I:%M %p"|escape}</span></h3>
+		<h3>{$dotTitle|escape} <span class="txt_small">This dot belongs to an <a href="{$dot.sheet|@urls_url_for_sheet}" title="view unnamed sheet" class="blue_links">unnamed sheet</a> by <a href="{$owner|@urls_url_for_user}" title="all dots owned by, {$owner.username|escape}" class="blue_links">{$owner.username|escape}</a> created on {$dot.sheet.created|date_format:"%B %e, %Y at %I:%M %p"|escape}</span></h3>
 		{/if}
 	</li>	
+	
 	
 	
 	{* pagination *}

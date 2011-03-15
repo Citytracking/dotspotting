@@ -3,6 +3,13 @@
 		<th>owner</th>
 		<td><a href="{$owner|@urls_url_for_user}" title="all dots owned by, {$owner.username|escape}">{$owner.username|escape}</a></td>
 	</tr>
+	
+	{if $assigned_title|@count}
+		<tr>
+			<th>ID</th>
+			<td><a href="{$cfg.abs_root_url}u/{$dot.user_id|escape}/dots/{$dot.id|escape}" title="link to dot #{$dot.id|escape}">{$dot.id|escape}</a></td>
+		</tr>
+	{/if}
 
 	<tr>
 		<th>latitude</th>

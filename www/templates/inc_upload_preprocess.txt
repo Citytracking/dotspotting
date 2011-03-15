@@ -385,6 +385,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 $("#upload_file").submit(function(e){
 	//e.preventDefault();
 	var data = preprocess_collect_data();
+	console.log(data);
 	data = JSON.stringify(data);
 	$("input[type=hidden][name=data]").val(data);
 });
@@ -475,12 +476,17 @@ function preprocess_collect_data(){
 		var oRecord = dt.dataTable.getRecord(i);
 		
 		// strip link out of row id
-		var $a = oRecord.getData("row id").split(/^(\d+)/);
-		dt.dataTable.updateCell(oRecord,"row id",$a[1]);
+		//var $a = oRecord.getData("row id").split(/^(\d+)/);
+		//dt.dataTable.updateCell(oRecord,"row id",$a[1]);
 		
 		// add title
 		if(_title.length){
 			dt.dataTable.updateCell(oRecord,"title_internal","{"+_title+"}");
+		}
+		
+		// get rid of row id, because we created them in first place sucka
+		if(oRecord._oData['row id']){
+			delete oRecord._oData['row id'];
 		}
 		rows.push(oRecord._oData);		
 	});
