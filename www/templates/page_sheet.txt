@@ -37,13 +37,14 @@ An unnamed sheet of dots by {$owner.username|escape}
 		<a href="#" title="toggle map height" class="txt_small green_links taller">Taller Map</a>
 	</li>
 	
-	{if $is_own}
+
 	<li id="sheet_user_options">
 	<form method="POST">
+	{if $is_own}
 		{$crumb_key|crumb_input}
 		<input type="hidden" name="delete" value="1" />
 		<input type="submit" value="DELETE THIS SHEET" />
-		
+	{/if}
 		<select onchange="prep_sheet_export(this);return false;">
 		<option selected>Export options</option>
 		{foreach from=$export_formats item="fmt" name="formats"}
@@ -52,7 +53,6 @@ An unnamed sheet of dots by {$owner.username|escape}
 		</select>
 	</form>
 	</li>
-	{/if}
 	
 </ul>
 
