@@ -1107,7 +1107,9 @@
 
 		$skip_required_latlon = 0;
 
-		if (isset($data['address']) && ((empty($data['latitude'])) || (empty($data['longitude'])))){
+		$has_latlon = ((empty($data['latitude'])) || (empty($data['longitude']))) ? 0 : 1;
+
+		if ((! $has_latlon) && (isset($data['address']))){
 
 			$skip_required_latlon = 1;
 

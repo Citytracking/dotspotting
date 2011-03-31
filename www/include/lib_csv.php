@@ -44,8 +44,25 @@
 
 			if (($record === 1) && (! $field_names)){
 
+				$has_latitude = (in_array('latitude', $row)) ? 1 : 0;
+				$has_longitude = (in_array('longitude', $row)) ? 1 : 0;
+
+				$possible_lat = array('lat');
+				$possible_lon = array('lon', 'long', 'lng');
+
 				foreach ($row as $col){
-					$field_names[] = strtolower($col);
+
+					$col = strtolower($col);
+
+					if ((! $has_latitude) && (in_array($col, $possible_lat))){
+						$col = 'latitude';
+					}
+
+					if ((! $has_longitude) && (in_array($col, $possible_lon))){
+						$col = 'longitude';
+					}
+
+					$field_names[] = $col;
 				}
 
 				continue;
