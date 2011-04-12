@@ -77,14 +77,5 @@ ln -s /etc/apache2/mods-available/proxy_http.load /etc/apache2/mods-enabled/
 ${INSTALL} php5
 ${INSTALL} php-pear
 ${INSTALL} php5-mysql
-${INSTALL} php-mcrypt
-${INSTALL} php-curl
-
-# ${INSTALL} memcached
-# ${FIX_DPKG}
-
-# mv /etc/defaults/memcached /etc/defaults/memcached.dist
-# echo 'ENABLE_MEMCACHED=yes' > /etc/defaults/memcached
-# /etc/init.d/memcached start
-
-# ${INSTALL} php5-memcache
+${INSTALL} php5-mcrypt
+${INSTALL} php5-curl
