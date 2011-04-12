@@ -65,6 +65,7 @@ ${INSTALL} mysql-server
 
 ${INSTALL} apache2
 
+ln -s /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/
 ln -s /etc/apache2/mods-available/proxy.conf /etc/apache2/mods-enabled/
 ln -s /etc/apache2/mods-available/proxy.load /etc/apache2/mods-enabled/
 ln -s /etc/apache2/mods-available/proxy_http.load /etc/apache2/mods-enabled/
