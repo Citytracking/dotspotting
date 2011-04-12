@@ -19,8 +19,21 @@
 			'rss' => 'GeoRSS',
 			'shp' => 'Shapefile (ESRI)',
 			'xls' => 'Excel',
+			'txt' => 'Text (CSV)',
 		);
 
+		return $map;
+	}
+	
+	function formats_pretty_import_names_map(){
+		$pretty = formats_pretty_names_map();
+		$map = formats_valid_import_map('key by extension');
+		foreach (array_keys($map) as $format){
+			if(isset($pretty[$format])){
+				$map[$format] = $pretty[$format];
+			}
+		}
+		
 		return $map;
 	}
 
@@ -36,6 +49,7 @@
 			'application/rss+xml' => 'rss',
 			# 'application/vnd.esri-shapefile' => 'shp',
 			'application/vnd.ms-excel' => 'xls',
+			'text/plain' => 'csv',
 		);
 
 		# TODO: fix me so that this will work for mime-types
@@ -49,9 +63,9 @@
 	}
 
 	#################################################################
-
+		
 	function formats_valid_export_map($key_by_extension=0){
-
+		
 		$map = array(
 			'text/csv' => 'csv',
 			'application/gpx+xml' => 'gpx',
@@ -61,7 +75,7 @@
 			'application/rss+xml' => 'rss',
 			'application/vnd.ms-excel' => 'xls',
 		);
-
+	
 		# Ensure that we can actually generate PNG files
 		# Also, we don't strictly speaking need GD to
 		# generate PDF files except for the part where we

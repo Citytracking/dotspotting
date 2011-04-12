@@ -1,4 +1,5 @@
 <script type="text/javascript">
+
 {literal}
     $.fn.dataTableExt.oApi.fnSetFilteringHooks = function (oSettings){
 
@@ -12,18 +13,11 @@
 		var oTimerId = null;
 		var sPreviousSearch = null;
 		var anControl = $('input', _that.fnSettings().aanFeatures.f);
-		
+
 		anControl.unbind('keyup').bind( 'keyup', function(){
 			var $$this = $this;
 
 			_dotspotting.datatables_query = anControl.val();
-
-			var parts = location.href.split('#');
-			location.href = parts[0] + '#' + anControl.val();
-
-			var pm = document.getElementById('permalink');
-			pm.innerHTML = location.href;
-			pm.setAttribute('href', location.href);
 
 			if (sPreviousSearch === null || sPreviousSearch != anControl.val()) {
 				window.clearTimeout(oTimerId);
@@ -33,9 +27,8 @@
 					$.fn.dataTableExt.iApiIndex = i;
 					_that.fnFilter( anControl.val() );
 
-					// ok! now we get into dotspotting stuff!
-
-					draw_map();
+					
+					draw_map(true);
 				}, iDelay);
 			}
 		});
@@ -48,27 +41,42 @@
 {/literal}
 
 {if $is_sheet}
-{literal}
-$(document).ready(function(){ 
 
+{if $assigned_title|@count}
+	_dotspotting.assigned_title = '{$assigned_title}';
+{/if}
+
+{literal}
+
+
+$(document).ready(function(){ 
+	_dotspotting.datatables_query = '';
+	
      var dt = $('#user_dots').dataTable({
 	"bPaginate": false,
 	"bFilter": true,
 	"bInfo" : false,
 	"bProcessing": true,
+	"bScrollInfinite": true,
+	"bScrollCollapse": true,
+	"sScrollY": "200px",
+	"oLanguage": {"sSearch": "Filter table:"}
      });
+	$("#user_dots_wrapper").addClass("filter_adj");
 
      dt.fnSetFilteringHooks();
 
-     var parts = location.href.split('#');
+	// check to see if there incoming coordinates 
+	var qs = doHashSetup();
+	if(qs && qs.contains('s')){
+		dt.fnFilter(qs.get('s'));
+		_dotspotting.datatables_query = qs.get('s');
+		var pm = document.getElementById('permalink');
+		//pm.innerHTML = location.href;
+		if(pm)pm.setAttribute('href', location.href);
+	}
+     
 
-     if (parts.length == 2){
-	   dt.fnFilter(parts[1]);
-
-	   var pm = document.getElementById('permalink');
-	   pm.innerHTML = location.href;
-	   pm.setAttribute('href', location.href);
-     }
 });
 		
 {/literal}
@@ -82,6 +90,9 @@ $(document).ready(function(){
 	"bSort": false,
 	"bInfo" : false,
 	"bProcessing": true,
+	"bScrollInfinite": true,
+	"bScrollCollapse": true,
+	"sScrollY": "200px",
      });
 
 });

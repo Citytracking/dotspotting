@@ -262,41 +262,48 @@ function collect_sheets(){
 	};
 }
 
-function draw_map_modestmaps(sheets){
-
-	var _extent = utils_adjust_bbox(sheets['extent']);
-
-	var extent = [
-		new com.modestmaps.Location(_extent[0]['lat'], _extent[0]['lon']),
-		new com.modestmaps.Location(_extent[1]['lat'], _extent[1]['lon']),
-	];
-
+function draw_map_modestmaps(sheets,update_from_search){
+	var incomingState=false;
+	var _extent = null;
 	var map = utils_modestmap('map');
-	map.setExtent(extent);
+	
+	// check to see if there incoming coordinates 
+	var qs = doHashSetup();
+	if(!update_from_search){
+		if(qs && qs.contains('c')){
+			var _mapstate = qs.get('c');
+			var args = _mapstate.split("/").map(Number);
+		   if (args.length < 3 || args.some(isNaN)){
+			//
+		   } else {
+				incomingState = true;
+				var loc = new mm.Location(args[1], args[2]);
+		    	map.setCenterZoom(loc, args[0]);
+				//store original extent
+				_extent = map.getExtent();
+		   }
+	
+		}
+	}
+	
+	if(!incomingState){
+		_extent = utils_adjust_bbox(sheets['extent']);
 
-	// This is not awesome but in the absence of a reliable way to
-	// read CSS declaration in JS (does one exist now?) it's just
-	// what we're going to do for now. See also: main.css .dot and
-	// .dot:hover (20101207/straup)
+		var extent = [
+			new com.modestmaps.Location(_extent[0]['lat'], _extent[0]['lon']),
+			new com.modestmaps.Location(_extent[1]['lat'], _extent[1]['lon']),
+		];
 
-	var attrs = {
-		'fill' : '#00112d',
-		'fill-opacity' : .5,
-		'stroke' : '#99cc00',
-		'stroke-width' : 4,
-		'stroke-opacity' : 1,
-	};
+		map.setExtent(extent);
+	}
 
-	var attrs_hover = {
-		'fill' : '#00ddee',
-		'fill-opacity' : .1,
-		'stroke' : '#00112d',
-		'stroke-width' : 4,
-		'stroke-opacity' : 1,
-	};
+	// writing dot colors set in config file
+	// 0 = attrs , 1 = attrs_hover
+	var attr_array = get_mm_sheet_styles();
+	
 
 	var more = {
-		'attrs' : attrs,
+		'attrs' : attr_array[0],
 
 		// just inline the function mostly so that we don't
 		// have to redeclare the attrs_* hashes again
@@ -305,13 +312,17 @@ function draw_map_modestmaps(sheets){
 		'onload' : function(el, props){
 
 			el.mouseout(function (evt) {
-				this.attr(attrs);
+				this.attr(attr_array[0]);
 				sheet_onmouseout(props.id);
 			});
 
 			el.mouseover(function (evt) {
-				this.attr(attrs_hover);
+				this.attr(attr_array[1]);
 				sheet_onmouseover(props.id);
+			});
+			
+			el.click(function(evt){
+				sheet_onclick(props.id);
 			});
 		},
 	};
@@ -320,17 +331,45 @@ function draw_map_modestmaps(sheets){
 	markers.drawGeoJson(sheets['features'], more);
 
 	utils_modestmaps_add_compass(map);
+	
+	// create controls
+	utils_add_map_controls(map,"mm",extent);
+	
+	// map toggle size button
+	utils_map_toggle_size(map,"mm",500,null);
+	
 	return;
 }
 
-function draw_map_polymaps(sheets){
-
+function draw_map_polymaps(sheets,update_from_search){
+	var incomingState=false;
+	var extent = null;
 	var map = utils_polymap('map');
-
-	var extent = utils_adjust_bbox(sheets['extent']);
 	
-	map.extent(extent);
-	map.zoom(Math.floor(map.zoom()));
+	// check to see if there incoming coordinates 
+	var qs = doHashSetup();
+	if(!update_from_search){
+		if(qs && qs.contains('c')){
+			var _mapstate = qs.get('c');
+			var args = _mapstate.split("/").map(Number);
+		   if (args.length < 3 || args.some(isNaN)){
+				//
+		   } else {
+				incomingState = true;
+				map.center({lon: args[2], lat: args[1]});
+				map.zoom(args[0]);
+				//store original extent
+				extent = map.extent();
+		   }
+	
+		}
+	}
+	if(!incomingState){
+		extent = utils_adjust_bbox(sheets['extent']);
+	
+		map.extent(extent);
+		map.zoom(Math.floor(map.zoom()));
+	}
 
 	// ok go!
 
@@ -341,21 +380,28 @@ function draw_map_polymaps(sheets){
 	map.add(boxes);
 
 	utils_polymaps_add_compass(map);
+	
+	// create controls
+	utils_add_map_controls(map,"po",extent);
+	
+	// map toggle size button
+	utils_map_toggle_size(map,"po",500,null);
+	
 	return 1;
 }
 
-function draw_map(){
+function draw_map(update_from_search){
 
 	utils_scrub_map();
 
 	var sheets = collect_sheets();
 
 	if (_dotspotting.use_polymaps){	
-		draw_map_polymaps(sheets);
+		draw_map_polymaps(sheets,update_from_search);
 		return;
 	}
 
-	draw_map_modestmaps(sheets);
+	draw_map_modestmaps(sheets,update_from_search);
 }
 	
 utils_load_map();

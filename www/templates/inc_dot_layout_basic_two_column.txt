@@ -5,7 +5,6 @@
    *                  *   *                  *
    ********************   ********************
 *}
-
 <div class="left_column">
 {include file="inc_dot_table.txt"}
 </div>

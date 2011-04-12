@@ -3,7 +3,14 @@
 <head>
 	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link rel="stylesheet" type="text/css" media="all" href="{$cfg.abs_root_url}css/main.css" />
+	
+	<style type="text/css">
+		@import url({$cfg.abs_root_url}css/main.css);
+		
+		{* pull in styles defined in global $cfg *}
+		{include file='inc_custom_styles.txt'}
+	</style>
+	
 	{* See this: still no JS compression or other smushing *}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/LAB.min.js"></script>
@@ -16,67 +23,81 @@
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/querystring.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/htmlspecialchars.js"></script>
 	<script type="text/javascript">
-
+		
 		{literal}var _dotspotting = {{/literal}
-		    'abs_root_url' : '{$cfg.abs_root_url}',
-		    'user' : {literal}{{/literal} id : {if $cfg.user.id}{$cfg.user.id|escape}{else}null{/if}, {literal}}{/literal},
-		    'maptiles_template_url' : '{$cfg.maptiles_template_url|escape}',
-		    'maptiles_template_hosts' : '{$cfg.maptiles_template_hosts|@join:","|escape}'.split(','),
-		    'use_polymaps' : Modernizr.svg,
-		    'enable_touch_support' : false,
-		    'js_loadlib' : false,
+			    'abs_root_url' : '{$cfg.abs_root_url}',
+			    'user' : {ldelim} id : {if $cfg.user.id}{$cfg.user.id|escape}{else}null{/if} {rdelim},
+			    'maptiles_template_url' : '{$cfg.maptiles_template_url|escape}',
+			    'maptiles_template_hosts' : '{$cfg.maptiles_template_hosts|@join:","|escape}'.split(','),
+			    'use_polymaps' : Modernizr.svg,
+				'enable_touch_support' : Modernizr.touch,
+			    'js_loadlib' : false,
 
-		    'dots_list_mouseout_timers' : [],
-		    'dots_list_dots' : {literal}{}{/literal},
+			    'dots_list_mouseout_timers' : [],
+			    'dots_list_dots' : {literal}{}{/literal},
 
-		    'sheets_list_mouseout_timers' : [],
-		    'sheets_list_sheets' : {literal}{}{/literal},
+			    'sheets_list_mouseout_timers' : [],
+			    'sheets_list_sheets' : {literal}{}{/literal},
+				'dot_color' : {$cfg.dot_color_scheme|@json_encode},
+				'sheet_color' : {$cfg.sheet_color_scheme|@json_encode}
+				
+				
 
 		{literal}};{/literal}
-
-{literal}
-
-    if (_dotspotting.use_polymaps){
-
-		$LAB
-		.script(_dotspotting.abs_root_url + 'javascript/maptip.js')
-		.script(_dotspotting.abs_root_url + 'javascript/polymaps.min.js')
-		.script(_dotspotting.abs_root_url + 'javascript/polymaps.tilestache.js')
-		.script(_dotspotting.abs_root_url + 'javascript/polymaps_touch.min.js')
-		.wait(function(){
-			_dotspotting.js_loadlib = true;
-			_dotspotting.enable_touch_support = isTouchDevice();
-		});
 		
-    }   
+		
+			{literal}
+				$LAB.setGlobalDefaults({AlwaysPreserveOrder:true});
+			    if (_dotspotting.use_polymaps){
+					
+					$LAB
+					.script(_dotspotting.abs_root_url + 'javascript/maptip.js')
+					.script(_dotspotting.abs_root_url + 'javascript/polymaps.min.js')
+					.script(_dotspotting.abs_root_url + 'javascript/polymaps.tilestache.js')
+					.script(_dotspotting.abs_root_url + 'javascript/polymaps_touch.min.js')
+					.script(_dotspotting.abs_root_url + 'javascript/polymaps-htmapl.js')
+					.script(_dotspotting.abs_root_url + "javascript/htmapl.js")
+					.wait(function(){
+						if($("div.map"))$("div.map").htmapl();
+						_dotspotting.js_loadlib = true;
+					});
+					
+			    }
+				else {
+					
+					$LAB
+					.script(_dotspotting.abs_root_url + 'javascript/raphael-min.js')
+					.script(_dotspotting.abs_root_url + 'javascript/maptip.js')
+					.script(_dotspotting.abs_root_url + 'javascript/modestmaps.min.js')
+					.script(_dotspotting.abs_root_url + 'javascript/modestmaps.markers.js')
+					.script(_dotspotting.abs_root_url + 'javascript/modestmaps.compass.js')
+					.script(_dotspotting.abs_root_url + 'javascript/modestmaps.tilestache.js')
+					.script(_dotspotting.abs_root_url + 'javascript/modestmaps-htmapl.js')
+					.script(_dotspotting.abs_root_url + "javascript/htmapl.js")
+					.wait(function(){
+						if($("div.map"))$("div.map").htmapl();
+						_dotspotting.js_loadlib = true;
+					});
+					
+					
+			    }
 
-    else {
+			    // display the map caveat for people who aren't using polymaps
+			    // proper map interaction is waiting on porting MM.markers to
+			    // use raphael which also means making the MM.compass code work
+			    // with current versions of raphael... (20101202/straup)
 
-       $LAB
-       .script(_dotspotting.abs_root_url + 'javascript/raphael-min.js')
-       .script(_dotspotting.abs_root_url + 'javascript/modestmaps.min.js')
-       .script(_dotspotting.abs_root_url + 'javascript/modestmaps.markers.js')
-       .script(_dotspotting.abs_root_url + 'javascript/modestmaps.compass.js')
-       .script(_dotspotting.abs_root_url + 'javascript/modestmaps.tilestache.js')
-       .wait(function(){
-		_dotspotting.js_loadlib = true;
-       });
-    }
+			    $(document).ready(function(){
+					if (! _dotspotting.use_polymaps){	
+						
+						$("#map_caveat").show();
+					}
+			    });
 
-    // display the map caveat for people who aren't using polymaps
-    // proper map interaction is waiting on porting MM.markers to
-    // use raphael which also means making the MM.compass code work
-    // with current versions of raphael... (20101202/straup)
-
-    $(document).ready(function(){
-	if (! _dotspotting.use_polymaps){	
-		$("#map_caveat").show();
-	}
-    });
-
-{/literal}
+		{/literal}
 	</script>
 	{$extra_head}
+	
 </head>
 <body>
 {if $cfg.show_header_message}
@@ -85,37 +106,6 @@
 
 <div id="main">
 
-	<div id="nav">
-		<div id="logo" style="float: left;">
-			<a href="{$cfg.abs_root_url}" style=""><img src="{$cfg.abs_root_url}images/dotspotting.png" height="68" width="324" alt="Dotspotting" class="logo" /></a>
-		</div>
-{if ! $cfg.site_disabled}
-		<div id="login" style="float: right;">
-{if $cfg.user.id}
-			Hello <strong>{$cfg.user.username|escape}</strong>!
-			<a href="{$cfg.abs_root_url}u/{$cfg.user.id}/">Dashboard</a>
-			|
-			<a href="{$cfg.abs_root_url}upload/">Upload</a>
-			|
-			<a href="{$cfg.abs_root_url}account/">Account</a>
-			|
-			<a href="{$cfg.abs_root_url}nearby/">Nearby</a>
-			|
-			<a href="{$cfg.abs_root_url}signout/">Logout</a>
-{else}
-			<a href="{$cfg.abs_root_url}nearby/">Nearby</a>
-			|
-			{if $cfg.enable_feature_signin}
-			{if $cfg.enable_feature_signup}
-			<a href="{$cfg.abs_root_url}signup/">Create New Account</a> | {/if}
-
-			<a href="{$cfg.abs_root_url}signin/">Sign In</a>
-			{/if}
-{/if}
-		</div>
-{/if}
-		<br clear="all" />
-		&nbsp;
-	</div>
+	{include file="inc_nav.txt"}
 
 	<div id="content">

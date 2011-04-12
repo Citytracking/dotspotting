@@ -1,10 +1,32 @@
-<h2>Hooray!</h2>
+<div id="upload_meezy">
+<ul class="clearfix">
+	<li class="first_meezy show_30"><span>Upload your file</span></li>
+	<li class="second_meezy show_30"><span>Check your dots</span></li>
+	<li class="last_meezy"><span>{if $upload.dots_received != $upload.dots_processed}Oops! Had a few problems.{else}Hooray! Successful upload.{/if}</span></li>
+</ul>
+</div>
 
+<div class="section_bunch_o_text" id="upload_success_content">
 {if $upload.sheet.label}
-<p>Your dots ({$upload.dots_processed|escape} of them) have been uploaded in to a sheet labeled <a href="{$upload.sheet|@urls_url_for_sheet}">{$upload.sheet.label|escape}</a>.</p>
+<h3>Your dots ({$upload.dots_processed|escape} of them) have been uploaded in to a sheet labeled "{$upload.sheet.label|escape}".</h3>
 {else}
-<p>Your dots ({$upload.dots_processed|escape} of them) have been uploaded in to a new <a href="{$upload.sheet|@urls_url_for_sheet}">sheet</a>.</p>
+<h3>Your dots ({$upload.dots_processed|escape} of them) have been uploaded in to a new sheet.</h3>
 {/if}
+
+{* alert the user to the fact that stuff like geocoding may have failed *}
+{if 0}
+{if $upload.errors|@count}
+<p>We did encounter a few errors along the way, though. Specifically:</p>
+
+<ul>
+{foreach from=$upload.errors item="row"}
+<li>Record number <strong>{$row.record|escape}</strong>: <q>{$row.error|escape}</q></li>
+{/foreach}
+</ul>
+{/if}
+{/if}
+
+<h3><a href="{$upload.sheet|@urls_url_for_sheet}" class="blue_links">View your sheet now</a></h3>
 
 {if $upload.dots_received != $upload.dots_processed}
 
@@ -17,3 +39,4 @@
 </ul>
 
 {/if}
+</div>

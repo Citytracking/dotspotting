@@ -1,8 +1,8 @@
-if (! com){
+if (!com){
 	var com = {};
 }
 
-if (! com.modestmaps){
+if (!com.modestmaps){
 	com.modestmaps = {};
 }
 
@@ -31,12 +31,21 @@ com.modestmaps.Markers = function(mm){
 	this.modestmap.addCallback('drawn', function(){
 		_self._redrawMarkers();
 	});
-
+	
+	// ??? what is _self.surface ???
 	this.modestmap.addCallback('resized', function(){
 		_self.surface.width = _self.container.offsetWidth;
 		_self.surface.height = _self.container.offsetHeight;
 		_self._redrawMarkers();
 	});
+};
+
+/* not really sure why the resize callback is not getting called above, no time to worry about it
+ * so just wrote this which is wired to the toggle map size button (seanc | 04042011)
+*/
+com.modestmaps.Markers.prototype.forceAresize = function(){
+	this.canvas.setSize(this.container.offsetWidth,this.container.offsetHeight);
+	this._redrawMarkers();
 };
 
 com.modestmaps.Markers.prototype.drawPoints = function(latlons, more){
@@ -49,7 +58,7 @@ com.modestmaps.Markers.prototype.drawPoints = function(latlons, more){
 		'type': 'point',
 		'locations': locations,
 		'extent': extent,
-		'more': more,
+		'more': more
 	});
 
 	var drawn = this._actuallyDrawPoints(locations, extent, more);
@@ -66,7 +75,7 @@ com.modestmaps.Markers.prototype.drawLines = function(latlons, more){
 		'type': 'line',
 		'locations': locations,
 		'extent': extent,
-		'more': more,
+		'more': more
 	});
 
 	var drawn = this._actuallyDrawLines(locations, draw_extent, more);
@@ -83,7 +92,7 @@ com.modestmaps.Markers.prototype.drawPolygons = function(latlons, more){
 		'type': 'polygon',
 		'locations': locations,
 		'extent': extent,
-		'more': more,
+		'more': more
 	});
 
 	var drawn = this._actuallyDrawPolygons(locations, extent, more);
@@ -118,7 +127,7 @@ com.modestmaps.Markers.prototype.drawBoundingBoxes = function(bboxes, more){
 			[nw[0], nw[1]],
 			[ne[0], ne[1]],
 			[se[0], se[1]],
-			[sw[0], sw[1]],
+			[sw[0], sw[1]]
 		];
 
 		polygons.push(coords);
@@ -396,7 +405,7 @@ com.modestmaps.Markers.prototype._actuallyDrawPoints = function(points, extent, 
 		var pt = this.modestmap.locationPoint(points[i]);
 		var coords = { 'x': pt.x, 'y': pt.y };
 
-		var circle = this._circle(coords, more)
+		var circle = this._circle(coords, more);
 		drawn.push(circle);
 	}
 

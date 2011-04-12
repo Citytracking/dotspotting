@@ -1,67 +1,12 @@
 	{foreach from=$dot.details item="stuff" key="label"}
-	{if !$dot.$label}
+	
+	{* skips title_internal & any label that matches a top_level property *}
+	{if !$dot.$label && $label != 'title_internal'}
 	<tr>
 		<th>{$label|escape}</th>
 		<td class="dot_details" id="details_{$label|escape}">
 		{* this shouldn't be inlined here *}
-		{if $label=='flickr:id' and $cfg.enable_feature_magicwords.flickr.id}
-			<script type="text/javascript">
-			var photo_id={$stuff.0.value|escape};
-			{literal}
-			setTimeout(function(){
-				display_flickr_photo(photo_id);
-			}, 2500);
-			</script>
-			{/literal}		
-			{$stuff.0.value|escape}
-
-		{elseif $label=='foursquare:venue' and $cfg.enable_feature_magicwords.foursquare.venue}
-			<script type="text/javascript">
-			var venue_id={$stuff.0.value|escape};
-			{literal}
-			setTimeout(function(){
-				show_foursquare_venue(venue_id);
-			}, 2500);
-			</script>
-			{/literal}		
-			{$stuff.0.value|escape}
-
-		{elseif $label=='oam:mapid' and $cfg.enable_feature_magicwords.oam.mapid}
-
-			<script type="text/javascript">
-			var map_id={$stuff.0.value|escape};
-			{literal}
-			setTimeout(function(){
-				show_oam_data(map_id);
-			}, 2500);
-			</script>
-			{/literal}		
-			{$stuff.0.value|escape}
-
-		{elseif $label=='walkingpapers:scanid' and $cfg.enable_feature_magicwords.walkingpapers.scanid}
-
-			<script type="text/javascript">
-			var scan_id='{$stuff.0.value|escape}';
-			{literal}
-			setTimeout(function(){
-				show_walkingpaper_scan(scan_id);
-			}, 2500);
-			</script>
-			{/literal}		
-			{$stuff.0.value|escape}
-
-		{elseif $label=='yahoo:woeid' and $cfg.enable_feature_magicwords.yahoo.woeid}
-
-			<script type="text/javascript">
-			var woe_id={$stuff.0.value|escape};
-			{literal}
-			setTimeout(function(){
-				display_woeid(woe_id);
-			}, 2500);
-			</script>
-			{/literal}		
-			{$stuff.0.value|escape}
-		{elseif $label == 'link'}
+		{if $label == 'link'}
 			<a href="{$stuff.0.value|escape}" title="photo detail page on flickr">{$stuff.0.value|escape}</a>
 		{else}
 			{foreach from=$stuff item="row"}
@@ -71,4 +16,61 @@
 		</td>
 	</tr>
 	{/if}
+	
+	{* check labels to see if it is a "magic kind" and display it in special way *}
+	{if $label=='flickr:id' and $cfg.enable_feature_magicwords.flickr.id}
+		<script type="text/javascript">
+		var photo_id={$stuff.0.value|escape};
+		{literal}
+		setTimeout(function(){
+			display_flickr_photo(photo_id);
+		}, 2500);
+		</script>
+		{/literal}		
+
+	{elseif $label=='foursquare:venue' and $cfg.enable_feature_magicwords.foursquare.venue}
+		<script type="text/javascript">
+		var venue_id={$stuff.0.value|escape};
+		{literal}
+		setTimeout(function(){
+			show_foursquare_venue(venue_id);
+		}, 2500);
+		</script>
+		{/literal}		
+
+	{elseif $label=='oam:mapid' and $cfg.enable_feature_magicwords.oam.mapid}
+
+		<script type="text/javascript">
+		var map_id={$stuff.0.value|escape};
+		{literal}
+		setTimeout(function(){
+			show_oam_data(map_id);
+		}, 2500);
+		</script>
+		{/literal}		
+
+	{elseif $label=='walkingpapers:scanid' and $cfg.enable_feature_magicwords.walkingpapers.scanid}
+
+		<script type="text/javascript">
+		var scan_id='{$stuff.0.value|escape}';
+		{literal}
+		setTimeout(function(){
+			show_walkingpaper_scan(scan_id);
+		}, 2500);
+		</script>
+		{/literal}		
+
+	{elseif $label=='yahoo:woeid' and $cfg.enable_feature_magicwords.yahoo.woeid}
+
+		<script type="text/javascript">
+		var woe_id={$stuff.0.value|escape};
+		{literal}
+		setTimeout(function(){
+			display_woeid(woe_id);
+		}, 2500);
+		</script>
+		{/literal}		
+		
+	{/if}
+		
 	{/foreach}

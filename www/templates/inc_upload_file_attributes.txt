@@ -1,22 +1,18 @@
-	<input type="text" size="40" name="label" value="{$label|escape}" />
-	<br />
-	<label for="label">Give your upload a name (optional)</label>
-	<br /><br />
+	<p><input type="text" size="40" name="label" value="{$label|escape}" />
+	<label for="label">Give your upload a name (optional)</label></p>
 
 	{if $cfg.enable_feature_dots_indexing}
-
+	<p>
 	<input type="text" size="40" name="dots_index_on" value="{$dots_index_on|escape}" />
-	<br />
 	<label for="dots_index_on">A comma-separated list of the field names you would like us to index (optional, maximum of {$cfg.dots_indexing_max_cols|escape})</label>
-	<br /><br />
-
+	</p>
 	{/if}
 
 	{if $import_formats}
 
-	<label for="mime_type">By default Dotspotting will try to guess what kind of file you're trying to upload but you can also tell it yourself:</label>
+	<p><label for="mime_type">By default Dotspotting will try to guess what kind of file you're trying to upload but you can also tell it yourself:</label>
 
-	<br /><br />
+
 
 <select name="mime_type">
 <option>Select a file type</option>
@@ -26,9 +22,8 @@
 {/foreach}
 </select>
 
-	<br /><br />
+	</p>
 	{/if}
 
-	<input type="checkbox" name="private"{if $private} checked="true"{/if}/>
-	<label for="private">make all these dots private</label>
-	<br /><br />
+	<p><input type="checkbox" name="private"{if $private} checked="true"{/if}/>
+	<label for="private">make all these dots private</label></p>

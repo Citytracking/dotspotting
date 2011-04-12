@@ -2,30 +2,84 @@
 	{* display something here? *}
 {else}
 
-<h3>Upload some dots</h3>
+{literal}
+<script type="text/javascript">
+	function upload_add_file(val){
+		if(val == undefined || val == null || val == "")return;
+		$('.upload_selected_file').html('');
+		var val_elements = val.split("\\");
+		var img = $("<img/>").attr("src",_dotspotting.abs_root_url+"images/upload_file.png");
+		var info = $("<span/>").text(val_elements[val_elements.length-1]);
+		
+		$('.upload_selected_file').append(img).append(info);
+	}
+</script>
+{/literal}
 
-<div style="margin-top:15px;">
+<h3>Upload to Dotspotting</h3>
 
-<p class="tx1">Dotspotting is able to import the following types of files: <strong>{", "|@formats_valid_import_list|escape}</strong>. At the moment, only the first {$cfg.import_max_records|escape} records in a file will be imported. For all the details about uploading data into Dotspotting, <a href="{$cfg.abs_root_url}faq/#uploads">click here</a>.</p>
-
-<p class="tx1" style="text-align:left;"><strong>All dots are made public by default.</strong> You can override this behaviour in your CSV file by including a <code>perms</code> column and assign the relevant rows a value of <q>private</q> or by ticking the <q>make all these dots private</q> checkbox below. There is currently no way to toggle privacy settings for individual dots but that be done shortly.</p>
-
-<p class="tx1" style="text-align:left;">You should not consider any data you put in to Dotspotting to be permanent. <strong>Yet.</strong> Dotspotting is still very much a work in motion and we may need to purge data or simply make mistakes before we bless the whole thing as <q>stable</q>.</p>
-
+<div id="upload_meezy">
+	<ul class="clearfix">
+		<li class="first_meezy"><span>Upload</span></li>
+		<li class="second_meezy show_30"><span>Check your dots</span></li>
+	</ul>
 </div>
+
+	<div id="upload_forms" class="clearfix">
+		<div id="upload_section_left">
+			<div class="upload_basics section_bunch_o_text">
+			<h3>Upload file from your computer</h3>
+			<form id="upload_file" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
+				{$crumb_key|crumb_input}
+
+				<p class="no_border upload_padder"><input type="file" size="40" name="upload"/></p>
+				<span class="upload_submit"><input type="SUBMIT" value="Upload" /></span>
+			</form>
+			
+				<ul>
+				<li>Dotspotting is able to import the following types of files:</li>
+				{foreach from=$import_formats_pretty item="type" key="extension"}
+				{capture assign="label"}{if $formats_pretty_names.$extension}{$formats_pretty_names.$extension|escape}{else}{$extension|@strtoupper|escape}{/if}{/capture}
+				<li><b>{$label|@strtoupper|escape}</b> - {$type|escape}</li>
+				{/foreach}
+				</ul>
+				<p>At the moment, only the first 1000 records in a file will be imported</p>
+				<p>For all the details about uploading data into Dotspotting, <a href="{$cfg.abs_root_url}faq">click here</a>.</p>
+			</div>
+		</div>
+
+	{if $include_url_upload}	
+		<div id="upload_section_right">
+			<div class="upload_basics section_bunch_o_text">
+			<h3>Choose a URL to upload</h3>
+			<form id="upload_file_url" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
+				{$crumb_key|crumb_input}
+				<p class="no_border upload_padder"><input type="text" size="40" name="url" /></p>
+				{* {include file="inc_upload_file_attributes.txt"} *}
+				<span class="upload_submit"><input type="SUBMIT" value="Submit" /></span>
+			</form>
+			
+				<ul>
+					<li>Will accept:</li>
+					<li><b>URL</b> - a remote file with a type listed on the left</li>
+					<li><b>Flickr</b> - upload geotagged photos from <a href="http://www.flickr.com/">Flickr</a>. (<a href="" class="has_helper">details</a>)</li>
+					<li class="no_show helper_instr">
+						<p>Many pages on Flickr contain an embedded (fancy talk for <q>hidden</q>) link to a machine-readable version of the most recent photos for that view &#8212; a user's photostream, a group pool, etc. &#8212; so you can simply copy and paste the URL in the input field below. For example:</p>
+						<p><code><a href="http://www.flickr.com/groups/flickrcommons/pool/">http://www.flickr.com/groups/flickrcommons/pool/</a></code></p>
+					</li>
+					<li><b>Google's MyMaps</b> - import data from Google's <a href="http://maps.google.com/support/bin/static.py?hl=en&page=guide.cs&guide=21670&topic=21676">MyMaps</a> service. (<a href="" class="has_helper">details</a>)</li>
+					<li class="no_show helper_instr">
+						<p>Just copy and paste the URL for a MyMaps webpage in to the form below. For example:</p>
+						<p><code><a href="http://maps.google.com/maps/ms?ie=UTF8&hl=en&msa=0&msid=106670048759200881360.0004565744030ff07d00e&z=11">http://maps.google.com/maps/ms?ie=UTF8&hl=en&msa=0&msid=106670048759200881360.0004565744030ff07d00e&z=11</a></code></p>
+					</li>
+				</ul>
+			</div>
+		</div>
+	{/if}
+	</div>
 
 <br />
 
-<form action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
-	{$crumb_key|crumb_input}
 
-	<input type="file" size="40" name="upload" />
-	<br />
-	<label for="upload">Choose a file to upload</label>
-	<br /><br />
-
-	{include file="inc_upload_file_attributes.txt"}
-
-	<input type="SUBMIT" value="UPLOAD YOUR DOTS!" />
-</form>
 {/if}
+

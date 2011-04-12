@@ -1,0 +1,93 @@
+{assign var="page_title" value="Upload some dots!"}
+{include file="inc_head.txt"}
+
+{if $error.uploads_disabled}
+<p class="error">Uploads are currently disabled.</p>
+
+{elseif $error.uploads_by_url_disabled}
+<p class="error">Uploads by URL are currently disabled.</p>
+
+{elseif $error.upload_error}
+<p class="error">The server was unable to upload your file.</p>
+
+{elseif $error.invalid_mimetype}
+<p class="error">That's either an invalid file format or, more likely, Dotspotting can't figure out what kind of file it is. Is it missing an extension (like <q>.xls</a>?)</p>
+
+{elseif $error.invalid_url}
+<p class="error">That's not any kind of URL that Dotspotting understands. {if $error.details} ({$error.details|escape}){/if}</p>
+
+{elseif $error.no_feed_url}
+<p class="error">There was a problem fetching the remote URL.</p>
+
+{elseif $error.upload_by_url_error}
+<p class="error">There was a problem fetching the remote URL: {$error_details|escape}</p>
+
+{elseif $error.missing_data}
+<p class="error">Hey! All the data Dotspotting was supposed to import disappeared! That's not right.</p>
+
+{elseif $error.invalid_data}
+<p class="error">Hey! That doesn't look like valid data.</p>
+
+{* unknown errors *}
+{elseif $error|@count}
+<p class="error">Hey, that's not right: There was unexpected expected error importing your data. We're really sorry about that and will try to fix that, shortly!</p>
+
+{* end of errors *}
+
+{elseif $step=='import'}
+	<div class="section_bunch_o_text">
+	{if $import.ok}
+		{include file="inc_upload_success.txt" upload=$import}
+	{else}
+	<p class="error">Your upload failed with the following errors:{if $rsp.error} {$rsp.error|escape}{/if}</p>
+
+	{if $rsp.errors|@count}
+	<ul>
+	{foreach from=$rsp.errors item="row"}
+		<li><q>{$row.error|escape}</q> at record #{$row.record|escape}</li>
+	{/foreach}
+	</ul>
+	{/if}
+
+	{/if}
+	</div>
+
+{elseif $step=='confirm'}
+<div class="section_bunch_o_text">
+{if $is_flickr}
+<h3>Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from <q class="important">Flickr</q> into Dotspotting?</h3>
+{elseif $is_google}
+<h3>Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from <q class="important">Google</q> into Dotspotting?</h3>
+{else}
+<h3>Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from the website <q class="important">{$parsed_url.host|escape}</q> into Dotspotting?</h3>
+{/if}
+<p class="tx1"><span style="font-style:italic;">The complete URL of the file you are about to import is: <code>{$url|escape}</code></span></p>
+
+<form id="upload_file" method="POST" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}">
+	{$crumb_key|crumb_input}
+	<input type="hidden" name="confirm" value="1" />
+	<input type="hidden" name="url" value="{$url|escape}" />
+
+
+	{* {include file="inc_upload_file_attributes.txt"} *}
+
+	<span class="upload_submit"><input type="submit" value="YES, PLEASE TO IMPORT" /></span>
+</form>
+</div>
+{elseif $step=='process'}
+
+{if $sheets|@count}
+
+{/if}
+
+{if $pre_process.data}
+{include file="inc_upload_preprocess.txt data=$pre_process.data columns=$pre_process.data.0|@array_keys errors=$pre_process.errors}
+{/if}
+
+{else}
+
+{include file="inc_upload_file.txt"}
+
+{/if}
+
+{include file="inc_foot.txt"}

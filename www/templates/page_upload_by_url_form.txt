@@ -13,12 +13,12 @@ INVISIBLE ERROR CAT HISSES AT YOU!
 
 {/if}
 
-<p class="tx1">Please enter you URL of the file you would like to import into Dotspotting</p>
+<h3 class="tx1">Please enter you URL of the file you would like to import into Dotspotting</h3>
 
-<form method="POST" action="{$cfg.abs_root_url}upload/url/">
+<form id="upload_file" method="POST" action="{$cfg.abs_root_url}upload/url/">
 	{$crumb_key|crumb_input}
-	<input type="text" name="url" value="{$url|escape}" size="40" />
-	<input type="submit" value="UPLOAD" />
+	<p class="no_border"><input type="text" name="url" value="{$url|escape}" size="70" /></p>
+	<span class="upload_submit"><input type="submit" value="Upload" /></span>
 </form>
 
 {include file="inc_foot.txt"}

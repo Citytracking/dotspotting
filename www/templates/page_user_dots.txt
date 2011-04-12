@@ -1,34 +1,48 @@
 {capture assign='page_title'}{$owner.username|possess} dots{/capture}
 {include file='inc_head.txt'}
 
-<h2>
-{if $is_own}
-{if $pagination.total_count == 0}
-<a href="{$owner|@urls_url_for_user}">Your</a> dots
-{elseif $pagination.total_count == 1}
-<a href="{$owner|@urls_url_for_user}">Your</a> dots (you've uploaded one so far!)
-{else}
-<a href="{$owner|@urls_url_for_user}">Your</a> dots (there are {$pagination.total_count|escape} of them!)
-{/if}
-{else}
-<a href="{$owner|@urls_url_for_user}">{$owner.username|possess|escape}</a> dots
-{/if}
-</h2>
 
 {if $dots|@count == 0}
+	<h3>
+	{if $owner.id != $cfg.user.id}
+		{$owner.username|escape} hasn't uploaded any dots yet.
+	{else}
+		You haven't uploaded any dots yet.
+	{/if}
+	</h3>
 
-{if $owner.id != $cfg.user.id}
-<p>{$owner.username|escape} hasn't uploaded any dots yet.</p>
 {else}
-<p>You haven't uploaded any dots yet.</p>
-{/if}
 
-{else}
+	{* sheet title area *}
+	<ul id="sheet_head" class="clearfix">
+		<li>
+			<h3>
+			{if $is_own}
+				{if $pagination.total_count == 0}
+					<a href="{$owner|@urls_url_for_user}" class="blue_links" title="view your user page">Your</a> dots
+				{elseif $pagination.total_count == 1}
+					<a href="{$owner|@urls_url_for_user}" class="blue_links" title="view your user page">Your</a> dots (you've uploaded one so far!)
+				{else}
+					<a href="{$owner|@urls_url_for_user}" class="blue_links" title="view your user page">Your</a> dots (there are {$pagination.total_count|escape} of them!)
+				{/if}
+			{else}
+				<a href="{$owner|@urls_url_for_user}" class="blue_links" title="view {$owner.username|possess|escape} user page">{$owner.username|possess|escape}</a> dots
+			{/if}
+			</h3>
+		</li>	
 
-{include file="inc_dots_list.txt" dots=$dots}
+		<li id="map_toggle_size" class="last_list_item">
+			<a href="#" title="toggle map height" class="txt_small green_links taller">Taller Map</a>
+		</li>
 
-{pagination}
+	</ul>
+
+	{include file="inc_dots_list.txt" dots=$dots}
+	{pagination}
 
 {/if}
 
 {include file='inc_foot.txt'}
+
+
+

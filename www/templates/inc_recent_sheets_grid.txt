@@ -1,0 +1,38 @@
+{if $header}<h3>{$header|escape}</h3>{/if}
+
+{if !$sheets|@count}
+{if $is_own}
+<p>You haven't uploaded any dots yet. <a href="{$cfg.abs_root_url}upload">Would you like to upload some now?</a></p>
+{else}
+<p>{$owner.username|escape} has not uploaded any dots yet.</p>
+{/if}
+{else}
+
+<div id="home_recents" class="recent_sheets_grid">
+	{if $recent_sheets|@count}
+		{foreach from=$recent_sheets item='sh' name=thumbs}
+		
+			     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.iteration % 4 == 0} last_thumb{/if}">
+					<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
+					<dd class="txt_small thumb_title">
+					{if $sh.label}
+						<a href="{$sh|@urls_url_for_sheet}">{$sh.label|escape}</a>
+					{else}
+						<span class="untitled"><a href="{$sh|@urls_url_for_sheet}">untitled</a></span>
+					{/if}
+					 by 
+					{if $owner}
+						<a href="{$owner|@urls_sheets_for_user}" class="blue_links">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
+					{else}
+						<a href="{$sh.user|@urls_sheets_for_user}" class="blue_links">{if $sh.user.id == $cfg.user.id}You{else}{$sh.user.username|escape}{/if}</a>
+					{/if}
+					 created on
+					{$sh.created|date_format:"%B %e, %Y"|escape}
+					</dd>
+				</dl>
+		
+		{/foreach}
+		<div class="clear"></div>
+	{/if}
+</div>
+{/if}

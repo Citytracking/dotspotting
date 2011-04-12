@@ -3,7 +3,7 @@
 
 function draw_map_polymaps(dot){
 
-	var more = { 'static': 1 };
+	var more = { 'justzoom':1 };
 	var map = utils_polymap('map', more);
 
 	map.center({lat: dot.latitude, lon: dot.longitude});
@@ -29,16 +29,17 @@ function draw_map_polymaps(dot){
 	points.on("load", utils_polymaps_assign_dot_properties);
 	map.add(points);
 	
-	//////////////////////////////////////////
-	//	Bind a resize map function to map	//
-	//////////////////////////////////////////
+
 	$("#map").bind('mapresize', function(e) {
 		map.resize();
 	});
+	
+	// create controls
+	utils_add_map_controls(map,"po",null);
 }
 
 function draw_map_modestmaps(dot){
-	var more = { 'static' : 1 };	 
+	var more = { 'justzoom':1 };	 
 	var map = utils_modestmap('map', more);
 
 	var loc = new com.modestmaps.Location(dot.latitude, dot.longitude);
@@ -54,26 +55,28 @@ function draw_map_modestmaps(dot){
 			'permissions': dot.permissions,
 		}
 	}];
-
-	var attrs = {
-		'fill' : '#00112d',
-		'fill-opacity' : .5,
-		'stroke' : '#99cc00',
-		'stroke-width' : 3,
-		'stroke-opacity' : 1,
-	};
+	var attr_array = get_mm_dot_styles();
 
 	var more = {
-		'attrs' : attrs,
+		'attrs' : attr_array[0],
 	};
 
 	var markers = new com.modestmaps.Markers(map);
 	markers.drawGeoJson(features, more);
+	
+	$("#map").bind('mapresize', function(e) {
+		var _w = Math.round($("#map").width());
+		var _h = Math.round($("#map").height());
+		map.setSize(_w,_h);
+		markers.forceAresize();
+	});
+	
+	// create controls
+	utils_add_map_controls(map,"mm",null);
 
 }
 
 function draw_map (dot){
-
 	if (_dotspotting.use_polymaps){
 		draw_map_polymaps(dot);
 		return;

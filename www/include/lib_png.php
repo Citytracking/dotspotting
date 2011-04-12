@@ -19,6 +19,11 @@
 
 		list($map, $img) = maps_image_for_dots($dots, $more);
 
+		if (! $img){
+			return null;
+		}
+
+		error_log("[WTF] img {$img} / {$more['path']}");
 		imagepng($img, $more['path']);
 		imagedestroy($img);
 

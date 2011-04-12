@@ -56,6 +56,11 @@
 
 		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_sheet}' AND id < '{$enc_id}'";
 		$sql = _dots_where_public_sql($sql);
+		
+		// added ORDER BY to SQL to grab previous dot, not the first dot (seanc | 02.11.2011)
+		$order_by = AddSlashes('id');
+		$order_sort = AddSlashes('DESC');
+		$sql .= " ORDER BY {$order_by} {$order_sort}";
 
 		$sql .= " LIMIT {$enc_count}";
 
@@ -73,7 +78,6 @@
 
 		# Note the $_dot so we don't accidentally blow away
 		# $dot which has been passed by reference...
-
 		foreach ($rsp_before['rows'] as $_dot){
 			dots_load_details($_dot, $viewer_id);
 			$before[] = $_dot;
@@ -137,6 +141,20 @@
 				$errors[] = $rsp;
 
 				continue;
+			}
+
+			# See this? We're checking for errors from the derived from
+			# hooks that happen in _import_dot. We just want to trap them
+			# so that we can display feedback to the user, which is to
+			# say: If the code's gotten this far it means the dot has 
+			# been added to the database (20110311/straup)
+
+			if ((isset($rsp['derived'])) && (! $rsp['derived']['ok'])){
+
+				$rsp['derived']['record'] = $received;
+				$errors[] = $rsp['derived'];
+
+				# carry on
 			}
 
 			if (isset($rsp['search'])){
@@ -238,6 +256,10 @@
 		#
 
 		list($data, $derived) = dots_derive_location_data($data);
+
+		# Note that we return $derived with the response below
+		# (assuming everything else works) and check for any errors
+		# out of band, read: the _import_dots function (20110311/straup)
 
 		#
 		# creation date for the point (different from import date)
@@ -444,19 +466,9 @@
 			'created' => $data['created'],
 			'perms' => $perms,
 			'geohash' => $data['geohash'],
+			'latitude' => $data['latitude'],
+			'longitude' => $data['longitude'],
 		);
-
-		#
-		# Don't assign empty strings for lat/lon because MySQL will
-		# store them as 0.0 rather than NULLs
-		# 
-
-		foreach (array('latitude', 'longitude') as $coord){
-
-			if (is_numeric($data[$coord])){
-				$search[$coord] = $data[$coord];
-			}
-		}
 
 		if ($more['buffer_search_inserts']){
 			$rsp['search'] = &$search;
@@ -489,6 +501,8 @@
 		#
 
 		$rsp['dot'] = &$dot;
+		$rsp['derived'] = &$derived;
+
 		return $rsp;
 	}
 
@@ -1093,7 +1107,9 @@
 
 		$skip_required_latlon = 0;
 
-		if (isset($data['address']) && ((empty($data['latitude'])) || (empty($data['longitude'])))){
+		$has_latlon = ((empty($data['latitude'])) || (empty($data['longitude']))) ? 0 : 1;
+
+		if ((! $has_latlon) && (isset($data['address']))){
 
 			$skip_required_latlon = 1;
 

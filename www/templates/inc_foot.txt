@@ -1,17 +1,17 @@
-	</div>
-
-	<div id="footer">
-		{include file="inc_discoball.txt"}
-		<strong>Dotspotting is a thing by <a href="http://www.stamen.com/" class="stamen">Stamen Design</a> / it also has a <a href="{$cfg.abs_root_url}faq/">FAQ</a></strong>
+	</div> {* end #content *}
+	<div id="footdown"></div>
+	</div> {* end #main *}
+	
+	<div id="footer" class="txt_small">
+		Dotspotting is a thing by <a href="http://www.stamen.com/" class="stamen">Stamen Design</a>
 	</div>
 
 {if 'staff'|@auth_has_role && $cfg.admin_flags_show_notices}
-<div style="padding: 2em;">
-	{timings}
-</div>
+<div style="padding: 2em;">{timings}</div>
 {/if}
 
-</div>
+{* load page specific js handler (seanc|03102011) *}
+{include file='inc_js_includes.txt'}
 
 </body>
 </html>

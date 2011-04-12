@@ -35,7 +35,7 @@
 	}
 
 	$dot['bookends'] = dots_get_bookends_for_dot($dot, $GLOBALS['cfg']['user']['id']);
-
+		
 	// quickly determine if dot is a magical one
 
 	$smarty->assign("dot_is_flickr", ((isset($dot['details']['flickr:id']) && !empty($dot['details']['flickr:id']) ) ? true : false) );
@@ -49,6 +49,23 @@
 
 	$smarty->assign_by_ref("owner", $owner);
 	$smarty->assign_by_ref("dot", $dot);
+	
+	# define the selected title field
+	$title_field = NULL;
+	if(isset($dot['details']['title_internal'])){
+		preg_match_all("/[\{](.+?)[\}]/i", $dot['details']['title_internal'][0]['value'], $title_matches);
+		
+		if(isset($title_matches[1]) && !empty($title_matches[1])){
+			/*
+			foreach($title_matches[1] as $match){
+				var_dump($match);
+			}
+			*/
+			$title_field = $title_matches[1][0];
+		}
+	}
+	//[\{](.+?)[\}] -- gets all template patterns
+	$GLOBALS['smarty']->assign_by_ref("assigned_title", $title_field);
 	
 	if ($is_own){
 		$smarty->assign("permissions_map", dots_permissions_map());

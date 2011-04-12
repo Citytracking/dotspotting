@@ -22,38 +22,37 @@ INVISIBLE ERROR CAT HISSES AT YOU!
 {/if}
 
 {if !$url or $error|@count}
+<div class="section_bunch_o_text">
+<h3>Import photos from Flickr</h3>
+<p>Use this form to upload geotagged photos from <a href="http://www.flickr.com/">Flickr</a>. Many pages on Flickr contain an embedded (fancy talk for <q>hidden</q>) link to a machine-readable version of the most recent photos for that view &#8212; a user's photostream, a group pool, etc. &#8212; so you can simply copy and paste the URL in the input field below. For example:</p>
 
-<h2>Import photos from Flickr</h2>
+<p><code><a href="http://www.flickr.com/groups/flickrcommons/pool/">http://www.flickr.com/groups/flickrcommons/pool/</a></code></p>
 
-<p class="tx1">Use this form to upload geotagged photos from <a href="http://www.flickr.com/">Flickr</a>. Many pages on Flickr contain an embedded (fancy talk for <q>hidden</q>) link to a machine-readable version of the most recent photos for that view &#8212; a user's photostream, a group pool, etc. &#8212; so you can simply copy and paste the URL in the input field below. For example:</p>
+<p>Dotspotting will do the rest and import any photos it finds in to a new sheet!</p>
 
-<p class="tx1" style="text-align:center;"><code><a href="http://www.flickr.com/groups/flickrcommons/pool/">http://www.flickr.com/groups/flickrcommons/pool/</a></code></p>
 
-<p class="tx1">Dotspotting will do the rest and import any photos it finds in to a new sheet!</p>
-
-<br />
-
-<form method="POST" action="{$cfg.abs_root_url}upload/flickr/">
-	<input type="text" size="40" name="url" value="" />
-	<input type="submit" value="IMPORT FROM FLICKR" />
+<form id="upload_file" method="POST" action="{$cfg.abs_root_url}upload/flickr/">
+	<p class="no_border"><input type="text" size="40" name="url" value="" /></p>
+	<span class="upload_submit"><input type="submit" value="IMPORT FROM FLICKR" /></span>
 </form>
-
+</div>
 {else}
-<p class="tx1">Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from the website <q class="important">{$parsed_url.host|escape}</q> into Dotspotting?</p>
 
-<form method="POST" action="{$cfg.abs_root_url}upload/flickr/">
+<div class="section_bunch_o_text">
+<h3>Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from the website <q class="important">{$parsed_url.host|escape}</q> into Dotspotting?</h3>
+
+<form id="upload_file" method="POST" action="{$cfg.abs_root_url}upload/flickr/">
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="confirm" value="1" />
 	<input type="hidden" name="url" value="{$url|escape}" />
 
-	<br />
-
 	{include file="inc_upload_file_attributes.txt"}
 
-	<input type="submit" value="YES, PLEASE TO IMPORT" />
+	<span class="upload_submit"><input type="submit" value="YES, PLEASE TO IMPORT" /></span>
 </form>
-{/if}
+</div>
 
+{/if}
 {/if}
 
 {include file="inc_foot.txt"}
