@@ -20,7 +20,7 @@ FIX_DPKG='dpkg --configure -a'
 
 #
 # First deal with any pending updates
-# 
+#
 
 apt-get update
 apt-get ${OPTS} upgrade
@@ -80,3 +80,4 @@ ${INSTALL} php-pear
 ${INSTALL} php5-mysql
 ${INSTALL} php5-mcrypt
 ${INSTALL} php5-curl
+${INSTALL} php5-gd

@@ -22,7 +22,9 @@ Dependencies
 
 * Apache 2.x (with mod_rewrite enabled)
 * MySQL 5.x
-* PHP 5.x (with support for: curl; mbstring, mcrypt; mysql)
+* PHP 5.x (with support for: curl; mbstring, mcrypt; mysql; GD)
+
+(See ec2/dotspotting.boot.sh for an example set up, assuming a Ubuntu server)
 
 Installation Instructions
 --
