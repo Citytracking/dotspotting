@@ -111,8 +111,6 @@
             {
                 $tile = @imagecreatefromstring(@file_get_contents($url));
                 
-                error_log("MMaps_renderTiles: {$url}");
-
                 if($tile !== false)
                     @imagecopy($img, $tile, $position->x, $position->y, 0, 0, imagesx($tile), imagesy($tile));
             }
