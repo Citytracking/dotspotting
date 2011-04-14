@@ -343,7 +343,9 @@
 
 			if (! $pre_process['ok']){
 
-				$GLOBALS['error']['invalid_data'] = 1;
+				# Don't get $GLOBALS['error'] because that will prevent
+				# the data from being displayed/corrected.
+
 				$ok = 0;
 
 				$pre_process['data'] = $data;
@@ -360,7 +362,6 @@
 				}
 
 				$GLOBALS['smarty']->assign_by_ref("pre_process", $pre_process);
-				
 			}
 		}
 

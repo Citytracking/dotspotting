@@ -22,7 +22,7 @@ background-color: pink;
 
 <ul>
 {foreach from=$errors item="row"}
-<li><strong>The <q>{$row.column|escape}</q> column in <a href="#row{$row.record|escape}">row #{$row.record|escape}</a>:</strong> {$row.error|escape}</li>
+<li>{if $row.column}<strong>The <q>{$row.column|escape}</q> column in <a href="#row{$row.record|escape}">row #{$row.record|escape}</a>:</strong> {$row.error|escape}{else}<strong>There was a problem with <a href="#row{$row.record|escape}">row #{$row.record|escape}</a>:</strong> {$row.error|escape}{/if}</li>
 {/foreach}
 </ul>
 

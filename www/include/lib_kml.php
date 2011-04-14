@@ -265,12 +265,17 @@
 			}
 
 			else {
-				$errors[] = array(
-					'record' => $record,
-					'error' => 'Unable to determine location information',
-				);
+
+				# to be revisited maybe; this really just makes things
+				# more complicated than not (20110415/straup)
 
 				continue;
+
+				$errors[] = array(
+					'record' => $record,
+					'error' => 'Unable to find any location information (that Dotspotting knows about).',
+				);
+
 			}
 
 			$data[] = $tmp;
