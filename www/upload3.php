@@ -354,6 +354,7 @@
 				}
 
 				$GLOBALS['smarty']->assign_by_ref("pre_process", $pre_process);
+				
 			}
 		}
 
@@ -378,6 +379,7 @@
 
 			$import = import_process_data($GLOBALS['cfg']['user'], $data, $more);
 			$GLOBALS['smarty']->assign_by_ref("import", $import);
+				
 		}
 	}
 
@@ -385,7 +387,7 @@
 
 		# nuthin' 
 	}
-
+	
 	$import_formats = formats_valid_import_map('key by extension');
 	$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
 	

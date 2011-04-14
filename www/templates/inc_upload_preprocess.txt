@@ -60,7 +60,9 @@ background-color: pink;
 {* see that? we're pass the smarty 0-based count *}
 <td>{$row_idx}<a href="#" onclick="preprocess_delete_row({$smarty.foreach.records.index}); return false;"><img src="{$cfg.abs_root_url}images/x.png"/></a></td>
 
-{foreach from=$row item="value" name="columns" key="colname"}
+{* fix problem where rows didn't have same length (seanc|4/13/2011) *}
+{foreach from=$columns item="field" name="columns"}
+{assign var="value" value=$row.$field}
 {assign var="col_idx" value=$smarty.foreach.columns.index}
 {assign var="col_class" value="col_preprocess"}
 {assign var="col_ok" value="1"}
@@ -68,7 +70,6 @@ background-color: pink;
 {if $errors.$row_idx and $errors.$row_idx.column==$columns.$col_idx}
 {assign var="col_ok" value="0"}
 {/if}
-
 <td class="{$col_class}{if ! $col_ok} col_preprocess_error{/if}">{$value|escape}</td>
 
 {/foreach}
@@ -165,7 +166,7 @@ background-color: pink;
 	<span class="upload_submit"><input type="SUBMIT" value="Submit" /></span>
 </form>
 </div>
-{* MODAL WINDOW *}
+{* MODAL WINDOW  --- not being used right now (seanc) *}
 <div id="myModal" class="reveal-modal no_show">
 	<h1>Geocoding a column</h1>
 	<p>This may take a moment. I am here to prevent you from harming my process. Please don't leave until I tell you to.</p>
@@ -196,7 +197,6 @@ $(document).ready(function(){
 
 // build data table
 YAHOO.util.Event.addListener(window, "load", function() {
-
 	var YT = YAHOO.namespace('yahooTable');
 	YT.headers = preprocess_collect_headers();
 	YT.keys = [];
@@ -204,7 +204,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	
 	// TODO: filter out delete link before sort
 	YT.sortRowId = function(a, b, desc) {
-		
 		var $a = a.getData("row id").split(/^(\d+)/);
 		var $b = b.getData("row id").split(/^(\d+)/);
 		
