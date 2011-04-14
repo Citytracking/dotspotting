@@ -41,7 +41,7 @@
 	$private = (post_str('private')) ? 1 : 0;
 	$dots_index_on = filter_strict(post_str('dots_index_on'));
 	$mime_type = filter_strict(post_str('mime_type'));
-		
+
 	$GLOBALS['smarty']->assign("label", $label);
 	$GLOBALS['smarty']->assign("private", $private);
 	$GLOBALS['smarty']->assign("dots_index_on", $dots_index_on);
@@ -232,7 +232,7 @@
 
 		else if ($is_google){
 
-			if ($feed_url = google_get_mymaps_georss_feed($url)){
+			if ($feed_url = google_get_mymaps_kml_feed($url)){
 				$url = $feed_url;
 			}
 
@@ -257,9 +257,15 @@
 			$more['assume_mime_type'] = $mime_type;
 		}
 
-		if (($is_flickr) || ($is_google)){
+		if ($is_flickr){
 			$more['assume_mime_type'] = 'application/rss+xml';
 		}
+
+		else if ($is_google){
+			$more['assume_mime_type'] = 'application/vnd.google-earth.kml+xml';
+		}
+
+		#
 
 		$upload = import_fetch_uri($GLOBALS['cfg']['user'], $url, $more);
 

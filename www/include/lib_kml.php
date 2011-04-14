@@ -30,7 +30,23 @@
 			);
 		}
 
-		if ($nl = $xml->NetworkLink){
+		# Please KML, die in a fire...
+
+		$nl = null;
+
+		if ($xml->NetworkLink){
+			$nl = $xml->NetworkLink;
+		}
+
+		else if ($xml->Document->NetworkLink){
+			$nl = $xml->Document->NetworkLink;
+		}
+
+		else { }
+
+		#
+
+		if ($nl){
 
 			if (! $GLOBALS['cfg']['import_kml_resolve_network_links']){
 				return array(
@@ -73,7 +89,7 @@
 
 		$record = 1;
 
-		# omg... I hate kml...
+		# I hate KML...
 
 		$placemarks = array();
 

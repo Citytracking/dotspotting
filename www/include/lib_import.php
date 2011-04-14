@@ -307,7 +307,7 @@
 
 		$rsp = array(
 			'ok' => 0,
-		); 
+		);
 
 		$more = array();
 
@@ -354,7 +354,7 @@
 		#
 		# HEY LOOK! THIS PART IS IMPORTANT!! It is left to the
 		# format specific libraries to sanitize both field names
-		# and values (using lib_sanitize). This is *not* a 
+		# and values (using lib_sanitize). This is *not* a
 		# question of validating the data (checking lat/lon
 		# ranges etc.) but just making sure that the user isn't
 		# passing in pure crap. Take a look at the parse_fh function
@@ -370,7 +370,7 @@
 		# on disk. It would be nice to store it with the sheet
 		# ID the data has been associated which we don't have
 		# yet so maybe this isn't the best place to do the storing...
-		# (2010107/straup) 
+		# (2010107/straup)
 
 		return $rsp;
 	}

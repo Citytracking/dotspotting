@@ -49,7 +49,7 @@
 
 		$data = array();
 		$record = 1;
-		
+
 		foreach ($rss->items as $item){
 
 			$record ++;
