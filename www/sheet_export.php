@@ -94,6 +94,12 @@
 		}
 	}
 
+	# cache-busting
+
+	if ((get_str('force')) && (auth_has_role('staff'))){
+		$ok_cache = 0;
+	}
+
 	# ok, can has file?
 
 	if (! $ok_cache){

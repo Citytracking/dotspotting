@@ -11,7 +11,7 @@
 	function png_export_dots(&$dots, $more=array()){
 
 		$defaults = array(
-			'width' => 1024, 
+			'width' => 1024,
 			'height' => 768,
 		);
 
@@ -23,7 +23,6 @@
 			return null;
 		}
 
-		error_log("[WTF] img {$img} / {$more['path']}");
 		imagepng($img, $more['path']);
 		imagedestroy($img);
 

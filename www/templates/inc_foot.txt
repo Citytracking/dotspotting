@@ -1,3 +1,7 @@
+{if $error|@count}
+{include file="inc_error_feedback.txt"}
+{/if}
+
 	</div> {* end #content *}
 	<div id="footdown"></div>
 	</div> {* end #main *}

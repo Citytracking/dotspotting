@@ -16,7 +16,7 @@
 		# sometimes by a 2-letter country code or .co always
 		# followed by a country code or just the country code
 		# all by itself.
-		
+
 		# See also:
 		# http://www.thomasbindl.com/blog/?title=list_of_googel_tlds&more=1&c=1&tb=1&pb=1
 
@@ -53,12 +53,9 @@
 
 	#################################################################
 
-	# http://maps.google.com/maps/ms?ie=UTF8&hl=en&msa=0&msid=106670048759200881360.0004565744030ff07d00e&z=11
-	# http://maps.google.com/maps/ms?ie=UTF8&hl=en&msa=0&output=georss&msid=205571002759787943953.0004565744030ff07d00e
+	function google_get_mymaps_kml_feed($url){
 
-	function google_get_mymaps_georss_feed($url){
-
-		$cache_key = "mymaps_georss_" . md5($url);
+		$cache_key = "mymaps_kml_" . md5($url);
 		$cache = cache_get($cache_key);
 
 		if ($cache['ok']){
@@ -87,18 +84,14 @@
 			return null;
 		}
 
-		$query['output'] = 'georss';
+		$query['output'] = 'kml';
 
 		$feed_url = "http://{$parts['host']}{$parts['path']}?" . http_build_query($query);
 
+		#
+
 		cache_set($cache_key, $feed_url, "cache locally");
 		return $feed_url;
-	}
-
-	#################################################################
-
-	function google_get_mymaps_title($feed_url){
-		return rss_get_title_from_url($feed_url);
 	}
 
 	#################################################################

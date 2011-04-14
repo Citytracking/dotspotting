@@ -19,6 +19,7 @@
 			'rss' => 'GeoRSS',
 			'shp' => 'Shapefile (ESRI)',
 			'xls' => 'Excel',
+			'txt' => 'Text (CSV)',
 		);
 
 		return $map;
@@ -48,6 +49,7 @@
 			'application/rss+xml' => 'rss',
 			# 'application/vnd.esri-shapefile' => 'shp',
 			'application/vnd.ms-excel' => 'xls',
+			'text/plain' => 'csv',
 		);
 
 		# TODO: fix me so that this will work for mime-types

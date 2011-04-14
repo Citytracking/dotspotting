@@ -8,6 +8,13 @@
 
 	loadlib("geo_utils");
 
+	# Not clear if/where this should go in Magpie itself
+	# so it goes here for now... (straup/20110415)
+
+	if (!defined('MAGPIE_DEBUG')) {
+		define('MAGPIE_DEBUG', false);
+	}
+
 	include_once("magpie/rss_fetch.inc");
 
 	#################################################################
@@ -42,7 +49,7 @@
 
 		$data = array();
 		$record = 1;
-		
+
 		foreach ($rss->items as $item){
 
 			$record ++;

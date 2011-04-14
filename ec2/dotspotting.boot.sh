@@ -20,7 +20,7 @@ FIX_DPKG='dpkg --configure -a'
 
 #
 # First deal with any pending updates
-# 
+#
 
 apt-get update
 apt-get ${OPTS} upgrade
@@ -65,6 +65,7 @@ ${INSTALL} mysql-server
 
 ${INSTALL} apache2
 
+ln -s /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/
 ln -s /etc/apache2/mods-available/proxy.conf /etc/apache2/mods-enabled/
 ln -s /etc/apache2/mods-available/proxy.load /etc/apache2/mods-enabled/
 ln -s /etc/apache2/mods-available/proxy_http.load /etc/apache2/mods-enabled/
@@ -77,14 +78,6 @@ ln -s /etc/apache2/mods-available/proxy_http.load /etc/apache2/mods-enabled/
 ${INSTALL} php5
 ${INSTALL} php-pear
 ${INSTALL} php5-mysql
-${INSTALL} php-mcrypt
-${INSTALL} php-curl
-
-# ${INSTALL} memcached
-# ${FIX_DPKG}
-
-# mv /etc/defaults/memcached /etc/defaults/memcached.dist
-# echo 'ENABLE_MEMCACHED=yes' > /etc/defaults/memcached
-# /etc/init.d/memcached start
-
-# ${INSTALL} php5-memcache
+${INSTALL} php5-mcrypt
+${INSTALL} php5-curl
+${INSTALL} php5-gd
