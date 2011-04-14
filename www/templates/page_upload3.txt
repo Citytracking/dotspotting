@@ -20,7 +20,7 @@
 <p class="error">There was a problem fetching the remote URL: Unable to resolve the URL you provided into something with data (that Dotspotting understands) at the end of it!</p>
 
 {elseif $error.upload_by_url_error}
-<p class="error">There was a problem fetching the remote URL: {$error_details|escape}</p>
+<p class="error">There was a problem fetching the remote URL. The (probably obscure) error reported was: {$error.details|escape}</p>
 
 {elseif $error.missing_data}
 <p class="error">Hey! All the data Dotspotting was supposed to import disappeared! That's not right.</p>

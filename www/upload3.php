@@ -267,8 +267,8 @@
 
 		if (! $upload['ok']){
 
-			$GLOBALS['error'] = 'upload_by_url_error';
-			$GLOBALS['error_details'] = $upload['error'];
+			$GLOBALS['error']['upload_by_url_error'] = 1;
+			$GLOBALS['error']['details'] = $upload['error'];
 			$GLOBALS['smarty']->display('page_upload3.txt');
 			exit();
 		}
