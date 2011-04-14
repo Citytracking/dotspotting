@@ -165,12 +165,12 @@
 		else if (is_array($GLOBALS['cfg']['import_by_url_whitelist'])){
 
 			if (! in_array($parsed['host'], $GLOBALS['cfg']['import_by_url_whitelist'])){
-				$error_details = 'Uploads not allowed from host.';
+				$error_details = "Uploads not allowed from host: {$parsed['host']}.";
 				$ok = 0;
-			}		
+			}
 		}
 
-		else {} 
+		else {}
 
 		if (! $ok){
 
