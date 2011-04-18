@@ -79,4 +79,33 @@
 	}
 
 	#################################################################
+
+	# http://stackoverflow.com/questions/1125144/how-do-i-find-the-lat-long-that-is-x-km-north-of-a-given-lat-long
+
+	function geo_utils_point_for_distance_and_bearing($lat1, $lon1, $dist, $bearing=0){
+
+		$lat1 = deg2rad($lat1);
+		$lon1 = deg2rad($lon1);
+
+		$dist_r = $dist / 6371;  // convert dist to angular distance in radians
+		$bearing_r = deg2rad($bearing);
+
+		$lat2 = asin(sin($lat1) * cos($dist_r) + cos($lat1) * sin($dist_r) * cos($bearing_r) );
+		$lon2 = $lon1 + atan2((sin($bearing_r) * sin($dist_r) * cos($lat1) ), (cos($dist_r) - sin($lat1) * sin($lat2)));
+
+		$lat2 = rad2deg($lat2);
+		$lon2 = rad2deg($lon2);
+
+		return array($lat2, $lon2);
+	}
+
+	#################################################################
+
+	function geo_utils_nearby_bbox($lat, $lon, $offset=1.0){
+		$sw = geo_utils_point_for_distance_and_bearing($lat, $lon, $offset, 225);
+		$ne = geo_utils_point_for_distance_and_bearing($lat, $lon, $offset, 45);
+		return array_merge($sw, $ne);
+	}
+
+	#################################################################
 ?>
