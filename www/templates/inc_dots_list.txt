@@ -95,7 +95,7 @@
 			<td class="dotslist_coord" nowrap>
 				{* may be overkill *}
 				{if $dot.latitude && $dot.longitude}
-					<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&gh={$dot.geohash|escape:'url'}" title="search for dots around this geohash, '{$dot.geohash|escape}'">{$dot.latitude|escape},{$dot.longitude|escape}</a>
+					<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape:'url'}&ll={$dot.latitude|escape:'url'},{$dot.longitude|escape}" title="search for other dots around this one">{$dot.latitude|escape},{$dot.longitude|escape}</a>
 				{elseif $dot.latitude}
 					{$dot.latitude|escape},
 					{if $dot.longitude}
