@@ -190,16 +190,18 @@
 			# 'd' is reserved for 'display' (as in 'sheets' or 'dots')
 			'dt' => 'created',		# change to be 'c' ?
 			'e' => 'extras',
-			'gh' => 'geohash',
+			# 'gh' => 'geohash',
 			'la' => 'latitude',
 			'ln' => 'longitude',
+			'll' => 'latitude,latitude',
 			't' => 'type',
 			'u' => 'user_id',
 		);
 
 		$b = sanitize($args['b'], 'str');		# bounding box
 		$dt = sanitize($args['dt'], 'str');		# datetime
-		$gh = sanitize($args['gh'], 'str');		# geohash
+		# $gh = sanitize($args['gh'], 'str');		# geohash
+		$ll = sanitize($args['ll'], 'str');		# latitude, longitude
 		$u = sanitize($args['u'], 'int32');		# userid
 
 		$e = sanitize($args['e'], 'str');		# extras
@@ -215,20 +217,41 @@
 
 		if ($b){
 
-			# TO DO: convert to a geohash of (n) length
-			# dumper(geo_geohash_encode($swlat, $swlon));
-			# dumper(geo_geohash_encode($nelat, $nelon));
-
 			list($swlat, $swlon, $nelat, $nelon) = explode(",", $b, 4);
 
-			$where_parts['geo'] = array(
+			$where = implode(" AND ", array(
 				"d.latitude >= " . AddSlashes(floatval($swlat)),
 				"d.longitude >= " . AddSlashes(floatval($swlon)),
 				"d.latitude <= " . AddSlashes(floatval($nelat)),
-				"d.longitude <= " . AddSlashes(floatval($nelon)),
+				"d.longitude <= " . AddSlashes(floatval($nelon))
+			));
+
+			$where_parts['geo'] = array(
+				"({$where})",
 			);
 
 			$where_parts['geo_query'] = 'bbox';
+		}
+
+		else if ($ll){
+
+			list($lat, $lon) = explode(",", $ll, 2);
+
+			list($swlat, $swlon, $nelat, $nelon) = geo_utils_nearby_bbox($lat, $lon);
+
+			$where = implode(" AND ", array(
+				"d.latitude >= " . AddSlashes(floatval($swlat)),
+				"d.longitude >= " . AddSlashes(floatval($swlon)),
+				"d.latitude <= " . AddSlashes(floatval($nelat)),
+				"d.longitude <= " . AddSlashes(floatval($nelon))
+			));
+
+			$where_parts['geo'] = array(
+				"({$where})",
+			);
+
+			$where_parts['geo_query'] = 'nearby';
+
 		}
 
 		else if ($gh){
@@ -314,7 +337,7 @@
 		}
 
 		#
-		# User stuff 
+		# User stuff
 		#
 
 		if ($u){
@@ -341,7 +364,7 @@
 
 			# This (the part with the ";" and the ":") is not the final syntax.
 			# I'm just working through the other bits first. (20101213/straup)
-			
+
 			foreach (explode(";", $e) as $parts){
 
 				list($name, $value) = explode(":", $parts);
@@ -362,7 +385,7 @@
 
 					# Also, to do: work out some way to specify CAST-ing requirements
 					# for searching on extras. It would be nice to spend the time working
-					# out a simplified syntax for doing basic operations (greater than, 
+					# out a simplified syntax for doing basic operations (greater than,
 					# between, etc.) but then you get sucked in to a twisty maze of edge
 					# cases where you also want to do <= or that when strings are cast
 					# as ints they become 0 or whether to use decimals and how big they
