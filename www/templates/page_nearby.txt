@@ -13,7 +13,7 @@
 
 	function find_nearby(){
 
-		var fb = document.getElementById('feedback');	
+		var fb = document.getElementById('feedback');
 
 		var doThisOnSuccess = function(lat, lon){
 
