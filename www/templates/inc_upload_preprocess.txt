@@ -145,10 +145,18 @@ background-color: pink;
 	{if $cfg.enable_feature_dots_indexing}
 		<p>
 		<label for="dots_index_opt">Select searchable columns (max:{$cfg.dots_indexing_max_cols|escape}):</label>
-		
+
 		<label for="title" style="margin-left:10px;color:#666">Use as title:</label><input type="checkbox" name="title"/>
+
 		<select id="dots_index_on_1" name="dots_index_opt" onchange="update_dots_index_field();"></select>
 		<select id="dots_index_on_2" onchange="update_dots_index_field();"></select>
+
+		{if 0}
+		{foreach from=$cfg.dots_indexing_max_cols_list item="i"}
+		<select id="dots_index_on_{$i|escape}" name="dots_index_opt_{$i|escape}" onchange="update_dots_index_field();"></select>
+		{/foreach}
+		{/if}
+
 		<input type="hidden" name="dots_index_on" value="" /><br/>
 		</p>
 		<p class="txt_helper">The values of these columns will be indexed for searching both on sheets pages and in site-wide <a href="{$cfg.abs_root_url}search" title="jump to search page">search pages</a>. Street names, categorical columns, and tag or keyword lists are good candidates for search indexing. Note: The title column (above) is always searchable, so if a title is selected you will get one selection above</p>

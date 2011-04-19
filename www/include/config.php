@@ -205,7 +205,8 @@
 		'gpx' => 0, # basically always
 	);
 
-	$GLOBALS['cfg']['dots_indexing_max_cols'] = 2;
+	$GLOBALS['cfg']['dots_indexing_max_cols'] = 4;
+	$GLOBALS['cfg']['dots_indexing_max_cols_list'] = range(1, $GLOBALS['cfg']['dots_indexing_max_cols']);
 
 	# If these two are arrays they will be checked by the upload_by_url.php
 	# code. They are expected to be lists of hostnames
