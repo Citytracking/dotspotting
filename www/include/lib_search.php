@@ -4,6 +4,9 @@
 	# $Id$
 	#
 
+	loadlib("geo_utils");
+	loadlib("geo_geohash");
+
 	#################################################################
 
 	function search_dots(&$args, $viewer_id=0, $more=array()){
@@ -190,9 +193,7 @@
 			# 'd' is reserved for 'display' (as in 'sheets' or 'dots')
 			'dt' => 'created',		# change to be 'c' ?
 			'e' => 'extras',
-			# 'gh' => 'geohash',
-			'la' => 'latitude',
-			'ln' => 'longitude',
+			'gh' => 'geohash',
 			'll' => 'latitude,latitude',
 			't' => 'type',
 			'u' => 'user_id',
@@ -200,7 +201,7 @@
 
 		$b = sanitize($args['b'], 'str');		# bounding box
 		$dt = sanitize($args['dt'], 'str');		# datetime
-		# $gh = sanitize($args['gh'], 'str');		# geohash
+		$gh = sanitize($args['gh'], 'str');		# geohash
 		$ll = sanitize($args['ll'], 'str');		# latitude, longitude
 		$u = sanitize($args['u'], 'int32');		# userid
 
@@ -256,10 +257,18 @@
 
 		else if ($gh){
 
-			$geohash = substr($gh, 0, 5);
+			list($lat, $lon) = geo_geohash_decode($gh);
+			list($swlat, $swlon, $nelat, $nelon) = geo_utils_nearby_bbox($lat, $lon);
+
+			$where = implode(" AND ", array(
+				"d.latitude >= " . AddSlashes(floatval($swlat)),
+				"d.longitude >= " . AddSlashes(floatval($swlon)),
+				"d.latitude <= " . AddSlashes(floatval($nelat)),
+				"d.longitude <= " . AddSlashes(floatval($nelon))
+			));
 
 			$where_parts['geo'] = array(
-				"d.geohash LIKE '" . AddSlashes($geohash) . "%'",
+				"({$where})",
 			);
 
 			$where_parts['geo_query'] = 'geohash';
