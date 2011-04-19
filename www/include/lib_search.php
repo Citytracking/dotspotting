@@ -238,7 +238,7 @@
 
 			list($lat, $lon) = explode(",", $ll, 2);
 
-			list($swlat, $swlon, $nelat, $nelon) = geo_utils_nearby_bbox($lat, $lon);
+			list($swlat, $swlon, $nelat, $nelon) = geo_utils_nearby_bbox($lat, $lon, 0.25);
 
 			$where = implode(" AND ", array(
 				"d.latitude >= " . AddSlashes(floatval($swlat)),
@@ -258,7 +258,7 @@
 		else if ($gh){
 
 			list($lat, $lon) = geo_geohash_decode($gh);
-			list($swlat, $swlon, $nelat, $nelon) = geo_utils_nearby_bbox($lat, $lon);
+			list($swlat, $swlon, $nelat, $nelon) = geo_utils_nearby_bbox($lat, $lon, 0.25);
 
 			$where = implode(" AND ", array(
 				"d.latitude >= " . AddSlashes(floatval($swlat)),
