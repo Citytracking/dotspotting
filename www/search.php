@@ -46,7 +46,7 @@
 		#
 		# Go!
 		#
-		
+
 		if ($display == 'sheets'){
 
 			$rsp = search_sheets($_GET, $GLOBALS['cfg']['user']['id'], $more);
@@ -71,7 +71,7 @@
 
 			$dots_indexed = dots_indexed_on($rsp['dots']);
 			$GLOBALS['smarty']->assign_by_ref('dots_indexed', $dots_indexed);
-			
+
 		}
 
 		#
@@ -106,12 +106,17 @@
 		}
 
 		else {
-			unset($_GET['page']);
+			unset($args['page']);
+			$query_args = http_build_query($args);
+
 			$pagination_url = "{$GLOBALS['cfg']['abs_root_url']}search/?" . $query_args;
 			$page_as_queryarg = 1;
 
-			if ($_GET['u']){
-				unset($_GET['u']);
+			if ($args['u']){
+
+				unset($args['u']);
+				$query_args = http_build_query($args);
+
 				$smarty->assign("query_all_url", "{$GLOBALS['cfg']['abs_root_url']}search/?" . $query_args);
 			}
 		}
@@ -124,13 +129,14 @@
 
 		$formats = array_values(formats_valid_export_map());
 		$GLOBALS['smarty']->assign("export_formats", $formats);
-		
+
 		$formats_pretty_names = formats_pretty_names_map();
 		$GLOBALS['smarty']->assign_by_ref("formats_pretty_names", $formats_pretty_names);
-		
-		
-		// create a simplfied object for js
+
+		# create a simplfied object for js
+
 		$json_fields = array("id","created","details","geohash","is_interactive","latitude","longitude","user_id","perms","sheet_id");
+
 		if($rsp['dots']){
 			$ddd = array();
 			foreach ($rsp['dots'] as $dot) {
@@ -156,12 +162,14 @@
 				$ddd[] =$bb;
 
 			}
-			//if( isset($owner.username) )$ddd[] = array('owner'=>$owner.username);
+
+			# if( isset($owner.username) )$ddd[] = array('owner'=>$owner.username);
 			$smarty->assign("dots_simple", $ddd);
-		}else if($rsp['sheets']){
-			// TODO: need to figure out output for sheets
 		}
-		
+
+		else if ($rsp['sheets']){
+			# TODO: need to figure out output for sheets
+		}
 
 		$GLOBALS['smarty']->display('page_search_results.txt');
 		exit();
