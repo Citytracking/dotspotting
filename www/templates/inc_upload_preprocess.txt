@@ -86,26 +86,26 @@ background-color: pink;
 
 {literal}
 <script type="text/javascript">
-	function update_dots_index_field(){
-		var str="";
-		var _title = $("#dots_upload_title").val();
+	// how many indexes are there?
+	var total_targets = Number( {/literal}{$cfg.dots_indexing_max_cols_list|@count}{literal} );
 
+	// update indexes hidden field
+	// checks for dupes
+	function update_dots_index_field(){
+		var str = "";
 	
-		str += $('#dots_index_on_1').val();
-		
-		if(_title && _title.length){
-			$("#dots_index_on_2").hide();
-			if(str.length) str += ",";
-			str += _title;
-		}else{
-			$("#dots_index_on_2").show();
-		
-			var _secondOne = $("#dots_index_on_2").val();
-			if(_secondOne.length && _secondOne != str){
-				if(str.length) str += ",";
-				str += _secondOne;
+		for(var i=1;i<=total_targets;i++){
+			var _current = $('#dots_index_on_'+i);
+			var _val = _current.val();
+			if(_val){
+				if(str.indexOf(_val) == -1){
+					if(str.length ) str += ",";
+					str += _val;
+				}else{
+					$('#dots_index_on_'+i).val("");
+				}
 			}
-		}
+		}	
 
 		$("input[name='dots_index_on']").val(str);
 	}
@@ -143,19 +143,16 @@ background-color: pink;
 
 	{* searchable columns *}
 	{if $cfg.enable_feature_dots_indexing}
-		<p>
+		<p id="dots_index_area">
 		<label for="dots_index_opt">Select searchable columns (max:{$cfg.dots_indexing_max_cols|escape}):</label>
 
 		<label for="title" style="margin-left:10px;color:#666">Use as title:</label><input type="checkbox" name="title"/>
 
-		<select id="dots_index_on_1" name="dots_index_opt" onchange="update_dots_index_field();"></select>
-		<select id="dots_index_on_2" onchange="update_dots_index_field();"></select>
-
-		{if 0}
+	
 		{foreach from=$cfg.dots_indexing_max_cols_list item="i"}
 		<select id="dots_index_on_{$i|escape}" name="dots_index_opt_{$i|escape}" onchange="update_dots_index_field();"></select>
 		{/foreach}
-		{/if}
+	
 
 		<input type="hidden" name="dots_index_on" value="" /><br/>
 		</p>
@@ -397,13 +394,12 @@ $("#upload_file").submit(function(e){
 	$("input[type=hidden][name=data]").val(data);
 });
 
+// auto fill the index lists
+// TODO: do we want to auto determine title field?
 function preprocess_create_index(){
-	var headers = preprocess_collect_headers();
-	//dots_index_on_2
-	var target1 = $('#dots_index_on_1');
-	var target2 = $('#dots_index_on_2');
-//	var target3 = $('#dots_upload_title');
+	if(!total_targets && total_targets.length > 0)return;
 	
+	var headers = preprocess_collect_headers();	
 	
 	var _html = '<option value=""></option>';
 	for(i = 0;i<headers.length;i++){
@@ -412,19 +408,10 @@ function preprocess_create_index(){
 		}
 	}
 	
-	$(target1).html("").append(_html);
-	$(target2).html("").append(_html);
-//	$(target3).html("").append(_html);
-	
-	/*
-	// look for a title field already in there
-	$('#dots_upload_title').children().each(function(i){
-		if($(this).val().toLowerCase() == "title"){
-			$(this).attr("selected","selected");
-		}
-	});
-	*/
-	//update_dots_index_field();
+	for(var i=1;i<=total_targets;i++){
+		var target_list = $('#dots_index_on_'+i);
+		target_list.html("").append(_html);
+	}
 	
 }
 
