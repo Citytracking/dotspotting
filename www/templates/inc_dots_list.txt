@@ -20,10 +20,9 @@
 			{if !$sheet}
 				<th title="sort dots by sheet name">Sheet</th>
 			{/if}
-			
+
 			<th title="sort by coordinates">Coordinates</th>
-			
-			
+
 {if $cfg.enable_feature_dots_indexing}
 	{foreach from=$dots_indexed item="label"}
 			{if $label != $assigned_title}
