@@ -37,6 +37,12 @@
 
 	$GLOBALS['cfg']['enable_feature_dots_indexing'] = 1;
 
+	# This flag has precedence over dots_indexing_max_cols
+	$GLOBALS['cfg']['dots_indexing_index_all'] = 1;
+
+	$GLOBALS['cfg']['dots_indexing_max_cols'] = 4;
+	$GLOBALS['cfg']['dots_indexing_max_cols_list'] = range(1, $GLOBALS['cfg']['dots_indexing_max_cols']);
+
 	# Don't turn this on until there is a working offline tasks system
 	# $GLOBALS['cfg']['enable_feature_enplacify'] = 0;
 
@@ -204,9 +210,6 @@
 		'kml' => 0, # when coordinates are stored in LineStrings
 		'gpx' => 0, # basically always
 	);
-
-	$GLOBALS['cfg']['dots_indexing_max_cols'] = 4;
-	$GLOBALS['cfg']['dots_indexing_max_cols_list'] = range(1, $GLOBALS['cfg']['dots_indexing_max_cols']);
 
 	# If these two are arrays they will be checked by the upload_by_url.php
 	# code. They are expected to be lists of hostnames
