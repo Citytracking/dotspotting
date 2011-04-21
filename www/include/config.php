@@ -89,6 +89,10 @@
 		'yahoo' => array(
 			'woeid' => 1,
 		),
+
+		'youtube' => array(
+			# 'id' => 1,
+		),
 	);
 
 	#

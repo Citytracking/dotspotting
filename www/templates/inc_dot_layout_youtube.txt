@@ -1,0 +1,47 @@
+{*
+   ********************   ********************
+   *                  *   *                  *
+   *     VIDEO        *   *       MAP        *
+   *                  *   *                  *
+   ********************   ********************
+
+   *******************************************
+   *                                         *
+   *                TABLE                    *
+   *                                         *
+   *******************************************
+*}
+
+{assign var="ytid" value="youtube:id"}
+{assign var="yt" value=$dot.details.$ytid.0.value}
+
+<div class="left_column_youtube">
+	<div id="youtube_holder">
+		<iframe title="YouTube video player" width="400" height="300" src="http://www.youtube.com/embed/{$yt|escape}" frameborder="0" allowfullscreen></iframe>
+	</div>
+</div>
+
+<div class="right_column_youtube">
+	{include file="inc_map.txt"}
+</div>
+
+<div class="clear"></div>
+
+<script type="text/javascript">
+{literal}
+	var current_container_width = $('#content').width();
+	var width = 400;
+	var new_map_width =  current_container_width - (width + 10);
+
+	var rc = $(".right_column_youtube");
+
+	$(rc).animate({
+		width: new_map_width
+		}, 200, function() {
+		$("#map").trigger('mapresize');
+	});
+
+{/literal}
+</script>
+
+{include file="inc_dot_table.txt"}

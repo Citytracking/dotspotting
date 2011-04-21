@@ -194,6 +194,12 @@ table.page_dot td{text-align:left;padding:5px;border-top:1px solid #000;}
 #flickr_holder{height:300px;margin:5px auto 0;/*overflow:hidden;*/padding:0;text-align:center;background:#DCEFEF url(../images/icon_camera.png) 50% 50% no-repeat;}
 #flickr_holder img{position:relative;}
 /* end flickr */
+/* for youtube */
+.left_column_youtube{width:10%;float:left;}
+.right_column_youtube{width:89%;float:right;}
+#youtube_holder{height:300px;margin:5px auto 0;/*overflow:hidden;*/padding:0;}
+#youtube_holder img{position:relative;}
+/* end youtube */
 /* end page layout css */
 
 /* polymaps and modestmaps stuff */
