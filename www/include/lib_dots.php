@@ -339,11 +339,28 @@
 		$details = array();
 		$extras = array();
 
-		if (($GLOBALS['cfg']['enable_feature_dots_indexing']) && ($more['dots_index_on'])){
+		if ($GLOBALS['cfg']['enable_feature_dots_indexing']){
 
 			$index_on = array();
 
-			$tmp = explode(",", $more['dots_index_on'], $GLOBALS['cfg']['dots_indexing_max_cols']);
+			if ($GLOBALS['cfg']['dots_indexing_index_all']){
+
+				$tmp = array();
+				$skip = array('latitude', 'longitude', 'created', 'title_internal');
+
+				foreach (array_keys($data) as $f){
+
+					if (! in_array($f, $skip)){
+						$tmp[] = $f;
+					}
+				};
+			}
+
+			else {
+				$tmp = explode(",", $more['dots_index_on'], $GLOBALS['cfg']['dots_indexing_max_cols']);
+			}
+
+			#
 
 			foreach ($tmp as $field){
 

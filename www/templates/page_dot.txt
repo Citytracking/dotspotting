@@ -38,9 +38,9 @@ A dot by {$cfg.user.username|escape}
 
 {capture assign='dotTitle'}
 {if $assigned_title|@count}
-	{$dot.$assigned_title}
+	{$dot.$assigned_title|escape}
 {else}
-	'Dot: #$dot.id'
+	'Dot: #{$dot.id|escape}'
 {/if}
 {/capture}
 
@@ -67,6 +67,10 @@ A dot by {$cfg.user.username|escape}
 {* check magical type, as defined in 'dot.php', then decide layout *}
 {if $dot_is_flickr and $cfg.enable_feature_magicwords.flickr.id}
 	{include file="inc_dot_layout_flickr.txt"}
+{elseif $dot_is_youtube and $cfg.enable_feature_magicwords.youtube.id}
+	{include file="inc_dot_layout_youtube.txt"}
+{elseif $dot_is_vimeo and $cfg.enable_feature_magicwords.vimeo.id}
+	{include file="inc_dot_layout_vimeo.txt"}
 {else}
 	{include file="inc_dot_layout_basic_two_column.txt"}
 {/if}

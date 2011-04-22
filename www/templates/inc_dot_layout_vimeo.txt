@@ -1,0 +1,47 @@
+{*
+   ********************   ********************
+   *                  *   *                  *
+   *     VIDEO        *   *       MAP        *
+   *                  *   *                  *
+   ********************   ********************
+
+   *******************************************
+   *                                         *
+   *                TABLE                    *
+   *                                         *
+   *******************************************
+*}
+
+{assign var="vmid" value="vimeo:id"}
+{assign var="vm" value=$dot.details.$vmid.0.value}
+
+<div class="left_column_vimeo">
+	<div id="vimeo_holder">
+		<iframe src="http://player.vimeo.com/video/16063395?title=0&amp;byline=0&amp;portrait=0" width="400" height="300" frameborder="0"></iframe>
+	</div>
+</div>
+
+<div class="right_column_vimeo">
+	{include file="inc_map.txt"}
+</div>
+
+<div class="clear"></div>
+
+<script type="text/javascript">
+{literal}
+	var current_container_width = $('#content').width();
+	var width = 400;
+	var new_map_width =  current_container_width - (width + 10);
+
+	var rc = $(".right_column_vimeo");
+
+	$(rc).animate({
+		width: new_map_width
+		}, 200, function() {
+		$("#map").trigger('mapresize');
+	});
+
+{/literal}
+</script>
+
+{include file="inc_dot_table.txt"}

@@ -142,17 +142,15 @@ background-color: pink;
 	*}
 
 	{* searchable columns *}
-	{if $cfg.enable_feature_dots_indexing}
+	{if $cfg.enable_feature_dots_indexing and ! $cfg.dots_indexing_index_all}
 		<p id="dots_index_area">
 		<label for="dots_index_opt">Select searchable columns (max:{$cfg.dots_indexing_max_cols|escape}):</label>
 
 		<label for="title" style="margin-left:10px;color:#666">Use as title:</label><input type="checkbox" name="title"/>
 
-	
 		{foreach from=$cfg.dots_indexing_max_cols_list item="i"}
 		<select id="dots_index_on_{$i|escape}" name="dots_index_opt_{$i|escape}" onchange="update_dots_index_field();"></select>
 		{/foreach}
-	
 
 		<input type="hidden" name="dots_index_on" value="" /><br/>
 		</p>

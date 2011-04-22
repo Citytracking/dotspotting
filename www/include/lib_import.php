@@ -400,12 +400,12 @@
 			return $sheet_rsp;
 		}
 
-		$sheet = $sheet_rsp['sheet'];		
+		$sheet = $sheet_rsp['sheet'];
 
 		#
 		# OMG!!! IT'S FULL OF DOTS!!!!
 		#
-	
+
 		$more['skip_validation'] = 1;	# see above
 
 		$dots_rsp = dots_import_dots($user, $sheet_rsp['sheet'], $data, $more);
