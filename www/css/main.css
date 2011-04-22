@@ -231,11 +231,43 @@ table.page_dot td{text-align:left;padding:5px;border-top:1px solid #000;}
 #map_controls #zoom_in{left:94px;top:0;}
 #map_controls #zoom_out{left:94px;top:29px;}
 #map_controls #reset_bounds{right:20px;top:0;}
+#map_controls #embed_map{right:55px;top:3px;}
 #map_toggle_size{position:absolute;bottom:2px;right:10px;}
 #map_toggle_size a{padding-left:14px;text-decoration:none;}
 #map_toggle_size a:hover{text-decoration:none;text-shadow:0px 1px 1px #9c9c9c;}
 #map_toggle_size a.taller{background:url(../images/map/enlarge-map-arrow.png) no-repeat 0 center;}
 #map_toggle_size a.shorter{background:url(../images/map/shrink-map-arrow.png) no-repeat 0 center;}
+
+#map_wrapper #embed_map_box{
+	position:absolute;
+	z-index:6001;
+	width:30%;
+	display:none;
+	right:-1px;
+	top:40px;
+	background:#000;
+	background:rgba(0,0,0,.9);
+	border:none;
+}
+	#map_wrapper #embed_map_box p{
+		position:relative;
+		color:#fff;
+		font-size:14px;
+		margin:5px;
+		padding:1px;
+		padding:0;
+
+	}
+	
+	#map_wrapper #embed_map_box p xmp{
+		font-size:12px;
+		white-space: pre-wrap;       /* css-3 */
+		white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+		white-space: -pre-wrap;      /* Opera 4-6 */
+		white-space: -o-pre-wrap;    /* Opera 7 */
+		word-wrap: break-word;       /* Internet Explorer 5.5+ */
+		
+	}
 
 /*
 MAP TOOLTIP 

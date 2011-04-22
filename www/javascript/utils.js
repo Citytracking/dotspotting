@@ -404,6 +404,25 @@ function get_mm_sheet_styles(){
 	return([attrs,attrs_hover]);
 }
 
+//
+function utils_set_embed_params(){
+	var _out = "";
+	var _id = (_dotspotting.embed_props.uid) ? _dotspotting.embed_props.uid : -1;
+	var _sht = (_dotspotting.embed_props.sid) ? _dotspotting.embed_props.sid : -1;
+	var _coord = (_dotspotting.embed_props.c) ? _dotspotting.embed_props.c : "";
+	if(_id >= 0 && _sht >= 0){
+		_out = "<strong>Copy the below code and paste it inside HTML body:</strong><br/><xmp><div>";
+		_out += "<script src='";
+		_out += _dotspotting.abs_root_url+"embed/dotspotting_embedwidget.js?sid="+_sht+"&uid="+_id;
+		_out += (_coord.length) ? "&xyz="+_coord : "";
+		_out += "'></script>";
+		_out += "</div></xmp>";
+	}else{
+		_out = "Sorry could not create an embed string!";
+	}
+	return _out;
+}
+
 // create handlers for map controls
 function utils_add_map_controls(map,map_type,extent){
 	
@@ -442,6 +461,19 @@ function utils_add_map_controls(map,map_type,extent){
 							map.zoom(Math.floor(map.zoom()));
 						}
 					break;
+					case "embed_map":
+						if($('#embed_map_box').is(':visible'))
+						{
+							$("#embed_map_box").hide();
+						}
+						else
+						{
+							var _ebd = utils_set_embed_params();
+							$("#embed_map_box p").html("").html(_ebd);
+							$("#embed_map_box").show();
+						}
+						
+					break;
 					default:
 					//
 					break;
@@ -450,6 +482,11 @@ function utils_add_map_controls(map,map_type,extent){
 			}
 		})
 	});
+	/*
+	$('.closehelperbutton').click(function(){
+		$("#helper_btn").trigger( 'click' );
+	});
+	*/
 }
 
 
@@ -691,6 +728,9 @@ function utils_hash(map,type){
 		if(this.currentHash != newHash && newHash.length){
 			window.location.hash = newHash;
 			this.currentHash = newHash;
+			
+			_dotspotting.embed_props.c = this.coords;
+			_dotspotting.embed_props.s = this.search; 
 			
 			// set permalink
 			if(this.pm)this.pm.setAttribute('href', location.href);
