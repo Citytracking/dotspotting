@@ -82,6 +82,10 @@
 			'mapid' => 1,
 		),
 
+		'vimeo' => array(
+			# 'id' => 1,
+		),
+
 		'walkingpapers' => array(
 			'scanid' => 1,
 		),

@@ -69,6 +69,8 @@ A dot by {$cfg.user.username|escape}
 	{include file="inc_dot_layout_flickr.txt"}
 {elseif $dot_is_youtube and $cfg.enable_feature_magicwords.youtube.id}
 	{include file="inc_dot_layout_youtube.txt"}
+{elseif $dot_is_vimeo and $cfg.enable_feature_magicwords.vimeo.id}
+	{include file="inc_dot_layout_vimeo.txt"}
 {else}
 	{include file="inc_dot_layout_basic_two_column.txt"}
 {/if}

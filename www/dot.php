@@ -40,6 +40,7 @@
 
 	$smarty->assign("dot_is_flickr", ((isset($dot['details']['flickr:id']) && !empty($dot['details']['flickr:id']) ) ? true : false) );
 	$smarty->assign("dot_is_youtube", ((isset($dot['details']['youtube:id']) && !empty($dot['details']['youtube:id']) ) ? true : false) );
+	$smarty->assign("dot_is_vimeo", ((isset($dot['details']['vimeo:id']) && !empty($dot['details']['vimeo:id']) ) ? true : false) );
 	$smarty->assign("dot_is_woeid", ((isset($dot['details']['yahoo:woeid']) && !empty($dot['details']['yahoo:woeid']) ) ? true : false) );
 	$smarty->assign("dot_is_oam", ((isset($dot['details']['oam:mapid']) && !empty($dot['details']['oam:mapid']) ) ? true : false) );
 	$smarty->assign("dot_is_walkingpapers", ((isset($dot['details']['walkingpapers:scanid']) && !empty($dot['details']['walkingpapers:scanid']) ) ? true : false) );
