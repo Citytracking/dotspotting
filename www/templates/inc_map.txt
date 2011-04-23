@@ -16,5 +16,5 @@
 		<a href="#" id="embed_map" title="embed map"><img src="{$cfg.abs_root_url}images/map/embed_map.png"/></a> 
 	</div>
 	<!-- <div id="filter_table_container">Taller map</div> -->
-	<div id="embed_map_box"><p></p></div>
+	<div id="embed_map_box"><p></p><textarea></textarea></div>
 </div>

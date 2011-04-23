@@ -411,14 +411,12 @@ function utils_set_embed_params(){
 	var _sht = (_dotspotting.embed_props.sid) ? _dotspotting.embed_props.sid : -1;
 	var _coord = (_dotspotting.embed_props.c) ? _dotspotting.embed_props.c : "";
 	if(_id >= 0 && _sht >= 0){
-		_out = "<strong>Copy the below code and paste it inside HTML body:</strong><br/><xmp><div>";
+		_out = "<div>";
 		_out += "<script src='";
 		_out += _dotspotting.abs_root_url+"embed/dotspotting_embedwidget.js?sid="+_sht+"&uid="+_id;
 		_out += (_coord.length) ? "&xyz="+_coord : "";
 		_out += "'></script>";
-		_out += "</div></xmp>";
-	}else{
-		_out = "Sorry could not create an embed string!";
+		_out += "</div>";
 	}
 	return _out;
 }
@@ -469,8 +467,16 @@ function utils_add_map_controls(map,map_type,extent){
 						else
 						{
 							var _ebd = utils_set_embed_params();
-							$("#embed_map_box p").html("").html(_ebd);
-							$("#embed_map_box").show();
+							if(_ebd.length){
+								$("#embed_map_box p").html("<strong>Copy the below code and paste it inside HTML body:</strong>");
+								$("#embed_map_box textarea").val(_ebd);
+								$("#embed_map_box").show();
+							}else{
+								$("#embed_map_box p").html("Sorry could not create an embed code!");
+								$("#embed_map_box textarea").val("");
+								$("#embed_map_box").show();
+							}
+
 						}
 						
 					break;

@@ -255,28 +255,26 @@ table.page_dot td{text-align:left;padding:5px;border-top:1px solid #000;}
 	display:none;
 	right:-1px;
 	top:40px;
-	background:#000;
-	background:rgba(0,0,0,.9);
-	border:none;
+	background:#fff;
+	background:rgba(255,255,255,.9);
+	border:1px solid #fff;
 }
 	#map_wrapper #embed_map_box p{
 		position:relative;
-		color:#fff;
+		color:#000;
 		font-size:14px;
 		margin:5px;
 		padding:1px;
 		padding:0;
-
 	}
-	
-	#map_wrapper #embed_map_box p xmp{
-		font-size:12px;
-		white-space: pre-wrap;       /* css-3 */
-		white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-		white-space: -pre-wrap;      /* Opera 4-6 */
-		white-space: -o-pre-wrap;    /* Opera 7 */
-		word-wrap: break-word;       /* Internet Explorer 5.5+ */
-		
+
+	#map_wrapper #embed_map_box textarea{
+		position:relative;
+		width:96%;
+		height:100px;
+		border:1px solid #ccc;
+		margin:5px 2%;
+		resize: none;
 	}
 
 /*
