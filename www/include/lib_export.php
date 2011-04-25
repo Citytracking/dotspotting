@@ -15,7 +15,7 @@
 	# outside of replacing the bad smell (below) with a boat-load
 	# of painful twisty code. I will gladly be proven wrong...
 	# (20101111/straup)
-	# 
+	#
 
 	$GLOBALS['export_ignore_columns'] = array(
 		'details_json',
@@ -59,14 +59,14 @@
 		if (! $GLOBALS['cfg']['enable_feature_search_export']){
 
 			$_keys = array_keys($rows[0]);
-		
+
 			foreach ($_keys as $k){
 
 				if (in_array($key, $GLOBALS['export_ignore_columns'])){
 					continue;
 				}
 			}
-	
+
 			if (isset($rows[0]['details'])){
 				$details = array_keys($rows[0]['details']);
 			}
@@ -103,7 +103,7 @@
 
 						if (! in_array($k, $details)){
 							$details[] = $k;
-						}						
+						}
 					}
 				}
 
@@ -229,7 +229,7 @@
 		# basic headers
 
 		if (preg_match("/^image/", $more['mimetype'])){
-  			header("Content-Type: " . htmlspecialchars($more['mimetype']));
+			header("Content-Type: " . htmlspecialchars($more['mimetype']));
 		}
 
 		else if (! $more['inline']){
@@ -239,8 +239,14 @@
 
 		else { }
 
-  		$fsize = filesize($path);
+		$fsize = filesize($path);
 		header("Content-Length: {$fsize}");
+
+		# CORS (http://www.w3.org/TR/cors/)
+
+		if (($more['mimetype'] == 'application/x-javascript') && ($GLOBALS['cfg']['enable_feature_cors'])){
+			header("Access-Control-Allow-Origin: *");
+		}
 
 		# x headers
 
