@@ -68,7 +68,7 @@
 	$sheet['dots'] = dots_get_dots_for_sheet($sheet, $GLOBALS['cfg']['user']['id'], $more);
 	$bbox = implode(", ", array_values($sheet['extent']));
 
-	# valid extras are things like 
+	# valid extras are things like
 
 	$export_more = array(
 		'viewer_id' => $GLOBALS['cfg']['user']['id'],
@@ -144,7 +144,7 @@
 
 				if ($cache_rsp['ok']){
 					unlink($export);
-					$export = $cache_rsp['path'];	
+					$export = $cache_rsp['path'];
 				}
 			}
 		}

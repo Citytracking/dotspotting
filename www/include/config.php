@@ -62,6 +62,8 @@
 	$GLOBALS['cfg']['enable_feature_search_export'] = 1;
 	$GLOBALS['cfg']['enable_feature_search_facets'] = 1;
 
+	$GLOBALS['cfg']['enable_feature_cors'] = 1;	# http://www.w3.org/TR/cors/
+
 	$GLOBALS['cfg']['enable_feature_http_prefetch'] = 0;
 
 	$GLOBALS['cfg']['enable_feature_magicwords'] = array(
