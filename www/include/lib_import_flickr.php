@@ -74,14 +74,18 @@
 			'extras' => $GLOBALS['import_flickr_spr_extras'],
 		);
 
-		# extra search params here
+		# Note the order of precedence
+
+		if (is_array($more['filter'])){
+			$args = array_merge($more['filter'], $args);
+		}
 
 		return import_flickr_spr_paginate($method, $args, $more);
 	}
 
 	#################################################################
 
-	function import_flickr_photoset($set_id){
+	function import_flickr_photoset($set_id, $more=array()){
 
 		$method = 'flickr.photosets.getPhotos';
 
@@ -90,9 +94,14 @@
 			'extras' => $GLOBALS['import_flickr_spr_extras'],
 		);
 
-		$more = array(
-			'root' => 'photoset',
-		);
+		# Note the order of precedence
+
+		if (is_array($more['filter'])){
+			$args = array_merge($more['filter'], $args);
+		}
+
+		# I don't know why we did this... (20110427/straup)
+		$more['root'] = 'photoset';
 
 		return import_flickr_spr_paginate($method, $args, $more);
 	}
@@ -101,7 +110,7 @@
 
 	function import_flickr_group_pool($group_id, $more=array()){
 
-		$method = 'flickr.groups.photos.search';
+		$method = 'flickr.photos.search';
 
 		$args = array(
 			'group_id' => $group_id,
@@ -109,7 +118,11 @@
 			'extras' => $GLOBALS['import_flickr_spr_extras'],
 		);
 
-		# extra API params here
+		# Note the order of precedence
+
+		if (is_array($more['filter'])){
+			$args = array_merge($more['filter'], $args);
+		}
 
 		return import_flickr_spr_paginate($method, $args, $more);
 	}
@@ -153,36 +166,37 @@
 
 			$_rsp = flickr_api_call($method, $args);
 
-			if ($_rsp['ok']){
+			if (! $_rsp['ok']){
+				break;
+			}
 
-				$rsp = $_rsp['rsp'];
+			$rsp = $_rsp['rsp'];
 
-				if (! isset($pages)){
-					$pages = $rsp[$root]['pages'];
+			if (! isset($pages)){
+				$pages = $rsp[$root]['pages'];
+			}
+
+			foreach ($rsp[$root]['photo'] as $ph){
+
+				# why didn't we just add a "has_geo" attribute
+				# to the API responses... (20110425/straup)
+
+				if ($ph['accuracy'] == 0){
+					continue;
 				}
 
-				foreach ($rsp[$root]['photo'] as $ph){
-
-					# why didn't we just add a "has_geo" attribute
-					# to the API responses... (20110425/straup)
-
-					if ($ph['accuracy'] == 0){
-						continue;
+				foreach ($to_remove as $key){
+					if (isset($ph[$key])){
+						unset($ph[$key]);
 					}
+				}
 
-					foreach ($to_remove as $key){
-						if (isset($ph[$key])){
-							unset($ph[$key]);
-						}
-					}
+				$ph['description'] = $ph['description']['_content'];
+				$photos[] = $ph;
+				$count_photos += 1;
 
-					$ph['description'] = $ph['description']['_content'];
-					$photos[] = $ph;
-					$count_photos += 1;
-
-					if ((isset($more['max_photos'])) && ($count_photos >= $more['max_photos'])){
-						break;
-					}
+				if ((isset($more['max_photos'])) && ($count_photos >= $more['max_photos'])){
+					break;
 				}
 			}
 

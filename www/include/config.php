@@ -336,8 +336,8 @@
 	$GLOBALS['cfg']['check_notices'] = 1;
 
 	$GLOBALS['cfg']['db_profiling'] = 0;
-	
-	# 
+
+	#
 	# USER STYLES
 	#
 	# implemented in global styles and include/lib_maps.php
