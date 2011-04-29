@@ -23,6 +23,14 @@
 
 	function http_get($url, $headers=array(), $more=array()){
 
+		$defaults = array(
+			'http_timeout' => $GLOBALS['cfg']['http_timeout'],
+		);
+
+		$more = array_merge($defaults, $more);
+
+		#
+
 		$headers_prepped = _http_prepare_outgoing_headers($headers);
 
 		$ch = curl_init();
@@ -31,7 +39,7 @@
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers_prepped);
 		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_TIMEOUT, $GLOBALS['cfg']['http_timeout']);
+		curl_setopt($ch, CURLOPT_TIMEOUT, $more['http_timeout']);
 		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 		curl_setopt($ch, CURLOPT_HEADER, true);
 
@@ -47,6 +55,12 @@
 
 	function http_post($url, $post_fields, $headers=array(), $more=array()){
 
+		$defaults = array(
+			'http_timeout' => $GLOBALS['cfg']['http_timeout'],
+		);
+
+		$more = array_merge($defaults, $more);
+
 		$headers_prepped = _http_prepare_outgoing_headers($headers);
 
 		$ch = curl_init();
@@ -55,7 +69,7 @@
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers_prepped);
 		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_TIMEOUT, $GLOBALS['cfg']['http_timeout']);
+		curl_setopt($ch, CURLOPT_TIMEOUT, $more['http_timeout']);
 		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 		curl_setopt($ch, CURLOPT_HEADER, true);
 

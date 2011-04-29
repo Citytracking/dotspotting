@@ -64,7 +64,12 @@
 		$url = $url . "?" . http_build_query($args);
 		#dumper($url);
 
-		$rsp = http_get($url);
+		# The Flickr API is being slow (20110429/straup)
+
+		$headers = array();
+		$more = array('http_timeout' => 5);
+
+		$rsp = http_get($url, $headers, $more);
 
 		if (! $rsp['ok']){
 			return $rsp;
