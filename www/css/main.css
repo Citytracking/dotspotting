@@ -241,11 +241,41 @@ table.page_dot td{text-align:left;padding:5px;border-top:1px solid #000;}
 #map_controls #zoom_in{left:94px;top:0;}
 #map_controls #zoom_out{left:94px;top:29px;}
 #map_controls #reset_bounds{right:20px;top:0;}
+#map_controls #embed_map{right:55px;top:3px;}
 #map_toggle_size{position:absolute;bottom:2px;right:10px;}
 #map_toggle_size a{padding-left:14px;text-decoration:none;}
 #map_toggle_size a:hover{text-decoration:none;text-shadow:0px 1px 1px #9c9c9c;}
 #map_toggle_size a.taller{background:url(../images/map/enlarge-map-arrow.png) no-repeat 0 center;}
 #map_toggle_size a.shorter{background:url(../images/map/shrink-map-arrow.png) no-repeat 0 center;}
+
+#map_wrapper #embed_map_box{
+	position:absolute;
+	z-index:6001;
+	width:30%;
+	display:none;
+	right:-1px;
+	top:40px;
+	background:#fff;
+	background:rgba(255,255,255,.9);
+	border:1px solid #fff;
+}
+	#map_wrapper #embed_map_box p{
+		position:relative;
+		color:#000;
+		font-size:14px;
+		margin:5px;
+		padding:1px;
+		padding:0;
+	}
+
+	#map_wrapper #embed_map_box textarea{
+		position:relative;
+		width:96%;
+		height:100px;
+		border:1px solid #ccc;
+		margin:5px 2%;
+		resize: none;
+	}
 
 /*
 MAP TOOLTIP 

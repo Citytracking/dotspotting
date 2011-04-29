@@ -1,9 +1,12 @@
 {literal}
 <script type="text/javascript">
 
+// store id's for embedding
+_dotspotting.embed_props.uid = {/literal}{$owner.id}{literal};
+_dotspotting.embed_props.sid = {/literal}{$sheet.id}{literal};
+
 // store json object of dot data
 var all_dots = {/literal}{$dots_simple|@json_encode}{literal};
-
 
 // dot onclick handler
 function dot_onclick(dotid,lon,lat){
@@ -618,6 +621,7 @@ function draw_map_polymaps(dots,update_from_search){
 	_dotspotting.selected_dot = null;
 
 	var qs = doHashSetup();
+	if(_dotspotting)_dotspotting.hashobj = qs;
 	
 	if(!update_from_search){
 		if(qs && qs.contains('c')){
