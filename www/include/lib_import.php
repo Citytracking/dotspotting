@@ -84,7 +84,7 @@
 
 	#################################################################
 
-	function import_fetch_uri(&$user, $uri, $more=array()){
+	function import_fetch_uri($uri, $more=array()){
 
 		# QUESTION: do a HEAD here to check the content-type and file-size ?
 
@@ -102,12 +102,12 @@
 			}
 
 			else if ($measure == 'M'){
-				$max_bytes = $unit * 1024 * 1024; 
+				$max_bytes = $unit * 1024 * 1024;
 			}
 
 			else {
 				$max_bytes = $unit * 1024;
-			}			
+			}
 		}
 
 		else {
@@ -149,7 +149,7 @@
 
 				return array(
 					'ok' => 0,
-					'error' => 'Remote file is too large',					
+					'error' => 'Remote file is too large',
 				);
 			}
 		}
@@ -171,12 +171,12 @@
 		if ($http_rsp['headers']['content-length'] > $max_bytes){
 			# throw an error ?
 		}
-		
+
 		#
 		# Write the file to disk
 		#
 
-		$fname = tempnam("/tmp", $user['username']);
+		$fname = tempnam("/tmp", getmypid());
 		$fh = fopen($fname, "w");
 
 		if (! $fh){
@@ -227,7 +227,7 @@
 
 				if (isset($ext_map[$ext])){
 					$type = $ext_map[$ext];
-				}		
+				}
 			}
 
 			else { }
@@ -244,7 +244,7 @@
 
 	function import_import_uri(&$user, $uri, $more=array()){
 
-		$upload = import_fetch_uri($user, $uri, $more);
+		$upload = import_fetch_uri($uri, $more);
 
 		if (! $upload['ok']){
 			return $upload;

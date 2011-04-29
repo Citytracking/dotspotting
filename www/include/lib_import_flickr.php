@@ -57,6 +57,15 @@
 
 		}
 
+		if ($feed_url = flickr_get_georss_feed($url)){
+
+			$more = array(
+				'assume_mime_type' => 'application/rss+xml'
+			);
+
+			return import_fetch_uri($url, $more);
+		}
+
 		# yahoo says no
 
 		return $empty;

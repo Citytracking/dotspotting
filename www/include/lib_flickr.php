@@ -57,10 +57,6 @@
 
 		$url = "http://api.flickr.com/services/rest";
 
-		# At some point we may need to do POSTs but for
-		# now it's not really an issue
-		# $rsp = http_post($url, $args);
-
 		$url = $url . "?" . http_build_query($args);
 		#dumper($url);
 
@@ -70,6 +66,10 @@
 		$more = array('http_timeout' => 5);
 
 		$rsp = http_get($url, $headers, $more);
+
+		# At some point we may need to do POSTs but for
+		# now it's not really an issue
+		# $rsp = http_post($url, $args);
 
 		if (! $rsp['ok']){
 			return $rsp;
