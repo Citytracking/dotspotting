@@ -14,12 +14,12 @@
 
 	function import_flickr_url($url, $more=array()){
 
-		$empty = array();
 
 		# photosets
 
 		if (preg_match("!/sets/(\d+)/?$!", $url, $m)){
-			return import_flickr_photoset($m[1], $more);
+			$rows = import_flickr_photoset($m[1], $more);
+			return array('ok' => 1, 'data' => $rows);
 		}
 
 		# groups
@@ -33,10 +33,11 @@
 			}
 
 			if (! $group_id){
-				return $empty;
+				return array('ok' => 0, 'error' => 'Invalid group ID');
 			}
 
-			return import_flickr_group_pool($group_id, $more);
+			$rows = import_flickr_group_pool($group_id, $more);
+			return array('ok' => 1, 'data' => $rows);
 		}
 
 		# individual users
@@ -50,25 +51,35 @@
 			}
 
 			if (! $user_id){
-				return $empty;
+				return array('ok' => 0, 'error' => 'Invalid user ID');
 			}
 
-			return import_flickr_user($user_id, $more);
+			$rows = import_flickr_user($user_id, $more);
+			return array('ok' => 1, 'data' => $rows);
 
 		}
 
-		if ($feed_url = flickr_get_georss_feed($url)){
+		# for example:
+		# http://api.flickr.com/services/feeds/geo/?id=35034348999@N01&amp;lang=en-us
+
+		if (preg_match("!/services/feeds/geo!", $url)){
 
 			$more = array(
 				'assume_mime_type' => 'application/rss+xml'
 			);
 
-			return import_fetch_uri($url, $more);
+			$upload = import_fetch_uri($url, $more);
+
+			if ($upload['ok']){
+				$upload = import_process_file($upload);
+			}
+
+			return $upload;
 		}
 
 		# yahoo says no
 
-		return $empty;
+		return array('ok' => 0, 'error' => 'Failed to parse URL');
 	}
 
 	#################################################################
@@ -158,6 +169,11 @@
 			'farm',
 			'isprimary',
 			'place_id',
+			'isfriend',
+			'isfamily',
+			'ispublic',
+			'owner',	# we're already grabbing ownername so don't bother
+					# with NSIDs until someone asks (20110429/straup)
 			'geo_is_family',
 			'geo_is_friend',
 			'geo_is_contact',
@@ -199,6 +215,9 @@
 						unset($ph[$key]);
 					}
 				}
+
+				$ph['flickr:id'] = $ph['id'];
+				unset($ph['id']);
 
 				$ph['description'] = $ph['description']['_content'];
 				$photos[] = $ph;

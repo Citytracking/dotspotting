@@ -7,6 +7,7 @@
 	include("include/init.php");
 
 	loadlib("import");
+	loadlib("import_flickr");
 	loadlib("formats");
 
 	loadlib("flickr");
@@ -214,21 +215,11 @@
 			exit();
 		}
 
-		# Am I Flickr?
+		# Am I Google?
 
 		if ($is_flickr){
-
-			if ($feed_url = flickr_get_georss_feed($url)){
-				$url = $feed_url;
-			}
-
-			else {
-				$GLOBALS['error']['no_feed_url'] = 1;
-				$ok = 0;
-			}
+			# pass
 		}
-
-		# Am I Google?
 
 		else if ($is_google){
 
@@ -258,18 +249,14 @@
 		}
 
 		if ($is_flickr){
-			$more['assume_mime_type'] = 'application/rss+xml';
+			$more['max_photos'] = 30;
+			$upload = import_flickr_url($url, $more);
 		}
 
 		else if ($is_google){
 			$more['assume_mime_type'] = 'application/vnd.google-earth.kml+xml';
+			$upload = import_fetch_uri($url, $more);
 		}
-
-		#
-
-		$upload = import_fetch_uri($url, $more);
-
-		# dumper($upload);
 
 		if (! $upload['ok']){
 
@@ -281,11 +268,18 @@
 
 		# Okay, now process the file
 
-		$more = array(
-			'dots_index_on' => $dots_index_on,
-		);
+		if ($is_flickr){
+			$pre_process = $upload;
+		}
 
-		$pre_process = import_process_file($upload, $more);
+		else {
+
+			$more = array(
+				'dots_index_on' => $dots_index_on,
+			);
+
+			$pre_process = import_process_file($upload, $more);
+		}
 
 		# dumper($pre_process);
 
