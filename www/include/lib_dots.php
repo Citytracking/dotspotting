@@ -186,6 +186,12 @@
 			}
 		}
 
+		# See notes in lib_dots_search about needing to merge these
+		# two calls in to a single wrapper that calls a single "add
+		# to search" wrapper call that takes care of whether or not
+		# extras are stored in their own table or denormalized.
+		# (20110502/straup)
+
 		if (count($search)){
 
 			$search_rsp = dots_search_add_lots_of_dots($search);

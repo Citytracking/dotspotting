@@ -1,14 +1,11 @@
 <?php
 
-	# TO DO:
-	# This code needs to be re-jiggered so that it is mostly a wrapper
-	# around one, or more, storage engines (mysql, solr, couch, etc.)
-	# and takes care of figuring out where search "extras" stuff need
-	# to go. (20110502/straup)
+	# This is not being used anywhere yet. See notes in lib_search.php
+	# (20110502/straup)
 
 	#################################################################
 
-	function dots_search_add_dot(&$dot, $add_offline=0){
+	function dots_search_mysql_add_dot(&$dot, $add_offline=0){
 
 		$hash = array();
 
@@ -21,7 +18,7 @@
 
 	#################################################################
 
-	function dots_search_add_lots_of_dots(&$dots, $add_offline=0){
+	function dots_search_mysql_add_lots_of_dots(&$dots, $add_offline=0){
 
 		$_dots = array();
 
@@ -41,7 +38,7 @@
 
 	#################################################################
 
-	function dots_search_remove_dot(&$dot){
+	function dots_search_mysql_remove_dot(&$dot){
 
 		$enc_id = AddSlashes($dot['id']);
 
@@ -51,7 +48,7 @@
 
 	#################################################################
 
-	function dots_search_remove_sheet(&$sheet){
+	function dots_search_mysql_remove_sheet(&$sheet){
 
 		$enc_id = AddSlashes($sheet['id']);
 
@@ -61,7 +58,7 @@
 
 	#################################################################
 
-	function dots_search_remove_user(&$user){
+	function dots_search_mysql_remove_user(&$user){
 
 		$enc_id = AddSlashes($user['id']);
 
