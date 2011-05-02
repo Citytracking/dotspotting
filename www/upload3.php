@@ -139,8 +139,6 @@
 		$parsed = utils_parse_url($url);
 		$ok = $parsed['ok'];
 
-		# dumper($parsed);
-
 		$error_details = '';
 
 		if (($ok) && (! in_array($parsed['scheme'], array('http', 'https')))){
@@ -209,6 +207,15 @@
 		# Please to make sure you are saying yes, ok?
 
 		if (! post_isset('confirm')){
+
+			# If it's from Flickr then parse out what kind of Flickr URL
+			# we're parsing in order to display some helpful constraints
+			# (like dates) for the API queries.
+
+			if ($is_flickr){
+				$flickr_type = import_flickr_url_type($url);
+				$GLOBALS['smarty']->assign_by_ref("flickr_url_type", $flickr_type);
+			}
 
 			$GLOBALS['smarty']->assign('step', 'confirm');
 			$GLOBALS['smarty']->display('page_upload3.txt');

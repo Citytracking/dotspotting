@@ -12,20 +12,54 @@
 
 	#################################################################
 
-	function import_flickr_url($url, $more=array()){
-
+	function import_flickr_url_type($url, $more=array()){
 
 		# photosets
 
 		if (preg_match("!/sets/(\d+)/?$!", $url, $m)){
+			return "set";
+		}
+
+		# groups
+
+		if (preg_match("!/groups/([^/]+)(?:/pool)?/?$!", $url, $m)){
+			return "group";
+		}
+
+		# individual users
+
+		if (preg_match("!/photos/([^/]+)/?!", $url, $m)){
+			return "user";
+		}
+
+		# for example:
+		# http://api.flickr.com/services/feeds/geo/?id=35034348999@N01&amp;lang=en-us
+
+		if (preg_match("!/services/feeds/geo!", $url)){
+			return "feed";
+		}
+
+		return null;
+	}
+
+	#################################################################
+
+	function import_flickr_url($url, $more=array()){
+
+		$type = import_flickr_url_type($url);
+
+		# photosets
+
+		if ($type == "set"){
 			$rows = import_flickr_photoset($m[1], $more);
 			return array('ok' => 1, 'data' => $rows);
 		}
 
 		# groups
 
-		if (preg_match("!/groups/([^/]+)(?:/pool)?/?$!", $url, $m)){
+		if ($type == "group"){
 
+			preg_match("!/groups/([^/]+)(?:/pool)?/?$!", $url, $m);
 			$group_id = $m[1];
 
 			if (! preg_match("!\@N\d+$!", $group_id)){
@@ -42,8 +76,9 @@
 
 		# individual users
 
-		if (preg_match("!/photos/([^/]+)/?!", $url, $m)){
+		if ($type == "user"){
 
+			preg_match("!/photos/([^/]+)/?!", $url, $m);
 			$user_id = $m[1];
 
 			if (! preg_match("!\@N\d+$!", $user_id)){
@@ -62,7 +97,7 @@
 		# for example:
 		# http://api.flickr.com/services/feeds/geo/?id=35034348999@N01&amp;lang=en-us
 
-		if (preg_match("!/services/feeds/geo!", $url)){
+		if ($type == "feed"){
 
 			$more = array(
 				'assume_mime_type' => 'application/rss+xml'
