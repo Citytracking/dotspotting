@@ -203,30 +203,65 @@
 		$GLOBALS['smarty']->assign("is_flickr", $is_flickr);
 		$GLOBALS['smarty']->assign("is_google", $is_google);
 
+		# If it's from Flickr then parse out what kind of Flickr URL
+		# we're parsing in order to display some helpful constraints
+		# (like dates) for the API queries.
+
+		if ($is_flickr){
+			list($flickr_type, $ignore) = import_flickr_url_type($url);
+			$GLOBALS['smarty']->assign_by_ref("flickr_url_type", $flickr_type);
+		}
+
 		# This is an upload from some random remote site
 		# Please to make sure you are saying yes, ok?
 
 		if (! post_isset('confirm')){
-
-			# If it's from Flickr then parse out what kind of Flickr URL
-			# we're parsing in order to display some helpful constraints
-			# (like dates) for the API queries.
-
-			if ($is_flickr){
-				$flickr_type = import_flickr_url_type($url);
-				$GLOBALS['smarty']->assign_by_ref("flickr_url_type", $flickr_type);
-			}
 
 			$GLOBALS['smarty']->assign('step', 'confirm');
 			$GLOBALS['smarty']->display('page_upload3.txt');
 			exit();
 		}
 
-		# Am I Google?
+		# Am I Flickr? If I am then, check for date filters
+		# (unless I'm a photoset)
 
-		if ($is_flickr){
-			# pass
+		if (($is_flickr) && (in_array($flickr_type, array('user', 'group')))){
+
+			$when = post_str("flickr_when");
+			$month = post_int32("flickr_month");
+			$year = post_int32("flickr_year");
+
+			if (($month) && ($year)){
+				# see below
+			}
+
+			elseif ($month){
+				$year = gmdate("Y", time());
+			}
+
+			elseif ($year){
+				$month = gmdate("m", time());
+			}
+
+			else {
+				$GLOBALS['error']['flickr_missing_date_filter'] = 1;
+				$ok = 0;
+			}
+
+			if (($ok) && ($month) && ($year)){
+
+				if (! in_array($when, array('taken', 'upload'))){
+					$when = 'taken';
+				}
+
+				$more['filter'] = array(
+					"min_{$when}_date" => sprintf("%04d-%02d-01 00:00:00", $year, $month),
+					"max_{$when}_date" => sprintf("%04d-%02d-31 23:59:59", $year, $month),
+				);
+			}
 		}
+
+		# Am I Google?
 
 		else if ($is_google){
 
@@ -256,8 +291,15 @@
 		}
 
 		if ($is_flickr){
-			$more['max_photos'] = 30;
+
 			$upload = import_flickr_url($url, $more);
+
+			if (($upload['ok']) && (! count($upload['data']))){
+				$upload = array(
+					'ok' => 0,
+					'error' => 'Dotspotting was unable to retrieve any geotagged photos from Flickr!',
+				);
+			}
 		}
 
 		else if ($is_google){

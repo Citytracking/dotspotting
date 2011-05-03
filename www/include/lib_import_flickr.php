@@ -17,26 +17,26 @@
 		# photosets
 
 		if (preg_match("!/sets/(\d+)/?$!", $url, $m)){
-			return "set";
+			return array("set", $m[1]);
 		}
 
 		# groups
 
 		if (preg_match("!/groups/([^/]+)(?:/pool)?/?$!", $url, $m)){
-			return "group";
+			return array("group", $m[1]);
 		}
 
 		# individual users
 
 		if (preg_match("!/photos/([^/]+)/?!", $url, $m)){
-			return "user";
+			return array("user", $m[1]);
 		}
 
 		# for example:
 		# http://api.flickr.com/services/feeds/geo/?id=35034348999@N01&amp;lang=en-us
 
 		if (preg_match("!/services/feeds/geo!", $url)){
-			return "feed";
+			return array("feed", $url);
 		}
 
 		return null;
@@ -46,7 +46,7 @@
 
 	function import_flickr_url($url, $more=array()){
 
-		$type = import_flickr_url_type($url);
+		list($type, $uid) = import_flickr_url_type($url);
 
 		# photosets
 
@@ -59,8 +59,7 @@
 
 		if ($type == "group"){
 
-			preg_match("!/groups/([^/]+)(?:/pool)?/?$!", $url, $m);
-			$group_id = $m[1];
+			$group_id = $uid;
 
 			if (! preg_match("!\@N\d+$!", $group_id)){
 				$group_id = flickr_lookup_group_id_by_url($url);
@@ -78,8 +77,7 @@
 
 		if ($type == "user"){
 
-			preg_match("!/photos/([^/]+)/?!", $url, $m);
-			$user_id = $m[1];
+			$user_id = $uid;
 
 			if (! preg_match("!\@N\d+$!", $user_id)){
 				$user_id = flickr_lookup_user_id_by_url($url);

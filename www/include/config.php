@@ -170,7 +170,6 @@
 	$GLOBALS['cfg']['maptiles_template_hosts'] = array();
 
 	$GLOBALS['cfg']['maptiles_license'] = 'Map data <a href="http://creativecommons.org/licenses/by-sa/3.0/">CCBYSA</a> 2010 <a href="http://openstreetmap.org/">OpenStreetMap.org</a> contributors';
-	
 
 	$GLOBALS['cfg']['pagination_per_page'] = 100;
 	$GLOBALS['cfg']['pagination_spill'] = 5;
