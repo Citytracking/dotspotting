@@ -74,6 +74,10 @@
 		'viewer_id' => $GLOBALS['cfg']['user']['id'],
 	);
 
+	if (($format == "json") && ($cb = get_str("callback"))){
+		$export_more['callback'] = $cb;
+	}
+
 	$export_props = export_collect_user_properties($format);
 	$export_more = array_merge($export_props, $export_more);
 

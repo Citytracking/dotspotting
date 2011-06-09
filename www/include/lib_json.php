@@ -188,12 +188,19 @@
 			$json['features'][] = $feature;
 		}
 
+		$rsp = json_encode($json);
+
+		if (isset($more['callback'])){
+			$enc_cb = htmlspecialchars($more['callback']);
+			$rsp = "{$enc_cb}({$rsp})";
+		}
+
 		$fh = fopen($more['path'], 'w');
-		fwrite($fh, json_encode($json));
+		fwrite($fh, $rsp);
 		fclose($fh);
 
 		return $more['path'];
 	}
-	
+
 	#################################################################
 ?>
