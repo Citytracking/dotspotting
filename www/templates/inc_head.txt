@@ -3,14 +3,13 @@
 <head>
 	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	
+
 	<style type="text/css">
 		@import url({$cfg.abs_root_url}css/main.css);
-		
 		{* pull in styles defined in global $cfg *}
 		{include file='inc_custom_styles.txt'}
 	</style>
-	
+
 	{* See this: still no JS compression or other smushing *}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/LAB.min.js"></script>
@@ -23,7 +22,6 @@
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/querystring.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/htmlspecialchars.js"></script>
 	<script type="text/javascript">
-		
 		{literal}var _dotspotting = {{/literal}
 			    'abs_root_url' : '{$cfg.abs_root_url}',
 			    'user' : {ldelim} id : {if $cfg.user.id}{$cfg.user.id|escape}{else}null{/if} {rdelim},
