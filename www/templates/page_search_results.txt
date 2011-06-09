@@ -20,7 +20,7 @@
 		<select onchange="prep_sheet_export(this);return false;">
 			<option selected>Export options</option>
 			{foreach from=$export_formats item="fmt" name="formats"}
-			<option value="{$sheet|@urls_url_for_sheet}export.{$fmt|escape}" title="{$fmt|escape}">{if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if}</option>
+			<option value="{$cfg.abs_root_url}search/export?{$q_args}&format={$fmt|escape}" title="{$fmt|escape}">{if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if}</option>
 			{/foreach}
 		</select>
 	</form>

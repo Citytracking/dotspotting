@@ -97,7 +97,9 @@
 
 		$query_args = http_build_query($args);
 		$GLOBALS['smarty']->assign_by_ref("enc_query_args", $query_args);
-
+		
+		# pass query args to template, for things like creating export URL's for each format....
+		$GLOBALS['smarty']->assign("q_args",$query_args);
 		#
 
 		if (($args['nearby']) && ($args['gh'])){
@@ -119,8 +121,9 @@
 
 				$smarty->assign("query_all_url", "{$GLOBALS['cfg']['abs_root_url']}search/?" . $query_args);
 			}
+			 
 		}
-
+       
 		$GLOBALS['smarty']->assign("pagination_url", $pagination_url);
 		$GLOBALS['smarty']->assign("pagination_page_as_queryarg", $page_as_queryarg);
 
