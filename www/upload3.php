@@ -7,7 +7,6 @@
 	include("include/init.php");
 
 	loadlib("import");
-	loadlib("import_flickr");
 	loadlib("formats");
 
 	loadlib("flickr");
@@ -139,6 +138,8 @@
 		$parsed = utils_parse_url($url);
 		$ok = $parsed['ok'];
 
+		# dumper($parsed);
+
 		$error_details = '';
 
 		if (($ok) && (! in_array($parsed['scheme'], array('http', 'https')))){
@@ -203,15 +204,6 @@
 		$GLOBALS['smarty']->assign("is_flickr", $is_flickr);
 		$GLOBALS['smarty']->assign("is_google", $is_google);
 
-		# If it's from Flickr then parse out what kind of Flickr URL
-		# we're parsing in order to display some helpful constraints
-		# (like dates) for the API queries.
-
-		if ($is_flickr){
-			list($flickr_type, $ignore) = import_flickr_url_type($url);
-			$GLOBALS['smarty']->assign_by_ref("flickr_url_type", $flickr_type);
-		}
-
 		# This is an upload from some random remote site
 		# Please to make sure you are saying yes, ok?
 
@@ -222,42 +214,17 @@
 			exit();
 		}
 
-		# Am I Flickr? If I am then, check for date filters
-		# (unless I'm a photoset)
+		# Am I Flickr?
 
-		if (($is_flickr) && (in_array($flickr_type, array('user', 'group')))){
+		if ($is_flickr){
 
-			$when = post_str("flickr_when");
-			$month = post_int32("flickr_month");
-			$year = post_int32("flickr_year");
-
-			if (($month) && ($year)){
-				# see below
-			}
-
-			elseif ($month){
-				$year = gmdate("Y", time());
-			}
-
-			elseif ($year){
-				$month = gmdate("m", time());
+			if ($feed_url = flickr_get_georss_feed($url)){
+				$url = $feed_url;
 			}
 
 			else {
-				$GLOBALS['error']['flickr_missing_date_filter'] = 1;
+				$GLOBALS['error']['no_feed_url'] = 1;
 				$ok = 0;
-			}
-
-			if (($ok) && ($month) && ($year)){
-
-				if (! in_array($when, array('taken', 'upload'))){
-					$when = 'taken';
-				}
-
-				$more['filter'] = array(
-					"min_{$when}_date" => sprintf("%04d-%02d-01 00:00:00", $year, $month),
-					"max_{$when}_date" => sprintf("%04d-%02d-31 23:59:59", $year, $month),
-				);
 			}
 		}
 
@@ -291,21 +258,16 @@
 		}
 
 		if ($is_flickr){
-
-			$upload = import_flickr_url($url, $more);
-
-			if (($upload['ok']) && (! count($upload['data']))){
-				$upload = array(
-					'ok' => 0,
-					'error' => 'Dotspotting was unable to retrieve any geotagged photos from Flickr!',
-				);
-			}
+			$more['assume_mime_type'] = 'application/rss+xml';
 		}
 
 		else if ($is_google){
 			$more['assume_mime_type'] = 'application/vnd.google-earth.kml+xml';
-			$upload = import_fetch_uri($url, $more);
 		}
+
+		#
+
+		$upload = import_fetch_uri($url, $more);
 
 		if (! $upload['ok']){
 
@@ -317,18 +279,11 @@
 
 		# Okay, now process the file
 
-		if ($is_flickr){
-			$pre_process = $upload;
-		}
+		$more = array(
+			'dots_index_on' => $dots_index_on,
+		);
 
-		else {
-
-			$more = array(
-				'dots_index_on' => $dots_index_on,
-			);
-
-			$pre_process = import_process_file($upload, $more);
-		}
+		$pre_process = import_process_file($upload, $more);
 
 		# dumper($pre_process);
 
