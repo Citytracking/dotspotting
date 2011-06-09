@@ -8,6 +8,40 @@
 
 	#################################################################
 
+	function flickr_lookup_group_id_by_url($url){
+		return _flickr_lookup_id_by_url($url, 'group');
+	}
+
+	function flickr_lookup_user_id_by_url($url){
+		return _flickr_lookup_id_by_url($url, 'user');
+	}
+
+	function _flickr_lookup_id_by_url($url, $type){
+
+		$cache_key = "flickr_lookup_" . md5($url);
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			return $cache['data'];
+		}
+
+		$method = 'flickr.urls.lookup' . ucwords($type);
+		$args = array('url' => $url);
+
+		$_rsp = flickr_api_call($method, $args);
+
+		if (! $_rsp['ok']){
+			return null;
+		}
+
+		$id = $_rsp['rsp'][$type]['id'];
+		cache_set($cache_key, $id);
+
+		return $id;
+	}
+
+	#################################################################
+
 	function flickr_api_call($method, $args=array()){
 
 		$args['api_key'] = $GLOBALS['cfg']['flickr_apikey'];
@@ -24,6 +58,9 @@
 		$url = "http://api.flickr.com/services/rest";
 
 		$rsp = http_post($url, $args);
+
+		# $url = $url . "?" . http_build_query($args);
+		# $rsp = http_get($url);
 
 		if (! $rsp['ok']){
 			return $rsp;

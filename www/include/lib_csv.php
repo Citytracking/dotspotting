@@ -120,6 +120,48 @@
 				}
 			}
 
+			# ensure latitude
+
+			if (! isset($tmp['latitude'])){
+				$errors[] = array(
+					'record' => $record,
+					'error' => 'missing latitude',
+					'column' => 'latitude',
+				);
+			}
+
+			elseif (! geo_utils_is_valid_latitude($tmp['latitude'])){
+				$errors[] = array(
+					'record' => $record,
+					'error' => 'invalid latitude',
+					'column' => 'latitude',
+				);
+			}
+
+			else {}
+
+			# ensure longitude
+
+			if (! isset($tmp['longitude'])){
+				$errors[] = array(
+					'record' => $record,
+					'error' => 'missing longitude',
+					'column' => 'longitude',
+				);
+			}
+
+			elseif (! geo_utils_is_valid_longitude($tmp['longitude'])){
+				$errors[] = array(
+					'record' => $record,
+					'error' => 'invalid longitude',
+					'column' => 'longitude',
+				);
+			}
+
+			else {}
+
+			# done...
+
 			$data[] = $tmp;
 		}
 
