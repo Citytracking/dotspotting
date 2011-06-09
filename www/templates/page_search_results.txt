@@ -1,5 +1,8 @@
 {* Just a place-holder because generating a 'title' for search results is a bit of work *}
 {capture assign="page_title"}{if $smarty.get.nearby}Dots nearby{else}Search results{/if}{/capture}
+{capture assign="extra_head"}
+	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/sheet.js"></script>
+{/capture}
 {include file="inc_head.txt"}
 
 

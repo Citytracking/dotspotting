@@ -267,9 +267,7 @@
 
 		#
 
-		$upload = import_fetch_uri($GLOBALS['cfg']['user'], $url, $more);
-
-		# dumper($upload);
+		$upload = import_fetch_uri($url, $more);
 
 		if (! $upload['ok']){
 

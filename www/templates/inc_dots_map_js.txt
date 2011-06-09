@@ -2,8 +2,8 @@
 <script type="text/javascript">
 
 // store id's for embedding
-_dotspotting.embed_props.uid = {/literal}{$owner.id}{literal};
-_dotspotting.embed_props.sid = {/literal}{$sheet.id}{literal};
+// _dotspotting.embed_props.uid = {/literal}{$owner.id}{literal};
+// _dotspotting.embed_props.sid = {/literal}{$sheet.id}{literal};
 
 // store json object of dot data
 var all_dots = {/literal}{$dots_simple|@json_encode}{literal};
