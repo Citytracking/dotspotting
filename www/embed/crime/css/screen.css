@@ -1,0 +1,137 @@
+
+html, body {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, clean, sans-serif;
+    font-size: 15px;
+    line-height: 20px;
+
+    background: #fff;
+    color: #000;
+}
+
+a:link,
+a:hover,
+a:visited {
+    color: inherit;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+#copyright {
+    margin: 0;
+    font-size: 10px;
+    line-height: 14px;
+    z-index: 2001;
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    color: #999;
+}
+
+#overlay {
+    z-index: 2000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    color: #fff;
+    background: #000;
+}
+
+#overlay p { padding: 5px; }
+
+h1 {
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: normal;
+    margin: 0;
+    padding: 5px;
+}
+
+h1 a {
+    text-decoration: none;
+}
+
+.report {
+    color: #fff !important;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.report .group,
+.report img {
+    position: absolute;
+    left: -13px;
+    top: -13px;
+    width: 26px;
+    height: 26px;
+}
+
+.report .group {
+    display: block;
+    text-align: center;
+    font-size: 10px;
+    line-height: 26px;
+    background-repeat: none;
+    background-position: center center;
+}
+
+.violent .group { background-image: url(../images/icons/violent.png); }
+.property .group { background-image: url(../images/icons/property.png); }
+.qol .group { background-image: url(../images/icons/qol.png); }
+.unknown .group { background-image: url(../images/icons/other.png); }
+.faded .group {
+    /* background-image: url(icons/faded.png) !important; */
+    opacity: .8;
+    -moz-opacity: .8;
+}
+
+.report .desc {
+    display: none;
+    overflow: hidden;
+
+    position: absolute;
+    left: -7em;
+    top: 9px;
+    padding: 5px 6px 3px;
+
+    width: 14em;
+    min-height: 34px;
+
+    font-size: 12px;
+    line-height: 16px;
+    background: #000;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.report .date {
+    display: block;
+    color: #ccc;
+}
+
+/* marker above all others */
+.report:hover {
+    z-index: 1000;
+}
+/* description above all other markers */
+.report:hover .desc {
+    z-index: 1001;
+    display: block;
+}
+/* icon above the description */
+.report:hover .group {
+    z-index: 1002;
+}
