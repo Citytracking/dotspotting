@@ -301,7 +301,7 @@ function dot_getinfo_json(dotid){
 	var dot = {};
 	for(i=0;i<all_dots.length;i++){
 		if(all_dots[i].id == dotid){
-			var _dot = (!all_dots[i]['url']) ? row2dot_json(i) : all_dots[i];
+			var _dot = (!all_dots[i]['__perma_url']) ? row2dot_json(i) : all_dots[i];
 			_dotspotting.dots_list_dots[dotid] = i;
 			return _dot;
 		}
@@ -351,7 +351,7 @@ function row2dot_json(i,headers){
 		all_dots[i]['owner'] = (ownerid == _dotspotting.user.id) ? "you" : _owner;
 	}
 	
-	all_dots[i]['url'] = _dotspotting.abs_root_url + 'u/' + all_dots[i]['ownerid'] + '/dots/' + all_dots[i].id + '/';
+	all_dots[i]['__perma_url'] = _dotspotting.abs_root_url + 'u/' + all_dots[i]['ownerid'] + '/dots/' + all_dots[i].id + '/';
 
 	if (!_dotspotting.dots_list_dots[all_dots[i].id])_dotspotting.dots_list_dots[all_dots[i].id] = i;
     
@@ -457,14 +457,16 @@ function collect_dots(){
 	var nelat = null;
 	var nelon = null;
 	
+	
 	// parse all the dots which also creates a lookup table
 	// should only run once per page load
 	if(_dotspotting.dots_list_dots[all_dots[0].id] == undefined){
 		$(all_dots).each(function(i){
-			if (!all_dots[i]['url'])row2dot_json(i,headers);
+			if (!all_dots[i]['__perma_url'])row2dot_json(i,headers);
 		});
 	}
 	
+
 	// now create dots object to feed to map
 	var features = $("#user_dots tbody tr").map(function(i,row){
 		var classes = $(this).attr("id");
@@ -475,11 +477,15 @@ function collect_dots(){
 		}
 		
 		var dot = (_rowid != null) ? all_dots[_dotspotting.dots_list_dots[_rowid]] : {};
-
+		
+		//if(!dot || (!dot.latitude && !dot.longitude))return;
+		
+		
 		var loc = {
 			lat: dot.latitude,
 			lon: dot.longitude
 		};
+		
 
 		swlat = (swlat) ? Math.min(swlat, loc.lat) : loc.lat;
 		swlon = (swlon) ? Math.min(swlon, loc.lon) : loc.lon;
@@ -515,6 +521,7 @@ function collect_dots(){
 		'center' : center
 	};
 }
+
 
 function draw_map_modestmaps(dots,update_from_search){
 
@@ -657,7 +664,8 @@ function draw_map_polymaps(dots,update_from_search){
 	var points = po.geoJson();
 	points.features(dots['features']);
 	points.on("load", utils_polymaps_assign_dot_properties);
-
+	
+	console.log(dots['features']);
 	map.add(points);
 	
 	// adding our own controls
@@ -703,15 +711,12 @@ function draw_map_polymaps(dots,update_from_search){
 }
 	
 function draw_map(update_from_search){
-
-	//console.log("DOT ID: ",_dotspotting.selected_dot);
 	
 	//if(_dotspotting.selected_dot)$("#map").trigger('killAllTips');
 
 	utils_scrub_map();
 	
 	var dots = collect_dots();
-	
 	
 	if (_dotspotting.use_polymaps){	
 		draw_map_polymaps(dots,update_from_search);

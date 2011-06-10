@@ -34,7 +34,8 @@
 	    	animation: 'fadeAndPop', //fade, fadeAndPop, none
 		    animationspeed: 300, //how fast animtions are
 		    closeonbackgroundclick: true, //if you click background will modal close?
-		    dismissmodalclass: 'close-reveal-modal' //the class of a button or element that will close an open modal
+		    dismissmodalclass: 'close-reveal-modal', //the class of a button or element that will close an open modal
+		    closeCallback: null
     	}; 
     	
         //Extend dem' options
@@ -117,8 +118,14 @@
 					if(options.animation == "none") {
 						modal.css({'visibility' : 'hidden', 'top' : topMeasure});
 						modalBG.css({'display' : 'none'});	
-					}		
+					}	
+					if(options.closeCallback){
+    				    options.closeCallback();
+    			    }
+    			    	
+    			    	
 				}
+				
 				modal.unbind('reveal:close');
 			});     
    	
@@ -126,7 +133,7 @@
  Open and add Closing Listeners
 ----------------------------*/
         	//Open Modal Immediately
-    	modal.trigger('reveal:open')
+    	    modal.trigger('reveal:open')
 			
 			//Close Modal Listeners
 			var closeButton = $('.' + options.dismissmodalclass).bind('click.modalEvent', function () {

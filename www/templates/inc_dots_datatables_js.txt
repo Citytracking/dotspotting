@@ -57,9 +57,10 @@ $(document).ready(function(){
 	"bFilter": true,
 	"bInfo" : false,
 	"bProcessing": true,
-	"bScrollInfinite": true,
+	"sScrollX": "100%",
 	"bScrollCollapse": true,
 	"sScrollY": "200px",
+
 	"oLanguage": {"sSearch": "Filter table:"}
      });
 	$("#user_dots_wrapper").addClass("filter_adj");
@@ -91,6 +92,7 @@ $(document).ready(function(){
 	"bInfo" : false,
 	"bProcessing": true,
 	"bScrollInfinite": true,
+	"sScrollX": "100%",
 	"bScrollCollapse": true,
 	"sScrollY": "200px",
      });

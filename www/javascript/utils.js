@@ -331,10 +331,10 @@ function utils_modestmaps_add_compass(map){
 // (20101027/straup)
 
 function utils_adjust_bbox(bbox){
-	
-	var sw = new LatLon(bbox[0]['lat'], bbox[0]['lon']);
+
+    var sw = new LatLon(bbox[0]['lat'], bbox[0]['lon']);
 	var ne = new LatLon(bbox[1]['lat'], bbox[1]['lon']);
-	
+
 	var offset = 0;
 	var dist = sw.distanceTo(ne);
 
@@ -351,7 +351,7 @@ function utils_adjust_bbox(bbox){
 	}
 
 	else {}
-	
+
 	// not sure if there is good way of doing this while trying to achieve 
 	// a max scale and integer zoom levels, at the same time.
 	offset = 0;
@@ -359,6 +359,7 @@ function utils_adjust_bbox(bbox){
 	bbox[0]['lon'] -= offset;
 	bbox[1]['lat'] += offset;
 	bbox[1]['lon'] += offset;
+	
 	
 	return bbox;
 }
