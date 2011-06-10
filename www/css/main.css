@@ -301,7 +301,7 @@ table.ds_table{font-family:arial;background-color:#fff;color:#000;margin:0;font-
 table.ds_table thead tr th,
 table.ds_table tfoot tr th,
 table.ds_table tbody td{border-bottom:1px solid #000;padding:8px;cursor:pointer;}
-table.ds_table thead tr th{border-width:2px;}
+table.ds_table thead tr th{border-width:2px;padding-right:25px;}
 table.ds_table thead tr th{padding-bottom:4px;font-size:12px;}
 table.ds_table thead tr th{-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none;}
 table.ds_table thead tr th:hover{text-shadow:0px 1px 1px #ccc;text-shadow:0px 1px 1px #9c9c9c;}
