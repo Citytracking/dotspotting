@@ -70,7 +70,7 @@ background-color: pink;
 {if $errors.$row_idx and $errors.$row_idx.column==$columns.$col_idx}
 {assign var="col_ok" value="0"}
 {/if}
-<td class="{$col_class}{if ! $col_ok} col_preprocess_error{/if}">{$value|escape}</td>
+<td class="{$col_class}{if ! $col_ok} col_preprocess_error{/if}">{$value}</td> {* removed escape -- $value|escape *}
 
 {/foreach}
 <td>{* hidden title *}</td>
@@ -165,23 +165,25 @@ background-color: pink;
 	</p>
 	
 	<hr/>
-	
-	<span class="upload_submit"><input type="SUBMIT" value="Submit" /></span>
+	<span id="geocodeBtn" class="upload_submit"><input type="Button" value="Geocode" /></span>
+	<span id="submitBtn" class="upload_submit"><input type="SUBMIT" value="Submit" /></span>
 </form>
 </div>
+
 {* MODAL WINDOW  --- not being used right now (seanc) *}
-<div id="myModal" class="reveal-modal no_show">
-	<h1>Geocoding a column</h1>
+<div id="myModal" class="reveal-modal">
+	<h1><img style="float: right;padding: 0 5px;" src="{$cfg.abs_root_url}images/frogs_ani.gif"/> Geocoding ...</h1>
 	<p>This may take a moment. I am here to prevent you from harming my process. Please don't leave until I tell you to.</p>
-	<p id="modal_status"></p>
+	<p id="modal_status" style="font-size: 16px;font-weight: bold;padding-top: 15px;color: #FA5C5C;"></p>
 </div>
 
 <script type="text/javascript" src="{$cfg.abs_root_url}javascript/yqlgeo.js"></script>
 
 {* used to show a modal window when geocoding *}
 <script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery.reveal.js"></script>
+
 {* google client geocoder library *}
-{* <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> *}
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
 {* YUI DATATABLE FILES *}
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.8.2r1/build/datatable/assets/skins/sam/datatable.css">
@@ -190,16 +192,28 @@ background-color: pink;
 
 {literal}
 <script type="text/javascript">
-var mo,geocoder,dt;
+var mo,
+	geocoder,
+	dt,
+	gc_ok = false;
+	
 $(document).ready(function(){
-	mo = $('#myModal').reveal({closeonbackgroundclick: false,animation:'fade'});
-	//geocoder = new google.maps.Geocoder();
-	geocoder = null;
+	
+
+	geocoder = new google.maps.Geocoder();
+	if(!gc_ok){
+		$("#geocodeBtn").click(function(e){
+			e.preventDefault();
+			preprocess_geocode_col(8); // need to compute address col id
+		});
+		$("#submitBtn").css("opacity",.2);
+	}
 });
 
 
 // build data table
 YAHOO.util.Event.addListener(window, "load", function() {
+
 	var YT = YAHOO.namespace('yahooTable');
 	YT.headers = preprocess_collect_headers();
 	YT.keys = [];
@@ -293,7 +307,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				var target = $(this).find('div').eq(0);
 				var str = '';
 				str += '<a href="#" onclick="preprocess_delete_col('+i+');return false;"><img src="'+_dotspotting.abs_root_url+'images/x.png"/></a>';
-			
+				
 				$(target).append(str);
 			}
 	 	});
@@ -386,10 +400,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 $("#upload_file").submit(function(e){
 	//e.preventDefault();
-	var data = preprocess_collect_data();
-	console.log(data);
-	data = JSON.stringify(data);
-	$("input[type=hidden][name=data]").val(data);
+	if(gc_ok){
+		var data = preprocess_collect_data();
+		console.log(data);
+		data = JSON.stringify(data);
+		$("input[type=hidden][name=data]").val(data);
+	}else{
+	e.preventDefault();
+	}
 });
 
 // auto fill the index lists
@@ -555,83 +573,79 @@ function addExtraColumns(arr,idx){
 function preprocess_geocode_col(idx){
 	if(!dt.dataTable)return;
 	
-	//alert("please make me work...");
-	//return;
-
-	// because these will all be asynchronous api calls, should we block
-	// all the other functions that may affect this column?
-	// (20100207/straup)
+	console.log("geocoding...");
+		
+	var self = this;
+	this.intTimer = null;
+	
+	this.errors = {'ct':0,'addr':[],'err':[]}
+	this.success = {'ct':0,'addr':[],'msgs':[]}
 	
 	var headers = preprocess_collect_headers();
 	var colname = headers[idx];
 	
 	var queueDone = false;
-	var queue = $(".yui-dt-data tr").length;
-	var queueTotal = queue;
-	var thisClass = this;
-	this.intTimer = window.setTimeout(function(e) {thisClass.closeModal()},3000);
-	if(mo)mo.show();
+	var queue = $(".yui-dt-data tr");
+	var queueLength = queue.length;
+	var queueCounter = 0;
 	
-	addExtraColumns(['latitude','longitude'],idx);
-
-	$(".yui-dt-data tr").map(function(i, row){
-		if(!geocoder)return;
-		var oRecord = dt.dataTable.getRecord(i);
+	mo = $('#myModal').reveal({closeonbackgroundclick: false,animation:'fade'});
+	
+	//addExtraColumns(['latitude','longitude'],idx);
+	
+	this.gc = function(q){
+		if(q['_oData'] && q['_oData']['address'] && q['_oData']['address'].length > 2){
 		
-		var q = oRecord._oData[colname];
-		
-		// geocode using woeid or physical address
-		if (q.match(/^woeid\:(\d+)$/)){
-			yqlgeo.get(q, function(rsp){
-				checkQueue();
-				if(rsp.place.centroid){
-				 if(window.console)console.log('rsp for ' + q + ' ... ' + rsp.place.centroid.latitude + "," + rsp.place.centroid.longitude);
-				}else{
-					if(window.console)console.log('No point location for ' + q + ' ... ');
-				}
-
-				if (rsp.error){
-					queueDone = true;
-					if(window.console)console.log("error");
-					return;
-				}
-			});
-		}else if(q.length > 5){
-			geocoder.geocode( { 'address': q}, function(results, status) {
-				checkQueue();
+			var addy = q['_oData']['address'];
+			
+			//this.intTimer = window.setTimeout(function(e) {self.closeModal()},4000);
+	
+			var out = queueCounter+" of "+queueLength+" geocoded</br>";
+			out+= self.success.ct + " good / " + self.errors.ct + " bad";
+			$("#modal_status").html(out);
+			
+			geocoder.geocode( { 'address': addy}, function(results, status) {
 				if (status == google.maps.GeocoderStatus.OK) {
-					dt.dataTable.updateCell(oRecord,"latitude",results[0].geometry.location.lat());
-					dt.dataTable.updateCell(oRecord,"longitude",results[0].geometry.location.lng());
-					//if(window.console)console.log("Geocode successful: "+results[0].geometry.location.lat()); //lng
+			
+				//	dt.dataTable.updateCell(oRecord,"latitude",results[0].geometry.location.lat());
+				//	dt.dataTable.updateCell(oRecord,"longitude",results[0].geometry.location.lng());
+					if(window.console)console.log(results); //lng
+					self.success.ct++;
+					self.success.addr.push(addy);
 				} else {
-					dt.dataTable.updateCell(oRecord,"latitude","-");
-					dt.dataTable.updateCell(oRecord,"longitude","-");
-					//if(window.console)console.log("Geocode was not successful for the following reason: " + status);
+				//	dt.dataTable.updateCell(oRecord,"latitude","-");
+				//	dt.dataTable.updateCell(oRecord,"longitude","-");
+					if(window.console)console.log("Geocode was not successful for the following reason: " + status);
+					self.errors.ct++;
+					self.errors.addr.push(addy);
+					self.errors.err.push(status);
 				}
+				self.checkQueue();
 			});
+			
 		}else{
-			checkQueue();
+			self.checkQueue();
 		}
+	}
+	
+	this.checkQueue = function(){
+		queueCounter++;
+		if(queueCounter < queueLength){
+			setTimeout(function(){
+				self.gc(dt.dataTable.getRecord(queueCounter));
+			}, 500);
+			
+		}else{
+			mo.trigger("reveal:close");
+			console.log('the end');
+		}
+	}
+	
+	// start
+	if(queueLength > 0){
+		self.gc(dt.dataTable.getRecord(queueCounter));
+	}
 		
-	});
-	
-	function checkQueue(){
-		queue--;
-		if(queue <= 0){
-			queueDone = true;
-		}
-		$("#modal_status").text(queue+"/"+queueTotal+" records left.");
-		//if(window.console)console.log(queue);
-	}
-	
-	this.closeModal = function(){
-		if(queueDone){
-			// close modal overlay
-			if(mo)mo.close();
-		}else{
-			this.intTimer = window.setTimeout(function(e) {thisClass.closeModal()},3000);
-		}
-	}
 	
 }
 

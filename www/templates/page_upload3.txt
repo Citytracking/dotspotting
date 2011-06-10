@@ -1,4 +1,10 @@
 {assign var="page_title" value="Upload some dots!"}
+
+{capture assign="extra_head"}
+	<link rel="stylesheet" href="{$cfg.abs_root_url}css/reveal.css">
+{/capture}
+
+
 {include file="inc_head.txt"}
 
 {if $error.uploads_disabled}
