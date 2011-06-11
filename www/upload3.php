@@ -114,7 +114,7 @@
 				}
 
 				$GLOBALS['smarty']->assign_by_ref("pre_process", $pre_process);
-
+				
 				# store the file somewhere in a pending bin?
 			}
 		}

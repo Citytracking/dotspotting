@@ -4,12 +4,13 @@
 background-color: pink;
 }
 #main .close-reveal-modal{font-size: 38px;top: 4px;left: 8px;color:#333}
+#loader_table{position:absolute;top:10%;left:5%;color:#999;font-size:16px;}
+.geohide{display:none;}
 </style>
 {/literal}
 
 
 <h3>Upload to Dotspotting</h3>
-
 <div id="upload_meezy">
 <ul class="clearfix">
 	<li class="first_meezy show_30"><span>Upload your file</span></li>
@@ -31,10 +32,11 @@ background-color: pink;
 
 {/if}
 
+<div id="loader_table">loading table...</div>
 {* begin creation of table *}
 <div>
 <!-- <div class="dataTables_filter"><label for="filter">Filter:</label><input type="text" id="filter" value=""></div> -->
-<div id="pre_process_container" class="yui-skin-sam">
+<div id="pre_process_container" class="yui-skin-sam" style="visibility: hidden;">
 <table id="pre_process" class="ds_table">
 
 <thead>
@@ -48,6 +50,7 @@ background-color: pink;
 	</th>
 {/foreach}
 {* hidden title *}
+
 {*
 <th><span class="colname">title_internal</span></th>
 *}
@@ -55,7 +58,6 @@ background-color: pink;
 </thead>
 
 <tbody>
-
 {foreach from=$data item="row" name="records"}
 {assign var="row_idx" value=$smarty.foreach.records.index+1}
 
@@ -91,6 +93,8 @@ background-color: pink;
 </div>
 
 
+
+
 {literal}
 <script type="text/javascript">
 	// how many indexes are there?
@@ -123,12 +127,20 @@ background-color: pink;
 
 <a name="#submit"></a>
 <div class="section_bunch_o_text">
+
+{if $pre_process.needs_geocoding}
+<div id="geoinstr">
+<h4>All rows must have a valid latitude and longitude value before being submitted.</h4>
+<p>Please use the geocoding button below.</p>
+</div>
+{/if}
+
 <form id="upload_file" action="{$cfg.abs_root_url}{if $upload_endpoint}{$upload_endpoint|escape:'url'}/{else}upload/{/if}" method="POST" enctype="multipart/form-data" accept-encoding="UTF-8">
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="data" value="" />
 	<input type="hidden" name="fingerprint" value="{$fingerprint|escape}" />
 	
-	
+	<div {if $pre_process.needs_geocoding}class="geohide"{/if}>
 	{* name sheet *}
 	<p>
 	<label for="label">Give your upload a name:</label>
@@ -137,7 +149,7 @@ background-color: pink;
 	
 	<hr/>
 	
-	{* select a title *}
+	{* select a title  | off *}
 	{*
 	<p>
 	<label for="title">Select a title column:</label>
@@ -148,7 +160,7 @@ background-color: pink;
 	<hr/>
 	*}
 
-	{* searchable columns *}
+	{* searchable columns | off *}
 	{if $cfg.enable_feature_dots_indexing and ! $cfg.dots_indexing_index_all}
 		<p id="dots_index_area">
 		<label for="dots_index_opt">Select searchable columns (max:{$cfg.dots_indexing_max_cols|escape}):</label>
@@ -172,12 +184,13 @@ background-color: pink;
 	</p>
 	
 	<hr/>
-	<span id="geocodeBtn" class="upload_submit"><input type="Button" value="Geocode" /></span><span id='geocode_msg' style='color: #FA5C5C;font-size: 12px;padding-left: 10px;'>* all rows must have valid lat/lon before submitting</span>
+	</div>
+	<span id="geocodeBtn" class="upload_submit"><input type="Button" value="Geocode" /></span>
 	<span id="submitBtn" class="upload_submit"><input type="SUBMIT" value="Submit" /></span>
 </form>
 </div>
 
-{* MODAL WINDOW  --- not being used right now (seanc) *}
+{* MODAL WINDOW *}
 <div id="myModal" class="reveal-modal">
 	<h1><img style="float: right;padding: 0 5px;" src="{$cfg.abs_root_url}images/frogs_ani.gif"/> Geocoding ...</h1>
 	<p id="modal_msg">This may take a moment. I am here to prevent you from harming my process. Please don't leave until I tell you to.</p>
@@ -201,18 +214,24 @@ background-color: pink;
 <!-- Combo-handled YUI JS files: -->
 <script type="text/javascript" src="http://yui.yahooapis.com/combo?2.9.0/build/yahoo-dom-event/yahoo-dom-event.js&2.9.0/build/element/element-min.js&2.9.0/build/datasource/datasource-min.js&2.9.0/build/datatable/datatable-min.js"></script>
 
-
 {literal}
 <script type="text/javascript">
 var mo,
 	geocoder,
 	dt,
-	gc_ok = false;
+	gc_ok = false,
+	_processedRows = {};
 	
 $(document).ready(function(){
 	
 	// check repsonse from aaron to see if geocoding is necessary
-	// gc_ok = true;
+	 gc_ok = {/literal}
+	{if $pre_process.needs_geocoding}
+	{literal}0{/literal}
+	{else}
+	{literal}1{/literal}
+	{/if}
+	{literal};
 	
 	geocoder = new google.maps.Geocoder();
 	
@@ -264,7 +283,7 @@ function buildDataTable(){
 		if(title.length){
 			if(i == 0){
 				YT.keys.push( {key:title,sortable:true,sortOptions:{sortFunction:YT.sortRowId}, minWidth:50} );
-			}else if(title == "title_internal"){
+			}else if(title == "_has_latlon" || title == "_address"){
 				YT.keys.push( {key:title,sortable:false,hidden:true} );
 			}else{
 				YT.keys.push( {key:title,sortable:true,editor: new YAHOO.widget.TextareaCellEditor(),minWidth:100} );
@@ -342,7 +361,9 @@ function buildDataTable(){
 
 	/* Collection of event callback functions */
 	YT.tableReady = function(e){
-		
+		$("#pre_process_container").css('visibility', 'visible');
+		$("#loader_table").remove();
+		preprocess_checkLatLon();
 		
 		YT.dataTable.unsubscribe('initEvent',YT.tableReady);
 		YT.preprocess_add_col_options();
@@ -499,14 +520,32 @@ function preprocess_collect_headers(){
 	return headers;
 }
 
+function preprocess_checkLatLon(){
+	$(".yui-dt-data tr").each(function(i){
+		var r = dt.dataTable.getRecord(i);
+		var b = Number(oRecord._oData['_has_latlon']);
+		var _id = "r"+r._nCount;
+		if(b){
+			
+			_processedRows[_id] = "good";
+		}else{
+			_processedRows[_id] = "bad";
+		}
+
+	});
+}
+
 function preprocess_collect_data(){
 	if(!dt.dataTable)return;
 	
+	/* legacy
 	var _title = "";
 	
 	if($("input[name='title']").is(':checked')) {
 		_title = $('#dots_index_on_1').val();
 	}
+	*/
+	
 	
 	var rows = [];
 	var headers = preprocess_collect_headers();
@@ -518,15 +557,27 @@ function preprocess_collect_data(){
 		//var $a = oRecord.getData("row id").split(/^(\d+)/);
 		//dt.dataTable.updateCell(oRecord,"row id",$a[1]);
 		
+		/* legacy
 		// add title
 		if(_title.length){
 			dt.dataTable.updateCell(oRecord,"title_internal","{"+_title+"}");
 		}
+		*/
+		
 		
 		// get rid of row id, because we created them in first place sucka
 		if(oRecord._oData['row id']){
 			delete oRecord._oData['row id'];
 		}
+		
+		
+		if(oRecord._oData['_has_latlon']){
+			delete oRecord._oData['_has_latlon'];
+		}
+		if(oRecord._oData['_address']){
+			delete oRecord._oData['_address'];
+		}
+		
 		rows.push(oRecord._oData);		
 	});
 
@@ -612,7 +663,6 @@ function addExtraColumns(arr,idx){
 	
 }
 
-var _processedRows = {};
 
 function preprocess_geocode_col(idx){
 	if(!dt || !dt.dataTable)return;
@@ -639,6 +689,7 @@ function preprocess_geocode_col(idx){
 		
 	this.gc = function(q){
 		var _id = "r"+q._nCount;
+		
 		//testing
 		/*
 		if(_processedRows[_id] && _processedRows[_id] == "good"){
@@ -661,8 +712,10 @@ function preprocess_geocode_col(idx){
 		}
 		self.checkQueue(10);
 		*/
+		
+		
 
-		// don't process rows already with valid repsonses
+		// don't process rows already with valid responses
 		if(_processedRows[_id] && _processedRows[_id] == "good"){
 			self.checkQueue(10);
 		}else{
@@ -674,7 +727,6 @@ function preprocess_geocode_col(idx){
 				
 				// update status
 				var out = queueCounter+" of "+queueLength+" geocoded</br>";
-				out+= self.success.ct + " good / " + self.errors.ct + " bad";
 				$("#modal_status").html(out);
 
 				// geocode
@@ -720,7 +772,10 @@ function preprocess_geocode_col(idx){
 			}
 		}
 		
+		
+		
 	}
+	
 	
 	// delay some googling
 	this.delayGC = function(o){
@@ -738,30 +793,41 @@ function preprocess_geocode_col(idx){
 			
 		}else{			
 			
-			var out = '';
+			var out_h4 = '';
+			var out_p = '';
 			if(self.success.ct == 0 && self.errors.ct == 0){
 			
-				$("#myModal h1").html('Geocoding failure!');
-				out += '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
-				out = "Nothing geocoded. Are there addresses?";
+				out_h4 = 'Geocoding failure!';
+				//out += '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
+				out_p = "Nothing geocoded. Are there addresses?";
 			}else if(self.errors.ct == 0){
-				$("#myModal h1").html("Geocoding successful!");
+				//out_h4 = 'Geocoding successful!';
 				
-				out = 'Successfully geocoded '+self.success.ct+' locations, you may now close this window and upload your dots.';
+				out_h4 = 'Successfully geocoded all your locations, you may now finish up and upload your dots.';
+				out_p = '';
 			}else{
-				$("#myModal h1").html('Partial geocoding success!');
-				out = '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
-				out += "The <strong>good news</strong> is we successfully geocoded "+self.success.ct+" locations.<br/>";
-				out += "But the <strong>bad new</strong> is we couldn't geolocate "+self.errors.ct+" of them.<br/>";
-				out += "Please fix the addresses in the highlighted rows and rerun the geocoder.</br>";
-				out += "<i>Common problems are road types like (Street and Ave.) are missing, mis-spelled place names, no city or state, etc...</i>";
+				out_h4 = 'Partial geocoding success!';
+				//out = '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
+				out_p = "The <strong>good news</strong> is we successfully geocoded "+self.success.ct+" locations.<br/>";
+				out_p += "But the <strong>bad new</strong> is we couldn't geolocate "+self.errors.ct+" of them.<br/>";
+				out_p += "Please fix the addresses in the highlighted rows and rerun the geocoder.</br>";
+				out_p += "<i>Common problems are road types like (Street and Ave.) are missing, mis-spelled place names, no city or state, etc...</i>";
 			
 			}
 			
-			//
+			//geoinstr
+			$("#geoinstr h4").html(out_h4);
+			$("#geoinstr p").html(out_p);
+			mo.trigger("reveal:close");
+			//self.closeModal();
+			
+			
+			
+			/*
 			$("#modal_status").html("");
 			$("#modal_msg").html(out);
 			$(".close-reveal-modal").show();
+			*/
 		}
 	}
 	
@@ -769,9 +835,12 @@ function preprocess_geocode_col(idx){
 		queueBatch = 5;
 		if(self.errors.ct <= 0){
 			gc_ok = true;
-			$("#submitBtn").show();
+			
 			$("#geocodeBtn").hide();
-			$("#geocode_msg").hide();
+			//$("#geoinstr").hide();
+			$("#geoinstr p").remove();
+			$("div.geohide").removeClass("geohide");
+			$("#submitBtn").show();
 		}
 		
 	}	
