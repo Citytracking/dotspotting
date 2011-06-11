@@ -55,6 +55,7 @@ background-color: pink;
 </thead>
 
 <tbody>
+
 {foreach from=$data item="row" name="records"}
 {assign var="row_idx" value=$smarty.foreach.records.index+1}
 
@@ -195,13 +196,10 @@ background-color: pink;
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
 {* YUI DATATABLE FILES *}
-
-
 <!-- Combo-handled YUI CSS files: -->
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.9.0/build/datatable/assets/skins/sam/datatable.css">
 <!-- Combo-handled YUI JS files: -->
 <script type="text/javascript" src="http://yui.yahooapis.com/combo?2.9.0/build/yahoo-dom-event/yahoo-dom-event.js&2.9.0/build/element/element-min.js&2.9.0/build/datasource/datasource-min.js&2.9.0/build/datatable/datatable-min.js"></script>
-
 
 
 {literal}
@@ -214,7 +212,7 @@ var mo,
 $(document).ready(function(){
 	
 	// check repsonse from aaron to see if geocoding is necessary
-//	gc_ok = true;
+	// gc_ok = true;
 	
 	geocoder = new google.maps.Geocoder();
 	
