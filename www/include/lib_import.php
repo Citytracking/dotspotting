@@ -365,6 +365,32 @@
 
 		$rsp = call_user_func_array($func, array($fh, $more));
 
+		# sudo put me in a function? (20110610/straup)
+
+		if ($rsp['ok']){
+
+			loadlib("dots_address");
+
+			$needs_geocoding = 0;
+
+			# note the pass-by-ref on $row
+
+			foreach ($rsp['data'] as &$row){
+
+				if (($row['latitude']) && ($row['longitude'])){
+					$row['_has_latlon'] = 1;
+					continue;
+				}
+
+				$row['_has_latlon'] = 0;
+				$row['_address'] = dots_address_parse_for_geocoding($row);
+
+				$needs_geocoding += 1;
+			}
+
+			$rsp['needs_geocoding'] = $needs_geocoding;
+		}
+
 		# TO DO: check $GLOBALS['cfg'] to see whether we should
 		# store a permanent copy of $file['tmp_name'] somewhere
 		# on disk. It would be nice to store it with the sheet
