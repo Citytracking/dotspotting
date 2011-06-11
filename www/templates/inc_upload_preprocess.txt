@@ -690,12 +690,12 @@ function preprocess_geocode_col(idx){
 						$("#"+q._sId).css("background-color","#EEE");
 						_processedRows[_id] = "good";
 					} else {
-						// catch 
+					
+						//
 						if(status == "OVER_QUERY_LIMIT"){
 							self.delayGC(q);
 							return;
 						}
-						
 						
 						dt.dataTable.updateCell(q,"latitude","###");
 						dt.dataTable.updateCell(q,"longitude","###");
@@ -744,11 +744,12 @@ function preprocess_geocode_col(idx){
 			if(self.success.ct == 0 && self.errors.ct == 0){
 			
 				$("#myModal h1").html('Geocoding failure!');
+				out += '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
 				out = "Nothing geocoded. Are there addresses?";
 			}else if(self.errors.ct == 0){
 				$("#myModal h1").html("Geocoding successful!");
-				out = '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
-				out += 'Successfully geocoded '+self.success.ct+' locations, you may now close this window and upload your dots.';
+				
+				out = 'Successfully geocoded '+self.success.ct+' locations, you may now close this window and upload your dots.';
 			}else{
 				$("#myModal h1").html('Partial geocoding success!');
 				out = '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
