@@ -17,8 +17,9 @@ background-color: pink;
 </ul>
 </div>
 
+{* error display ? *}
 {if $errors|@count}
-
+{*
 <p class="error">There was an error while processing your upload</p>
 
 <ul>
@@ -26,7 +27,7 @@ background-color: pink;
 <li>{if $row.column}<strong>The <q>{$row.column|escape}</q> column in <a href="#row{$row.record|escape}">row #{$row.record|escape}</a>:</strong> {$row.error|escape}{else}<strong>There was a problem with <a href="#row{$row.record|escape}">row #{$row.record|escape}</a>:</strong> {$row.error|escape}{/if}</li>
 {/foreach}
 </ul>
-
+*}
 
 {/if}
 
@@ -47,9 +48,9 @@ background-color: pink;
 	</th>
 {/foreach}
 {* hidden title *}
-
+{*
 <th><span class="colname">title_internal</span></th>
-
+*}
 </tr>
 </thead>
 
@@ -76,9 +77,9 @@ background-color: pink;
 <td class="{$col_class}{if ! $col_ok} col_preprocess_error{/if}">{$value}</td> {* removed escape -- $value|escape *}
 
 {/foreach}
-
-<td>{* hidden title *}</td>
-
+{*
+<td></td>
+*}
 </tr>
 
 {/foreach}
@@ -170,7 +171,7 @@ background-color: pink;
 	</p>
 	
 	<hr/>
-	<span id="geocodeBtn" class="upload_submit"><input type="Button" value="Geocode" /></span>
+	<span id="geocodeBtn" class="upload_submit"><input type="Button" value="Geocode" /></span><span id='geocode_msg' style='color: #FA5C5C;font-size: 12px;padding-left: 10px;'>* all rows must have valid lat/lon before submitting</span>
 	<span id="submitBtn" class="upload_submit"><input type="SUBMIT" value="Submit" /></span>
 </form>
 </div>
@@ -213,18 +214,20 @@ var mo,
 $(document).ready(function(){
 	
 	// check repsonse from aaron to see if geocoding is necessary
-	gc_ok = true;
+//	gc_ok = true;
 	
 	geocoder = new google.maps.Geocoder();
 	
 	if(!gc_ok){
 		$("#geocodeBtn").click(function(e){
 			e.preventDefault();
+			if(!dt)return;
 			preprocess_geocode_col();
 		});
-		$("#submitBtn").css("opacity",.2);
+		$("#submitBtn").hide();
 	}else{
 		$("#geocodeBtn").hide();
+		$("#geocode_msg").hide();
 	}
 
 });
@@ -594,7 +597,8 @@ function addExtraColumns(arr,idx){
 	if(!dt.dataTable)return;
 	
 	// need to insert new columns after hidden because of a bug in YUI DataTables
-	var last = dt.dataTable.getColumn("title_internal");
+	//var last = (dt.dataTable.getColumn("title_internal")) ? dt.dataTable.getColumn("title_internal") : dt.columnDefs.length-1;
+	var last =  dt.columnDefs.length-1;
 	
 	// insert now
 	for(i in arr){
@@ -618,24 +622,26 @@ function preprocess_geocode_col(idx){
 		
 	var self = this;
 	this.intTimer = null;
+	
+	// get this from aaron
 	this.addressColumn = dt.dataTable.getColumn("address");
 	this.addressColumnID = this.addressColumn._nKeyIndex;
 	
 	this.errors = {'ct':0,'addr':[],'err':[]};
 	this.success = {'ct':0,'addr':[],'msgs':[]};
 	
-
 	
 	var queueDone = false;
 	var queue = $(".yui-dt-data tr");
 	var queueLength = queue.length;
 	var queueCounter = 0;
-	var queueBatch = 5;
+	
+	this.queueBatch = 5; // basic throttler for geocoder, also catching 'OVER_QUERY_LIMIT' response to help throttle requests
 		
 		
 	this.gc = function(q){
 		var _id = "r"+q._nCount;
-		
+		//testing
 		/*
 		if(_processedRows[_id] && _processedRows[_id] == "good"){
 			// skip this row
@@ -657,11 +663,8 @@ function preprocess_geocode_col(idx){
 		}
 		self.checkQueue(10);
 		*/
-		
-		
-		
+
 		// don't process rows already with valid repsonses
-		console.log(_processedRows);
 		if(_processedRows[_id] && _processedRows[_id] == "good"){
 			self.checkQueue(10);
 		}else{
@@ -684,22 +687,33 @@ function preprocess_geocode_col(idx){
 						if(window.console)console.log(results); //lng
 						self.success.ct++;
 						self.success.addr.push(addy);
+						$("#"+q._sId).css("background-color","#EEE");
 						_processedRows[_id] = "good";
 					} else {
-						dt.dataTable.updateCell(q,"latitude","-.-");
-						dt.dataTable.updateCell(q,"longitude","-.-");
+						// catch 
+						if(status == "OVER_QUERY_LIMIT"){
+							self.delayGC(q);
+							return;
+						}
+						
+						
+						dt.dataTable.updateCell(q,"latitude","###");
+						dt.dataTable.updateCell(q,"longitude","###");
+						
 						if(window.console)console.log("Geocode was not successful for the following reason: " + status);
 						self.errors.ct++;
 						self.errors.addr.push(addy);
 						self.errors.err.push(status);
+						$("#"+q._sId).css("background-color","#FA5C5C");
 						_processedRows[_id] = "bad";
 					}
-					queueBatch--;
-					if(queueBatch <= 0){
-						self.checkQueue(600);
+					
+					self.queueBatch--;
+					if(self.queueBatch <= 0){
+						self.queueBatch = 5;
+						self.checkQueue(500);
 					}else{
-						queueBatch = 5;
-						self.checkQueue(10);
+						self.checkQueue(100);
 					}
 				});
 			
@@ -710,6 +724,13 @@ function preprocess_geocode_col(idx){
 		
 	}
 	
+	// delay some googling
+	this.delayGC = function(o){
+		setTimeout(function(){
+			self.gc(o);
+		}, 1500);
+	}
+	
 	this.checkQueue = function(wait){
 		queueCounter++;
 		if(queueCounter < queueLength){
@@ -717,40 +738,48 @@ function preprocess_geocode_col(idx){
 				self.gc(dt.dataTable.getRecord(queueCounter));
 			}, wait);
 			
-		}else{
-			// write out error response if needed and show close button
-			$("#myModal h1").html("Geocoding Done!")
+		}else{			
 			
 			var out = '';
 			if(self.success.ct == 0 && self.errors.ct == 0){
+			
+				$("#myModal h1").html('Geocoding failure!');
 				out = "Nothing geocoded. Are there addresses?";
 			}else if(self.errors.ct == 0){
-				out = "Successfully geocoded "+self.success.ct+" locations, you may now close this window and upload your dots.";
+				$("#myModal h1").html("Geocoding successful!");
+				out = '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
+				out += 'Successfully geocoded '+self.success.ct+' locations, you may now close this window and upload your dots.';
 			}else{
-				out = "The <strong>good news</strong> is we successfully geocoded "+self.success.ct+" locations.<br/>";
+				$("#myModal h1").html('Partial geocoding success!');
+				out = '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
+				out += "The <strong>good news</strong> is we successfully geocoded "+self.success.ct+" locations.<br/>";
 				out += "But the <strong>bad new</strong> is we couldn't geolocate "+self.errors.ct+" of them.<br/>";
 				out += "Please fix the addresses in the highlighted rows and rerun the geocoder.</br>";
-				out += "<i>Common problems are road types like (Street and Ave.) are missing, mis-spelled place names, no city or state.</i>";
-			}
-
+				out += "<i>Common problems are road types like (Street and Ave.) are missing, mis-spelled place names, no city or state, etc...</i>";
 			
+			}
+			
+			//
 			$("#modal_status").html("");
 			$("#modal_msg").html(out);
 			$(".close-reveal-modal").show();
 		}
 	}
 	
-	this.closeModal = function(){		
-		//dt.dataTable.render();
-		gc_ok = true;
-		$("#submitBtn").css("opacity",1);
-		$("#geocodeBtn").hide();
+	this.closeModal = function(){				
+		queueBatch = 5;
+		if(self.errors.ct <= 0){
+			gc_ok = true;
+			$("#submitBtn").show();
+			$("#geocodeBtn").hide();
+			$("#geocode_msg").hide();
+		}
 		
 	}	
 	
-	
 	mo = $('#myModal').reveal({closeonbackgroundclick: false,animation:'fade', closeCallback: self.closeModal});
 	addExtraColumns(['latitude','longitude'],idx);
+	dt.dataTable.render();
 	
 	
 	// start
