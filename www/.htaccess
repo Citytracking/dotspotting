@@ -30,7 +30,7 @@ php_value last_modified off
 php_value short_tags on
 php_value error_reporting 2147483639
 
-DirectoryIndex index.php
+DirectoryIndex index.php index.html
 
 ErrorDocument 404 /404.php
 ErrorDocument 403 /403.php
