@@ -50,8 +50,6 @@
 
 <ul class="faq_csvfields">
 
-	<li><code>address</code> &#8212; <span style="font-style:italic;">If a row is <span class="important">missing values for <code>latitude</code> and <code>longitude</code> but it has an <code>address</code> field</span> defined then, so long as geocoding is enabled, Dotspotting will try to fill in coordinate information by asking one or more geocoding services to resolve the address.</span></li>
-
 	<li><code>perms</code> &#8212; <span style="font-style:italic;">By default all dots are imported as public however if the value of this field is <code>private</code> then the dot will only be visible by the person who uploaded it.</li>
 
 	<li><code>created</code> &#8212; <span style="font-style:italic;">If present then Dotspotting will try to parse and assign this value as the creation date for the corresponding dot/row, otherwise the date the row was imported is assumed.</span></li>
