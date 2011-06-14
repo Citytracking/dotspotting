@@ -1,0 +1,9 @@
+<h3>Upload to Dotspotting</h3>
+<div id="upload_meezy">
+	<ul class="clearfix">
+		<li class="first_meezy show_30"><span>Upload your file</span></li>
+		<li class="second_meezy"><span>Check your dots</span></li>
+	</ul>
+</div>
+
+<p class="error">Hey, that's not right: There was unexpected expected error importing your data. We're really sorry about that and will try to fix that, shortly!</p>

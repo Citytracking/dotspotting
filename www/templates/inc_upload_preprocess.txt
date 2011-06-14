@@ -11,16 +11,12 @@ strong{font-size: 15px;font-weight: 800;}
 
 <h3>Upload to Dotspotting</h3>
 <div id="upload_meezy">
-<ul class="clearfix">
-	<li class="first_meezy show_30"><span>Upload your file</span></li>
-	<li class="second_meezy"><span>Check your dots</span></li>
-</ul>
+	<ul class="clearfix">
+		<li class="first_meezy show_30"><span>Upload your file</span></li>
+		<li class="second_meezy"><span>Check your dots</span></li>
+	</ul>
 </div>
 
-{* NO DATA  ??? *}
-{if $data|@count == 0}
-<h1>We could not parse your file!</h1>
-{/if}
 
 {* error display ? *}
 {if $errors|@count}

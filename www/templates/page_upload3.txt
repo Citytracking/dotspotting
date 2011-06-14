@@ -110,6 +110,10 @@ otting?</h3>
 
 {if $pre_process.data}
 {include file="inc_upload_preprocess.txt data=$pre_process.data columns=$pre_process.data.0|@array_keys errors=$pre_process.errors}
+{else}
+<p class="error">Hey! That doesn't look like valid data.</p>
+{include file="inc_error_feedback.txt}
+<p>
 {/if}
 
 {else}
