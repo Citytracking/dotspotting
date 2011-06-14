@@ -177,16 +177,16 @@ function dot_unselect(dotid){
 function dot_tip_header(dotid){
 	
 	var dot = dot_getinfo_json(dotid);
-	
+	console.log(dotid,dot);
 	if (! dot['id']){
 		return "";
 	}
 	
 	var html = "";
 	if(_dotspotting.assigned_title && dot[_dotspotting.assigned_title]){
-	 	html += '<a href="' + dot.url + '">' + dot[_dotspotting.assigned_title] + '</a>';
+	 	html += '<a href="' + dot.__perma_url + '">' + dot[_dotspotting.assigned_title] + '</a>';
 	}else{
-		html += 'This is dot #<a href="' + dot.url + '">' + dot.id + '</a>';
+		html += 'This is dot #<a href="' + dot.__perma_url + '">' + dot.id + '</a>';
 	}
 
 	return html;
