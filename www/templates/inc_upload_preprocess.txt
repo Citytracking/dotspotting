@@ -131,8 +131,8 @@ strong{font-size: 15px;font-weight: 800;}
 		<h4 class="importgood">Successfully parsed your file.</h4>
 	</li>
 	<li id="geocode_info">
-		<h4 class="geoicon">To proceed, your file will need valid latitude and longitude values for each row.</h4>
-		<p>You can use the "Geocode" button below or you can enter a latitude and longitude field in your spreadsheet and re-upload it.</p>
+		<h4 class="geoicon">To proceed, we will need to add valid latitude and longitude values for each row.</h4>
+		<p>Press the geocode button below to start this process.</p>
 		<span id="geocodeBtn" class=""><input type="Button" value="Geocode" /></span>
 	</li>
 	</ul>
@@ -199,7 +199,7 @@ strong{font-size: 15px;font-weight: 800;}
 {* MODAL WINDOW *}
 <div id="myModal" class="reveal-modal">
 	<h1><img style="float: right;padding: 0 5px;" src="{$cfg.abs_root_url}images/frogs_ani.gif"/> Geocoding ...</h1>
-	<p id="modal_msg">This may take a moment. I am here to prevent you from harming my process. Please don't leave until I tell you to.</p>
+	<p id="modal_msg">Turning your data into coordinates that Dotspotting can understand. Please watch the frogs.</p>
 	<p id="modal_status" style="font-size: 16px;font-weight: bold;padding-top: 15px;color: #519394;"></p>
 	<div class="meter blue">
 	        <span style="width: 100%"></span>
@@ -839,12 +839,15 @@ function preprocess_geocode_col(idx){
 			var out_p = '';
 			if(self.success.ct == 0 && self.errors.ct == 0){
 			
+			// add faq. Please see the FAQ for more details.
 				out_h4 = 'Geocoding failure!';
+			
 				//out += '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
-				out_p = "<strong>Nothing geocoded. Are there addresses? Please fix problem in original source.  <a href='"+_dotspotting.abs_root_url+"upload'>Then re-upload the file.</a></strong>";
+				out_p = "<strong>Nothing geocoded. Are there addresses? Please fix problem in original source data.  <a href='"+_dotspotting.abs_root_url+"upload'>Then re-upload the file.</a></strong><br/>";
+				out_p += "For more details about uploading <a href='"+_dotspotting.abs_root_url+"faq'>please visit the FAQ page</a>";
 				$("#geocode_info h4").css("background-color","#e9b8b8");
 			}else if(self.errors.ct == 0){
-				out_h4 = 'Successfully geocoded all your locations, you may now finish up and upload your dots.';
+				out_h4 = 'Successfully turned your data into coordinates that Dotspotting can understand. Press "submit" to upload your dots and generate a map.';
 				out_p = '';
 				$("#geocode_info h4").css("background-color","#B5D6D8");
 			}else{
@@ -853,7 +856,8 @@ function preprocess_geocode_col(idx){
 				out_p = "<strong>Good news:</strong> "+self.success.ct+" locations were geocoded.<br/>";
 				out_p += "<strong>Bad new:</strong> "+self.errors.ct+" failed.<br/>";
 				out_p += "<strong>Make note of the highlighted rows and fix the data in your original source. <a href='"+_dotspotting.abs_root_url+"upload'>Then re-upload the file.</a></strong></br>";
-				out_p += "<i>Common problems are road types like (Street and Ave.) are missing, mis-spelled place names, no city or state, etc...</i>";
+				out_p += "<i>Common problems are road types like (Street and Ave.) are missing, mis-spelled place names, no city or state, etc...</i><br/>";
+				out_p += "For more details about uploading <a href='"+_dotspotting.abs_root_url+"faq'>please visit the FAQ page</a>";
 				$("#geocode_info h4").css("background-color","#e9b8b8");
 			}
 			
