@@ -177,7 +177,7 @@ function dot_unselect(dotid){
 function dot_tip_header(dotid){
 	
 	var dot = dot_getinfo_json(dotid);
-	console.log(dotid,dot);
+
 	if (! dot['id']){
 		return "";
 	}
@@ -665,7 +665,6 @@ function draw_map_polymaps(dots,update_from_search){
 	points.features(dots['features']);
 	points.on("load", utils_polymaps_assign_dot_properties);
 	
-	console.log(dots['features']);
 	map.add(points);
 	
 	// adding our own controls
