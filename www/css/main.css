@@ -45,6 +45,7 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 .clearfix {display: block;}
 /* End hide from IE-mac */
 
+
 #main .left{float:left;}
 #main .right{float:right;}
 #main .last_list_item{margin-right:0;}
@@ -341,7 +342,7 @@ table.ds_table thead tr .headerSortDown,table.ds_table thead tr .headerSortUp{}
 #pre_process_container.yui-skin-sam tr.yui-dt-odd,#pre_process_container.yui-skin-sam tr.yui-dt-even{background-color:rgb(238,238,238);}
 #pre_process_container .yui-dt-highlighted{background-color:rgb(255,255,255);}
 #pre_process_container img{vertical-align: middle;}
-
+#pre_process_container #yui-dt1-th-_geocode__address-liner{background-color:#000; color:#fff;}
 .yui-skin-sam div.yui-dt-hd .yui-dt-desc,
 .yui-skin-sam div.yui-dt-hd .yui-dt-asc{background:#fff;}
 
@@ -350,3 +351,93 @@ table.ds_table thead tr .headerSortDown,table.ds_table thead tr .headerSortUp{}
 .yui-skin-sam tr.yui-dt-odd td.yui-dt-asc,
 .yui-skin-sam tr.yui-dt-odd td.yui-dt-desc,
 .yui-skin-sam tr.yui-dt-even td.yui-dt-desc {background-color: #fff !important;}
+/* geo instructions */
+#geoinstr li{
+    border-bottom:1px solid #ccc;
+}
+#geoinstr h4{
+    padding:5px 0;
+    /*border-bottom:1px solid #666;*/
+}
+#geoinstr p{padding-left:35px;font-s}
+
+#geoinstr .importgood{
+    background:url('../images/checkmark_24.png') no-repeat 5px center;
+    padding-left:35px;
+}
+#geoinstr .geoicon {
+    background:url('../images/crosshairs_24.png') no-repeat 5px center;
+    padding-left:35px;
+}
+
+#geoinstr .need-to-do{
+    background-color:#FA5C5C;
+}
+#geoinstr .complete{
+    background-color:#B5D6D8;
+}
+#geoinstr input{
+    margin:0 0 10px 35px;
+}
+
+/* progress bar */
+#modal_status{clear:both;}
+.meter {
+        clear:both;
+        height: 10px;  /* Can be anything */
+        position: relative;
+        background: #555;
+        -moz-border-radius: 25px;
+        -webkit-border-radius: 25px;
+        border-radius: 25px;
+        padding: 5;
+        margin-top:20px;
+        margin-left:-5px;
+        -webkit-box-shadow: inset 0 -1px 1px rgba(255,255,255,0.2);
+        -moz-box-shadow   : inset 0 -1px 1px rgba(255,255,255,0.2);
+        box-shadow        : inset 0 -1px 1px rgba(255,255,255,0.2);
+}
+.meter > span {
+        display: block;
+        height: 100%;
+           -webkit-border-top-right-radius: 8px;
+        -webkit-border-bottom-right-radius: 8px;
+               -moz-border-radius-topright: 8px;
+            -moz-border-radius-bottomright: 8px;
+                   border-top-right-radius: 8px;
+                border-bottom-right-radius: 8px;
+            -webkit-border-top-left-radius: 20px;
+         -webkit-border-bottom-left-radius: 20px;
+                -moz-border-radius-topleft: 20px;
+             -moz-border-radius-bottomleft: 20px;
+                    border-top-left-radius: 20px;
+                 border-bottom-left-radius: 20px;
+        background-color: rgb(43,194,83);
+        background-image: -webkit-gradient(
+          linear,
+          left bottom,
+          left top,
+          color-stop(0, rgb(43,194,83)),
+          color-stop(1, rgb(84,240,84))
+         );
+        background-image: -moz-linear-gradient(
+          center bottom,
+          rgb(43,194,83) 37%,
+          rgb(84,240,84) 69%
+         );
+        -webkit-box-shadow:
+          inset 0 2px 9px  rgba(255,255,255,0.3),
+          inset 0 -2px 6px rgba(0,0,0,0.4);
+        -moz-box-shadow:
+          inset 0 2px 9px  rgba(255,255,255,0.3),
+          inset 0 -2px 6px rgba(0,0,0,0.4);
+        position: relative;
+        overflow: hidden;
+}
+
+.blue > span {
+        background-color: ##B5D6D8;
+        background-image: -moz-linear-gradient(top, #B5D6D8, #519394);
+        background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #B5D6D8),color-stop(1, #519394));
+        background-image: -webkit-linear-gradient(#B5D6D8, #519394);
+}
