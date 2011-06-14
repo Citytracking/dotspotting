@@ -43,14 +43,7 @@
 			# pass
 		}
 
-		else if (isset($data['address'])){
-
-			$rsp = dots_derive_location_from_address($data);
-
-			if (! isset($rsp['error'])){
-				$rsp['error'] = 'failed to geocode address';
-			}
-		}
+		# parsing/geocoding addresses is done client side
 
 		else if (isset($data['geohash'])){
 

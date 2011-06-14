@@ -1128,46 +1128,20 @@
 
 	function dots_ensure_valid_data(&$data){
 
-		$skip_required_latlon = 0;
-
-		$has_latlon = ((empty($data['latitude'])) || (empty($data['longitude']))) ? 0 : 1;
-
-		if ((! $has_latlon) && (isset($data['address']))){
-
-			$skip_required_latlon = 1;
-
-			# It is unclear whether this should really return an
-			# error - perhaps it should simply add the dot with
-			# NULL lat/lon values and rely on a separate cron job
-			# to clean things up with geocoding is re-enabled.
-			# (20101023/straup)
-
-			if (! $GLOBALS['cfg']['enable_feature_geocoding']){
-				return array( 'ok' => 0, 'error' => 'Geocoding is disabled.' );
-			}
-
-			if (strlen(trim($data['address'])) == 0){
-				return array( 'ok' => 0, 'error' => 'Address is empty.' );
-			}
+		if (! isset($data['latitude'])){
+			return array( 'ok' => 0, 'error' => 'Missing latitude.' );
 		}
 
-		else {
+		if (! isset($data['longitude'])){
+			return array( 'ok' => 0, 'error' => 'Missing longitude.' );
+		}
 
-			if (! isset($data['latitude'])){
-				return array( 'ok' => 0, 'error' => 'Missing latitude.' );
-			}
+		if (! geo_utils_is_valid_latitude($data['latitude'])){
+			return array( 'ok' => 0, 'error' => "Invalid latitude: '{$data['latitude']}'" );
+		}
 
-			if (! isset($data['longitude'])){
-				return array( 'ok' => 0, 'error' => 'Missing longitude.' );
-			}
-
-			if (! geo_utils_is_valid_latitude($data['latitude'])){
-				return array( 'ok' => 0, 'error' => "Invalid latitude: '{$data['latitude']}'" );
-			}
-
-			if (! geo_utils_is_valid_longitude($data['longitude'])){
-				return array( 'ok' => 0, 'error' => "Invalid longitude: '{$data['longitude']}'" );
-			}
+		if (! geo_utils_is_valid_longitude($data['longitude'])){
+			return array( 'ok' => 0, 'error' => "Invalid longitude: '{$data['longitude']}'" );
 		}
 
 		return array( 'ok' => 1 );

@@ -24,21 +24,35 @@
 			$fields[] = strtolower($raw);
 		}
 
-		# ensure lat, lon here
+		#
 
-		foreach (array() as $what){
+		$possible_lat = $GLOBALS['cfg']['import_fields_mightbe_latitude'];
+		$possible_lon = $GLOBALS['cfg']['import_fields_mightbe_longitude'];
 
-			if (! in_array($what, $fields)){
+		$lat_field = 'latitude';
+		$lon_field = 'longitude';
 
-				$errors[] = array(
-					'record' => 0,
-					'error' => "missing required column",
-					'column' => $what,
-				);
+		if (! in_array($lat_field, $fields)){
 
-				continue;
+			foreach ($fields as $f){
+				if (in_array($f, $possible_lat)){
+					$lat_field = $f;
+					break;
+				}
 			}
 		}
+
+		if (! in_array($lon_field, $fields)){
+
+			foreach ($fields as $f){
+				if (in_array($f, $possible_lon)){
+					$lon_field = $f;
+					break;
+				}
+			}
+		}
+
+		#
 
 		$data = array();
 		$errors = array();
@@ -59,11 +73,7 @@
 				$label = $fields[$j-1];
 				$value = $xls->val($i, $j);
 
-				# type always seems to come back empty
-				# (20110110/straup)
-				# $type = $xls->type($i, $j);
-
-				if ($label == 'latitude'){
+				if ($label == $lat_field){
 
 					if (! geo_utils_is_valid_latitude($value)){
 
@@ -75,9 +85,11 @@
 
 						continue;
 					}
+
+					$label = 'latitude';
 				}
 
-				if ($label == 'longitude'){
+				if ($label == $lon_field){
 
 					if (! geo_utils_is_valid_longitude($value)){
 
@@ -89,6 +101,8 @@
 
 						continue;
 					}
+
+					$label = 'longitude';
 				}
 
 				# TO DO : dates and times (they seem to be always be weird)
