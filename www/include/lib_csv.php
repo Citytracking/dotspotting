@@ -47,8 +47,8 @@
 				$has_latitude = (in_array('latitude', $row)) ? 1 : 0;
 				$has_longitude = (in_array('longitude', $row)) ? 1 : 0;
 
-				$possible_lat = array('lat');
-				$possible_lon = array('lon', 'long', 'lng');
+				$possible_lat = $GLOBALS['cfg']['import_fields_mightbe_latitude'];
+				$possible_lon = $GLOBALS['cfg']['import_fields_mightbe_longitude'];
 
 				foreach ($row as $col){
 
@@ -120,17 +120,9 @@
 				}
 			}
 
-			# ensure latitude
+			# ensure valid latitude/longitude
 
-			if (! isset($tmp['latitude'])){
-				$errors[] = array(
-					'record' => $record,
-					'error' => 'missing latitude',
-					'column' => 'latitude',
-				);
-			}
-
-			elseif (! geo_utils_is_valid_latitude($tmp['latitude'])){
+			if ((isset($tmp['latitude'])) && (! geo_utils_is_valid_latitude($tmp['latitude']))){
 				$errors[] = array(
 					'record' => $record,
 					'error' => 'invalid latitude',
@@ -138,19 +130,7 @@
 				);
 			}
 
-			else {}
-
-			# ensure longitude
-
-			if (! isset($tmp['longitude'])){
-				$errors[] = array(
-					'record' => $record,
-					'error' => 'missing longitude',
-					'column' => 'longitude',
-				);
-			}
-
-			elseif (! geo_utils_is_valid_longitude($tmp['longitude'])){
+			if ((isset($tmp['longitude'])) && (! geo_utils_is_valid_longitude($tmp['longitude']))){
 				$errors[] = array(
 					'record' => $record,
 					'error' => 'invalid longitude',

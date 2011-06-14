@@ -180,6 +180,16 @@
 
 	$GLOBALS['cfg']['import_archive_root'] = '';
 
+	$GLOBALS['cfg']['import_fields_mightbe_latitude'] = array(
+		'lat',
+	);
+
+	$GLOBALS['cfg']['import_fields_mightbe_longitude'] = array(
+		'lon',
+		'long',
+		'lng',
+	);
+
 	# this is off by default since we don't necessarily know where
 	# to write the cache files.
 
