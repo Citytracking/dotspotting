@@ -1,10 +1,5 @@
 {assign var="page_title" value="Upload some dots!"}
-
-{capture assign="extra_head"}
-	<link rel="stylesheet" href="{$cfg.abs_root_url}css/reveal.css">
-{/capture}
-
-
+{capture assign="extra_head"}<link rel="stylesheet" href="{$cfg.abs_root_url}css/reveal.css">{/capture}
 {include file="inc_head.txt"}
 
 {if $error.uploads_disabled}
@@ -18,6 +13,8 @@
 
 {elseif $error.invalid_mimetype}
 <p class="error">That's either an invalid file format or, more likely, Dotspotting can't figure out what kind of file it is. Is it missing an extension (like <q>.xls</a>?)</p>
+
+{include file="inc_error_supported_filetypes.txt"}
 
 {elseif $error.invalid_url}
 <p class="error">That's not any kind of URL that Dotspotting understands. {if $error.details} ({$error.details|escape}){/if}</p>
@@ -34,15 +31,21 @@
 {elseif $error.missing_data}
 <p class="error">Hey! All the data Dotspotting was supposed to import disappeared! That's not right.</p>
 
-{elseif $error.invalid_data}
-<p class="error">Hey! That doesn't look like valid data.</p>
+{elseif $error.parse_fail}
+<p class="error">Argh! There was a problem parsing the file you uploaded.{if $error.details} The error reported was: {$error.details|escape}{/if}</p>
 
-{elseif $error.flickr_missing_date_filter}
-<p class="error">Hey! Imports for Flickr users or groups need to scoped by date. Did you forget to do that or send funky data?</p>
+{include file="inc_error_supported_filetypes.txt"}
+
+{elseif $error.invalid_data}
+<p class="error">Hey! That doesn't look like valid data.{if $error.details} The error reported was: {$error.details|escape}{/if}</p>
+
+{include file="inc_error_supported_filetypes.txt"}
 
 {* unknown errors *}
 {elseif $error|@count}
 <p class="error">Hey, that's not right: There was unexpected expected error importing your data. We're really sorry about that and will try to fix that, shortly!</p>
+
+{include file="inc_error_supported_filetypes.txt"}
 
 {* end of errors *}
 

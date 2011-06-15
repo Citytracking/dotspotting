@@ -24,7 +24,7 @@
 
 		return $map;
 	}
-	
+
 	function formats_pretty_import_names_map(){
 		$pretty = formats_pretty_names_map();
 		$map = formats_valid_import_map('key by extension');
@@ -33,7 +33,7 @@
 				$map[$format] = $pretty[$format];
 			}
 		}
-		
+
 		return $map;
 	}
 

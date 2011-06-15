@@ -23,7 +23,7 @@
 
 			return array(
 				'ok' => 0,
-				'error' => 'Failed to parse spreadsheet',
+				'error' => 'Unable to locate any rows or columns with data. Perhaps the spreadsheet is old or has been corrupted?',
 			);
 		}
 

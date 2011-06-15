@@ -49,6 +49,12 @@
 	$GLOBALS['smarty']->assign("dots_index_on", $dots_index_on);
 	$GLOBALS['smarty']->assign("mime_type", $mime_type);
 
+	# This is here mostly in case we throw and error and need/want
+	# to tell users about valid import formats.
+
+	$import_map = formats_pretty_import_names_map();
+	$GLOBALS['smarty']->assign_by_ref("import_map", $import_map);
+
 	#
 	# First grab the file and do some basic validation
 	#
@@ -99,6 +105,11 @@
 				);
 
 				$pre_process = import_process_file($_FILES['upload'], $more);
+
+				if (! $pre_process['ok']){
+					$GLOBALS['error']['parse_fail'] = 1;
+					$GLOBALS['error']['details'] = $pre_process['error'];
+				}
 
 				# convert any errors from a bag of arrays in to a hash
 				# where the key maps to record number (assuming the count

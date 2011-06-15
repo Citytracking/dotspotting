@@ -64,8 +64,8 @@
 					<li><b>URL</b> - a remote file with a type listed on the left</li>
 					<li><b>Flickr</b> - upload geotagged photos from <a href="http://www.flickr.com/">Flickr</a>. (<a href="" class="has_helper">details</a>)</li>
 					<li class="no_show helper_instr">
-						<p>Many pages on Flickr contain an embedded (fancy talk for <q>hidden</q>) link to a machine-readable version of the most recent photos for that view &#8212; a user's photostream, a group pool, etc. &#8212; so you can simply copy and paste the URL in the input field below. For example:</p>
-						<p><code><a href="http://www.flickr.com/groups/flickrcommons/pool/">http://www.flickr.com/groups/flickrcommons/pool/</a></code></p>
+						<p>Dotspotting can import geotagged photos from sets on Flickr. Simply copy and paste the URL in the input field below. For example:</p>
+						<p><code><a href="http://www.flickr.com/photos/dotspotting/sets/72157626431332875/">http://www.flickr.com/photos/dotspotting/sets/72157626431332875/</a></code></p>
 					</li>
 					<li><b>Google's MyMaps</b> - import data from Google's <a href="http://maps.google.com/support/bin/static.py?hl=en&page=guide.cs&guide=21670&topic=21676">MyMaps</a> service. (<a href="" class="has_helper">details</a>)</li>
 					<li class="no_show helper_instr">
