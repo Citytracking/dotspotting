@@ -71,13 +71,13 @@
 {if $is_flickr}
 
 {if $flickr_url_type=='set'}
-<h3>Are you sure you want to import this geotagged photos from this Flickr photoset into Dotspotting?</h3>
+<h3>Are you sure you want to import geotagged photos from this Flickr photoset into Dotspotting?</h3>
 
 {elseif $flickr_url_type=='group'}
 <h3>Are you sure you want to import geotagged photos from this Flickr group into Dotspotting?</h3>
 
 {elseif $flickr_url_type=='user'}
-<h3>Are you sure you want to import photos from this Flickr</q> user into Dotspotting?</h3>
+<h3>Are you sure you want to import geotagged photos from this Flickr</q> user into Dotspotting?</h3>
 
 {else}
 <h3>Are you sure you want to import the file titled <q class="important">{$parsed_url.path|@basename|escape}</q> from Flickr into Dotsp
