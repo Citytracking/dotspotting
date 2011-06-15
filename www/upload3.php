@@ -6,8 +6,10 @@
 
 	include("include/init.php");
 
-	loadlib("import");
 	loadlib("formats");
+
+	loadlib("import");
+	loadlib("import_flickr");
 
 	loadlib("flickr");
 	loadlib("google");
@@ -204,6 +206,15 @@
 		$GLOBALS['smarty']->assign("is_flickr", $is_flickr);
 		$GLOBALS['smarty']->assign("is_google", $is_google);
 
+		# If it's from Flickr then parse out what kind of Flickr URL
+		# we're parsing in order to display some helpful constraints
+		# (like dates) for the API queries.
+
+		if ($is_flickr){
+			list($flickr_type, $ignore) = import_flickr_url_type($url);
+			$GLOBALS['smarty']->assign_by_ref("flickr_url_type", $flickr_type);
+		}
+
 		# This is an upload from some random remote site
 		# Please to make sure you are saying yes, ok?
 
@@ -218,15 +229,8 @@
 
 		if ($is_flickr){
 
-			if ($feed_url = flickr_get_georss_feed($url)){
-				$url = $feed_url;
-			}
-
-			else {
-				$GLOBALS['error']['no_feed_url'] = 1;
-				$ok = 0;
-			}
-
+			list($flickr_type, $ignore) = import_flickr_url_type($url);
+			$GLOBALS['smarty']->assign_by_ref("flickr_url_type", $flickr_type);
 		}
 
 		# Am I Google?
@@ -252,23 +256,36 @@
 			exit();
 		}
 
+		#
 		# Okay, try to fetch the file...
+		#
+
+		$more = array();
 
 		if ($mime_type = post_str('mime_type')){
 			$more['assume_mime_type'] = $mime_type;
 		}
 
 		if ($is_flickr){
-			$more['assume_mime_type'] = 'application/rss+xml';
+
+			$upload = import_flickr_url($url, $more);
+
+			if (($upload['ok']) && (! count($upload['data']))){
+				$upload = array(
+					'ok' => 0,
+					'error' => 'Dotspotting was unable to retrieve any geotagged photos from Flickr!',
+				);
+			}
 		}
 
 		else if ($is_google){
 			$more['assume_mime_type'] = 'application/vnd.google-earth.kml+xml';
+			$upload = import_fetch_uri($url, $more);
 		}
 
-		#
-
-		$upload = import_fetch_uri($url, $more);
+		else {
+			$upload = import_fetch_uri($url, $more);
+		}
 
 		if (! $upload['ok']){
 
@@ -278,13 +295,22 @@
 			exit();
 		}
 
+		#
 		# Okay, now process the file
+		#
 
-		$more = array(
-			'dots_index_on' => $dots_index_on,
-		);
+		if ($is_flickr){
+			$pre_process = $upload;
+		}
 
-		$pre_process = import_process_file($upload, $more);
+		else {
+
+			$more = array(
+				'dots_index_on' => $dots_index_on,
+			);
+
+			$pre_process = import_process_file($upload, $more);
+		}
 
 		# dumper($pre_process);
 
@@ -302,7 +328,7 @@
 
 			$pre_process['errors'] = $_errors;
 		}
-        
+
 		$GLOBALS['smarty']->assign_by_ref("pre_process", $pre_process);
 		$GLOBALS['smarty']->assign('step', 'process');
 	}
@@ -385,18 +411,16 @@
 
 			$import = import_process_data($GLOBALS['cfg']['user'], $data, $more);
 			$GLOBALS['smarty']->assign_by_ref("import", $import);
-				
 		}
 	}
 
 	else {
-
-		# nuthin' 
+		# nuthin'
 	}
-	
+
 	$import_formats = formats_valid_import_map('key by extension');
 	$GLOBALS['smarty']->assign_by_ref("import_formats", $import_formats);
-	
+
 	$import_formats_pretty = formats_pretty_import_names_map();
 	$GLOBALS['smarty']->assign_by_ref("import_formats_pretty", $import_formats_pretty);
 
