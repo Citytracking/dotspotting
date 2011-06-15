@@ -183,7 +183,11 @@
 			exit();
 		}
 
+		#
 		# Confirmation and/or remote fetching
+		#
+
+		$ok = 1;
 
 		$GLOBALS['smarty']->assign_by_ref('parsed_url', $parsed);
 		$GLOBALS['smarty']->assign('url', $url);
@@ -207,12 +211,21 @@
 		$GLOBALS['smarty']->assign("is_google", $is_google);
 
 		# If it's from Flickr then parse out what kind of Flickr URL
-		# we're parsing in order to display some helpful constraints
-		# (like dates) for the API queries.
+		# we're parsing because we only support sets right now.
 
 		if ($is_flickr){
 			list($flickr_type, $ignore) = import_flickr_url_type($url);
 			$GLOBALS['smarty']->assign_by_ref("flickr_url_type", $flickr_type);
+
+			if ($flickr_type != 'set'){
+				$ok = 0;
+				$GLOBALS['error']['invalid_flickr_type'] = 1;
+			}
+		}
+
+		if (! $ok){
+			$GLOBALS['smarty']->display('page_upload3.txt');
+			exit();
 		}
 
 		# This is an upload from some random remote site
