@@ -183,10 +183,6 @@
 
 	function import_flickr_spr_paginate($method, $args, $more=array()){
 
-dumper($method);
-dumper($args);
-dumper($more);
-
 		$defaults = array(
 			'root' => 'photos',
 			'max_photos' => $GLOBALS['cfg']['import_max_records'],
@@ -221,6 +217,9 @@ dumper($more);
 		$pages = null;
 
 		while ((! isset($pages)) || ($page <= $pages)){
+
+			# If any sort of geo filter is passed to the API
+			# Flickr will silently set this number to 250
 
 			$args['per_page'] = 500;
 			$args['page'] = $page;

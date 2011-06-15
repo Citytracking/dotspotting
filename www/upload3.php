@@ -225,15 +225,11 @@
 			exit();
 		}
 
-		# Am I Flickr?
+		# Am I Google?
 
 		if ($is_flickr){
-
-			list($flickr_type, $ignore) = import_flickr_url_type($url);
-			$GLOBALS['smarty']->assign_by_ref("flickr_url_type", $flickr_type);
+			# pass
 		}
-
-		# Am I Google?
 
 		else if ($is_google){
 
