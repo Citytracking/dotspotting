@@ -47,6 +47,14 @@
 
 		$rss = new MagpieRSS($xml, 'utf-8', 'utf-8', true );
 
+		if (! $rss){
+
+			return array(
+				'ok' => 0,
+				'error' => 'Failed to parse the RSS. Perhaps it is incorrect or squirrel-y XML?',
+			);
+		}
+
 		$data = array();
 		$record = 1;
 
