@@ -4,6 +4,8 @@
 	# $Id$
 	#
 
+	# see also: http://code.google.com/p/php-excel-reader/wiki/Documentation
+
 	#################################################################
 
 	function xls_parse_fh($fh, $more=array()){
@@ -12,10 +14,18 @@
 
 		fclose($fh);
 
-		$xls = new Spreadsheet_Excel_Reader($more['file']['path']);
+		$xls = new Spreadsheet_Excel_Reader($more['file']['path'], false);
 
-		$rows = $xls->rowcount(0);
+		$rows = $xls->rowcount();
 		$cols = $xls->colcount(0);
+
+		if ((! $rows) || (! $cols)){
+
+			return array(
+				'ok' => 0,
+				'error' => 'Failed to parse spreadsheet',
+			);
+		}
 
 		$fields = array();
 
