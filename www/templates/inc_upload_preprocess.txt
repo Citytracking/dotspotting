@@ -467,7 +467,6 @@ $("#upload_file").submit(function(e){
 	//e.preventDefault();
 	if(gc_ok){
 		var data = preprocess_collect_data();
-		console.log(data);
 		data = JSON.stringify(data);
 		$("input[type=hidden][name=data]").val(data);
 	}else{
@@ -769,7 +768,9 @@ function preprocess_geocode_col(idx){
 					if (status == google.maps.GeocoderStatus.OK) {
 						dt.dataTable.updateCell(q,"latitude",results[0].geometry.location.lat());
 						dt.dataTable.updateCell(q,"longitude",results[0].geometry.location.lng());
-						if(window.console)console.log(results); //lng
+					
+					//	if(window.console)console.log(results); //lng
+					
 						self.success.ct++;
 						self.success.addr.push(addy);
 						$("#"+q._sId).css("background-color","#EEE");
@@ -787,7 +788,8 @@ function preprocess_geocode_col(idx){
 						dt.dataTable.updateCell(q,"latitude","###");
 						dt.dataTable.updateCell(q,"longitude","###");
 						
-						if(window.console)console.log("Geocode was not successful for the following reason: " + status);
+						//if(window.console)console.log("Geocode was not successful for the following reason: " + status);
+						
 						self.errors.ct++;
 						self.errors.addr.push(addy);
 						self.errors.err.push(status);
