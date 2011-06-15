@@ -12,14 +12,19 @@
 
 <div class="section_bunch_o_text">
 <form action="{$cfg.abs_root_url}signin" method="post" accept-encoding="UTF-8"></p>
-	<p><input type="text" name="email" size="40" value="{$email|escape}" /> <label for="email">email address</label><br /></p>
-	<p><input type="password" name="password" size="40" /> <label for="password">password</label</p>
+	<p><input id="emailinput" type="text" name="email" size="40" value="{$email|escape}" tabindex=1 autofocus/> <label for="email">email address</label><br /></p>
+	<p><input type="password" name="password" size="40" tabindex=2/> <label for="password">password</label</p>
 	<p><input type="hidden" name="signin" value="1" /></p>
 	<input type="hidden" name="redir" value="{$redir|escape}" />
 	<p class="upload_submit"><input type="submit" value="Sign In"/></p>
 </form>
-
-
+{literal}
+<script type="text/javascript">
+    if (!("autofocus" in document.createElement("input"))) {
+      document.getElementById("emailinput").focus();
+    }
+</script>
+{/literal}
 {if $cfg.enable_feature_password_retrieval}
 <p><a href="{$cfg.abs_root_url}password/forgot">Forgotten your password?</a></p>
 {else}

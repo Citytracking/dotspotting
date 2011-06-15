@@ -467,7 +467,6 @@ $("#upload_file").submit(function(e){
 	//e.preventDefault();
 	if(gc_ok){
 		var data = preprocess_collect_data();
-		console.log(data);
 		data = JSON.stringify(data);
 		$("input[type=hidden][name=data]").val(data);
 	}else{
@@ -681,28 +680,7 @@ function addExtraColumns(arr,idx){
 function preprocess_geocode_col(idx){
 	if(!dt || !dt.dataTable)return;
 	
-		
 	var self = this;
-	this.intTimer = null;
-	
-	// get this from aaron
-	this.addressColumn = dt.dataTable.getColumn("address");
-	this.addressColumnID = this.addressColumn._nKeyIndex;
-	
-	this.errors = {'ct':0,'addr':[],'err':[]};
-	this.success = {'ct':0,'addr':[],'msgs':[]};
-	this.currentAddy = undefined;
-	this.currentAddyTries = undefined;
-	
-	var queueDone = false;
-	var queue = $(".yui-dt-data tr");
-	var queueLength = queue.length;
-	var queueCounter = 0;
-	
-	this.queueBatch = 5; // basic throttler for geocoder, also catching 'OVER_QUERY_LIMIT' response to help throttle requests
-	
-	$(".meter > span").animate({width: "0%"}, 0);
-		
 		
 	this.gc = function(q){
 		var _id = "r"+q._nCount;
@@ -769,7 +747,9 @@ function preprocess_geocode_col(idx){
 					if (status == google.maps.GeocoderStatus.OK) {
 						dt.dataTable.updateCell(q,"latitude",results[0].geometry.location.lat());
 						dt.dataTable.updateCell(q,"longitude",results[0].geometry.location.lng());
-						if(window.console)console.log(results); //lng
+					
+					//	if(window.console)console.log(results); //lng
+					
 						self.success.ct++;
 						self.success.addr.push(addy);
 						$("#"+q._sId).css("background-color","#EEE");
@@ -787,7 +767,8 @@ function preprocess_geocode_col(idx){
 						dt.dataTable.updateCell(q,"latitude","###");
 						dt.dataTable.updateCell(q,"longitude","###");
 						
-						if(window.console)console.log("Geocode was not successful for the following reason: " + status);
+						//if(window.console)console.log("Geocode was not successful for the following reason: " + status);
+						
 						self.errors.ct++;
 						self.errors.addr.push(addy);
 						self.errors.err.push(status);
@@ -895,7 +876,55 @@ function preprocess_geocode_col(idx){
 			$("#geocodeBtn").hide();
 		}
 		
-	}	
+	}
+	
+	
+	this.majorError = function(q){
+	    $("#geocode_info h4").html("Sorry the geocoding feature could not be enabled.");
+	    var out_p = "<strong>Please fix problem in original source data.  <a href='"+_dotspotting.abs_root_url+"upload'>Then re-upload the file.</a></strong><br/>";
+		out_p += "For more details about uploading <a href='"+_dotspotting.abs_root_url+"faq'>please visit the FAQ page</a>";
+	    $("#geocode_info p").html(out_p);
+	    $("#geocode_info h4").css("background-color","#e9b8b8");
+	    $("#geocodeBtn").hide();
+	}
+	
+	////////////////////////////////////////////////////
+	////////////////////////////////////////////////////
+	////////////////////////////////////////////////////
+	
+	this.intTimer = null;
+	
+	// check for an address column
+	if(! dt.dataTable.getColumn("_address") ){
+	    majorError();
+	    return;
+	}
+	this.addressColumn = dt.dataTable.getColumn("_address");
+	
+	// check if it has an index
+	if(! this.addressColumn._nKeyIndex ){
+	    majorError();
+	    return;
+	}
+	this.addressColumnID = this.addressColumn._nKeyIndex;
+	
+	
+	
+	this.errors = {'ct':0,'addr':[],'err':[]};
+	this.success = {'ct':0,'addr':[],'msgs':[]};
+	this.currentAddy = undefined;
+	this.currentAddyTries = undefined;
+	
+	var queueDone = false;
+	var queue = $(".yui-dt-data tr");
+	var queueLength = queue.length;
+	var queueCounter = 0;
+	
+	this.queueBatch = 5; // basic throttler for geocoder, also catching 'OVER_QUERY_LIMIT' response to help throttle requests
+	
+	$(".meter > span").animate({width: "0%"}, 0);
+	
+		
 	
 	mo = $('#myModal').reveal({closeonbackgroundclick: false,animation:'fade', closeCallback: self.closeModal});
 	addExtraColumns(['latitude','longitude'],idx);
@@ -906,7 +935,10 @@ function preprocess_geocode_col(idx){
 	if(queueLength > 0){
 		self.gc(dt.dataTable.getRecord(queueCounter));
 	}
-		
+	
+	////////////////////////////////////////////////////
+	////////////////////////////////////////////////////
+	////////////////////////////////////////////////////	
 	
 }
 
