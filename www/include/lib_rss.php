@@ -62,7 +62,10 @@
 
 			if ($geo = $item['geo']){
 
-				list($lat, $lon) = import_ensure_valid_latlon($geo['lat'], $geo['lon']);
+				$lat = $geo['lat'];
+				$lon = (isset($geo['long'])) ? $geo['long'] : $geo['lon'];
+
+				list($lat, $lon) = import_ensure_valid_latlon($lat, $lon);
 
 				$has_latlon = ($lat && $lon) ? 1 : 0;
 			}
