@@ -43,13 +43,14 @@
 
 		$map = array(
 			'text/csv' => 'csv',
-			'application/gpx+xml' => 'gpx',
-			'application/x-javascript' => 'json',
-			'application/vnd.google-earth.kml+xml' => 'kml',
+			#'application/gpx+xml' => 'gpx',
+			#'application/x-javascript' => 'json',
+			#'application/vnd.google-earth.kml+xml' => 'kml',
 			'application/rss+xml' => 'rss',
 			# 'application/vnd.esri-shapefile' => 'shp',
 			'application/vnd.ms-excel' => 'xls',
 			'text/plain' => 'csv',
+			'text/plain' => 'txt',
 		);
 
 		# TODO: fix me so that this will work for mime-types

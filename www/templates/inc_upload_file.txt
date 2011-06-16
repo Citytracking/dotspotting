@@ -61,7 +61,7 @@
 			
 				<ul>
 					<li>Will accept:</li>
-					<li><b>URL</b> - a remote file with a type listed on the left</li>
+					<!-- <li><b>URL</b> - a remote file with a type listed on the left</li> -->
 					<li><b>Flickr</b> - upload geotagged photos from <a href="http://www.flickr.com/">Flickr</a>. (<a href="" class="has_helper">details</a>)</li>
 					<li class="no_show helper_instr">
 						<p>Many pages on Flickr contain an embedded (fancy talk for <q>hidden</q>) link to a machine-readable version of the most recent photos for that view &#8212; a user's photostream, a group pool, etc. &#8212; so you can simply copy and paste the URL in the input field below. For example:</p>
