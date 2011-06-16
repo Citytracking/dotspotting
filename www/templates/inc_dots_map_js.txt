@@ -52,6 +52,10 @@ function dot_onmouseover(dotid){
 	if (! dot['id']){
 		return;
 	}
+	
+	// move dataTable row into view
+	var dot_table_id = "dotslist_dot_"+dotid;
+	show_row_for_dot(dot_table_id);
 
 	var tlen = _dotspotting.dots_list_mouseout_timers.length;
 
@@ -74,6 +78,14 @@ function dot_onmouseover(dotid){
 	
 	dot_highlight_tr(dotid);
 }
+
+
+function show_row_for_dot(elID)
+{
+  var el = document.getElementById(elID);
+  el.scrollIntoView(true);
+}
+
 
 // dot onmouseout handler
 function dot_onmouseout(dotid){
