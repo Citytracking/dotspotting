@@ -21,7 +21,7 @@
 		</div>
 		<div class="nav_links_lower">
 			<a href="{$cfg.abs_root_url}" {if $cfg.page_crumb.0 == ""}class="nav_select"{/if}>Home</a>	
-			<a href="{$cfg.abs_root_url}nearby/" {if $cfg.page_crumb.0 == "nearby"}class="nav_select"{/if}>Nearby</a>
+			<!-- <a href="{$cfg.abs_root_url}nearby/" {if $cfg.page_crumb.0 == "nearby"}class="nav_select"{/if}>Nearby</a> -->
 			<a href="{$cfg.abs_root_url}about/" {if $cfg.page_crumb.0 == "about"}class="nav_select"{/if}>About</a>
 			<a href="{$cfg.abs_root_url}faq/" {if $cfg.page_crumb.0 == "faq"}class="nav_select"{/if}>FAQ</a>
 		</div>
@@ -35,7 +35,7 @@
 			<a href="{$cfg.abs_root_url}" {if $cfg.page_crumb.0  == ""}class="nav_select"{/if}>Home</a>	
 			<a href="{$cfg.abs_root_url}u/{$cfg.user.id}/" {if $cfg.page_crumb.0 == "dashboard"}class="nav_select"{/if}>Dashboard</a>	
 			<a href="{$cfg.abs_root_url}upload/" {if $cfg.page_crumb.0 == "upload" || $cfg.page_crumb.0 == "upload2" || $cfg.page_crumb.0 == "upload3"}class="nav_select"{/if}>Upload</a>
-			<a href="{$cfg.abs_root_url}nearby/" {if $cfg.page_crumb.0 == "nearby"}class="nav_select"{/if}>Nearby</a>
+			<!-- <a href="{$cfg.abs_root_url}nearby/" {if $cfg.page_crumb.0 == "nearby"}class="nav_select"{/if}>Nearby</a> -->
 			<a href="{$cfg.abs_root_url}about/" {if $cfg.page_crumb.0 == "about"}class="nav_select"{/if}>About</a>
 			<a href="{$cfg.abs_root_url}faq/" {if $cfg.page_crumb.0 == "faq"}class="nav_select"{/if}>FAQ</a>
 		</div>
