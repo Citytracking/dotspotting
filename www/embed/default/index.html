@@ -13,24 +13,36 @@
     <body>
         <div id="map" class="map interact hash"
             data-base="http://spaceclaw.stamen.com/tiles/dotspotting/world/{Z}/{X}/{Y}.png"
-            data-center="37.7602,-122.4146"
-            data-zoom="14"
+            data-center="51.4832,-0.1137"
+            data-zoom="9"
             data-zoomRange="10,17">
             <div id="crimes" class="layer"
                 data-enforceBounds="true"
-                data-type="geoJson-p"></div>
+                data-type="geoJson-p">
+            </div>
+            <div class="controls">
+                <label>Zoom:</label> <a class="zoom-in" href="#zoom-in"><img alt="in" src="images/zoom-in.png"/></a>
+				<a class="zoom-out" href="#zoom-out"><img alt="out" src="images/zoom-out.png"/></a>
+            </div>
             <div id="overlay">
                 <h1 class="title"><a target="_top">Dotspotting Default</a></h1>
             </div>
             <p id="copyright">Map data &copy;<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, CC-BY-SA; designed by <a href="http://www.stamen.com/" title="stamen site">Stamen</a> &amp; <a href="http://www.geoiq.com/">GeoIQ</a></p>
             <div id="mm_tip">
                 <span id="mm_tip_nub"></span>
+                <p id="mm_tip_title"></p>
                 <p id="mm_tip_desc"></p>
             </div>
         </div>
        
         <script type="text/javascript" defer="defer">
+        
+        // problem w/ Safari not setting map height to 100%
+        // not sure why, so this seems to fix problem for now...
+        $("#map").css("height","100%");
 
+        //9.00/51.4832/-0.1137
+            var tip_title,tip_desc;
             // gather page parameters from the query string
             var params = {},
                 paramMatch = location.search.match(/(\w+)=([^&$]+)/g);
@@ -41,7 +53,7 @@
                     params[part[0]] = decodeURIComponent(part[1]).replace(/\+/g, " ");
                 }
             }
-
+       
             var okay = true;
             function err(message) {
                 console.error("::", message);
@@ -53,15 +65,28 @@
             // TODO: get the title from the JSON response here?
             if (params.title) {
                 $("#overlay .title a").text(params.title);
+                $(".controls").css("top","50px");
             } else {
                 $("#overlay .title").css("display", "none");
             }
             if (params.href) {
                 $("#overlay .title a").attr("href", params.title);
             }
+            
+            //
+            if(params.tt){
+                tip_title = params.tt;
+            }else{
+                tip_title = "id";
+            }
+            
+            if(params.tm){
+                tip_desc = params.tm;
+            }else{
+                tip_desc = "";
+            }
 
             /**
-             * TODO: don't use the dotpoop proxy once Dotspotting has proper
              * JSON-P callback support.
              */
             var url;
@@ -89,9 +114,7 @@
                         .replace("{sheet}", params.sheet);
                     if (!params.href) {
                         var href = url.substr(0, url.lastIndexOf("/"));
-                        console.log("href:", href);
                         var duh = $("#overlay .title a").attr("href", href).length;
-                        console.log("duh:", duh);
                     }
                     params = {
                         format: "json",
@@ -130,7 +153,7 @@
                             layer = crimes.data("layer"),
                             preventer = new ClickPreventer(),
                             markers = [],
-                            tip = $("#mm_tip");
+                            ds_tooltip = null;
 
                         /**
                          * XXX: this is weird. When we're in an <iframe> the
@@ -141,7 +164,7 @@
                          * accordingly.
                          */
                         map.size(null);
-
+                       
                         /**
                          * Read the center and zoom (#zoom/lat/lon) from the
                          * fragment identifier, and keep reading it.
@@ -159,35 +182,114 @@
                                 .replace("{id}", id);
                         }
                         
+                        $(".zoom-in").click(function(e){
+                           e.preventDefault();
+                           map.zoomIn(); 
+                        });
+                        $(".zoom-out").click(function(e){
+                           e.preventDefault();
+                           map.zoomOut(); 
+                        });
+                        
+                        
+                        
+                        
+                        
+                        
                         /* MARKER FUNCTIONS */
-                        /* TODO: clean up */
-                        function over() {
+                        
+                        function TipController(){
+                            var tip = {};
                             
-                            var id = $(this).data("dot_id");
-                            var props = marker_props[String(id)];
+                            var tt = $("#mm_tip");
+                            var tt_title = $("#mm_tip_title");
+                            var tt_desc = $("#mm_tip_desc");
+                            var tt_nub = $("#mm_tip_nub");
+                            var TT_WIDTH = 300;
+                            var cont_offset = container.offset();
+                            var cont_width = container.width();
+                            var cont_height = container.height();
                             
-                            //
-                            $("#mm_tip_desc").html(props['request']);
+                            var current_prop = null,
+                                current_marker,
+                                nub_class = "left";
                             
-                            var _mc = container.offset();
-                            var _tc = $(this).offset();
-                            var _h = tip.height();
-                            var _w = tip.width();
-                            var tipAdj = (_w * .3) + 10;
-                            tip.css("margin-left", "-"+tipAdj+"px");
+                            // adjust tip for smaller displays
+                            if(tt.width()/container.width() > .5){
+                                tt.width(container.width() * .5);
+                            }
                             
-                            var _x = _tc.left;
-                            var _y = _tc.top - (14+_h);
-                            
-                            tip.show();
-                            tip.css("left", _x).css("top", _y);
+                            function getTipTitle(){
+                                return (tip_title.length && current_prop[tip_title]) ? current_prop[tip_title] : "";
+                            }
 
-                        }
-
-                        function out() {
-                           tip.hide();
+                            function getTipDesc(){
+                                return (tip_title.length && current_prop[tip_desc]) ? current_prop[tip_desc] : "";
+                            }
+                            
+                            function initialTipPosition(){
+                                tt.css("left","-9999px")
+                                tt.css("width","auto");
+                                var _w = (tt.width() < TT_WIDTH) ? tt.width() : TT_WIDTH;
+                                tt.width(_w);
+                                //
+                                
+                                var _tc = $(current_marker).offset();
+                                var _h = tt.height();
+                                var _x = _tc.left;
+                                var _y = _tc.top - (14+_h);
+                                
+                                if(_tc.left < 0 )_tc.left = 1;
+                                if(_tc.left > cont_width)_tc.left = cont_width-1;
+                                
+                                
+                                var pos_pct = (_tc.left / cont_width);
+                                
+                                var nub_pos = ((_w-20) * pos_pct);
+                                if(nub_pos<6)nub_pos = 6;
+                                
+                                tt_nub.css("left",nub_pos+"px");
+                                tt.css("margin-left", "-"+nub_pos+"px");
+                                                                
+                                
+                                tt.show();
+                                tt.css("left", _x).css("top", _y);
+                                
+                               
+                            }
+ 
+                            function showTip(){
+                                if(!current_prop)return;
+                                
+                                tt_title.html(getTipTitle());
+                                tt_desc.html(getTipDesc());
+                                initialTipPosition();
+                            }
+                            
+                            function hideTip(){
+                                if(tt)tt.hide();
+                            }
+                            
+                            tip.show = function(){
+                                var id = $(this).data("dot_id");
+                                if(!id)return;
+                                if(!marker_props[String(id)])return;
+                                current_marker = this;
+                                current_prop = marker_props[String(id)];
+                                showTip(); 
+                            }
+                            tip.hide = function(){
+                                hideTip(); 
+                            }
+                            tip.destroy = function(){
+                                //
+                            }
+                            return tip;
+                            
                         }
                         
+                        ds_tooltip = new TipController();
+                       
 
                         function updateFinally() {
                             try {
@@ -225,8 +327,8 @@
                                     marker.attr("href", href);
                                 }
                                 // interaction handlers
-                                marker.mouseover(defer(over, 50));
-                                marker.mouseout(defer(out, 50));
+                                marker.mouseover(defer(ds_tooltip.show, 50));
+                                marker.mouseout(defer(ds_tooltip.hide, 50));
 
                                 // remember it for iteration later
                                 markers.push(marker[0]);
