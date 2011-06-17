@@ -1,0 +1,298 @@
+<html>
+    <head>
+        <title>Dotspotting: Default</title>
+        <script type="text/javascript" src="../javascript/jquery-1.5.min.js"></script>
+        <script type="text/javascript" src="../javascript/modestmaps.js"></script>
+        <script type="text/javascript" src="../javascript/modestmaps.markers.js"></script>
+        <script type="text/javascript" src="../javascript/htmapl.js"></script>
+        <script type="text/javascript" src="../javascript/utils.js"></script>
+        <style type="text/css" media="screen">
+            @import url(css/screen.css);
+        </style>
+    </head>
+    <body>
+        <div id="map" class="map interact hash"
+            data-base="http://spaceclaw.stamen.com/tiles/dotspotting/world/{Z}/{X}/{Y}.png"
+            data-center="37.7602,-122.4146"
+            data-zoom="14"
+            data-zoomRange="10,17">
+            <div id="crimes" class="layer"
+                data-enforceBounds="true"
+                data-type="geoJson-p"></div>
+            <div id="overlay">
+                <h1 class="title"><a target="_top">Dotspotting Default</a></h1>
+            </div>
+            <p id="copyright">Map data &copy;<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, CC-BY-SA; designed by <a href="http://www.stamen.com/" title="stamen site">Stamen</a> &amp; <a href="http://www.geoiq.com/">GeoIQ</a></p>
+            <div id="mm_tip">
+                <span id="mm_tip_nub"></span>
+                <p id="mm_tip_desc"></p>
+            </div>
+        </div>
+       
+        <script type="text/javascript" defer="defer">
+
+            // gather page parameters from the query string
+            var params = {},
+                paramMatch = location.search.match(/(\w+)=([^&$]+)/g);
+            if (paramMatch) {
+                var len = paramMatch.length;
+                for (var i = 0; i < len; i++) {
+                    var part = paramMatch[i].split("=");
+                    params[part[0]] = decodeURIComponent(part[1]).replace(/\+/g, " ");
+                }
+            }
+
+            var okay = true;
+            function err(message) {
+                console.error("::", message);
+                $("#overlay").append($("<p class='error'/>")
+                    .html(message));
+                okay = false;
+            }
+
+            // TODO: get the title from the JSON response here?
+            if (params.title) {
+                $("#overlay .title a").text(params.title);
+            } else {
+                $("#overlay .title").css("display", "none");
+            }
+            if (params.href) {
+                $("#overlay .title a").attr("href", params.title);
+            }
+
+            /**
+             * TODO: don't use the dotpoop proxy once Dotspotting has proper
+             * JSON-P callback support.
+             */
+            var url;
+            if (params.search) {
+                params = {
+                    e: params.search,
+                    u: params.user,
+                    s: params.sheet,
+                    format: "json",
+                    inline: 1,
+                    force: 1 // use response caching
+                };
+                // TODO: update with production URL once it's live
+                url = "http://dotspotting.org/search/export";
+            } else {
+                if (!params.user) {
+                    err("You must provider a <strong>user</strong> parameter (<tt>?user={id}</tt>).");
+                }
+                if (!params.sheet) {
+                    err("You must provider a <strong>sheet</strong> parameter (<tt>?sheet={id}</tt>).");
+                }
+                if (okay) {
+                    url = "http://dotspotting.org/u/{user}/sheets/{sheet}/export"
+                        .replace("{user}", params.user)
+                        .replace("{sheet}", params.sheet);
+                    if (!params.href) {
+                        var href = url.substr(0, url.lastIndexOf("/"));
+                        console.log("href:", href);
+                        var duh = $("#overlay .title a").attr("href", href).length;
+                        console.log("duh:", duh);
+                    }
+                    params = {
+                        format: "json",
+                        inline: 1
+                    };
+                }
+            }
+
+            if (!url) {
+                err("No URL. :(");
+            }
+
+            if (okay) {
+                // update the URL
+                var updated = false;
+                for (var p in params) {
+                    if (typeof params[p] !== "undefined" && String(params[p]).length > 0) {
+                        url += (url.indexOf("?") > -1) ? "&" : "?";
+                        url += p + "=" + params[p];
+                        updated = true;
+                    }
+                }
+                if (updated) {
+                    $("#crimes").data("url", url);
+                } else {
+                    // console.log("using default url:", $("#crimes").data("url"));
+                }
+
+                // Do all this stuff on load
+                $(function() {
+                    $("#map").htmapl().each(function() {
+                        var container = $(this),
+                            map = container.data("map"),
+                            city = container.attr("id"),
+                            crimes = $("#crimes").first(),
+                            layer = crimes.data("layer"),
+                            preventer = new ClickPreventer(),
+                            markers = [],
+                            tip = $("#mm_tip");
+
+                        /**
+                         * XXX: this is weird. When we're in an <iframe> the
+                         * CSS that sets html, body and #map to width and
+                         * height to 100% doesn't seem to have the desired
+                         * effect. So we set size(null), which does a
+                         * mm.Map.setupDimensions(), updating the dimensions
+                         * accordingly.
+                         */
+                        map.size(null);
+
+                        /**
+                         * Read the center and zoom (#zoom/lat/lon) from the
+                         * fragment identifier, and keep reading it.
+                         */
+                        var alreadyCentered = false,
+                            hash = new MapHash(map.modest);
+                        if (location.hash.length > 1) {
+                            alreadyCentered = hash.read(location.hash);
+                        }
+                        hash.start(); // udpate on pan/zoom
+
+                        function getHref(props, id) {
+                            return "http://dotspotting.org/u/{user_id}/dots/{id}/"
+                                .replace("{user_id}", props.user_id)
+                                .replace("{id}", id);
+                        }
+                        
+                        /* MARKER FUNCTIONS */
+                        /* TODO: clean up */
+                        function over() {
+                            
+                            var id = $(this).data("dot_id");
+                            var props = marker_props[String(id)];
+                            
+                            //
+                            $("#mm_tip_desc").html(props['request']);
+                            
+                            var _mc = container.offset();
+                            var _tc = $(this).offset();
+                            var _h = tip.height();
+                            var _w = tip.width();
+                            var tipAdj = (_w * .3) + 10;
+                            tip.css("margin-left", "-"+tipAdj+"px");
+                            
+                            var _x = _tc.left;
+                            var _y = _tc.top - (14+_h);
+                            
+                            tip.show();
+                            tip.css("left", _x).css("top", _y);
+
+                        }
+
+                        function out() {
+                           tip.hide();
+                        }
+                        
+
+                        function updateFinally() {
+                            try {
+                                updateExtent();
+                            } catch (e) {
+                                // console.warn("ERROR updateFinally():", e);
+                            }
+                        }
+
+                        /**
+                         * The layer template is a function that takes a GeoJSON
+                         * feature and returns a DOM element marker.
+                         */
+                         var marker_props = {};
+                        layer.template(function(feature) {
+                            try {
+                                var props = feature.properties,
+                                    type = props["crime type"] || "unknown",
+                                    abbr = abbreviate(type),
+                                    desc = props["request"] || props["description"] || "",
+                                    href = getHref(props, feature.id);
+                                    
+                                // console.log([type, abbr, group, desc, href]);
+                                // create a link that breaks out of the frame
+                                
+                                var marker = $("<a/>").attr("target", "_top")
+                                    .addClass("dot")
+                                    .data("dot_id", feature.id)
+                                    .append($("<span/>")
+                                        .addClass("desc")
+                                        .text(desc));
+                                    
+                                        
+                                if (href) {
+                                    marker.attr("href", href);
+                                }
+                                // interaction handlers
+                                marker.mouseover(defer(over, 50));
+                                marker.mouseout(defer(out, 50));
+
+                                // remember it for iteration later
+                                markers.push(marker[0]);
+                                
+                                marker_props[String(feature.id)] = props
+                                // defer a final update for a while so we can
+                                // cluster and set the initial map extent
+                                defer(updateFinally, 100)();
+
+                                // prevent clicks if we dragged on this marker
+                                preventer.prevent(marker);
+                                
+                                return marker[0]; // return the actual DOM node
+
+                            } catch (e) {
+                                 if(console)console.warn("ERROR (marker):", e);
+                                return null;
+                            }
+                            
+                        });
+
+                        // Quantize a number by a divisor
+                        // quantize(x, prec)
+                        function quantize(n, q) {
+                            return Math.round(n / q) * q;
+                        }
+
+
+                        /**
+                         * Here we grab all of the locations and set the map extent.
+                         */
+                        function updateExtent() {
+                            var locations = [],
+                                len = markers.length;
+                            for (var i = 0; i < len; i++) {
+                                var marker = markers[i],
+                                    loc = marker.location,
+                                    corner = getCorner(marker);
+                                if (loc.lat != 0 && loc.lon != 0) {
+                                    locations.push(loc);
+                                }
+                            }
+                            if (locations.length && !alreadyCentered) {
+                                map.extent(locations);
+                            }
+                        }
+                        
+
+                    });
+                });
+            }
+            
+
+            function capitalize(word) {
+                return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+            }
+
+            function abbreviate(group) {
+                var words = group.split(" ");
+                if (words.length > 1) {
+                    return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
+                } else {
+                    return group ? capitalize(group.substr(0, 2)) : "?";
+                }
+            } 
+
+        </script>
+    </body>
+</html>
