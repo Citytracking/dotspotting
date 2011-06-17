@@ -30,9 +30,9 @@
 			{/if}
 	{/foreach}
 {/if}
-			<th title="sort by created date of dots">Created</th>
+			<!-- <th title="sort by created date of dots">Created</th> -->
 			{if $is_own}
-			<th title="sort by permissions">Permissions</th>
+			    <!-- <th title="sort by permissions">Permissions</th> -->
 			{/if}
 			{*
 			<th title="sort by misc fields associated w/ dot">Other</th>
@@ -126,7 +126,11 @@
 						    {if $cfg.enable_feature_search}
 							    <a href="{$cfg.abs_root_url}search?u={$dot.user_id|escape}&e={$label|escape:'url'}:{$dot.$label|escape:'url'}" title="search for dots containing {$dot.$label|escape}">{$dot.$label|escape}</a>
 					        {else}
-					            {$dot.$label|escape}
+					            {if $label != 'geohash'}
+					                <a href="{$sheet|@urls_url_for_sheet}#s={$dot.$label|escape:'url'}" target="_blank" title="filter dots containing {$dot.$label|escape}">{$dot.$label|escape}</a>
+					            {else}
+					                {$dot.$label|escape}
+					            {/if}
 					        {/if}
 						{else}
 							{$dot.$label|escape}
@@ -139,6 +143,7 @@
 	{/foreach}
 {/if}
 
+{* remove created
 				<td class="dotslist_created" nowrap>
 			{if $dot.created}
 		        {if $cfg.enable_feature_search}
@@ -150,10 +155,12 @@
 				&#8212;
 			{/if}
 				</td>
-			
+*}
+{*	remove permission
 			{if $is_own}
 				<td class="dotslist_permissions">{$permissions_map.$perms|escape}</td>
 			{/if}
+*}			
 				{*
 				<td class="dotslist_details" style="font-size:11px;">{if $dot.details_listview}{$dot.details_listview|escape}{else}&#8212;{/if}</td>
 				*}
