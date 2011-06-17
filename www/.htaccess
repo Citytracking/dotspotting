@@ -21,6 +21,8 @@ FileETag none
 
 php_flag display_errors on
 
+php_value auto_detect_line_endings 1
+
 # See Cal's awesome comments in flamework/.htaccess
 php_value magic_quotes_gpc 0
 php_value register_globals 0

@@ -58,7 +58,7 @@
 
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
 
-	$GLOBALS['cfg']['enable_feature_search'] = 1;
+	$GLOBALS['cfg']['enable_feature_search'] = 0;
 	$GLOBALS['cfg']['enable_feature_search_export'] = 1;
 	$GLOBALS['cfg']['enable_feature_search_facets'] = 1;
 

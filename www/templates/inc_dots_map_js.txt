@@ -1,6 +1,6 @@
 {literal}
 <script type="text/javascript">
-
+var _isSearch = {/literal}{$cfg.enable_feature_search}{literal};
 // store id's for embedding
 // _dotspotting.embed_props.uid = {/literal}{$owner.id}{literal};
 // _dotspotting.embed_props.sid = {/literal}{$sheet.id}{literal};
@@ -214,27 +214,36 @@ function dot_tip_body(dotid){
 		return "";
 	}
 
-	var html = 'It is owned ';
+	var html = 'It is owned <a href="'+_dotspotting.abs_root_url+'u/'+dot.user_id+'">' + dot.owner + '</a>.';
 	
-	html += dot.owner;
-
-	html += '.';
 
 	if (dot.location){
-		var search_url = _dotspotting.abs_root_url + 'search?l=' + encodeURIComponent(dot.location);
-		html += ' It\'s located at <a href="' + search_url + '">' + htmlspecialchars(dot.location) + '</a>.';
+	    if(_isSearch){
+		    var search_url = _dotspotting.abs_root_url + 'search?l=' + encodeURIComponent(dot.location);
+		    html += ' It\'s located at <a href="' + search_url + '">' + htmlspecialchars(dot.location) + '</a>.';
+		}else{
+		    html += ' It\'s located at ' + htmlspecialchars(dot.location);
+		}
 	}
 
 	else if (dot.latitude && dot.longitude){
-		var search_url = _dotspotting.abs_root_url + 'search?gh=' + encodeGeoHash(dot.latitude, dot.longitude);
-		html += ' It\'s located at <a href="' + search_url + '">' + dot.latitude + ',' + dot.longitude + '</a>.';
+	    if(_isSearch){
+		    var search_url = _dotspotting.abs_root_url + 'search?gh=' + encodeGeoHash(dot.latitude, dot.longitude);
+		    html += ' It\'s located at <a href="' + search_url + '">' + dot.latitude + ',' + dot.longitude + '</a>.';
+		}else{
+		    html += ' It\'s located at ' + dot.latitude + ',' + dot.longitude + '.';
+		}
 	}
 
 	else {} 
 
 	if (dot.type){
-		var search_url = _dotspotting.abs_root_url + 'search?t=' + encodeURIComponent(dot.type);
-		html += ' It\'s a <q><a href="' + search_url + '">' + htmlspecialchars(dot.type) + '</a></q>.';
+	    if(_isSearch){
+		    var search_url = _dotspotting.abs_root_url + 'search?t=' + encodeURIComponent(dot.type);
+		    html += ' It\'s a <q><a href="' + search_url + '">' + htmlspecialchars(dot.type) + '</a></q>.';
+		}else{
+		    html += ' It\'s a <q>' + htmlspecialchars(dot.type) + '</q>.';
+		}
 	}
 	
 	html += ' <span class="date">Created on: ' + dot.created + '</span>';

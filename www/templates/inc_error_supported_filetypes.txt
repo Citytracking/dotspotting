@@ -1,0 +1,1 @@
+<p style="margin-top:10px;font-style:italic;">Dotspotting is able to import the following file types: {foreach from=$import_map item="name" name="import_map"}{$name|escape}{if !$smarty.foreach.import_map.last}; {/if}{/foreach}. It can also import photosets from Flickr.</p>
