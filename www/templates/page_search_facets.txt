@@ -1,55 +1,61 @@
+
 {assign var="page_title" value="Faceted search"}
 {include file="inc_head.txt"}
 
-{if $names|@count}
 
-<h2>Facets</h2>
+ {if !$cfg.enable_feature_search}
+ <p class="error">Search is currently disabled.</p>
+ 
+ {else}
+    {if $names|@count}
 
-{foreach from=$names item="row"}
+    <h2>Facets</h2>
 
-<h3>When the column name is <q><a href="{$cfg.abs_root_url}search/facets/{$row.name|escape:'url'}/">{$row.name|escape}</a></q></h3>
+    {foreach from=$names item="row"}
 
-{if $row.count_dots == 1 and $row.count_values == 1}
+    <h3>When the column name is <q><a href="{$cfg.abs_root_url}search/facets/{$row.name|escape:'url'}/">{$row.name|escape}</a></q></h3>
 
-<p>There is <a href="{$cfg.abs_root_url}search/?e={$row.name|escape:'url'}:"><strong>1</strong> dot</a> and <a href="{$cfg.abs_root_url}search/facets/{$row.name|escape:'url'}/"><strong>1</strong> unique value</a>.</p>
+    {if $row.count_dots == 1 and $row.count_values == 1}
 
-{elseif $row.count_values == 1}
+    <p>There is <a href="{$cfg.abs_root_url}search/?e={$row.name|escape:'url'}:"><strong>1</strong> dot</a> and <a href="{$cfg.abs_root_url}search/facets/{$row.name|escape:'url'}/"><strong>1</strong> unique value</a>.</p>
 
-<p>There are <a href="{$cfg.abs_root_url}search/?e={$row.name|escape:'url'}:"><strong>{$row.count_dots|escape}</strong> dots</a> and <a href="{$cfg.abs_root_url}search/facets/{$row.name|escape:'url'}/"><strong>1</strong> unique value</a>.</p>
+    {elseif $row.count_values == 1}
 
-{else}
+    <p>There are <a href="{$cfg.abs_root_url}search/?e={$row.name|escape:'url'}:"><strong>{$row.count_dots|escape}</strong> dots</a> and <a href="{$cfg.abs_root_url}search/facets/{$row.name|escape:'url'}/"><strong>1</strong> unique value</a>.</p>
 
-<p>There are <a href="{$cfg.abs_root_url}search/?e={$row.name|escape:'url'}:"><strong>{$row.count_dots|escape}</strong> dots</a> and <a href="{$cfg.abs_root_url}search/facets/{$row.name|escape:'url'}/"><strong>{$row.count_values|escape}</strong> unique values</a>.</p>
+    {else}
 
-{/if}
+    <p>There are <a href="{$cfg.abs_root_url}search/?e={$row.name|escape:'url'}:"><strong>{$row.count_dots|escape}</strong> dots</a> and <a href="{$cfg.abs_root_url}search/facets/{$row.name|escape:'url'}/"><strong>{$row.count_values|escape}</strong> unique values</a>.</p>
 
-{/foreach}
+    {/if}
 
-{/if}
+    {/foreach}
 
-{if $values|@count}
+    {/if}
 
-<h2><a href="{$cfg.abs_root_url}search/facets/">When the column name</a> is <q>{$name|escape}</q></h2>
+    {if $values|@count}
 
-{foreach from=$values item="row"}
-<h3>And the value is <q>{$row.value|escape}</q></h3>
+    <h2><a href="{$cfg.abs_root_url}search/facets/">When the column name</a> is <q>{$name|escape}</q></h2>
 
-{if $row.count_dots == 1 and $row.count_sheets == 1}
+    {foreach from=$values item="row"}
+    <h3>And the value is <q>{$row.value|escape}</q></h3>
 
-<p>There is <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}"><strong>1</strong> dot</a> that is part of <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}&d=sheets"><strong>1</strong> sheet</a>.</p>
+    {if $row.count_dots == 1 and $row.count_sheets == 1}
 
-{elseif $row.count_sheets == 1}
+    <p>There is <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}"><strong>1</strong> dot</a> that is part of <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}&d=sheets"><strong>1</strong> sheet</a>.</p>
 
-<p>There are <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}"><strong>{$row.count_dots|escape}</strong> dots</a> that are part of <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}&d=sheets"><strong>1</strong> sheet</a>.</p>
+    {elseif $row.count_sheets == 1}
 
-{else}
+    <p>There are <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}"><strong>{$row.count_dots|escape}</strong> dots</a> that are part of <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}&d=sheets"><strong>1</strong> sheet</a>.</p>
 
-<p>There are <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}"><strong>{$row.count_dots|escape}</strong> dots</a> that are part of <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}&d=sheets"><strong>{$row.count_sheets|escape}</strong> distinct sheets</a>.</p>
+    {else}
 
-{/if}
+    <p>There are <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}"><strong>{$row.count_dots|escape}</strong> dots</a> that are part of <a href="{$cfg.abs_root_url}search/?e={$name|escape:'url'}:{$row.value|escape:'url'}&d=sheets"><strong>{$row.count_sheets|escape}</strong> distinct sheets</a>.</p>
 
-{/foreach}
+    {/if}
 
-{/if}
+    {/foreach}
 
+    {/if}
+  {/if}
 {include file="inc_foot.txt"}

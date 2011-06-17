@@ -61,7 +61,7 @@
 			
 				<ul>
 					<li>Will accept:</li>
-					<li><b>URL</b> - a remote file with a type listed on the left</li>
+					<!-- <li><b>URL</b> - a remote file with a type listed on the left</li> -->
 					<li><b>Flickr</b> - upload geotagged photos from <a href="http://www.flickr.com/">Flickr</a>. (<a href="" class="has_helper">details</a>)</li>
 					<li class="no_show helper_instr">
 						<p>Dotspotting can import geotagged photos from sets on Flickr. Simply copy and paste the URL in the input field below. For example:</p>

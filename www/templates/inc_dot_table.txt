@@ -13,12 +13,32 @@
 
 	<tr>
 		<th>latitude</th>
-		<td>{if $dot.latitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}" title="search for dots near latitude point {$dot.latitude|escape}">{$dot.latitude|escape}</a>{else}&#8212;{/if}</td>
+		<td>
+		    {if $dot.latitude}
+		        {if $cfg.enable_feature_search}
+		            <a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}" title="search for dots near latitude point {$dot.latitude|escape}">{$dot.latitude|escape}</a>
+		        {else}
+		            {$dot.latitude|escape}
+		        {/if}
+		    {else}
+		        &#8212;
+		    {/if}
+	    </td>
 	</tr>
 
 	<tr>
 		<th>longitude</th>
-		<td>{if $dot.longitude}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}" title="search for dots near longitude point {$dot.longitude|escape}">{$dot.longitude|escape}</a>{else}&#8212;{/if}</td>
+		<td>
+		    {if $dot.longitude}
+		        {if $cfg.enable_feature_search}
+		            <a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}" title="search for dots near longitude point {$dot.longitude|escape}">{$dot.longitude|escape}</a>
+		        {else}
+		            {$dot.longitude|escape}
+		        {/if}
+		    {else}
+		        &#8212;
+		    {/if}
+		</td>
 	</tr>
 
 	{if $dot.altitude}
@@ -30,7 +50,15 @@
 
 	<tr>
 		<th>geohash</th>
-		<td>{if $dot.geohash}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}" title="search for dots near geohash '{$dot.geohash|escape}'">{$dot.geohash|escape}</a>{else}&#8212;{/if}</td>
+		<td>
+		    {if $dot.geohash}
+		        {if $cfg.enable_feature_search}
+		            <a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&gh={$dot.geohash|escape}" title="search for dots near geohash '{$dot.geohash|escape}'">{$dot.geohash|escape}</a>
+		        {else}
+		            {$dot.geohash|escape}
+		        {/if}
+		    {else}&#8212;{/if}
+		</td>
 	</tr>
 
 {if $cfg.enable_feature_dots_indexing}
@@ -43,12 +71,28 @@
 {else}
 	<tr>
 		<th>location</th>
-		<td>{if $dot.location}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&l={$dot.location|escape}" title="search for dots near location, '{$dot.location|escape}'">{$dot.location|escape}</a>{else}&#8212;{/if}</td>
+		<td>
+		    {if $dot.location}
+		        {if $cfg.enable_feature_search}
+		            <a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&l={$dot.location|escape}" title="search for dots near location, '{$dot.location|escape}'">{$dot.location|escape}</a>
+		        {else}
+		            {$dot.location|escape}
+		        {/if}
+		    {else}&#8212;{/if}
+		</td>
 	</tr>
 
 	<tr>
 		<th>type</th>
-		<td>{if $dot.type}<a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&t={$dot.type|escape}" title="all dots with type, {$dot.type|escape}">{$dot.type|escape}</a>{else}&#8212;{/if}</td>
+		<td>
+		    {if $dot.type}
+		        {if $cfg.enable_feature_search}
+		            <a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&t={$dot.type|escape}" title="all dots with type, {$dot.type|escape}">{$dot.type|escape}</a>
+		        {else}
+		            {$dot.type|escape}
+		        {/if}
+		    {else}&#8212;{/if}
+		</td>
 	</tr>
 {/if}
 
@@ -80,7 +124,13 @@
 	
 	<tr>
 		<th>created</th>
-		<td><a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape})" title="search for dots created around {$dot.created|escape}">{$dot.created|escape}</a></td>
+		<td>
+		    {if $cfg.enable_feature_search}
+		        <a href="{$cfg.abs_root_url}search/?u={$dot.user_id|escape}&dt=({$dot.created|date_format:"%Y-%m-%d"|escape})" title="search for dots created around {$dot.created|escape}">{$dot.created|escape}</a>
+		    {else}
+		        {$dot.created|escape}
+		    {/if}
+		</td>
 	</tr>
 
 </table>

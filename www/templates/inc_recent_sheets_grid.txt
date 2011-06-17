@@ -16,7 +16,7 @@
 					<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
 					<dd class="txt_small thumb_title">
 					{if $sh.label}
-						<a href="{$sh|@urls_url_for_sheet}">{$sh.label|escape}</a>
+						<a href="{$sh|@urls_url_for_sheet}">{$sh.label|truncate:70:"...":true|escape}</a>
 					{else}
 						<span class="untitled"><a href="{$sh|@urls_url_for_sheet}">untitled</a></span>
 					{/if}
