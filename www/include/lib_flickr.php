@@ -147,12 +147,12 @@
 			$href = $link->getAttribute('href');
 
 			# For example (note how we ask for RSS 2.0 explicitly) :
-			# http://api.flickr.com/services/feeds/geo/?id=35034348999@N01&amp;lang=en-us 
+			# http://api.flickr.com/services/feeds/geo/?id=35034348999@N01&amp;lang=en-us
 
 			if (preg_match("/\/geo\//", $href)){
 				$feed_url = $href . "&format=rss_200";
 				break;
-			} 
+			}
 		}
 
 		cache_set($cache_key, $feed_url, "cache locally");
