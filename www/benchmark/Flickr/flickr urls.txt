@@ -1,0 +1,12 @@
+FLICKR URLS to import
+
+SETS ONLY. The assumption should be that these photos are explicitly mapped by a single person, not a general group that lots of people might have geocoded photos of.
+
+Dotspotting:
+	http://www.flickr.com/photos/dotspotting/sets/72157626431332875/
+
+Locals and Tourists:
+	http://www.flickr.com/photos/walkingsf/sets/72157624209158632/
+
+Race and Ethnicity:
+	http://www.flickr.com/photos/walkingsf/sets/72157626354149574/
