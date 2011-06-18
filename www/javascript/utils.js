@@ -213,7 +213,7 @@ function utils_polymaps_assign_dot_properties(e){
 				
 				if (props.is_interactive){
 		    			var enc_id = encodeURIComponent(props.id);
-	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ');return false');
+	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ',true);return false');
 	    				el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
 						el.setAttribute('onclick', 'dot_onclick(' + enc_id + ','+f.data.geometry.coordinates[0]+','+f.data.geometry.coordinates[1]+');return false');
 

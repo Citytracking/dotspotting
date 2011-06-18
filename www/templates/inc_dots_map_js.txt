@@ -45,7 +45,7 @@ function dot_onclick(dotid,lon,lat){
 }
 
 // dot onmouseover handler
-function dot_onmouseover(dotid){
+function dot_onmouseover(dotid,isDot){
 	
 	var dot = dot_getinfo_json(dotid);
 	
@@ -55,7 +55,10 @@ function dot_onmouseover(dotid){
 	
 	// move dataTable row into view
 	var dot_table_id = "dotslist_dot_"+dotid;
-	show_row_for_dot(dot_table_id);
+	//show_row_for_dot(dot_table_id);
+	
+	if(isDot)scrollRowIntoView(dotid);
+
 
 	var tlen = _dotspotting.dots_list_mouseout_timers.length;
 
@@ -77,13 +80,6 @@ function dot_onmouseover(dotid){
 	}
 	
 	dot_highlight_tr(dotid);
-}
-
-
-function show_row_for_dot(elID)
-{
-  var el = document.getElementById(elID);
-  el.scrollIntoView(true);
 }
 
 
@@ -255,13 +251,28 @@ function dot_tip_body(dotid){
 /* 		Manipulate Table rows											   */
 /* ------------------------------------------------------------------------*/
 
+function scrollRowIntoView(dotid) {
+
+ var container = $('.dataTables_scrollBody'),
+     rowelm = $("#dotslist_dot_" + dotid);
+ 
+ if(!container || !rowelm)return;
+ 
+ var containerTop = container.offset().top;
+ var containerST = container.scrollTop();//+ container.scrollTop()
+ var elmTop = rowelm.offset().top;
+ 
+ var moveTo = (elmTop+containerST) - (containerTop);
+ container.scrollTop(moveTo);
+ 
+}
+
 // helper function to highlight dot when user hovers over table row
 function dot_tr_hover(el,type){
-
 	var raw_dotid = (el.id).split("_");
 	var dotid = raw_dotid[raw_dotid.length-1];
 	if(type == "over"){
-		dot_onmouseover(dotid);
+		dot_onmouseover(dotid,false);
 	}else{
 		dot_onmouseout(dotid);
 		var tlen = _dotspotting.dots_list_mouseout_timers.length;
@@ -279,8 +290,8 @@ function dot_highlight_tr(dotid){
 
 	var selector = "#dotslist_dot_" + dotid + " td";
 
-	_dotspotting['highlighted'] = dotid;
-
+	_dotspotting['highlighted'] = dotid;    
+    
 	$(selector).map(function(i, el) {
 		var new_classes = el.getAttribute("class") + " highlighted";
 		el.setAttribute("class", new_classes);	
@@ -612,7 +623,7 @@ function draw_map_modestmaps(dots,update_from_search){
 
 			el.mouseover(function (evt) {
 				this.attr(attr_array[1]);
-				dot_onmouseover(props.id);
+				dot_onmouseover(props.id,true);
 			});
 
 			el.click(function(evt){
