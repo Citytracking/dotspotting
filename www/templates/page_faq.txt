@@ -3,93 +3,107 @@
 <div id="section_faq" class="section_bunch_o_text">
 <h2>{$page_title|escape}</h2>
 
-<a name="discoball"></a>
+<p class="txt1"><i>For those who like to get right to it sample files that Dotspotting knows how to read are available <a href="http://dotspotting.org/benchmark/benchmark.zip">here</a>. If you make your files look like these, they should work fine.</i></p>
 
-<h3><q>Super Alpha Beta Disco Ball</q></h3>
-
-<h4>What does that even mean?</h4>
-
-<p class="tx1">It means that <span class="important">this is a <em>very early</em> and <em>unfinished</em> preview release of Dotspotting</span>. It means that there are still lots of changes ahead of us. It means there are lots of features to implement and dream up. It means that we are committed to the idea of <a href="http://github.com/citytracking/dotspotting">releasing early</a> and working (and probably failing a little bit too) in public.</p>
+<p class="txt1">The longer version, for those who like to read documentation:</p>
 
 <a name="uploads"></a>
+<h3>What can I upload to Dotspotting?</h3>
 
-<h3>Uploads</h3>
+<p class="txt1">You can import several different kinds of files—generally, lists of points and places. The common thing they need to share is some kind of geographic information that we can use to figure out where they are in the world. This will often, <i>but not always</i>, be a geolocatable street address, like: "2017 Mission St #300, San Francisco CA" or "350 5th Ave, New York, NY 10001". You can also use city names: "Miami FL" or "San Diego CA" will work fine. In some cases, for places with unique place names, you can even use just the name: <a href="http://dev.dotspotting.stamen.com/u/12/dots/123663/">Llanfairpwllgwyngyllgogerychwyrndrobwyll-llantysiliogogogoch</a> (or <a href="http://en.wikipedia.org/wiki/Llanfairpwllgwyngyll">Llanfairpwllgwyngyll</a> for those in a hurry</a>) works just fine, and there are more of these <a href="http://en.wikipedia.org/wiki/List_of_long_place_names">here</a>.</p>
 
-<h4>What kinds of files can I upload to Dotspotting?</h4>
+<p class="txt1">The other way you can tell dotspotting where something is located in the world is by specifying its' latitude and longitude; basically how far from the equator and the <a href="http://en.wikipedia.org/wiki/Prime_Meridian">Prime Meridian</a> it is. There are several sites out there that will help convert an address to latitude and longitude; <a href="http://getlatlon.com">Getlatlon.com</a> is one of our favorites. It will give you numbers like "37.7647463, -122.41951" when you search for "2017 Mission St SF CA" which is useful information if you're trying to put "Stamen Design, LLC" on a map.</p>
 
-<p class="tx1">At the moment <span class="important">only comma separated values (CSV) files are supported</span>. Once we finish working out a few more of the basic requirements for the site to work we add importers for a variety of other formats including spreadsheets, KML and GPX and GeoJSON files and whatever else people think is useful.</p>
+<p class="txt1">It's important to remember that deriving point locations from text can be a tricky business, and that even <a href="http://www.google.com/support/forum/p/maps/thread?tid=2da515454df754da&hl=en">Google gets it wrong some times</a> (and they have alot more money than we do). So please be gentle! Rather than try and make this work for every data format under the sun, Dotspotting will take it's cues from our users, and we're providing some early examples of what works. If you've got a data format you'd like to see used, please go ahead and <a href="mailto:dotspotting@stamen.com">let us know</a>.</p>  
 
-<p class="tx1" style="font-style:italic;">Dotspotting is also <a href="https://github.com/citytracking/dotspotting">an open source project</a> so if there is a particular file format you'd like to see supported we welcome your contributions!</p>
+<p class="txt1">Once you have this information, you'll need to put it into a file format that Dotspotting recognizes. Right now there are two kinds: Excel spreadsheets and .csv ("comma separated value") files. Each is outlined below.</p>
 
-<h4>Can I make my information private?</h4>
+<h3>Excel spreadsheets, with street addresses</h3>
 
-<p class="tx1">The short answer is: Yes. The long answer is: Yes, but maybe no.</p>
+<p class="txt1">Each item gets its own horizontal row, and each row has features that you assign to it. Typically you'd use "name" or "ID" as the title of a column, but you don't have to. You can also assign whatever other kind of feature you want: "color", "date_created", "my friend's name", "how long we dated" and "DNA reference code" are all valid titles. The important thing is that there's at least one column title that refers to geographic location in some way.</p>
 
-<p class="tx1"><span class="important">By default all dots are imported in to Dotspotting as publicly viewable.</span> At upload time you can either specify that all, or some, of the dots be made private however there is currently <strong>no way to change privacy settings on a dot</strong> once it's been uploaded.</p>
+<p class="txt1">In the example below, a <a href="http://dotspotting.org/benchmark/Natesh Daniel/SRO.xls">list of SRO hotels in San Francisco</a>, the name of the hotel comes first ("title"), then the physical address ("Address"), then "created" (left blank here—maybe it refers to when the hotel was built? or when the record was created?), "type" (there are two types here: 'SRO' and 'SRO Human Services', presumably administered by different departments), and "location". <strong>In the absence of latitude and longitude information, "Address" is the only field dotspotting cares about</strong>.  It will ignore "location", "type" and "title" for now, and it will do it's level best to parse the information in the "Address" field correctly.</p>
 
-<p class="tx1"><em>This is not a feature. We'll be adding this functionality shortly.</em></p>
+<p class="txt1"><a href="http://dotspotting.org/benchmark/Natesh Daniel/SRO.xls"><img src="http://dotspotting.org/benchmark/img/SRO.xls.png"></a></p>
 
-<a name="sheets"></a>
+<p class="txt1">Once you've got the data structured the way you like it, head over to the <a href="http://dotspotting.org/upload/">upload page</a>, and go from there. Barring any errors, what you'll get out the other end should look like this:</p>
 
-<h4>What are <q>Sheets</q>?</h4>
+<p class="txt1"><a href="http://www.dotspotting.org/u/12/sheets/897/"><img src="http://dotspotting.org/benchmark/img/sro.gif"></a></p>
 
-<p class="tx1">A <q>sheet</q> is the set dots that a single dot was imported in to Dotspotting with. Its context, so to speak. At the moment, the only kind of context is a file that you upload to Dotspotting. Sheets are separate and distinct from other kinds of collections, like a <q>set</q> or a <q>group</q> which don't exist in Dotspotting yet.</p>
+<p class="txt1">Here's another example: a Department of Housing Preservation and Development list of the 100 worst housing violations in New York City, from a <a href="http://ny.curbed.com/archives/2011/02/04/officials_name_the_200_worst_buildings_in_new_york_city.php">Curbed</a> story and a <a href="http://www.nyc.gov/html/hpd/html/owners/aep.shtml">housing dept survey</a>:</p>
 
-<a name="csv"></a>
+<p class="txt1"><img src="http://dotspotting.org/benchmark/img/worsthousing.xls.png"></p>
 
-<h4>CSV files</h4>
+<p class="txt1">In this case, the address is spread across four columns: "Borough" (NYC is the main US city that has these, but the states of Connecticut, New Jersey and Virginia also have them, <a href="http://en.wikipedia.org/wiki/Borough_(United_States)">sorta</a>—did we mention this stuff was complicated?), "street_number", "street_name" and "city". Data structured in this way, even without "Borough," will also work.</p>
 
-<p class="tx1">The minimum list of columns you need to define to import a CSV file are:</p>
+<p class="txt1">Files that separate out addresses into several columns need have them labeled like this: <strong>street_number, street_name, city</strong>.</p>
 
-<ul class="faq_csvfields">
-	<li><code>latitude</code> &#8212; <span style="font-style:italic;">A valid <a href="http://en.wikipedia.org/wiki/Latitude" target="_wikipedia">latitude</a> string in decimal format. (All coordinated are trimmed to 6 decimal points.)</li>
-	<li><code>longitude</code>  &#8212; <span style="font-style:italic;">A valid <a href="http://en.wikipedia.org/wiki/Longitude" target="_wikpedia">longitude</a> string in decimal format. (All coordinated are trimmed to 6 decimal points.)</li>
-</ul>
+<p class="txt1">Uploading that file will get you a map that looks like this:</p>
 
-<p class="tx1">Just to be clear, what that means is that your CSV file needs to <em>define</em> those columns even if they are empty. That's because there are a handful of other fields that are treated as <q>special</q> by Dotspotting. They are:</p>
+<p class="txt1"><a href="http://www.dotspotting.org/u/12/sheets/901/"><img src="http://dotspotting.org/benchmark/img/worst_housing.gif"></a></p>
 
-<ul class="faq_csvfields">
+<h3>CSV and TXT files, with street addresses</h3>
 
-	<li><code>perms</code> &#8212; <span style="font-style:italic;">By default all dots are imported as public however if the value of this field is <code>private</code> then the dot will only be visible by the person who uploaded it.</li>
+<p class="txt1">CSV stands for "comma separated values," and it's another kind of file that Dotspotting understands. CSVs are similar to Excel files in that they've got rows, and those rows have data in them, and that data is labeled - but they're more like word docs in that you can easily work with them in text editors. They're also, by and large, smaller than Excel files, and you don't need Excel to read them. TXT files are just that: text files that you can edit in lots of different applications.</p>
 
-	<li><code>created</code> &#8212; <span style="font-style:italic;">If present then Dotspotting will try to parse and assign this value as the creation date for the corresponding dot/row, otherwise the date the row was imported is assumed.</span></li>
+<p class="txt1">They look like this:</p>
 
-</ul>
+<p class="txt1"><a href="http://dotspotting.org/benchmark/Eric%20Rodenbeck/vacancies_sutter_st_sf.csv"><img src="http://dotspotting.org/benchmark/img/sutter_street.gif"></a></p>
 
-<p class="tx1">For example:</p>
+<p class="txt1">The first line is where column IDs are set:</p>
 
 <pre>
-latitude,longitude,perms,created,title,address
-1.233434,-35.23762323,,1287599999,,
-21.233434,-38.23762323,private,,hello·world,
-48.233434,-32.29992323,private,,,
-48.233434,-32.29992323,private,October·24·1998,i·like·cake,
-,,private,October·23·2010,geocoded,"2017·Mission·San·Francisc·CA"
+address,description,contact info,comment
 </pre>
 
-<p class="tx1"><span class="important"><em>The order of the column headers is up to you.</em></span> In this example <code>latitude</code> is the first column but it could just as easily be the last. You only need to make sure that the values are in the same position as their corresponding header.</p>
+<p class="txt1">And the remaining lines are where the values for those columns go:</p>
 
-<p class="tx1">Dotspotting also looks for two specific fields that it stores in the search <q>bucket</q> and that you can use to look for dots later on. They are:</p>
+<pre>871 Sutter Street San Francisco CA,under construction</pre>
 
-<ul class="faq_csvfields">
-    <li><code>type</code> &#8212; <span style="font-style:italic;">An arbitrary string (up to 64 characters long) that can be used to assign a category to a dot. These are not <q>tags</q> which Dotspotting doesn't support yet.</span></li>
+<p class="tx1"><span class="important"><em>The order of the column headers is up to you.</em></span> In this example <code>address</code> is the first column, but it could just as easily be the last. The important thing is for the rows to be consistent; you don't want to have "871 Sutter Street San Francisco CA" be the first item in one row and "under construction" be the first item in another row.</p>
 
-    <li><code>location</code> &#8212; <span style="font-style:italic;">An artibitrary string (up to 64 characters long) that can be used to assign a <q>place</q> to a dot. This is separate and distinct from any explicit geographic information Dotspotting adds. A location might be <q>home</q> or something like <q>zip:90210</q>. It's entirely up to you.</span></li>
+<h3>Latitude and Longitude</h3>
+
+<p class="txt1">Some places don't have street addresses. Maybe you're tracking taxicab positions over time, or where sharks are in the ocean, or the flight paths of arctic terns. In these cases, you'll need to know the latitude and longitude of each dot.</p>
+
+<p class="txt1">Here's an example, from the <a href="http://earthquake.usgs.gov/earthquakes/catalogs/">USGS's Latest Earthquakes: Feeds & Data page</a>:</p>
+
+<p class="txt1"><a href="http://dotspotting.org/benchmark/quakes_march%2014/eqs1day-M2.5.txt"><img src="http://dotspotting.org/benchmark/img/earthquake_02.gif"></a></p>
+
+<p class="txt1"><code>Latitude</code> and <code>Longitude</code> (highlighted in blue) are the fields that Dotspotting will look at first in this example. The values for those fields are highlighted in blue in the image below.</p>
+
+<p class="txt1"><a href="http://dotspotting.org/benchmark/quakes_march%2014/eqs1day-M2.5.txt"><img src="http://dotspotting.org/benchmark/img/earthquake_01.gif"></a></p>
+
+<p class="txt1">Because different sources of data are formatted differently, Dotspotting will read several different kinds of names for these data types. You can use (upper and lower case don't matter):</p>
+
+<ul>
+<li><strong>latitude, longitude</strong></li>
+<li><strong>lat, long</strong></li>
+<li><strong>lat, lon</strong></li>
 </ul>
 
-<p class="tx1">Both of the fields are optional. Any other fields that you list in a CSV files are stored as <q>details</q> in Dotspotting.</p>
+<p class="txt1">Uploading this file will get you a map that looks like this:</p>
 
-<a name="magicwords"></a>
+<p class="txt1"><a href="http://www.dotspotting.org/u/12/sheets/889/#c=1.00/47/-23"><img src="http://dotspotting.org/benchmark/img/earthquake.gif"></a></p>
 
-<h4><q>Magic Words</q></h4>
+<p class="txt1">For more on latitude and longitude, take a look <a href="http://en.wikipedia.org/wiki/Geographic_coordinate_system#Geographic_latitude_and_longitude">here</a>. There are some other examples of files using lat & lon (see?) available <a href="http://dotspotting.org/benchmark/benchmark.zip">here</a>.</p>
 
-<p class="tx1">Dotspotting has support for the idea of "magic words" which are user-defined non-standard properties assigned to a dot that are treated as foreign key lookups in to a third-party database or API.</p>
+<h3>Flickr and Google MyMaps import</h3>
 
-<p class="tx1">For example, if a dot has <code>flickr:id</code> key whose value is a valid Flickr photo ID then (and only if magic words support is <em>enabled</em>) Dotspotting will call the <a href="http://www.flickr.com/services/api">Flickr API</a> to ask for, and then display, that photo's thumbnail when the page for that dot is loaded.</p>
+<p class="text1">Dotspotting will also import urls from <a href="http://flickr.com">Flickr</a> and <a href="http://maps.google.com">Google's MyMaps</a>. The way to do make this work is to copy the URL from a particular set on Flickr or MyMap on Google Maps and paste it into the box under "Choose a URL to upload" on the <a href="http://www.dotspotting.org/upload/">upload page</a>.</p>
 
-<p class="tx1">At the moment, support is available for the following magic word keys:</p>
+<p class="txt1">This should work with <strong>any public Flickr set</strong>, so long as the photos in it have latitudes and longitudes associated with them. <strong>It only works in sets</strong> for now. Most Google MyMaps pages should work as well; please let us know if you find an error.</p>
 
-{include file="inc_magicwords_enabled.txt"}
+<p class="txt1">Here are some Flickr sets that've already been uploaded, but which you can try out for yourself:</p>
+
+<ul>
+<li><a href="http://www.flickr.com/photos/walkingsf/sets/72157626793605097/">Eric Fischer's Trafficways Plan for Santa Clara County California, January, 1959</a></li>
+<li><a href="http://www.flickr.com/photos/dotspotting/sets/72157626431332875/">A day on the new Bay Bridge</a>, a tour that Stamen team members took in spring 2011</li>
+</ul>
+
+<h3>That's all for now</h3>
+
+<p class="txt1">Go ahead and <a href="http://www.dotspotting.org/upload/">get started</a>!</p>
 
 <a name="source"></a>
 

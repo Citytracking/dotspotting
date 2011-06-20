@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <title>Dotspotting: Embedded Themes</title>
+        <script type="text/javascript" src="javascript/jquery-1.5.min.js"></script>
+        <script type="text/javascript" defer="defer">
+            $(function() {
+                $("textarea").click(function() {
+                    $(this).select();
+                });
+            });
+        </script>
+        <style type="text/css" media="screen">
+            /* TODO: replace with relative reference */
+            @import url(http://dotspotting.org/css/main.css);
+
+            ul {
+                padding-left: 1.8em;
+                margin-left: 0;
+            }
+            ul, ul li {
+                list-style: square;
+            }
+
+            textarea {
+                display: block;
+                width: 100%;
+                height: auto;
+                min-height: 4em;
+                margin: 0 0 20px 0;
+                word-wrap: break-word;
+            }
+
+            iframe {
+                width: 100%;
+                height: 400px;
+                overflow: hidden;
+                border: 1px dotted #000;
+                margin: 0 0 20px 0;
+            }
+
+            #crime iframe {
+                width: 400px;
+                height: 400px;
+            }
+
+            .example { clear: both; }
+
+            .example iframe {
+                float: left;
+                margin-right: 10px;
+            }
+            .example textarea {
+                width: 400px;
+                height: 400px;
+            }
+
+
+            h3 { clear: both; }
+
+            .crime { color: #fff; padding: 0 3px 2px; }
+            .violent { background: #D90000; }
+            .property { background:  #23965E; }
+            .qol { background: #3489BA; }
+            .unknown { background: #D9A200; }
+
+        </style>
+    </head>
+    <body>
+        <div id="main">
+            <div id="nav" class="clearfix">
+                <div id="nav_logo" class="alt_logo">
+                    <a href="http://dotspotting.org/"><img src="http://dotspotting.org/images/dotspotting_logo.png" height="61" width="292" alt="Dotspotting" class="logo" /></a>
+                </div>
+            </div>
+<!-- http://seanc.dotspotting.stamen.com/embed/default/?user=203&sheet=869&tt=title&tm=description&title=TfL%20Disruption%20Jan%202011 -->
+            <div id="content">
+                <div id="section_about" class="section_bunch_o_text">
+
+                    <div class="theme" id="crime">
+                        <h2>Default</h2>
+                        <p>The "default" theme displays a pannable and zoomable
+                        map in the style of Dotspotting:</p>
+
+                        <h3>Examples</h3>
+                        <div class="example">
+                            <p>Embed a single sheet's dots with a custom title and a fixed start location:</p>
+                            <iframe width="400" height="400" src="default/index.html?user=203&amp;sheet=869&amp;title=TfL+Disruption+Jan+2011#9/51.4832/-0.1137"></iframe>
+                            <textarea>&lt;iframe width="400" height="400" src="http://dotspotting.org/embed/default/?user=203&amp;sheet=869&amp;title=TfL+Disruption+Jan+2011#9/51.4832/-0.1137"&gt;&lt;/iframe&gt;</textarea>
+                        </div>
+
+                        <div class="example">
+                            <p>Embed a single sheet's dots with a custom title and a fixed start location and custom message:</p>
+                            <iframe width="400" height="400" src="default/index.html?user=203&amp;sheet=869&amp;tt=title&amp;tm=description&amp;title=TfL+Disruption+Jan+2011#9/51.4832/-0.1137"></iframe>
+                            <textarea>&lt;iframe width="400" height="400" src="http://dotspotting.org/embed/default/?user=203&amp;sheet=869&amp;tt=title&amp;tm=description&amp;title=TfL+Disruption+Jan+2011#9/51.4832/-0.1137"&gt;&lt;/iframe&gt;</textarea>
+                        </div>
+
+                        <h3>Instructions</h3>
+
+                        <p>You can embed the map using an html <a href="http://www.w3.org/wiki/HTML/Elements/iframe"><tt>&lt;iframe&gt;</tt></a>
+                        with the <tt>src</tt> attribute of:</p>
+<textarea>
+http://dotspotting.org/embed/default/
+</textarea>
+                        <p>and the following <a href="http://en.wikipedia.org/wiki/Query_string">query string</a> parameters:</p>
+
+                        <ul>
+                            <li><tt>user</tt>: a Dotspotting user ID. You can
+                            find the user ID of a sheet's owner in the URL,
+                            after the <tt>/u/</tt> part and before the <tt>/sheets/</tt> part:
+<pre>http://dotspotting.org/u/<u>203</u>/sheets/869
+                        (203)</pre></li>
+                            <li><tt>sheet</tt>: a Dotspotting <a href="http://dotspotting.org/faq/#sheets">sheet ID</a>, which you can after the <tt>/sheets/</tt> part of a sheet's URL:
+<pre>http://dotspotting.org/u/203/sheets/<u>869</u>
+                                   (869)</pre></li>
+                            <li><tt>title</tt> (optional): the title to display along the top of the frame</li>
+                            <li><tt>tt</tt> (optional): a column field to use as the title for tooltip</li>
+                            <li><tt>tm</tt> (optional): a column field to use as the message for tooltip</li>
+                        </ul>
+
+                        <p>You can also specify the initial map zoom and
+                        center by appending a <a href="http://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a>
+                        onto the URL in the following form:
+
+                        <pre>#{zoom}/{latitude}/{longitude}</pre>
+
+                        <p>where <tt>zoom</tt> is a whole number between 10
+                        and 17 (the minimum and maximum allowed zoom levels
+                        of the map), <tt>latitude</tt> is a decimal number
+                        between -85 and 85, and <tt>longitude</tt> is a
+                        decimal number between -180 and 180. 
+                        <a href="http://www.getlatlon.com/">Get Lat Lon</a>
+                        can help you find the zoom, latitude and longitude of
+                        most places.</p>
+
+                        <h3>Fields</h3>
+
+                        <p>This theme doesn't require any special fields.</p>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
