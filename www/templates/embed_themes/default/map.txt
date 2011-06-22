@@ -96,6 +96,11 @@
             
             $("#map").data("base",params.base);
             
+            if( params.base.search(/http:\/\/oatile1.mqcdn.com/i) === 0 ){
+                $("#copyright").html('Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">');
+            }else if( params.base.search(/http:\/\/b.tile.cloudmade.com/i) === 0 ){
+                $("#copyright").html('&copy; 2010 <a href="http://www.cloudmade.com/">CloudMade</a>, <a href="http://www.openstreetmap.org/">OpenStreetMap</a> <a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>');
+            }
         }
         
         // look for tooltip parameters

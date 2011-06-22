@@ -8,7 +8,7 @@
 <div id="section_about" class="section_bunch_o_text">
 
     <div class="theme" id="default">
-        <h2>Default</h2>
+        <h2>Default Embed Theme</h2>
         <p>The "default" theme displays a pannable and zoomable map in the style of Dotspotting:</p>
 
         <h3>Example & Configuration options</h3>
@@ -92,7 +92,7 @@
             </div>
             
             <iframe id="example_iframe" width="400" height="400" src=""></iframe>
-            
+            <div style="clear:both;"></div>
             <div id="code_to_embed">
             <h3>Embed Code</h3>
             <textarea id="example_text"></textarea>
