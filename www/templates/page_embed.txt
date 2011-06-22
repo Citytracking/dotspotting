@@ -1,0 +1,24 @@
+{assign var="page_title" value="Dotspotting: Themes"}
+{capture assign="extra_head"}<link rel="stylesheet" href="{$cfg.abs_root_url}css/embed.css">{/capture}
+{include file="inc_head.txt"}
+
+
+{* title *}
+
+<h2>Available themes for embedding</h2>
+
+{* themes list *}
+
+<div id="embed_grid">
+    <dl>
+       <dt><a href="{$cfg.abs_root_url}embed/default/" title=""><img src="{$cfg.abs_root_url}embed/default/thumbnail.png" width="200" height="200"/></a></dt>
+       <dd>Default</dd>
+    </dl>
+    <dl>
+        <dt><a href="{$cfg.abs_root_url}embed/crime/" title=""><img src="{$cfg.abs_root_url}embed/crime/thumbnail.png" width="200" height="200"/></a></dt>
+        <dd>Crime</dd>
+    </dl>
+    
+    <div class="clear"></div>
+</div>
+{include file="inc_foot.txt"}

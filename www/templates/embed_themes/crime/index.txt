@@ -1,0 +1,116 @@
+{assign var="page_title" value="Crime Theme"}
+{capture assign="extra_head"}<link rel="stylesheet" href="{$cfg.abs_root_url}css/embed.css">{/capture}
+{include file="inc_head.txt"}
+
+
+{* title *}
+
+<div id="section_about" class="section_bunch_o_text">
+
+    <div class="theme" id="crime">
+        <h2>Crime</h2>
+        <p>The "crime" theme displays a pannable and zoomable
+        map in the style of <a href="http://oakland.crimespotting.org/">Crimespotting</a>,
+        with dots colored according to three broad crime type
+        categories:</p>
+
+        <ul>
+            <li><strong class="crime violent">violent</strong></li>
+            <li><strong class="crime property">property</strong></li>
+            <li><strong class="crime qol">quality of life</strong></li>
+        </ul>
+
+        <p>Dots with <strong class="crime unknown">unrecognized</strong>
+        crime type categories are colored yellow.</p>
+
+        <h3>Examples</h3>
+        <div class="example">
+            <p>Embed a single sheet's dots with a custom title, and a fixed start location:</p>
+            <iframe width="400" height="400" src="{$cfg.abs_root_url}embed/crime/map?user=206&amp;sheet=881&amp;title=Mission+Local+Crimes+June+1-4,+2011#14/37.7603/-122.4149"></iframe>
+            <textarea>&lt;iframe width="400" height="400" src="{$cfg.abs_root_url}embed/crime/map?user=206&amp;sheet=881&amp;title=Mission+Local+Crimes+June+1-4,+2011#14/37.7603/-122.4149"&gt;&lt;/iframe&gt;</textarea>
+        </div>
+
+        <div class="example">
+            <p>Embed a sheet's dots with a search filter
+            showing only dots with the "crime type" field equal to "THEFT":</p>
+            <iframe width="400" height="400" src="{$cfg.abs_root_url}embed/crime/map?user=206&amp;sheet=881&amp;search=crime+type:THEFT&amp;title=Mission+Thefts,+June+1-4,+2011"></iframe>
+            <textarea>&lt;iframe width="400" height="400" src="{$cfg.abs_root_url}embed/crime/map?user=206&amp;sheet=881&amp;search=crime+type:THEFT&amp;title=Mission+Thefts,+June+1-4,+2011"&gt;&lt;/iframe&gt;</textarea>
+        </div>
+
+        <h3>Instructions</h3>
+
+        <p>You can embed the map using an html <a href="http://www.w3.org/wiki/HTML/Elements/iframe"><tt>&lt;iframe&gt;</tt></a>
+        with the <tt>src</tt> attribute of:</p>
+<textarea>
+http://dotspotting.org/embed/crime/
+</textarea>
+        <p>and the following <a href="http://en.wikipedia.org/wiki/Query_string">query string</a> parameters:</p>
+
+        <ul>
+            <li><tt>user</tt>: a Dotspotting user ID. You can
+            find the user ID of a sheet's owner in the URL,
+            after the <tt>/u/</tt> part and before the <tt>/sheets/</tt> part:
+<pre>http://dotspotting.org/u/<u>206</u>/sheets/881
+        (206)</pre></li>
+            <li><tt>sheet</tt>: a Dotspotting <a href="http://dotspotting.org/faq/#sheets">sheet ID</a>, which you can after the <tt>/sheets/</tt> part of a sheet's URL:
+<pre>http://dotspotting.org/u/206/sheets/<u>881</u>
+                   (881)</pre></li>
+            <li><tt>title</tt> (optional): the title to display along the top of the frame</li>
+            <li><tt>search</tt> (optional): the Dotspotting <a href="http://dotspotting.org/faq/#search">search query</a></li>
+        </ul>
+
+        <p>You can also specify the initial map zoom and
+        center by appending a <a href="http://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a>
+        onto the URL in the following form:
+
+        <pre>#{literal}{zoom}/{latitude}/{longitude}{/literal}</pre>
+
+        <p>where <tt>zoom</tt> is a whole number between 10
+        and 17 (the minimum and maximum allowed zoom levels
+        of the map), <tt>latitude</tt> is a decimal number
+        between -85 and 85, and <tt>longitude</tt> is a
+        decimal number between -180 and 180. 
+        <a href="http://www.getlatlon.com/">Get Lat Lon</a>
+        can help you find the zoom, latitude and longitude of
+        most places.</p>
+
+        <h3>Fields</h3>
+
+        <p>The crime theme assumes that each of your dots has the following fields defined:</p>
+        <ul>
+            <li><strong>"crime type"</strong>: The specific
+            crime type, as defined by <a href="http://oakland.crimespotting.org">Crimespotting</a>.
+            Recognized (case-insensitive) values are:
+                <ul>
+                    <li><span class="crime violent">Aggravated Assault</span></li>
+                    <li><span class="crime violent">Simple Assault</span></li>
+                    <li><span class="crime violent">Murder</span> or <span class="crime violent">Homicide</span></li>
+                    <li><span class="crime violent">Robbery</span></li>
+                    <li><span class="crime qol">Disturbing the Peace</span></li>
+                    <li><span class="crime qol">Drugs</span> or <span class="crime qol">Narcotics</span></li>
+                    <li><span class="crime qol">Alcohol</span></li>
+                    <li><span class="crime qol">Prostitution</span></li>
+                    <li><span class="crime property">Theft</span></li>
+                    <li><span class="crime property">Vehicle Theft</span></li>
+                    <li><span class="crime property">Vandalism</span></li>
+                    <li><span class="crime property">Burglary</span></li>
+                    <li><span class="crime property">Arson</span></li>
+                </ul>
+                All other values are displayed as <span class="crime unknown">unknown</span>.
+            </li>
+
+            <li><strong>"description"</strong> or
+            <strong>"crime description"</strong>: The crime
+            description, listed in the tooltip.</li>
+
+            <li><strong>"date"</strong> and <strong>"time"</strong>:
+            The crime date and time, with no formatting in
+            particular. These values are listed underneath
+            the description in a slightly darker color.</li>
+        </ul>
+
+    </div>
+
+</div>
+
+{include file="inc_foot.txt"}

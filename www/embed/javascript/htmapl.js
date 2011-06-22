@@ -612,6 +612,8 @@
                         var features = collection.features,
                             len = features.length,
                             locations = [];
+                        
+                        
                         for (var i = 0; i < len; i++) {
                             var feature = features[i],
                                 marker = buildMarker(feature);

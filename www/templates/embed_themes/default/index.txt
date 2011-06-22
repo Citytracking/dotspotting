@@ -1,0 +1,319 @@
+{assign var="page_title" value="Default Theme"}
+{capture assign="extra_head"}<link rel="stylesheet" href="{$cfg.abs_root_url}css/embed.css">{/capture}
+{include file="inc_head.txt"}
+
+
+{* title *}
+
+<div id="section_about" class="section_bunch_o_text">
+
+    <div class="theme" id="default">
+        <h2>Default</h2>
+        <p>The "default" theme displays a pannable and zoomable map in the style of Dotspotting:</p>
+
+        <h3>Example & Configuration options</h3>
+        <p>Use the fields on left to update how the map will look.</p> 
+        <p>The map & embed code will change to reflect current choices after you click the 'Update' button.</p>
+        <div class="example">
+            
+            <div id="configure">
+                <h5>Enter a sheet URL:</h5>
+                <p> 
+                    <input id="config_url" value="" style="width:300px;"/>
+                </p>
+                <p id="config_url_error" class="error"></p>
+                <p><input id="startConfig" type="button" value="Get embed code"/></p>
+                
+           
+                <div id="options_panel">
+                    <h5>Options</h5>
+                    <p>
+                        <span class="label">Tile provider:</span>
+                        <select id="config_provider">
+                            <option value="">Toner</option>
+                            <option value="acetate">Acetate</option>
+                            <option value="cloudmade">Pale Dawn</option>
+                            <option value="mq">MapQuest Open Aerial</option>
+                        </select>
+                        <span class="default">Default: Toner</span>
+                    </p>
+                    
+                    <p id="tileapi">
+                        <span class="label">API Key:</span>
+                        <input id="config_api" value=""/>
+                    </p>
+                    
+                    <hr/>
+
+                    <p>
+                        <span class="label">Title:</span>
+                        <input id="config_title" value="" style="width:300px;"/>
+                    </p>
+                
+                    <p>
+                        <span class="label">Coordinates:</span>
+                        <input id="config_coords" value=""/>
+                    </p>
+                
+                     <hr/>
+                
+                    <p>
+                        <span class="label">Width:</span>
+                        <input id="config_width" value="400" />
+                        <span class="default">Default: 400</span>
+                    </p>
+
+                    <p>
+                        <span class="label">Height:</span>
+                        <input id="config_height" value="400" />
+                        <span class="default">Default: 400</span>
+                    </p>
+                
+                     <hr/>
+                 
+                    <p>
+                        <span class="label">Tooltip Title:</span>
+                        <input id="config_tt" value="" />
+                        <span class="helper">Column to be used as the title for tooltip</span>
+                    </p>
+
+                    <p>
+                        <span class="label">Tooltip Message:</span>
+                        <input id="config_tm" value="" />
+                        <span class="helper">Column to be used as the body for tooltip</span>
+                    </p>
+                
+                    </hr>
+                    <p><input id="updateConfig" type="button" value="Update Embed Code"/></p>
+                    </hr>
+                </div>
+
+
+            </div>
+            
+            <iframe id="example_iframe" width="400" height="400" src=""></iframe>
+            
+            <div id="code_to_embed">
+            <h3>Embed Code</h3>
+            <textarea id="example_text"></textarea>
+            </div>
+        </div>
+        
+        
+
+
+        <h3>Instructions</h3>
+
+        <p>You can embed the map using an html <a href="http://www.w3.org/wiki/HTML/Elements/iframe"><tt>&lt;iframe&gt;</tt></a>
+        with the <tt>src</tt> attribute of:</p>
+<textarea>
+{$cfg.abs_root_url}embed/default/
+</textarea>
+        <p>and the following <a href="http://en.wikipedia.org/wiki/Query_string">query string</a> parameters:</p>
+
+        <ul>
+            <li><tt>user</tt>: a Dotspotting user ID. You can
+            find the user ID of a sheet's owner in the URL,
+            after the <tt>/u/</tt> part and before the <tt>/sheets/</tt> part:
+<pre>{$cfg.abs_root_url}u/<u>203</u>/sheets/869
+        (203)</pre></li>
+            <li><tt>sheet</tt>: a Dotspotting <a href="http://dotspotting.org/faq/#sheets">sheet ID</a>, which you can find after the <tt>/sheets/</tt> part of a sheet's URL:
+<pre>{$cfg.abs_root_url}u/203/sheets/<u>869</u>
+                   (869)</pre></li>
+            <li><tt>title</tt> (optional): the title to display along the top of the frame</li>
+            <li><tt>tt</tt> (optional): a column field to use as the title for tooltip</li>
+            <li><tt>tm</tt> (optional): a column field to use as the message for tooltip</li>
+        </ul>
+
+        <p>You can also specify the initial map zoom and
+        center by appending a <a href="http://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a>
+        onto the URL in the following form:
+
+        <pre>#{literal}{zoom}/{latitude}/{longitude}{/literal}</pre>
+
+        <p>where <tt>zoom</tt> is a whole number between 4
+        and 17 (the minimum and maximum allowed zoom levels
+        of the map), <tt>latitude</tt> is a decimal number
+        between -85 and 85, and <tt>longitude</tt> is a
+        decimal number between -180 and 180. 
+        <a href="http://www.getlatlon.com/">Get Lat Lon</a>
+        can help you find the zoom, latitude and longitude of
+        most places.</p>
+
+        <h3>Fields</h3>
+
+        <p>This theme doesn't require any special fields.</p>
+
+    </div>
+
+</div>
+{literal}
+<script>
+var root_url = "{/literal}{$cfg.abs_root_url}{literal}";
+var defaults = {
+'user':203,
+'sheet':869,
+'title':'',
+'base':'',
+'tm':'',
+'tt':'',
+'coords':''
+};
+var iframe_size = [400,400];
+
+$("#startConfig").click(function(e){
+    e.preventDefault();
+    if($("#config_url").val()){
+        getSheet($("#config_url").val());
+    }else{
+        $("#config_url_error").html("please enter a url").show();
+    }
+    
+    
+});
+
+$("#updateConfig").click(function(e){
+    e.preventDefault();
+    grabConfigSettings();
+    setEmbed();
+    
+});
+
+$("#config_provider").change(function(e){
+    e.preventDefault();
+   if($(this).val() == "cloudmade"){
+        $("#tileapi .label").html("Cloudmade <a href='http://cloudmade.com/register'>API Key</a>:")
+        $("#tileapi").show();
+   }else{
+    $("#tileapi").hide();
+    $("#tileapi input").val("");
+    $("#tileapi .label").html("");
+   }
+    
+});
+
+
+function setConfigSettings(){
+    $("#config_provider").val(defaults['base']);
+    $("#config_title").val(defaults['title']);
+    $("#config_tt").val(defaults['tt']);
+    $("#config_tm").val(defaults['tm']);
+    $("#config_coords").val(defaults['coords']);
+    $("#config_width").val(parseInt(iframe_size[0]));
+    $("#config_height").val(parseInt(iframe_size[1]));
+}
+
+function grabConfigSettings(){
+    defaults['base'] = $("#config_provider").val();
+    defaults['title'] = $("#config_title").val();
+    defaults['tt'] = $("#config_tt").val();
+    defaults['tm'] = $("#config_tm").val();
+    defaults['coords'] = $("#config_coords").val();
+    iframe_size[0] = parseInt($("#config_width").val());
+    iframe_size[1] = parseInt($("#config_height").val());
+}
+
+function processTitle(x){
+    return x.replace(/\s/g, "+");
+}
+function processBase(x){
+    if(x=="acetate"){
+        return "http://acetate.geoiq.com/tiles/acetate/{Z}/{X}/{Y}.png";
+    }else if(x == "cloudmade"){
+        //8ee2a50541944fb9bcedded5165f09d9
+        return "http://b.tile.cloudmade.com/"+$("#config_api").val()+"/998/256/{Z}/{X}/{Y}.png";
+    }else if(x == "mq"){
+        return "http://oatile1.mqcdn.com/naip/{Z}/{X}/{Y}.png";
+    }else{
+        return "";
+    }
+
+}
+
+function setEmbed(){
+    var out = root_url+"embed/default/map?";
+    for(o in defaults){
+        if(defaults[o]){
+            if(o != "coords"){
+                if(o == 'base'){
+                     out += o + "=" +processBase(defaults[o]) + "&amp;";
+                }else{
+                    out += o + "=" + ((o == "title") ? processTitle(defaults[o]):defaults[o]) + "&amp;";
+                }
+            }
+        }
+    }
+    
+    if(out.slice(-5) == "&amp;"){
+        out = out.slice(0,-5);
+    }
+    if(defaults['coords'])out += "#"+defaults['coords'];
+    
+    var iframe_pre = '<iframe type="text/html" width="'+iframe_size[0]+'" height="'+iframe_size[1]+'" src="';
+    
+    var current_src = $("#example_iframe").attr('src');
+    if(current_src != out){
+        $("#example_iframe").attr('src',out);
+        var txt = iframe_pre + out + '"></iframe>';
+        $("#example_text").val(txt);
+    }
+
+}
+
+function getParams(u){
+// gather page parameters from the query string
+var params = {},
+    paramMatch = u.match(/(\w+)=([^&$]+)/g);
+if (paramMatch) {
+    var len = paramMatch.length;
+    for (var i = 0; i < len; i++) {
+        var part = paramMatch[i].split("=");
+        params[part[0]] = decodeURIComponent(part[1]).replace(/\+/g, " ");
+    }
+}
+return params;
+}
+
+function getSheet(u){
+    if(!root_url && !u)return;
+    // split on hash
+    var _url = u.split("#");
+   
+    if(!_url[0])return;
+   
+    if(_url[0].slice(-1) == "/")_url[0] = _url[0].slice(0,-1);
+    if(_url[1]){
+        var params = getParams(_url[1]);
+        if(params['c'])defaults['coords'] = params['c'];
+    }
+    
+    var _export_url = _url[0]+"/export?format=json";
+    
+
+    $.ajax({
+      url: _export_url,
+      dataType:"jsonp",
+      success: function(d){
+        defaults['title'] = d['dotspotting:title'];
+        if(d.features[0]['properties']['user_id'] && d.features[0]['properties']['sheet_id']){
+            defaults['user'] = parseInt(d.features[0]['properties']['user_id']);
+            defaults['sheet'] = parseInt(d.features[0]['properties']['sheet_id']);
+            setConfigSettings();
+            setEmbed();
+            $("#config_url_error").hide();
+            $("#options_panel").show();
+        }
+      },
+      error:function(){
+        $("#config_url_error").html("ugh! check your URL and try again.").show();
+      }
+    });
+}
+
+// will need to change this to be valid on dotspotting.org before going live
+//getSheet('http://seanc.dotspotting.stamen.com/u/12/sheets/1017');
+
+</script>
+{/literal}
+
+{include file="inc_foot.txt"}

@@ -77,6 +77,12 @@
 	if (($format == "json") && ($cb = get_str("callback"))){
 		$export_more['callback'] = $cb;
 	}
+	
+	// added by seanc(6/21/2011)
+	if(($format == "json") && isset($sheet['label'])){
+	    $export_more['sheet_label'] = $sheet['label'];
+	    $export_more['sheet_extent'] = $bbox;
+	}
 
 	$export_props = export_collect_user_properties($format);
 	$export_more = array_merge($export_props, $export_more);
