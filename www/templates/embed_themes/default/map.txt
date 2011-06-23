@@ -27,8 +27,7 @@
 	<div id="content">
 	
 	<div id="map" class="map interact hash"
-        data-base="http://spaceclaw.stamen.com/tiles/dotspotting/world/{literal}{Z}/{X}/{Y}{/literal}.png"
-        data-zoomRange="4,17">
+        data-base="http://spaceclaw.stamen.com/tiles/dotspotting/world/{literal}{Z}/{X}/{Y}{/literal}.png">
         
         <div id="crimes" class="layer"
             data-enforceBounds="false"
@@ -51,10 +50,11 @@
         </div>
     </div>
     
+    
     {literal}
     <script type="text/javascript" defer="defer">
         
-        var tip_title,tip_desc,isTip;
+        var tip_title,tip_desc,isTip,tip_sentence;
         
         // problem w/ Safari not setting map height to 100%
         // not sure why, so this seems to fix problem for now...
@@ -83,7 +83,7 @@
         // TODO: get the title from the JSON response here?
         if (params.title) {
             $("#overlay .title a").text(params.title);
-            $(".controls").css("top","50px");
+            $(".controls").css("top",($("#overlay .title a").height()+20)+"px");
         } else {
             $("#overlay .title").css("display", "none");
         }
@@ -91,18 +91,7 @@
             $("#overlay .title a").attr("href", params.title);
         }
         
-        // check for a different base tile
-        if(params.base){
-            
-            $("#map").data("base",params.base);
-            
-            if( params.base.search(/http:\/\/oatile1.mqcdn.com/i) === 0 ){
-                $("#copyright").html('Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">');
-            }else if( params.base.search(/http:\/\/b.tile.cloudmade.com/i) === 0 ){
-                $("#copyright").html('&copy; 2010 <a href="http://www.cloudmade.com/">CloudMade</a>, <a href="http://www.openstreetmap.org/">OpenStreetMap</a> <a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>');
-            }
-        }
-        
+
         // look for tooltip parameters
         if(!params.tt && !params.tm){
             isTip = false;
@@ -115,12 +104,42 @@
             }
 
             if(params.tm){
+            
+            //var re= new RegExp (/{(.*)}/gi);
+            var re= new RegExp (/{([\w:]*)?\s?(.*?)}/gi);
+
+            var m=re.exec(params.tm);
+           
+            if(m && m[1]){
+                tip_sentence = {
+                    "struct":params.tm,
+                    "parts":m
+                };
+            }
                 tip_desc = params.tm;
             }else{
                 tip_desc = "";
             }
         }
+        
+        function processAttribution(x){
+            var _copy = null;
+            if(x.search(/http:\/\/oatile1.mqcdn.com/i) === 0){
+                _copy = 'Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"> Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency';
+            }else if(x.search(/http:\/\/b.tile.cloudmade.com/i) === 0){
+                _copy = '&copy; 2010 <a href="http://www.cloudmade.com/">CloudMade</a>, <a href="http://www.openstreetmap.org/">OpenStreetMap</a> <a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>';
+            }
+            if(_copy)$("#copyright").html(_copy);  
+        }
 
+        // check for a different base tile
+        if(params.base){
+            
+            $("#map").data("base",params.base);
+            processAttribution(params.base);
+
+        }
+        
 
         /**
          * JSON-P callback support.
@@ -261,7 +280,13 @@
                         }
 
                         function getTipDesc(){
-                            return (tip_title.length && current_prop[tip_desc]) ? current_prop[tip_desc] : "";
+
+                            if(tip_sentence){
+                                var txt = tip_sentence.struct;
+                                return txt.replace(tip_sentence.parts[0],current_prop[tip_sentence.parts[1]]);
+                            }else{
+                                return (tip_title.length && current_prop[tip_desc]) ? current_prop[tip_desc] : "";
+                            }
                         }
                         
                         function initialTipPosition(){
@@ -331,6 +356,7 @@
                     function updateFinally() {
                         try {
                             updateExtent();
+                            
                         } catch (e) {
                             // console.warn("ERROR updateFinally():", e);
                         }
@@ -395,7 +421,18 @@
                     function quantize(n, q) {
                         return Math.round(n / q) * q;
                     }
-
+                    
+                    
+                    function showhash(){
+                        if(typeof window.parent.hashMe == 'function') {
+                            window.parent.hashMe(location.hash);
+                        }
+                    }
+                    
+                    if(typeof window.parent.hashMe == 'function') {
+                        map.on("move",defer(showhash, 100));
+                    }
+                    
 
                     /**
                      * Here we grab all of the locations and set the map extent.

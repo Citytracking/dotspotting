@@ -103,7 +103,7 @@ h1 a {
 	}
 	
 /* MARKER STYLES */
-.dot{
+.dot{ /* based off default dot spotting dots */
     color:#fff !important;
     background-color:rgb(11,189,255);
     border:3px solid #fff;
@@ -113,6 +113,8 @@ h1 a {
     width: 16px;
     -moz-border-radius:11px;
     -webkit-border-radius: 11px;
+    margin:-8px 0 0 -8px; 
+    
     }
     
     .dot:hover{
