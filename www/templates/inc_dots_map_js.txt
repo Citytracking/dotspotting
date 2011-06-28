@@ -29,12 +29,7 @@ function dot_onclick(dotid,lon,lat){
 		$("#map").trigger('markerclick',dotid);
 		
 		// add highlight class if it isn't there already
-		/*
-		$("#"+"dot_"+dotid).each(function(){
-			dotAddClass($(this)[0] ,'dotHover');
-		});
-		*/
-		dotAddClass(document.getElementById("dot_"+dotid) ,'dotHover');
+		dotAddClass(document.getElementById("dot_"+dotid) ,'over_hover');
 	}
 	
 	/* 
@@ -55,10 +50,10 @@ function dot_onmouseover(dotid,isDot){
 	
 	// move dataTable row into view
 	var dot_table_id = "dotslist_dot_"+dotid;
-	//show_row_for_dot(dot_table_id);
+
 	
 	if(isDot)scrollRowIntoView(dotid);
-
+    
 
 	var tlen = _dotspotting.dots_list_mouseout_timers.length;
 
@@ -69,13 +64,17 @@ function dot_onmouseover(dotid,isDot){
 	if (_dotspotting.use_polymaps){	
 		/* Move dot to bottom of group */
 		var element = document.getElementById("dot_"+dotid);
+		var element_under = document.getElementById("dot_u_"+dotid);
+		
 		element.parentNode.appendChild(element);
-	
+		element_under.parentNode.appendChild(element_under);
+		
+       // element.setAttribute("r",10);
+	    
 		if(_dotspotting.selected_dot != dotid){
 		
 			/* Add dot hover class, because appendChild breaks ':hover' in FF */
-			dotAddClass(element ,'dotHover');
-		
+			dotAddClass(element ,'over_hover');		
 		}
 	}
 	
@@ -165,15 +164,15 @@ function dotRemoveClass (element, $class) {
 // it does as the name says it does
 function unselectAllDots(){
 	$(".dot").each(function(){
-		dotRemoveClass($(this)[0],'dotHover');
+		dotRemoveClass($(this)[0],'over_hover');
 	});
 }
 
 // generic function to reset dot styles
 function dot_unselect(dotid){
-	//dotRemoveClass(document.getElementById("dot_"+dotid),'dotHover');
 	$("#"+"dot_"+dotid).each(function(){
-		dotRemoveClass($(this)[0],'dotHover');
+		dotRemoveClass($(this)[0],'over_hover');
+		$(this)[0].setAttribute("r",6);
 	});
 }
 
@@ -727,7 +726,7 @@ function draw_map_polymaps(dots,update_from_search){
 			// now add highlight class back to a dot that is selected
 			if(_dotspotting.selected_dot && _dotspotting.selected_dot !== null){
 				var element = document.getElementById("dot_"+ _dotspotting.selected_dot);
-				dotAddClass(element,'dotHover');
+				dotAddClass(element,'over_hover');
 			}
 		}
 		current_map_zoom = map.zoom();
