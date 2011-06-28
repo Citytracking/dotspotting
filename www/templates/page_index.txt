@@ -24,8 +24,8 @@
 	{if $recent_sheets|@count}
 		<div class="thumbnail_head clearfix"><h5 class="left">Recent sheets:</h5><a href="{$cfg.abs_root_url}recent/sheets" class="right txt_small">see more</a></div>
 		{foreach from=$recent_sheets item=sh name=thumbs}
-			{if $smarty.foreach.thumbs.index < 4}
-			     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.index == 3} last_thumb{/if}">
+			{if $smarty.foreach.thumbs.index < 12}
+			     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.iteration % 4 == 0} last_thumb{/if}">
 				<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
 				<dd class="txt_small thumb_title">
 				{if $sh.label}
@@ -48,40 +48,7 @@
 		<div class="clear"></div>
 	{/if}
 	
-	
-	
-	{if $recent_dots|@count}
-	<div class="thumbnail_head clearfix"><h5 class="left">Recent dots:</h5><a href="{$cfg.abs_root_url}recent/dots" class="right txt_small">see more</a></div>
-	{foreach from=$recent_dots item=sh name=thumbs}
-		{if $smarty.foreach.thumbs.index < 4}
-		     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.index == 3} last_thumb{/if}">
-			<dt>
-					<div class="map" data-center="{$sh.latitude},{$sh.longitude}" data-zoom="12">
-						<div class="layer" data-type="image"
-							data-url="{$cfg.maptiles_template_url|escape}"></div>
-						<a href="{$cfg.abs_root_url}u/{$sh.user_id}/dots/{$sh.id}" title=""><span>{$sh.id|escape}&nbsp;</span></a>
-					</div>
-			</dt>
-			<dd class="txt_small thumb_title">
-			{if $sh.label}
-				<a href="{$sh|@urls_url_for_sheet}">{$sh.label|truncate:70:"...":true|escape}</a>
-			{else}
-				<span class="untitled"><a href="{$sh|@urls_url_for_sheet}">untitled</a></span>
-			{/if}
-			 by 
-			{if $owner}
-				<a href="{$owner|@urls_sheets_for_user}" class="blue_links">{if $is_own}You{else}{$owner.username|escape}{/if}</a>
-			{else}
-				<a href="{$sh.user|@urls_sheets_for_user}" class="blue_links">{if $sh.user.id == $cfg.user.id}You{else}{$sh.user.username|escape}{/if}</a>
-			{/if}
-			 created on
-			{$sh.created|date_format:"%B %e, %Y"|escape}
-			</dd>
-			</dl>
-		{/if}
-	{/foreach}
-	<div class="clear"></div>
-	{/if}
+
 </div>
 
 {* end #content div *}

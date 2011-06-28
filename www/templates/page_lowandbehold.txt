@@ -1,0 +1,185 @@
+{capture assign="page_title"}
+{capture assign="extra_head"}
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+{/capture}
+{include file="inc_head.txt"}
+<div class="section_bunch_o_text">
+<h2>Find a place:</h2>
+<span class="label">Enter a place here:</span>
+<input id="findme_str" value="" style="width:500px;padding:4px;"/>
+<input id="findBtn" type="Button" value="Find..." />
+</div>
+<div id="map_wrapper" class="lowandbehold">
+	<div id="map">{* don't put anything in here *}</div>
+	{* if maptiles_license empty do not display license *}
+	{if $cfg.maptiles_license|count}
+	<div id="map_license">{$cfg.maptiles_license}</div>
+	{/if}
+	<div id="map_info"></div>
+	<div id="map_controls">
+		<a href="#" id="pan_left" title="pan left"><img src="{$cfg.abs_root_url}images/map/pan-left.png"/></a>
+		<a href="#" id="pan_up" title="pan up"><img src="{$cfg.abs_root_url}images/map/pan-up.png"/></a>
+		<a href="#" id="pan_right" title="pan right"><img src="{$cfg.abs_root_url}images/map/pan-right.png"/></a>
+		<a href="#" id="pan_down" title="pan down"><img src="{$cfg.abs_root_url}images/map/pan-down.png"/></a>
+		<a href="#" id="zoom_in" title="zoom in"><img src="{$cfg.abs_root_url}images/map/zoom-in.png"/></a>
+		<a href="#" id="zoom_out" title="zoom out"><img src="{$cfg.abs_root_url}images/map/zoom-out.png"/></a>
+	</div>
+
+</div>
+
+{literal}
+<script type="text/javascript">
+var geocoder = null;
+var map = null;
+
+$(document).ready(function(){
+    geocoder = new google.maps.Geocoder();
+    $("#findBtn").click(function(e){
+        if($("#findme_str").val()){
+            findMe($("#findme_str").val());
+        }
+    });
+});
+
+function updateMap(args){
+    if(!map)return;
+    if (_dotspotting.use_polymaps){
+        map.center({lon: args[2], lat: args[1]});
+		map.zoom(args[0]);
+    }else{
+        var loc = new mm.Location(args[1], args[2]);
+	    map.setCenterZoom(loc, args[0]);
+
+    }
+}
+
+function findMe(str){
+    if(!geocoder)return;
+    if(!map)return;
+    
+    geocoder.geocode( { 'address': str}, function(results, status) {
+        //results[0].geometry.location.lat()
+        //results[0].geometry.location.lng()
+    	if (status == google.maps.GeocoderStatus.OK) {
+    	    updateMap([8,results[0].geometry.location.lat(),results[0].geometry.location.lng()]);
+    	}else{
+    	    console.log("error");
+    	}
+    
+    });
+}
+
+function draw_map_polymaps(){
+	map = utils_polymap('map');
+	var current_map_zoom,extent = null;
+	var incomingState=false;
+	
+
+	var qs = doHashSetup();
+	if(_dotspotting)_dotspotting.hashobj = qs;
+	
+	if(qs && qs.contains('c')){
+		var _mapstate = qs.get('c');
+		var args = _mapstate.split("/").map(Number);
+	   if (args.length < 3 || args.some(isNaN)){
+			//
+	   } else {
+			incomingState = true;
+			map.center({lon: args[2], lat: args[1]});
+			map.zoom(args[0]);
+	   }
+
+	}
+	if(!incomingState){
+	    map.center({lon: -114.6, lat: 37.6});
+	    map.zoom(2);
+	}
+		
+		
+    
+
+	
+	// adding our own controls
+	utils_polymaps_add_compass(map);
+	
+	// create controls
+	utils_add_map_controls(map,"po",extent);
+	
+	// map toggle size button
+	utils_map_toggle_size(map,"po",500,null);
+
+
+	
+	
+	// listens for map changes
+	// using it to keep dot svg element highlighted
+	// throughout zoom ranges
+	function handleMapChanges(){
+
+		current_map_zoom = map.zoom();
+	}
+	
+
+	map.on("move",handleMapChanges);
+	map.on("resize",handleMapChanges);
+
+
+	return 1;
+}
+
+function draw_map_modestmaps(){
+
+	var mm = com.modestmaps;
+	map = utils_modestmap('map');
+	var extent = null;
+	var incomingState = false;
+	
+	// check to see if there incoming coordinates 
+	var qs = doHashSetup();
+	if(qs && qs.contains('c')){
+		var _mapstate = qs.get('c');
+		var args = _mapstate.split("/").map(Number);
+	   if (args.length < 3 || args.some(isNaN)){
+		//
+	   } else {
+			incomingState = true;
+			var loc = new mm.Location(args[1], args[2]);
+	    	map.setCenterZoom(loc, args[0]);
+	   }
+	
+	}
+    if(!incomingState){
+	    var loc = new mm.Location(37.6,-114.6);
+		map.setCenterZoom(loc, 2);
+	}
+
+
+	// not really doing anything right now because we have our own controls.
+	utils_modestmaps_add_compass(map);	
+	
+	// create controls
+	utils_add_map_controls(map,"mm",extent);
+
+	
+	// map tooltip
+	utils_add_map_tooltip(map,$("#map").parent(),"mm");
+
+	
+	return;
+}
+
+function draw_map(){
+    if (_dotspotting.use_polymaps){	
+    	draw_map_polymaps();
+    	return;
+    }
+
+
+    draw_map_modestmaps();
+}
+
+utils_load_map();
+</script>
+{/literal}
+
+{include file="inc_foot.txt"}

@@ -164,7 +164,7 @@ function utils_polymaps_add_compass(map){
 	map.add(compass);
 }
 
-function utils_polymaps_assign_dot_properties(e){
+function std_utils_polymaps_assign_dot_properties(e){
 
 	var count = e.features.length;
 
@@ -187,9 +187,10 @@ function utils_polymaps_assign_dot_properties(e){
 		var count_process = to_process.length;
 		
 		for (var k = 0; k < count_process; k ++){
-
+            
 			var el = to_process[k][0];
 			var props = to_process[k][1];
+			
 			
 			var classes = ['dot'];
 
@@ -202,6 +203,7 @@ function utils_polymaps_assign_dot_properties(e){
 			if(props && props.is_page_dot){
 				classes.push('dotHover');
 			}
+			
 			
 			el.setAttribute('class', classes.join(' '));
 			el.setAttribute('r', 8);			
@@ -225,6 +227,100 @@ function utils_polymaps_assign_dot_properties(e){
 	}
 	
 }
+
+// kirby enabled
+function utils_polymaps_assign_dot_properties(e){
+
+	var count = e.features.length;
+
+	if (! count){
+		return;
+	}
+    
+    
+    //ugh, more nodes....
+    // create 2 groups for kirby dots -- over & under
+    if(!e.features[0].element)return;
+    var master = e.features[0].element.parentNode;
+	var g1 = org.polymaps.svg("g");
+	var g2 = org.polymaps.svg("g");
+	master.appendChild(g1);
+	master.appendChild(g2);
+    
+	for (var i=0; i < count; i++){
+		
+
+		var f = e.features[i];
+		
+		var data = f.data;
+
+		var to_process = new Array(
+			[ f.element, data.properties ]
+		);
+		
+		// Okay! Go!!
+		var count_process = to_process.length;
+		
+		for (var k = 0; k < count_process; k ++){
+            
+			var el = to_process[k][0];
+			var props = to_process[k][1];
+
+
+			var classes = ['dot'];
+
+			if (props && props.permissions){
+				classes.push('dot_' + props.permissions);
+			}
+			
+			//	just add the hover class for single dot pages
+			//	clicking on them doesn't do anything anyways
+			if(props && props.is_page_dot){
+				classes.push('over_hover');
+			}
+					
+		
+			if (props && props.id){
+        		
+        		    utils_kirby_me(props.id,el,g1,g2,classes);
+					
+					utils_svg_title(el,props.id);
+					
+				
+				if (props.is_interactive){
+		    			var enc_id = encodeURIComponent(props.id);
+	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ',true);return false');
+	    				el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
+						el.setAttribute('onclick', 'dot_onclick(' + enc_id + ','+f.data.geometry.coordinates[0]+','+f.data.geometry.coordinates[1]+');return false');
+
+					//	$(el).bind('click', {props: props, geo: f.data.geometry}, dot_onclick); 
+				}
+			}
+
+		}
+	}
+	
+}
+
+// how a dot becomes Kirby, 
+function utils_kirby_me(id,el,g1,g2,classes){
+    var clone =  el.cloneNode(false);
+	//
+	g1.appendChild(clone);
+	clone.setAttribute('class', 'under');
+	clone.setAttribute('r', 12);
+	//
+	g2.appendChild(el);
+	//classes.push("over");
+	el.setAttribute('class', classes.join(' '));
+	el.setAttribute('r', 6);
+	
+	
+	//g.setAttribute('class', classes.join(' '));
+	el.setAttribute('id', 'dot_' + id);
+	clone.setAttribute('id', 'dot_u_' + id);
+}
+
 
 function utils_polymaps_assign_sheet_properties (e){
 

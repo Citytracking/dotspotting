@@ -1,0 +1,152 @@
+ 
+ #embed_grid{
+     margin: 20px 0 0;
+ }
+ #embed_grid dl{
+     float: left;
+     margin: 0 20px 0 0;
+ }
+ #embed_grid dl dt{
+     
+ }
+ #embed_grid dl dd{
+     font-size: 16px;
+     font-weight: 600;
+  }
+  
+  input{}
+  
+  
+  
+ ul {
+        padding-left: 1.8em;
+        margin-left: 0;
+    }
+    ul, ul li {
+        list-style: square;
+    }
+
+    textarea {
+        display: block;
+        width: 100%;
+        height: auto;
+        min-height: 4em;
+        margin: 0 0 20px 0;
+        word-wrap: break-word;
+    }
+
+    iframe {
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
+        border: 1px dotted #000;
+        margin: 10px 0 20px 0;
+    }
+
+    #crime iframe,
+    #default iframe {
+        width: 400px;
+        height: 400px;
+    }
+
+
+
+    h3 { clear: both; }
+    
+    #configure{
+        position:relative;
+        margin: 0 30px 0 0;
+        border: none;
+        padding: 10px 10px 0;
+        float:left;
+    }
+    #configure p{
+   
+    }
+    #configure p.error{
+        background:#FA5C5C;color:#fff;padding:5px;margin:2px 0;display:none;
+    }
+     #configure #options_panel{display:none;}
+     #tileapi{display:none;}
+    #configure .label{
+        font-size:12px;
+        padding-right:10px;
+        color:#666;
+    }
+    
+    #configure .default{
+        font-size:12px;
+        padding-left:10px;
+        color:#59bdc1;
+    }
+    #configure .helper{
+        display:block;
+        color:#73b249;
+        font-size:12px;
+    }
+    
+    #code_to_embed{
+        clear:both;
+        margin-top:20px;
+    }
+
+    #example_title{
+        color: #666;
+        padding: 5px;
+        border-bottom: 1px dotted black;
+        border-top: 1px dotted black;
+        height: 20px;
+    }
+    .example { clear: both; }
+
+    .example iframe {
+        float: left;
+        margin-right: 10px;
+    }
+    .example textarea {
+        width: 400px;
+        height: 400px;
+    }
+    
+    .required{
+        font-weight:600 !important;
+    }
+
+    .crime { color: #fff; padding: 0 3px 2px; }
+    .violent { background: #D90000; }
+    .property { background:  #23965E; }
+    .qol { background: #3489BA; }
+    .unknown { background: #D9A200; }
+    
+    
+    /* default styles */
+    
+
+    #default #iframe_right {
+        float: left;
+        margin-right: 10px;
+    }
+    #configure h5 a{color:#000;}
+    #iframe_right p{display:none;}
+    #iframe_right p img{
+        vertical-align:top;
+        padding-left:10px;
+        cursor:pointer;
+        opacity:.7;
+    }
+   
+    #iframe_right input{
+        width: 250px;
+        padding: 5px;
+        border: 1px solid #666;
+    }
+    
+    #default .example textarea {
+        width: 100%;
+        height: 100%;
+    }
+    #configure h5{
+        padding: 5px;
+        background: #CCC;
+        margin-bottom: 10px;
+    }

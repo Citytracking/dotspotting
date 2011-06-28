@@ -153,7 +153,7 @@
 	#################################################################
 
 	function json_export_dots(&$dots, $more=array()){
-
+        
 		$to_skip = array(
 			'latitude',
 			'longitude',
@@ -161,6 +161,8 @@
 
 		$json = array(
 			'type' => 'FeatureCollection',
+            'dotspotting:title' => $more['sheet_label'],
+            'dotspotting:extent' => $more['sheet_extent'],
 			'features' => array(),
 		);
 
@@ -184,7 +186,8 @@
 
 				$feature['properties'][$key] = $value;
 			}
-
+            
+          
 			$json['features'][] = $feature;
 		}
 
