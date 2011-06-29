@@ -1,4 +1,4 @@
-{include file="inc_map.txt"}
+{include file="inc_map.txt" display_embed=0}
 
 {if $header}<h3>{$header|escape}</h3>{/if}
 

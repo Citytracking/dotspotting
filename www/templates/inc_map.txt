@@ -15,6 +15,39 @@
 		<a href="#" id="reset_bounds" title="reset map to original state"><img src="{$cfg.abs_root_url}images/map/expand-extent.png"/></a> 
 		<!--<a href="#" id="embed_map" title="embed map"><img src="{$cfg.abs_root_url}images/map/embed_map.png"/></a> -->
 	</div>
-	<!-- <div id="filter_table_container">Taller map</div> -->
-	<!-- <div id="embed_map_box"><p></p><textarea></textarea></div> -->
+	
+	{if $display_embed}
+	<div id="embed_map_box">
+    	<div id="embed_map_box_inner">
+    	
+        	<div id="link_box">
+        	    <h4>Permanent URL:</h4>
+        	    <textarea id="embed_perma">{$sheet|@urls_url_for_sheet|escape}</textarea>
+        	</div>
+    	
+    	    <div id="embed_box">
+        	    <h4>Embed Code:</h4>
+        	    <a href="{$cfg.abs_root_url}embed/default?oid={$owner.id}&amp;sid={$sheet.id}" class="txt_small blue_links">more config options</a>
+        	    <textarea id="embed_ta"></textarea>
+        	</div>
+        	<div id="export_box">
+        	<h4>Export Options:</h4>
+    
+    	    {foreach from=$export_formats item="fmt" name="formats"}
+        	    {if $fmt|escape == "csv" || $fmt|escape == "xls" || $fmt|escape == "ppt" || $fmt|escape == "png" || $fmt|escape == "pdf"}
+        	        <a href="{$sheet|@urls_url_for_sheet}export.{$fmt|escape}" title="{$fmt|escape}">{if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if}</a>
+        	    {/if}
+        	{/foreach}
+        	<div style="clear:both;"></div>
+        	{foreach from=$export_formats item="fmt" name="formats"}
+        	    {if $fmt|escape != "csv" && $fmt|escape != "xls" && $fmt|escape != "ppt" && $fmt|escape != "png" && $fmt|escape != "pdf"}
+        	        <a href="{$sheet|@urls_url_for_sheet}export.{$fmt|escape}" title="{$fmt|escape}">{if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if}</a>
+        	    {/if}
+        	{/foreach}
+    	
+        	</div>
+        </div>
+    </div>
+    {/if}
+    
 </div>

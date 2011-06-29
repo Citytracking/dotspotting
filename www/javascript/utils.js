@@ -463,23 +463,31 @@ function utils_adjust_bbox(bbox){
 
 ////////////// seanc dumping ground //////////////////
 
-function get_mm_dot_styles(){
-	var attrs = {
-		'fill' : 'rgb('+_dotspotting['dot_color']['fill'][0]+','+_dotspotting['dot_color']['fill'][1]+','+_dotspotting['dot_color']['fill'][2]+')',
-		'fill-opacity' : _dotspotting['dot_color']['fill'][3],
-		'stroke' : 'rgb('+_dotspotting['dot_color']['stroke'][0]+','+_dotspotting['dot_color']['stroke'][1]+','+_dotspotting['dot_color']['stroke'][2]+')',
-		'stroke-width' : _dotspotting['dot_color']['stroke_width'],
-		'stroke-opacity' :_dotspotting['dot_color']['stroke'][3]
-	};
 
-	var attrs_hover = {
-		'fill' : 'rgb('+_dotspotting['dot_color']['fill_hover'][0]+','+_dotspotting['dot_color']['fill_hover'][1]+','+_dotspotting['dot_color']['fill_hover'][2]+')',
-		'fill-opacity' : _dotspotting['dot_color']['fill_hover'][3],
-		'stroke' : 'rgb('+_dotspotting['dot_color']['stroke_hover'][0]+','+_dotspotting['dot_color']['stroke_hover'][1]+','+_dotspotting['dot_color']['stroke_hover'][2]+')',
-		'stroke-width' : _dotspotting['dot_color']['stroke_width'],
-		'stroke-opacity' :_dotspotting['dot_color']['stroke_hover'][3]
-	};
-	return([attrs,attrs_hover]);
+function get_mm_dot_styles(){
+    
+    var over = {
+   		'fill' : 'rgb(11,189,255)',
+   		'fill-opacity' : 1,
+   		'stroke' : 'rgb(11,189,255)',
+   		'stroke-width' : 1
+   	};
+
+   	var under = {
+   		'fill' : 'rgb(10,10,10)',
+   		'fill-opacity' : 1,
+   		'stroke' : 'rgb(10,10,10)',
+   		'stroke-width' : 1
+   	};
+
+   	var over_hover = {
+   		'fill' : 'rgb(0,0,0)',
+   		'fill-opacity' : 1,
+   		'stroke':'rgb(11,189,255)',
+   		'stroke-width' : 4
+   	};
+   	return([over,under,over_hover]);
+
 }
 
 function get_mm_sheet_styles(){
@@ -500,6 +508,8 @@ function get_mm_sheet_styles(){
 	};
 	return([attrs,attrs_hover]);
 }
+
+
 
 //
 function utils_set_embed_params(){
@@ -597,7 +607,7 @@ function utils_add_map_controls(map,map_type,extent){
 function utils_map_toggle_size(map,map_type,tallSize,markers){
 	var map_size = "small";
 	
-	$("#map_toggle_size a").click(function(e){
+	$("#mapsizeToggler").click(function(e){
 		e.preventDefault();
 		var _this = $(this);
 		var _w = Math.round($("#map").width());

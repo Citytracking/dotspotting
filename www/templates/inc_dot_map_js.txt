@@ -58,11 +58,14 @@ function draw_map_modestmaps(dot){
 	var attr_array = get_mm_dot_styles();
 
 	var more = {
-		'attrs' : attr_array[0],
+		'attrs' : attr_array[2],
+		'attrs_back' : attr_array[1],
+		'radius' : 6,
 	};
 
 	var markers = new com.modestmaps.Markers(map);
-	markers.drawGeoJson(features, more);
+	//markers.drawGeoJson(features, more);
+	markers.drawKirbys(features, more);
 	
 	$("#map").bind('mapresize', function(e) {
 		var _w = Math.round($("#map").width());

@@ -348,11 +348,12 @@
 
 	#
 	# USER STYLES
+	# not in effect, needs to be re-thought out (seanc | 6282011)
 	#
 	# implemented in global styles and include/lib_maps.php
 	# TODO: apply these to other export options
 	#
-	
+	/*
 	# dot color props
 	# fill,stroke array = rgba
 	# alpha =  0 = completely transparent, 1 = opaque
@@ -377,4 +378,5 @@
 		'stroke_hover' => array(11,189,255,1),
 		'stroke_width_hover' => 4
 	);
+	*/
 ?>

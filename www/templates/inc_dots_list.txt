@@ -1,4 +1,4 @@
-{include file="inc_map.txt"}
+{include file="inc_map.txt" display_embed=1}
 
 {* hidden for now (display:none) *}
 <div id="user_dots_processing" class="dataTables_processing"></div>

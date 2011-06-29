@@ -6,20 +6,28 @@
 
 	include("include/init.php");
 	
+	$sheet_url= "";
 	
 	# pass random URL to seed example
-	
-	$recent_sheets = sheets_recently_created($GLOBALS['cfg']['user_id']);
-    $url_from_random_sheet  = "";
-    if($recent_sheets){
-        $len = count($recent_sheets) - 1;
-        if($len > 0){
-            $rdm = rand(0,$len);
-            $url_from_random_sheet = urls_url_for_sheet($recent_sheets['sheets'][$rdm]);
+	if( $_GET['oid'] && $_GET['sid'] ){
+	    $sheet = array(
+	       'user_id' => (int)$_GET['oid'],
+	       'id' => (int)$_GET['sid']
+	    );
+	    $sheet_url = urls_url_for_sheet( $sheet );
+	}else{
+    	$recent_sheets = sheets_recently_created($GLOBALS['cfg']['user_id']);
+        
+        if($recent_sheets){
+            $len = count($recent_sheets) - 1;
+            if($len > 0){
+                $rdm = rand(0,$len);
+                $sheet_url = urls_url_for_sheet($recent_sheets['sheets'][$rdm]);
+            }
         }
     }
 	
-	$GLOBALS['smarty']->assign_by_ref("recent_sheet_url", $url_from_random_sheet);
+	$GLOBALS['smarty']->assign_by_ref("recent_sheet_url", $sheet_url);
 	
 	
 	if($_GET['type']=="crime"){

@@ -1,10 +1,14 @@
 {if $cfg.dot_color_schemes}
 .dot{ldelim}
+    {if $cfg.dot_color_scheme.fill}
 	fill: rgb({$cfg.dot_color_scheme.fill[0]},{$cfg.dot_color_scheme.fill[1]},{$cfg.dot_color_scheme.fill[2]});
     fill-opacity: {$cfg.dot_color_scheme.fill[3]};
+    {/if}
+    {if $cfg.dot_color_scheme.stroke}
     stroke: rgb({$cfg.dot_color_scheme.stroke[0]},{$cfg.dot_color_scheme.stroke[1]},{$cfg.dot_color_scheme.stroke[2]});
     stroke-width: {$cfg.dot_color_scheme.stroke_width};	
     stroke-opacity: {$cfg.dot_color_scheme.stroke[3]};
+    {/if}
 {rdelim}
 .over_hover{ldelim}
 	fill: rgb({$cfg.dot_color_scheme.fill_hover[0]},{$cfg.dot_color_scheme.fill_hover[1]},{$cfg.dot_color_scheme.fill_hover[2]});

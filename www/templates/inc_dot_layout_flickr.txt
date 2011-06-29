@@ -17,7 +17,7 @@
 </div>
 
 <div class="right_column_flickr">
-	{include file="inc_map.txt"}
+	{include file="inc_map.txt" display_embed=0}
 </div>
 
 <div class="clear"></div>

@@ -206,6 +206,90 @@ com.modestmaps.Markers.prototype.drawGeoJson = function(features, more){
 	return drawn;
 };
 
+// essentially the drawGeoJson method above, with added goodies
+com.modestmaps.Markers.prototype.drawKirbys = function(features, more){
+
+	// http://geojson.org/geojson-spec.html
+
+	if (! more){
+		more = {};
+	}
+
+	var drawn = new Array();
+	var drawn_back = new Array();
+
+	var count_features = features.length;
+	
+
+	for (var i = 0; i < count_features; i++){
+
+		var f = features[i];
+        var bottom_more = {};
+		var _more = {};
+
+		for (key in more){
+		    _more[ key ] = more[ key ];
+		}
+
+		_more['properties'] = f['properties'];
+        bottom_more['properties'] = f['properties'];
+        bottom_more['attrs'] = more['attrs_back'];
+        bottom_more['radius'] = 12;
+        bottom_more['back'] = true;
+        
+		var geom = (f.geometry.type == 'GeometryCollection') ? f.geometry.geometries : [ f.geometry ];
+		var count_geom = geom.length;
+	
+		for (var j = 0; j < count_geom; j++){
+
+			var type = geom[j]['type'];
+			var coords = geom[j]['coordinates'];
+
+			coords = this._lonlat2latlon(coords);
+
+			// to do: GeometryCollections
+
+			if ((type == 'Point') || (type == 'MultiPoint')){
+
+				if (type == 'Point'){
+					coords = [ coords ];
+				}
+				
+				_more['id'] = "dot_"+f['properties'].id;
+
+				var d = this.drawPoints(coords, _more);
+				drawn.push(d);
+				
+				// clone me???
+				var c = this.drawPoints(coords, bottom_more);
+				drawn.push(c);
+
+			}
+
+			else if ((type == 'Polygon') || (type == 'MultiPolygon')){
+				var d = this.drawPolygons(coords, _more);
+				drawn.push(d);
+			}
+
+			else if ((type == 'LineString') || (type == 'MultiLineString')){
+
+				if (type == 'LineString'){
+					coords = [ coords ];
+				}
+
+				var d = this.drawLines(coords, _more);
+				drawn.push(d);
+			}
+
+			else { }
+		}
+
+	}
+
+	return drawn;
+};
+
+
 // things you may want to care about
 
 com.modestmaps.Markers.prototype.purgeMarkers = function(to_preserve){
@@ -583,8 +667,18 @@ com.modestmaps.Markers.prototype._circle = function(coords, more){
 	var r = ((more) && (more['radius'])) ? more['radius'] : 8;
 
 	var c = this.canvas.circle(coords['x'], coords['y'], r);
+	
+	if ((more) && (more['back'])){
+	    c.toBack();   
+    }
+    
+    if ((more) && (more['id'])){
+	    c.node.id=more['id'];   
+    }
+    
 	return this._decorate(c, more);
 };
+
 
 com.modestmaps.Markers.prototype._decorate = function(el, more){
 
@@ -597,6 +691,5 @@ com.modestmaps.Markers.prototype._decorate = function(el, more){
 	if ((more) && (more['onload'])){
 		more['onload'](el, more['properties']);
 	}
-
 	return el;
 };

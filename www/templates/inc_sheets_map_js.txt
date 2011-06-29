@@ -277,7 +277,7 @@ function draw_map_modestmaps(sheets,update_from_search){
 			//
 		   } else {
 				incomingState = true;
-				var loc = new mm.Location(args[1], args[2]);
+				var loc = new com.modestmaps.Location(args[1], args[2]);
 		    	map.setCenterZoom(loc, args[0]);
 				//store original extent
 				_extent = map.getExtent();

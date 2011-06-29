@@ -9,6 +9,6 @@
 {include file="inc_dot_table.txt"}
 </div>
 <div class="right_column">
-{include file="inc_map.txt"}
+{include file="inc_map.txt" display_embed=0}
 </div>
 <div class="clear"></div>

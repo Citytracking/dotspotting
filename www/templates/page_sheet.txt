@@ -18,6 +18,13 @@ An unnamed sheet of dots by {$owner.username|escape}
 {/capture}
 {include file="inc_head.txt"}
 
+{literal}
+<script>
+$(document).ready(function(){
+	sheet_ready_function();
+});
+</script>
+{/literal}
 {* sheet title area *}
 <ul id="sheet_head" class="clearfix">
 	<li>
@@ -34,7 +41,8 @@ An unnamed sheet of dots by {$owner.username|escape}
 	
 	
 	<li id="map_toggle_size" class="last_list_item">
-		<a href="#" title="toggle map height" class="txt_small green_links taller">Taller Map</a>
+	    <a id="embedexportToggler" href="#" title="view embed and export options" class="txt_small green_links taller">Embed / Export</a>
+		<a id="mapsizeToggler" href="#" title="toggle map height" class="txt_small green_links taller">Taller Map</a>
 	</li>
 	
 
@@ -45,25 +53,12 @@ An unnamed sheet of dots by {$owner.username|escape}
 		<input type="hidden" name="delete" value="1" />
 		<input type="submit" value="DELETE THIS SHEET" />
 	{/if}
-		<select onchange="prep_sheet_export(this);return false;">
-		<option selected>Export options</option>
-		{foreach from=$export_formats item="fmt" name="formats"}
-		<option value="{$sheet|@urls_url_for_sheet}export.{$fmt|escape}" title="{$fmt|escape}">{if $formats_pretty_names.$fmt}{$formats_pretty_names.$fmt|escape}{else}{$fmt|escape}{/if}</option>
-		{/foreach}
-		</select>
+	    
 	</form>
 	</li>
 	
 </ul>
 
-
-{*
-<div id="sheet_utilities">
-	<a href="#" onclick="resetBounds();return false;" style="padding-left:20px;" title="return map to original state">reset map bounds</a>
-	 | 
-	<a href="{$sheet|@urls_url_for_sheet}" id="permalink" title="share this page with others">permalink</a>
-</div>
-*}
 {include file="inc_dots_list.txt" dots=$sheet.dots is_sheet=1}
 
 {include file="inc_foot.txt"}

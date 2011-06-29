@@ -1,12 +1,26 @@
 {literal}
 <script type="text/javascript">
-var _isSearch = {/literal}{$cfg.enable_feature_search}{literal};
-// store id's for embedding
-// _dotspotting.embed_props.uid = {/literal}{$owner.id}{literal};
-// _dotspotting.embed_props.sid = {/literal}{$sheet.id}{literal};
 
-// store json object of dot data
-var all_dots = {/literal}{$dots_simple|@json_encode}{literal};
+///////// really??? //////////////
+
+    var _isSearch = {/literal}{$cfg.enable_feature_search}{literal};
+
+    //////// embed params /////////
+    {/literal}{if $owner && $owner.id}{literal}
+        _dotspotting.embed_props.uid = {/literal}{$owner.id}{literal};
+    {/literal}{/if}{literal}
+    {/literal}{if $sheet && $sheet.id}{literal}
+        _dotspotting.embed_props.sid = {/literal}{$sheet.id}{literal};
+    {/literal}{/if}{literal}
+    {/literal}{if $sheet && $sheet.label}{literal}
+        _dotspotting.embed_props.label = "{/literal}{$sheet.label|escape}{literal}";
+    {/literal}{/if}{literal}
+
+    // store json object of dot data
+    var all_dots = {/literal}{$dots_simple|@json_encode}{literal};
+
+
+///////// now we can begin //////////////
 
 // dot onclick handler
 function dot_onclick(dotid,lon,lat){
@@ -29,7 +43,9 @@ function dot_onclick(dotid,lon,lat){
 		$("#map").trigger('markerclick',dotid);
 		
 		// add highlight class if it isn't there already
+
 		dotAddClass(document.getElementById("dot_"+dotid) ,'over_hover');
+		
 	}
 	
 	/* 
@@ -61,21 +77,24 @@ function dot_onmouseover(dotid,isDot){
 		clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
 	}
 	
+	var element;
 	if (_dotspotting.use_polymaps){	
-		/* Move dot to bottom of group */
-		var element = document.getElementById("dot_"+dotid);
+		/* Move dot to top of all other elements in group */
+	    element = document.getElementById("dot_"+dotid);
 		var element_under = document.getElementById("dot_u_"+dotid);
 		
 		element.parentNode.appendChild(element);
 		element_under.parentNode.appendChild(element_under);
-		
-       // element.setAttribute("r",10);
-	    
-		if(_dotspotting.selected_dot != dotid){
-		
-			/* Add dot hover class, because appendChild breaks ':hover' in FF */
-			dotAddClass(element ,'over_hover');		
-		}
+	
+	}else{
+        element = document.getElementById("dot_"+dotid);
+    	element.parentNode.appendChild(element);
+	}
+	
+	if(_dotspotting.selected_dot != dotid && element){
+	
+		/* Add dot hover class, because appendChild breaks ':hover' in FF */
+		dotAddClass(element ,'over_hover');		
 	}
 	
 	dot_highlight_tr(dotid);
@@ -161,6 +180,7 @@ function dotRemoveClass (element, $class) {
     return element;
 }
 
+
 // it does as the name says it does
 function unselectAllDots(){
 	$(".dot").each(function(){
@@ -172,7 +192,6 @@ function unselectAllDots(){
 function dot_unselect(dotid){
 	$("#"+"dot_"+dotid).each(function(){
 		dotRemoveClass($(this)[0],'over_hover');
-		$(this)[0].setAttribute("r",6);
 	});
 }
 
@@ -563,6 +582,8 @@ function draw_map_modestmaps(dots,update_from_search){
 	
 	// check to see if there incoming coordinates 
 	var qs = doHashSetup();
+	if(_dotspotting)_dotspotting.hashobj = qs;
+	
 	if(qs && qs.contains('c')){
 		var _mapstate = qs.get('c');
 		var args = _mapstate.split("/").map(Number);
@@ -608,6 +629,8 @@ function draw_map_modestmaps(dots,update_from_search){
 
 	var more = {
 		'attrs' : attr_array[0],
+		'attrs_back' : attr_array[1],
+		'radius' : 6,
 
 		// just inline the function mostly so that we don't
 		// have to redeclare the attrs_* hashes again
@@ -615,14 +638,12 @@ function draw_map_modestmaps(dots,update_from_search){
 
 		'onload' : function(el, props){
 
-			el.mouseout(function (evt) {
-				this.attr(attr_array[0]);
-				dot_onmouseout(props.id);
-			});
-
 			el.mouseover(function (evt) {
-				this.attr(attr_array[1]);
 				dot_onmouseover(props.id,true);
+			});
+			
+			el.mouseout(function (evt) {
+				dot_onmouseout(props.id);
 			});
 
 			el.click(function(evt){
@@ -630,9 +651,9 @@ function draw_map_modestmaps(dots,update_from_search){
 			});
 		}
 	};
-
+    
 	var markers = new mm.Markers(map);
-	markers.drawGeoJson(dots['features'], more);
+	markers.drawKirbys(dots['features'], more);
 
 	// not really doing anything right now because we have our own controls.
 	utils_modestmaps_add_compass(map);	
@@ -645,7 +666,21 @@ function draw_map_modestmaps(dots,update_from_search){
 	
 	// map tooltip
 	utils_add_map_tooltip(map,$("#map").parent(),"mm");
-
+    
+    
+    function handleMapChanges(){
+        if(_dotspotting.selected_dot && _dotspotting.selected_dot !== null){
+		    unselectAllDots();
+			
+			// now add highlight class back to a dot that is selected
+			if(_dotspotting.selected_dot && _dotspotting.selected_dot !== null){
+				var element = document.getElementById("dot_"+ _dotspotting.selected_dot);
+				dotAddClass(element,'over_hover');
+			}
+        }
+    }
+    
+    map.addCallback("drawn", handleMapChanges);
 	
 	return;
 }
