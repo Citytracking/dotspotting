@@ -1,42 +1,57 @@
-<div id="upload_meezy">
-<ul class="clearfix">
-	<li class="first_meezy show_30"><span>Upload your file</span></li>
-	<li class="second_meezy show_30"><span>Check your dots</span></li>
-	<li class="last_meezy"><span>{if $upload.dots_received != $upload.dots_processed}Oops! Had a few problems.{else}Hooray! Successful upload.{/if}</span></li>
-</ul>
-</div>
-
-<div class="section_bunch_o_text" id="upload_success_content">
-{if $upload.sheet.label}
-<h3>Your dots ({$upload.dots_processed|escape} of them) have been uploaded in to a sheet labeled "{$upload.sheet.label|escape}".</h3>
-{else}
-<h3>Your dots ({$upload.dots_processed|escape} of them) have been uploaded in to a new sheet.</h3>
-{/if}
+{* only showing this page on errors *}
 
 {* alert the user to the fact that stuff like geocoding may have failed *}
-{if 0}
-{if $upload.errors|@count}
-<p>We did encounter a few errors along the way, though. Specifically:</p>
+{if 0 || $upload.dots_received != $upload.dots_processed}
 
-<ul>
-{foreach from=$upload.errors item="row"}
-<li>Record number <strong>{$row.record|escape}</strong>: <q>{$row.error|escape}</q></li>
-{/foreach}
-</ul>
+    <div id="upload_meezy">
+    <ul class="clearfix">
+    	<li class="first_meezy show_30"><span>Upload your file</span></li>
+    	<li class="second_meezy show_30"><span>Check your dots</span></li>
+    	<li class="last_meezy"><span>{if $upload.dots_received != $upload.dots_processed}Oops! Had a few problems.{else}Hooray! Successful upload.{/if}</span></li>
+    </ul>
+    </div>
+
+    <div class="section_bunch_o_text" id="upload_success_content">
+    {if $upload.sheet.label}
+    <h3>Your dots ({$upload.dots_processed|escape} of them) have been uploaded in to a sheet labeled "{$upload.sheet.label|escape}".</h3>
+    {else}
+    <h3>Your dots ({$upload.dots_processed|escape} of them) have been uploaded in to a new sheet.</h3>
+    {/if}
+
+        {if $upload.errors|@count}
+
+            <p>We did encounter a few errors along the way, though. Specifically:</p>
+
+            <ul>
+            {foreach from=$upload.errors item="row"}
+            <li>Record number <strong>{$row.record|escape}</strong>: <q>{$row.error|escape}</q></li>
+            {/foreach}
+            </ul>
+        
+        {/if}
+    
+    <h3><a href="{$upload.sheet|@urls_url_for_sheet}" class="blue_links">View your sheet now</a></h3>
+
+    {if $upload.dots_received != $upload.dots_processed}
+
+        <p><strong>But!</strong> Not all of the dots you uploaded could be processed. Of the {$upload.dots_received|escape} dots you uploaded only {$upload.dots_processed|escape} were able to be imported in to dotspotting. The following errors were reported:</p> 
+
+        <ul>
+        {foreach from=$upload.errors item="row"}
+        <li>Record number <strong>{$row.record|escape}</strong>: <q>{$row.error|escape}</q></li>
+        {/foreach}
+        </ul>
+
+    {/if}
+    </div>
+
+{else}
+
+    {literal}
+    <script type="text/javascript">
+    location.href = '{/literal}{$upload.sheet|@urls_url_for_sheet}{literal}';
+    </script>
+    {/literal}
+
 {/if}
-{/if}
 
-<h3><a href="{$upload.sheet|@urls_url_for_sheet}" class="blue_links">View your sheet now</a></h3>
-
-{if $upload.dots_received != $upload.dots_processed}
-
-<p><strong>But!</strong> Not all of the dots you uploaded could be processed. Of the {$upload.dots_received|escape} dots you uploaded only {$upload.dots_processed|escape} were able to be imported in to dotspotting. The following errors were reported:</p> 
-
-<ul>
-{foreach from=$upload.errors item="row"}
-<li>Record number <strong>{$row.record|escape}</strong>: <q>{$row.error|escape}</q></li>
-{/foreach}
-</ul>
-
-{/if}
-</div>
