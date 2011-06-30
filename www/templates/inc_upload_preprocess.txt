@@ -43,10 +43,12 @@ strong{font-size: 15px;font-weight: 800;}
 <th>{* row id *}row id</th>
 {foreach from=$data.0 item="ignore" key="colname" name="headers"}
 {assign var="col_idx" value=$smarty.foreach.headers.index}
+
 	<th class="col_preprocess">
 			<span class="colname">{$colname|escape}</span>
 	<!--	<a href="#" onclick="preprocess_delete_col({$col_idx});return false;""><img src="{$cfg.abs_root_url}images/x.png"/></a> -->
 	</th>
+
 {/foreach}
 {* hidden title *}
 
@@ -58,6 +60,7 @@ strong{font-size: 15px;font-weight: 800;}
 
 <tbody>
 {foreach from=$data item="row" name="records"}
+{if $row._has_latlon || $row._address} {* skipping rows that don't have a lat/lon or generated _address value *}
 {assign var="row_idx" value=$smarty.foreach.records.index+1}
 
 <a name="row{$row_idx|escape}"></a>
@@ -66,23 +69,26 @@ strong{font-size: 15px;font-weight: 800;}
 {* see that? we're pass the smarty 0-based count *}
 <td>{$row_idx}<a href="#" onclick="preprocess_delete_row({$smarty.foreach.records.index}); return false;"><img src="{$cfg.abs_root_url}images/x.png"/></a></td>
 
-{* fix problem where rows didn't have same length (seanc|4/13/2011) *}
+
 {foreach from=$columns item="field" name="columns"}
-{assign var="value" value=$row.$field}
-{assign var="col_idx" value=$smarty.foreach.columns.index}
-{assign var="col_class" value="col_preprocess"}
-{assign var="col_ok" value="1"}
+    {if $field}{* skipping blank column names, could lead to crap *}
+        {assign var="value" value=$row.$field}
+        {assign var="col_idx" value=$smarty.foreach.columns.index}
+        {assign var="col_class" value="col_preprocess"}
+        {assign var="col_ok" value="1"}
 
-{if $errors.$row_idx and $errors.$row_idx.column==$columns.$col_idx}
-{assign var="col_ok" value="0"}
-{/if}
-<td class="{$col_class}{if ! $col_ok} col_preprocess_error{/if}">{$value}</td> {* removed escape -- $value|escape *}
-
+        {if $errors.$row_idx and $errors.$row_idx.column==$columns.$col_idx}
+        {assign var="col_ok" value="0"}
+        {/if}
+        <td class="{$col_class}{if ! $col_ok} col_preprocess_error{/if}">{$value}</td> {* removed escape -- $value|escape *}
+    {/if}
 {/foreach}
+
 {*
 <td></td>
 *}
 </tr>
+{/if}
 
 {/foreach}
 </tbody>
@@ -747,8 +753,8 @@ function preprocess_geocode_col(idx){
 					// we're good
 					// TODO: should we check for level of accuracy
 					if (status == google.maps.GeocoderStatus.OK) {
-						dt.dataTable.updateCell(q,"latitude",results[0].geometry.location.lat());
-						dt.dataTable.updateCell(q,"longitude",results[0].geometry.location.lng());
+						dt.dataTable.updateCell(q,"latitude",(results[0].geometry.location.lat()).toFixed(6));
+						dt.dataTable.updateCell(q,"longitude",(results[0].geometry.location.lng()).toFixed(6));
 					
 					//	if(window.console)console.log(results); //lng
 					
