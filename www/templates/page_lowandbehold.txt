@@ -5,9 +5,14 @@
 {include file="inc_head.txt"}
 <div class="section_bunch_o_text">
 <h2>Find a place:</h2>
-<span class="label">Enter a place here:</span>
-<input id="findme_str" value="" style="width:500px;padding:4px;"/>
-<input id="findBtn" type="Button" value="Find..." />
+
+<form id="find_place_form" onsubmit="return false;">
+   <span class="label">Enter a place here:</span>
+   <input id="findme_str" value="" style="width:500px;padding:4px;"/>
+   <input id="findBtn" type="Button" value="Find..." />
+   <p id="find_place_error" class="error" style="display:none;"></p>
+</form>
+
 </div>
 <div id="map_wrapper" class="lowandbehold">
 	<div id="map">{* don't put anything in here *}</div>
@@ -34,22 +39,47 @@ var map = null;
 
 $(document).ready(function(){
     geocoder = new google.maps.Geocoder();
-    $("#findBtn").click(function(e){
+    $('#find_place_form').live("submit", function(e) {
+        e.preventDefault();
+        if(!geocoder)return;
         if($("#findme_str").val()){
             findMe($("#findme_str").val());
+            //doErr();
+        }else{
+            doErr("Oops, please enter a place name, like Brooklyn Zoo or Charles Town, WV")
         }
     });
 });
 
+function doErr(x){
+    if(!x || !x.length){
+        $("#find_place_error").html("").hide();
+    }else{
+        $("#find_place_error").html(x).show();
+    }
+}
+
 function updateMap(args){
     if(!map)return;
     if (_dotspotting.use_polymaps){
-        map.center({lon: args[2], lat: args[1]});
-		map.zoom(args[0]);
+        if(args[3]){
+            map.extent(args[3]);
+    		map.zoom(Math.floor(map.zoom()));
+        }else{
+            map.center({lon: args[2], lat: args[1]});
+        	map.zoom(args[0]);
+        }
     }else{
-        var loc = new mm.Location(args[1], args[2]);
-	    map.setCenterZoom(loc, args[0]);
-
+        if(args[3]){
+            extent = [
+    			new com.modestmaps.Location(args[3][0]['lat'], args[3][0]['lon']),
+    			new com.modestmaps.Location(args[3][1]['lat'], args[3][1]['lon'])
+    		];
+    		map.setExtent(extent);
+        }else{
+            var loc = new com.modestmaps.Location(args[1], args[2]);
+    	    map.setCenterZoom(loc, args[0]);
+        }
     }
 }
 
@@ -58,12 +88,21 @@ function findMe(str){
     if(!map)return;
     
     geocoder.geocode( { 'address': str}, function(results, status) {
-        //results[0].geometry.location.lat()
-        //results[0].geometry.location.lng()
+        var extent = null;
     	if (status == google.maps.GeocoderStatus.OK) {
-    	    updateMap([8,results[0].geometry.location.lat(),results[0].geometry.location.lng()]);
+    	    try{
+                extent = [
+            		{ lat: results[0].geometry.bounds.getSouthWest().lat(), lon: results[0].geometry.bounds.getSouthWest().lng() },
+            		{ lat: results[0].geometry.bounds.getNorthEast().lat(), lon: results[0].geometry.bounds.getNorthEast().lng() }
+            	];
+            }catch(e){
+            
+            }
+        	doErr();
+    	    updateMap([8,results[0].geometry.location.lat(),results[0].geometry.location.lng(),extent]);
+    	    
     	}else{
-    	    console.log("error");
+    	    doErr("Couldn't not find that place!");
     	}
     
     });

@@ -686,7 +686,7 @@ function preprocess_geocode_col(idx){
 		var _id = "r"+q._nCount;
 /*		
 ///////// testing ////////////
-console.log(q)
+        console.log(q)
 		if(_processedRows[_id] && _processedRows[_id] == "good"){
 			// skip this row
 		}else{

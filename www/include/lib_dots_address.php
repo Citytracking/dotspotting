@@ -84,7 +84,7 @@
 
 			$rsp[] = implode(" ", $v);
 		}
-
+		
 		return implode(", ", $rsp);
 	}
 

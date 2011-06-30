@@ -8,7 +8,7 @@ var tip_title,
 
 // display error message in overlay
 function err(message) {
-    console.error("::", message);
+    if(console && console.error)console.error("::", message);
     $("#overlay").append($("<p class='error'/>")
         .html(message));
     okay = false;
@@ -345,23 +345,27 @@ function createMap(data){
                     tt.width(_w);
                     //
                     
-                    var _tc = $(current_marker).offset();
+                   // var _tc = $(current_marker).offset();
+                    var _point = map.locationPoint(current_prop.__dt_coords);
                     var _h = tt.height();
-                    var _x = _tc.left;
-                    var _y = _tc.top - (14+_h);
+                    var _radius = current_marker.getAttribute('r');
+                    var _x = parseFloat(_point.x - 10);
+                    var _y = _point.y - (22+_h);
                     
+                    /*
                     if(_tc.left < 0 )_tc.left = 1;
                     if(_tc.left > cont_width)_tc.left = cont_width-1;
+                    */
                     
-                    
-                    var pos_pct = (_tc.left / cont_width);
+                    var pos_pct = (_point.x / cont_width);
                     
                     var nub_pos = ((_w-20) * pos_pct);
                     if(nub_pos<6)nub_pos = 6;
                     
                     tt_nub.css("left",nub_pos+"px");
                     tt.css("margin-left", "-"+nub_pos+"px");
-                                                    
+                                     
+                         
                     
                     tt.show();
                     tt.css("left", _x).css("top", _y);
@@ -377,7 +381,7 @@ function createMap(data){
                     dotAddClass(current_marker,"over_hover");
                     initialTipPosition();
                 }
-                
+
                 function hideTip(){
                     if(tt)tt.hide();
                 }
@@ -468,6 +472,7 @@ function createMap(data){
                     };
                             			
         			var loc = new mm.Location(coords[1],coords[0]);
+        			props.__dt_coords = loc;
                    
                     var marker = markerLayer.addMarker(more_front,loc);
                     var c = markerLayer.addMarker(more_back,loc);
