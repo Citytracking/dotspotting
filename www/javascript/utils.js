@@ -68,6 +68,7 @@ function utils_tile_provider(){
     return rsp;
 }
 
+
 function ensure_valid_url_template(t){
 
     uri = parseUri(t);
@@ -399,7 +400,6 @@ function utils_modestmap(map_id, more){
 	if (tp['static']){
 	    provider = new com.modestmaps.TileStacheStaticMapProvider(tp['template'], tp['hosts']);
 	}
-
 	else {
 	    provider = new com.modestmaps.TemplatedMapProvider(tp['template'], tp['hosts']);
 	}

@@ -684,9 +684,9 @@ function preprocess_geocode_col(idx){
 		
 	this.gc = function(q){
 		var _id = "r"+q._nCount;
-		
-		//testing
-/*
+/*		
+///////// testing ////////////
+console.log(q)
 		if(_processedRows[_id] && _processedRows[_id] == "good"){
 			// skip this row
 		}else{
@@ -700,6 +700,7 @@ function preprocess_geocode_col(idx){
 				_processedRows[_id] = "bad";
 			}
 			var addy = q['_oData']['_address'];
+			
 			// update status
 			//var out = "Processed: "+queueCounter+" of "+queueLength+"</br>";
 			var out = "Processing: "+addy;
@@ -710,10 +711,11 @@ function preprocess_geocode_col(idx){
 			
 		}
 		self.checkQueue(150);
-		
-*/
-	
+///////// end testing ////////////
+*/		
 
+	
+///////// for realizy ////////////
 		// don't process rows already with valid responses
 		if(_processedRows[_id] && _processedRows[_id] == "good"){
 			self.checkQueue(10);
@@ -789,7 +791,7 @@ function preprocess_geocode_col(idx){
 				self.checkQueue(10);
 			}
 		}
-		
+///////// end for realizy ////////////		
 
 		
 		

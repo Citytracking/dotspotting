@@ -103,27 +103,10 @@ h1 a {
 	}
 	
 /* MARKER STYLES */
-.dot{ /* based off default dot spotting dots */
-    color:#fff !important;
-    background-color:rgb(11,189,255);
-    border:3px solid #fff;
-    cursor:pointer;
-    text-decoration: none;
-    height: 16px;
-    width: 16px;
-    -moz-border-radius:11px;
-    -webkit-border-radius: 11px;
-    margin:-8px 0 0 -8px; 
-    
-    }
-    
-    .dot:hover{
-        z-index: 2000;
-        background-color:#00ddee;
-        border:5px solid #00112d;
-        -moz-border-radius:13px;
-        -webkit-border-radius: 13px;
-    }
+.dot{fill:rgb(11,189,255);fill-opacity:1;cursor:pointer;z-index:100;}
+.under{fill:rgb(10,10,10);fill-opacity:1;cursor:pointer;z-index:200;}
+.over_hover{fill:#000;fill-opacity:1;stroke:rgb(11,189,255);stroke-width:4 !important;stroke-opacity:1;}
+.under_hover{}
 
 .dot .desc {
     display: none;

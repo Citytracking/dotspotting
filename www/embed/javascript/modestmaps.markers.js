@@ -137,8 +137,8 @@ if (!com.modestmaps) {
     MM.extend(MM.GeoJSONProvider, MM.TilePaintingProvider);
 
     MM.MarkerLayer = function(map, provider, parent) {
-        MM.Layer.call(this, map, provider, parent);
 
+        MM.Layer.call(this, map, provider, parent);
         this.map.addCallback("panned", this.getPanned());
         this.map.addCallback("zoomed", this.getZoomed());
         this.map.addCallback("extentset", this.getZoomed());
@@ -263,5 +263,114 @@ if (!com.modestmaps) {
     };
 
     MM.extend(MM.MarkerLayer, MM.Layer);
+
+    MM.DotMarkerLayer = function(map, provider, parent) {
+        MM.MarkerLayer.call(this, map, provider, parent);
+       // this.canvas = Raphael(this.parent);
+       
+        this.canvas = Raphael(this.parent, this.map.dimensions.x * 3, this.map.dimensions.y * 3 );
+        
+        this.dotAttrs = {"fill": "#f0f"};
+
+        this.map.addCallback("panned", defer(this.getRedraw(), 200));
+    };
+    
+    MM.DotMarkerLayer.prototype = {
+        canvas: null,
+        dotRadius: 6,
+        dotAttrs: null,
+        
+        clear: function() {
+           this.canvas.clear();
+        },
+        buildMarker: function(coords, more) {
+            var radi = (more.radius) ? more.radius : this.dotRadius;
+            
+            // position is set in repositionMarker function
+            var dot = this.canvas.circle(0,0,radi);
+            if (more.style) {
+                dot.attr(more.style);
+            }else{
+                dot.attr(this.dotAttrs);
+            }
+            if(more.id){
+                dot.node.id = more.id;
+            }
+            return dot;
+        },
+        
+        addMarker: function(more, location) {
+            // if only location is provided, ignore attrs
+            if (arguments.length == 1) location = arguments[0];
+            // create a dot with the provided attrs
+            
+            var dot = this.buildMarker(location, more);
+            dot.location = this.getLocation(location);
+            // stash the projected coordinate for later use
+            dot.coord = this.map.provider.locationCoordinate(dot.location);
+            dot.more = more;
+            // set its initial position
+            this.repositionMarker(dot);
+            this.markers.push(dot);
+            
+            return dot;
+        },
+        
+        resetPosition: function() {
+            this.position = {x: -this.map.dimensions.x, y: -this.map.dimensions.y};
+            this.parent.style.left = this.position.x+"px";
+            this.parent.style.top = this.position.y+"px";
+            this.parent.style.zIndex = this.map.getZoom() + 1;
+        },
+        
+        repositionMarker: function(marker) {
+            if (marker.coord) {
+                var pos = this.map.coordinatePoint(marker.coord);
+                marker.attr("cx", pos.x-this.position.x);
+                marker.attr("cy", pos.y-this.position.y);
+            }
+        },
+        
+        getZoomed: function() {
+            if (!this._onZoomed) {
+                
+                var that = this;
+                this._onZoomed = function(map, offset) {
+                    that.onZoomed(map, offset);
+                };
+            }
+            return this._onZoomed;
+        },
+        _onZoomed: null,
+        onZoomed: function(map, offset) {
+            this.canvas.setSize(map.dimensions.x * 3,map.dimensions.y * 3);            
+            this.resetPosition();
+            var len = this.markers.length;
+            for (var i = 0; i < len; i++) {
+                this.repositionMarker(this.markers[i]);
+            }
+            
+        },
+        getRedraw: function() {
+            if (!this._onRedraw) {
+                var that = this;
+                this._onRedraw = function(map, offset) {
+                    that.onRedraw(map, offset);
+                };
+            }
+            return this._onRedraw;
+        },
+        _onRedraw: null,
+        onRedraw: function(map, offset) {
+            this.resetPosition();
+            var len = this.markers.length;
+            
+            for (var i = 0; i < len; i++) {
+                this.repositionMarker(this.markers[i]);
+            }
+        }
+    };
+    
+    MM.extend(MM.DotMarkerLayer, MM.MarkerLayer);
 
 })(com.modestmaps);

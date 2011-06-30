@@ -228,7 +228,7 @@ function dot_tip_body(dotid){
 		return "";
 	}
 
-	var html = 'It is owned <a href="'+_dotspotting.abs_root_url+'u/'+dot.user_id+'">' + dot.owner + '</a>.';
+	var html = 'It is owned by <a href="'+_dotspotting.abs_root_url+'u/'+dot.user_id+'">' + dot.owner + '</a>.';
 	
 
 	if (dot.location){
