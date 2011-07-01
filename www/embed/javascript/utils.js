@@ -22,13 +22,42 @@ function bind(that, fn) {
 }
 
 function capitalize(str, ignore) {
-	return str.split(" ").map(function(word) {
-		if (!ignore || ignore.indexOf(word) == -1) {
-			return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
-		} else {
-			return word;
-		}
-	}).join(" ");
+    return str.split(" ").map(function(word) {
+        if (!ignore || ignore.indexOf(word) == -1) {
+            return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+        } else {
+            return word;
+        }
+    }).join(" ");
+}
+
+function capitalizeWord(word) {
+    return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+}
+
+function parseQueryString(str) {
+    // gather page parameters from the query string
+    var params = {},
+        paramMatch = str.match(/(\w+)=([^&$]+)/g);
+    if (paramMatch) {
+        var len = paramMatch.length;
+        for (var i = 0; i < len; i++) {
+            var part = paramMatch[i].split("=");
+            params[part[0]] = decodeURIComponent(part[1]).replace(/\+/g, " ");
+        }
+    }
+    return params;
+}
+
+function makeQueryString(params) {
+    var out = "";
+    for (var p in params) {
+        if (typeof params[p] !== "undefined" && String(params[p]).length > 0) {
+            out += (out.indexOf("?") > -1) ? "&" : "?";
+            out += p + "=" + String(params[p]).replace(/ /g, "+");
+        }
+    }
+    return out;
 }
 
 var MapHash = function(map) {
@@ -118,7 +147,7 @@ var MapControls = function(map, container) {
 
     controls.addButton = function(text, action, context) {
         return $("<button/>").text(text)
-				.click(function(e) {
+                .click(function(e) {
             action.call(context || this);
             e.preventDefault();
             return false;
@@ -188,3 +217,102 @@ var ExtentSetter = function(map) {
 
     return setter;
 };
+
+// parseUri 1.2.2
+// (c) Steven Levithan <stevenlevithan.com>
+// MIT License
+function parseUri(str) {
+    var o = parseUri.options,
+        m = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+        uri = {},
+        i = 14;
+
+    while (i--) uri[o.key[i]] = m[i] || "";
+
+    uri[o.q.name] = {};
+    uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+        if ($1) uri[o.q.name][$1] = $2;
+    });
+
+    return uri;
+};
+parseUri.options = {
+    strictMode: false,
+    key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+    q:   {
+        name:   "queryKey",
+        parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+    },
+    parser: {
+        strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+        loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+    }
+};
+
+/**
+ * Here we group all of the markers by their "corner"
+ * (quantized location, see getCorner() above) and
+ * distribute overlapping markers in a circle around the
+ * center of the first one in the cluster.
+ */
+function clusterMarkers(markers) {
+
+    // Quantize a number by a divisor
+    function quantize(n, q) {
+        return Math.round(n / q) * q;
+    }
+
+    /**
+     * Quantize the location of the marker to determine its "corner".
+     * Note: we should probably avoid offsetting markers with
+     * more explicit locations.
+     */
+    function getCorner(marker) {
+        var loc = marker.location,
+            prec = .001,
+            x = Number(loc.lon),
+            y = Number(loc.lat);
+        try {
+            return quantize(x, prec)+ "," + quantize(y, prec);
+        } catch (e) {
+            return "bad";
+        }
+    }
+
+    var corners = {},
+        len = markers.length;
+    for (var i = 0; i < len; i++) {
+        var marker = markers[i],
+            loc = marker.location,
+            corner = getCorner(marker);
+        if (loc.lat != 0 && loc.lon != 0) {
+            marker._coord = marker.coord.clone();
+            if (corner in corners) {
+                corners[corner].push(marker);
+            } else {
+                corners[corner] = [marker];
+            }
+        }
+    }
+
+    for (var corner in corners) {
+        var m = corners[corner];
+        if (m.length > 1) {
+            var r = .0000004,
+                // TODO: use the center instead?
+                c = m[0]._coord,
+                a = Math.PI / 40,
+                step = Math.PI * 2 / m.length;
+            for (var i = 0; i < m.length; i++) {
+                var mark = m[i],
+                    offset = {
+                        row: Math.cos(a) * r,
+                        col: Math.sin(a) * r
+                    };
+                mark.coord.row += offset.row;
+                mark.coord.column += offset.col;
+                a += step;
+            }
+        }
+    }
+}
