@@ -13,17 +13,9 @@ function err(message) {
         .html(message));
     okay = false;
 }
-    
+
 // gather page parameters from the query string
-var params = {},
-    paramMatch = location.search.match(/(\w+)=([^&$]+)/g);
-if (paramMatch) {
-    var len = paramMatch.length;
-    for (var i = 0; i < len; i++) {
-        var part = paramMatch[i].split("=");
-        params[part[0]] = decodeURIComponent(part[1]).replace(/\+/g, " ");
-    }
-}
+var params = parseQueryString(location.search);
 
 // TODO: get the title from the JSON response here?
 if (params.title) {
@@ -78,38 +70,6 @@ function processAttribution(x){
 }
 
 
-// parseUri 1.2.2
-// (c) Steven Levithan <stevenlevithan.com>
-// MIT License
-
-function parseUri (str) {
-	var	o   = parseUri.options,
-		m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
-		uri = {},
-		i   = 14;
-
-	while (i--) uri[o.key[i]] = m[i] || "";
-
-	uri[o.q.name] = {};
-	uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
-		if ($1) uri[o.q.name][$1] = $2;
-	});
-
-	return uri;
-};
-
-parseUri.options = {
-	strictMode: false,
-	key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
-	q:   {
-		name:   "queryKey",
-		parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-	},
-	parser: {
-		strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-		loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-	}
-};
 
 
 function ensure_valid_url_template(t){
