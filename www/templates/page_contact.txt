@@ -1,0 +1,16 @@
+{assign var="page_title" value="Contact"}
+
+{include file="inc_head.txt"}
+<div id="section_contact" class="section_bunch_o_text">
+<h2>{$page_title}</h2>
+
+<img src="{$cfg.abs_root_url}images/contact_img.jpg" style="float:right;padding:0 0 0 10px;width:400px;"/> 
+<p>Dotspotting is designed and maintained by <a href="http://stamen.com/">Stamen Design</a> in San Francisco. The project is the first initiative of Citytracking, a project funded by the <a href="http://www.pbs.org/idealab/2010/11/citytracking-presents-data-on-cities-for-maps-visualizations302.html">Knight News Challenge</a>. We're making tools to help people gather data about cities and make that data more legible. Our hope is to do this in a way that's simple enough for regular people to get involved, but robust enough for real research to happen along the way.</p>
+
+<p>We welcome your feedback! Mail us at <a href="mailto:dotspotting@stamen.com">dotspotting@stamen.com</a> and we'll get back to you just as soon as we can.</p>
+
+<p>Thanks,<br/><a href="http://stamen.com">Stamen Design</a></p>
+
+</div>
+
+{include file="inc_foot.txt"}
