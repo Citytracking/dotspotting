@@ -49,7 +49,7 @@ CREATE TABLE `SheetsLookup` (
   `last_modified` int(10) unsigned NOT NULL,
   `deleted` int(10) unsigned NOT NULL,
   `count_dots_public` int(11) unsigned NOT NULL,
-  `fingerprint` varchar(32) unsigned NOT NULL,
+  `fingerprint` varchar(32) NOT NULL,
   KEY `by_id` (`sheet_id`),
   KEY `by_deleted` (`deleted`),
   KEY `by_fingerprint` (`fingerprint`, `user_id`)
