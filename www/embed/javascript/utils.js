@@ -222,7 +222,11 @@ var ExtentSetter = function(map) {
 // (c) Steven Levithan <stevenlevithan.com>
 // MIT License
 function parseUri(str) {
+<<<<<<< HEAD
     var o = parseUri.options,
+=======
+    var	o = parseUri.options,
+>>>>>>> 3db6d1f
         m = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
         uri = {},
         i = 14;
@@ -316,3 +320,7 @@ function clusterMarkers(markers) {
         }
     }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3db6d1f
