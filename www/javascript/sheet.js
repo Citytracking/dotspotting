@@ -28,6 +28,7 @@ function sheet_ready_function(){
        $(this).select();
     });
     
+    
 }
 
 function clear_embed_code(){

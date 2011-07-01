@@ -130,6 +130,18 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 /* faq specific */
 #section_faq.section_bunch_o_text p,#section_faq.section_bunch_o_text h4,#section_faq.section_bunch_o_text ul,#section_faq.section_bunch_o_text pre{margin:0 0 10px 15px;}
 
+/* contact */
+#section_contact.section_bunch_o_text ul{margin:20px 0 10px 35px;list-style:circle;}
+#section_contact.section_bunch_o_text li{ font-size: 48px;font-weight: 100;line-height: 54px;letter-spacing: 2px;}
+#section_contact.section_bunch_o_text h3{ 
+    font-size: 24px;
+    border: 1px solid white;
+    padding: 0;
+    text-align: left;
+    font-weight: 100;
+    letter-spacing: 2px;    
+}
+
 /* upload */
 #upload_forms{position:relative;width:100%;}
 #upload_section_right,#upload_section_left{float:left;width:450px;}

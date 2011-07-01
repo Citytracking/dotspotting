@@ -22,13 +22,13 @@
     	
         	<div id="link_box">
         	    <h4>Permanent URL:</h4>
-        	    <textarea id="embed_perma">{$sheet|@urls_url_for_sheet|escape}</textarea>
+        	    <textarea id="embed_perma" readonly="readonly">{$sheet|@urls_url_for_sheet|escape}</textarea>
         	</div>
     	
     	    <div id="embed_box">
         	    <h4>Embed Code:</h4>
         	    <a href="{$cfg.abs_root_url}embed/default?oid={$owner.id}&amp;sid={$sheet.id}" class="txt_small blue_links">more config options</a>
-        	    <textarea id="embed_ta"></textarea>
+        	    <textarea id="embed_ta" readonly="readonly"></textarea>
         	</div>
         	<div id="export_box">
         	<h4>Export Options:</h4>

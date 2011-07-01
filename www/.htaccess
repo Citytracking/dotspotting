@@ -108,6 +108,7 @@ RewriteRule ^lowandbehold/?$						lowandbehold.php?%{QUERY_STRING} [L]
 
 RewriteRule ^about/?$					about.php?%{QUERY_STRING} [L]
 RewriteRule ^faq/?$					faq.php?%{QUERY_STRING} [L]
+RewriteRule ^contact/?$					contact.php?%{QUERY_STRING} [L]
 RewriteRule ^magicwords/?$				magicwords.php?%{QUERY_STRING} [L]
 
 # Embed
