@@ -55,7 +55,7 @@
     
     #configure{
         position:relative;
-        margin: 0 30px 0 0;
+        margin: 0 40px 0 0;
         border: none;
         padding: 10px 10px 0;
         float:left;
@@ -71,13 +71,13 @@
     #configure .label{
         font-size:12px;
         padding-right:10px;
-        color:#666;
+        color:#444;
     }
     
     #configure .default{
         font-size:12px;
         padding-left:10px;
-        color:#59bdc1;
+        color:#888;/*#59bdc1*/
     }
     #configure .helper{
         display:block;
@@ -119,34 +119,28 @@
     .unknown { background: #D9A200; }
     
     
-    /* default styles */
-    
+/* DEFAULT styles */
+#default #iframe_right{float:left;margin-right:10px;}
+#default #iframe_right iframe{float:none;margin-top:3px;}
+#configure h5 a{color:#000;}
+#iframe_right p{display:none;}
+#iframe_right p img{vertical-align:top;padding-left:10px;cursor:pointer;opacity:.7;}
+#iframe_right input{width:250px;padding:5px;border:1px solid #666;}
+#default .example textarea{width:100%;height:100%;}
+#configure h5{padding:5px;background:#CCC;margin-bottom:10px;}
 
-    #default #iframe_right {
-        float: left;
-        margin-right: 10px;
-    }
-    #configure h5 a{color:#000;}
-    #iframe_right p{display:none;}
-    #iframe_right p img{
-        vertical-align:top;
-        padding-left:10px;
-        cursor:pointer;
-        opacity:.7;
-    }
-   
-    #iframe_right input{
-        width: 250px;
-        padding: 5px;
-        border: 1px solid #666;
-    }
-    
-    #default .example textarea {
-        width: 100%;
-        height: 100%;
-    }
-    #configure h5{
-        padding: 5px;
-        background: #CCC;
-        margin-bottom: 10px;
-    }
+ 
+/* PREVIEW */
+/*#previewConfig{display:block;text-align:left;padding:0px 0;font-size:12px;}*/
+#previewConfig{display:block;text-align:right;padding:0 15px 0 0;font-size:12px;}
+#close-preview-modal{margin-top:-5px;font-size:18px;font-weight:200;text-align:right;display:none;padding:0 10px 0 0;color:#ccc;text-decoration:none;}
+#close-preview-modal span{font-size:20px;}
+#configure.preview{visibility:hidden;}
+#iframe_right.preview{position:absolute;z-index:10;padding:10px 10px 10px 20px;background:#444;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+#iframe_right.preview iframe{margin-top:0px;}
+#iframe_right.preview #close-preview-modal{display:block;}
+#previewBackground{background:#333;background:rgba(0,0,0,.9);position:fixed;width:100%;height:100%;z-index:1;display:none;top:0;left:0;}

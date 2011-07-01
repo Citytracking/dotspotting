@@ -342,6 +342,8 @@ function createMap(data){
                     tt.css("left","-9999px")
                     tt.css("width","auto");
                     var _w = (tt.width() < TT_WIDTH) ? tt.width() : TT_WIDTH;
+                    if(_w < 70)_w = 70;
+                    tt.css("width",_w+"px");
                     tt.width(_w);
                     //
                     

@@ -56,7 +56,9 @@ function set_embed_code(){
     }else{
         // oh bad
         $("#embed_ta").val(src);
-    }	
+    }
+    
+    if(location.href)$("#embed_perma").html(location.href);	
 }
 
 function prep_sheet_export(selObj){

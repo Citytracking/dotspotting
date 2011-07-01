@@ -23,7 +23,7 @@ a:visited {
     color: inherit;
 }
 
-#main,#content{
+#main,#content,#map_wrapper{
     position:relative;
     width:100% !important;
     height:100% !important;
