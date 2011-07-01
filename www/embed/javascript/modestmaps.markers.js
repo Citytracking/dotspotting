@@ -138,7 +138,7 @@ if (!com.modestmaps) {
 
     MM.MarkerLayer = function(map, provider, parent) {
 
-        MM.Layer.call(this, map, provider, parent);
+        MM.Layer.call(this, map, provider || map.provider, parent);
         this.map.addCallback("panned", this.getPanned());
         this.map.addCallback("zoomed", this.getZoomed());
         this.map.addCallback("extentset", this.getZoomed());
@@ -283,28 +283,25 @@ if (!com.modestmaps) {
         clear: function() {
            this.canvas.clear();
         },
-        buildMarker: function(coords, more) {
-            var radi = (more.radius) ? more.radius : this.dotRadius;
-            
+        buildMarker: function(attrs) {
+            var radius = (attrs.radius) ? more.radius : this.dotRadius;
             // position is set in repositionMarker function
-            var dot = this.canvas.circle(0,0,radi);
+            var dot = this.canvas.circle(0, 0, radius);
+            dot.attr(this.dotAttrs);
             if (more.style) {
                 dot.attr(more.style);
-            }else{
-                dot.attr(this.dotAttrs);
             }
-            if(more.id){
+            if (more.id) {
                 dot.node.id = more.id;
             }
             return dot;
         },
         
-        addMarker: function(more, location) {
+        addMarker: function(attrs, location) {
             // if only location is provided, ignore attrs
             if (arguments.length == 1) location = arguments[0];
             // create a dot with the provided attrs
-            
-            var dot = this.buildMarker(location, more);
+            var dot = this.buildMarker(attrs);
             dot.location = this.getLocation(location);
             // stash the projected coordinate for later use
             dot.coord = this.map.provider.locationCoordinate(dot.location);
@@ -318,22 +315,22 @@ if (!com.modestmaps) {
         
         resetPosition: function() {
             this.position = {x: -this.map.dimensions.x, y: -this.map.dimensions.y};
-            this.parent.style.left = this.position.x+"px";
-            this.parent.style.top = this.position.y+"px";
+            this.parent.style.left = this.position.x + "px";
+            this.parent.style.top = this.position.y + "px";
             this.parent.style.zIndex = this.map.getZoom() + 1;
         },
         
         repositionMarker: function(marker) {
             if (marker.coord) {
                 var pos = this.map.coordinatePoint(marker.coord);
-                marker.attr("cx", pos.x-this.position.x);
-                marker.attr("cy", pos.y-this.position.y);
+                // TODO: check to see if this works in IE
+                marker.attr("cx", pos.x - this.position.x);
+                marker.attr("cy", pos.y - this.position.y);
             }
         },
         
         getZoomed: function() {
             if (!this._onZoomed) {
-                
                 var that = this;
                 this._onZoomed = function(map, offset) {
                     that.onZoomed(map, offset);
@@ -343,14 +340,10 @@ if (!com.modestmaps) {
         },
         _onZoomed: null,
         onZoomed: function(map, offset) {
-            this.canvas.setSize(map.dimensions.x * 3,map.dimensions.y * 3);            
-            this.resetPosition();
-            var len = this.markers.length;
-            for (var i = 0; i < len; i++) {
-                this.repositionMarker(this.markers[i]);
-            }
-            
+            this.canvas.setSize(map.dimensions.x * 3, map.dimensions.y * 3);            
+            this.onRedraw(map, offset);
         },
+
         getRedraw: function() {
             if (!this._onRedraw) {
                 var that = this;
@@ -364,7 +357,6 @@ if (!com.modestmaps) {
         onRedraw: function(map, offset) {
             this.resetPosition();
             var len = this.markers.length;
-            
             for (var i = 0; i < len; i++) {
                 this.repositionMarker(this.markers[i]);
             }

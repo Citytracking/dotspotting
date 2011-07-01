@@ -26,6 +26,7 @@ a:visited {
 #map {
     width: 100%;
     height: 100%;
+    background-color: #ccc;
 }
 
 #copyright {
@@ -39,7 +40,7 @@ a:visited {
     color: #999;
 }
 
-#overlay {
+#output {
     z-index: 2000;
     position: absolute;
     top: 0;
@@ -50,7 +51,11 @@ a:visited {
     background: #000;
 }
 
-#overlay p { padding: 5px; }
+#output p { padding: 5px; margin: 0; }
+#output .error {
+    color: #fff;
+    background: #c33;
+}
 
 h1 {
     font-size: 20px;
@@ -70,8 +75,9 @@ h1 a {
     cursor: pointer;
 }
 
-.report .group,
+.group,
 .report img {
+    color: #fff;
     position: absolute;
     left: -13px;
     top: -13px;
@@ -79,7 +85,7 @@ h1 a {
     height: 26px;
 }
 
-.report .group {
+.group {
     display: block;
     text-align: center;
     font-size: 10px;
@@ -135,3 +141,54 @@ h1 a {
 .report:hover .group {
     z-index: 1002;
 }
+
+#crime_types {
+    position: absolute;
+    display: block;
+    list-style: none;
+    margin: -5em 0 0 0;
+    padding: 0;
+    z-index: 2001;
+    top: 40%;
+    right: 0;
+    width: auto;
+    height: auto;
+    background: #DCE8EF;
+}
+
+    #crime_types li {
+        cursor: pointer;
+        list-style: none;
+        display: block;
+        margin: 0;
+        padding: 5px;
+        padding-right: 8px;
+        height: 26px;
+        line-height: 26px;
+        clear: both;
+    }
+
+    #crime_types li .title {
+        font-size: 11px;
+    }
+
+    #crime_types .group {
+        position: relative !important;
+        top: 0;
+        left: 0;
+        margin: 0 4px 0 0;
+        display: block;
+        float: left;
+    }
+
+    #crime_types li:hover .title {
+        text-decoration: underline;
+    }
+
+    #crime_types li.off .title {
+        /* color: #ccc; */
+    }
+
+    #crime_types li.off .group {
+        background-image: url(../images/icons/faded.png) !important;
+    }
