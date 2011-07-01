@@ -224,8 +224,5 @@ Dots.Potting.prototype = {
     onDotsError: function(error) {
         this.error("Failed to load dots: <tt>" + error + "</tt>");
     }
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 3db6d1f
+

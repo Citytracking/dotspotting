@@ -45,10 +45,6 @@ try {
             if (!label.data("selected")) {
                 marker.css("display", "none");
             } else {
-<<<<<<< HEAD
-                console.log("GOOD:", label[0]);
-=======
->>>>>>> 3db6d1f
             }
         }
         return marker[0];
@@ -142,10 +138,6 @@ CrimeTypeSelector.prototype = {
     },
 
     selectType: function(type) {
-<<<<<<< HEAD
-        console.log("select:", type);
-=======
->>>>>>> 3db6d1f
         var markers = this.layer.markers,
             len = markers.length;
         for (var i = 0; i < len; i++) {
@@ -159,10 +151,6 @@ CrimeTypeSelector.prototype = {
     unselectType: function(type) {
         var markers = this.layer.markers,
             len = markers.length;
-<<<<<<< HEAD
-        console.log("unselect:", type, len);
-=======
->>>>>>> 3db6d1f
         for (var i = 0; i < len; i++) {
             var marker = $(markers[i]);
             if (marker.data("crime_type") == type) {
@@ -267,8 +255,5 @@ function abbreviate(group) {
         return group ? capitalizeWord(group.substr(0, 2)) : "?";
     }
 } 
-<<<<<<< HEAD
 abbreviate.stopWords = ["of", "the", "for", "and", "with", "-"];
-=======
-abbreviate.stopWords = ["of", "the", "for", "and", "with", "-"];
->>>>>>> 3db6d1f
+
