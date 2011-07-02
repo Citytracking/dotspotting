@@ -266,7 +266,6 @@ if (!com.modestmaps) {
 
     MM.DotMarkerLayer = function(map, provider, parent) {
         MM.MarkerLayer.call(this, map, provider, parent);
-       // this.canvas = Raphael(this.parent);
        
         this.canvas = Raphael(this.parent, this.map.dimensions.x * 3, this.map.dimensions.y * 3 );
         
@@ -284,16 +283,17 @@ if (!com.modestmaps) {
            this.canvas.clear();
         },
         buildMarker: function(attrs) {
-            var radius = (attrs.radius) ? more.radius : this.dotRadius;
+            var radius = (attrs.radius) ? attrs.radius : this.dotRadius;
             // position is set in repositionMarker function
             var dot = this.canvas.circle(0, 0, radius);
             dot.attr(this.dotAttrs);
-            if (more.style) {
-                dot.attr(more.style);
+            if (attrs.style) {
+                dot.attr(attrs.style);
             }
-            if (more.id) {
-                dot.node.id = more.id;
+            if (attrs.id) {
+                dot.node.id = attrs.id;
             }
+          
             return dot;
         },
         
@@ -303,9 +303,10 @@ if (!com.modestmaps) {
             // create a dot with the provided attrs
             var dot = this.buildMarker(attrs);
             dot.location = this.getLocation(location);
+            dot.added = true;
             // stash the projected coordinate for later use
             dot.coord = this.map.provider.locationCoordinate(dot.location);
-            dot.more = more;
+            dot.more = attrs;
             // set its initial position
             this.repositionMarker(dot);
             this.markers.push(dot);

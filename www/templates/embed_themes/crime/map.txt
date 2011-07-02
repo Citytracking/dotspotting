@@ -34,6 +34,6 @@
 </script>
 {/literal}
 
-<script type="text/javascript" src="{$cfg.abs_root_url}embed/crime/map.js"></script>
+<script type="text/javascript" src="{$cfg.abs_root_url}embed/crime/map.js" defer="defer"></script>
 </body>
 </html>

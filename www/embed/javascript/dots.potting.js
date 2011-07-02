@@ -201,6 +201,7 @@ Dots.Potting.prototype = {
             this.error("We have no dots layer!");
             return false;
         }
+       
         var len = features.length,
             locations = updateExtent ? [] : null,
             added = [];
@@ -208,7 +209,8 @@ Dots.Potting.prototype = {
             var feature = features[i],
                 dot = this.makeDot(feature);
             if (dot) {
-                var marker = this.dotsLayer.addMarker(dot, feature);
+                /* hack to work around DotMarkerLayer (seanc) */
+                var marker = (!dot.added) ? this.dotsLayer.addMarker(dot, feature) : dot;
                 if (updateExtent && marker.location && marker.location.lat && marker.location.lon) {
                     locations.push(marker.location);
                 }
