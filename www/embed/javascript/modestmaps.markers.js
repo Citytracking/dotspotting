@@ -282,6 +282,10 @@ if (!com.modestmaps) {
         clear: function() {
            this.canvas.clear();
         },
+        
+        // marker event callback defined by user
+        markerEventHandler: null,
+        
         buildMarker: function(attrs) {
             var radius = (attrs.radius) ? attrs.radius : this.dotRadius;
             // position is set in repositionMarker function
@@ -293,7 +297,13 @@ if (!com.modestmaps) {
             if (attrs.id) {
                 dot.node.id = attrs.id;
             }
-          
+            // set interactive handlers
+            if (attrs.interactive && (this.markerEventHandler && typeof this.markerEventHandler == "function")){
+                dot.node.onmouseover = this.markerEventHandler;
+                dot.node.onmouseout = this.markerEventHandler;
+                dot.node.onclick = this.markerEventHandler;
+            }
+
             return dot;
         },
         
@@ -303,15 +313,30 @@ if (!com.modestmaps) {
             // create a dot with the provided attrs
             var dot = this.buildMarker(attrs);
             dot.location = this.getLocation(location);
-            dot.added = true;
             // stash the projected coordinate for later use
             dot.coord = this.map.provider.locationCoordinate(dot.location);
-            dot.more = attrs;
+            dot.attrs = attrs;
             // set its initial position
             this.repositionMarker(dot);
             this.markers.push(dot);
             
             return dot;
+        },
+        
+        removeMarker: function(marker) {
+            var index = this.markers.indexOf(marker);
+            if (index > -1) {
+                this.markers.splice(index, 1);
+            }
+            if(typeof marker.remove == "function"){
+                if(marker.attrs.interactive){
+                    marker.node.onmouseover = null;
+                    marker.node.onmouseout = null;
+                    marker.node.onclick = null;
+                }
+                marker.remove();
+            }
+            return marker;
         },
         
         resetPosition: function() {

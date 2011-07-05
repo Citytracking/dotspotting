@@ -74,7 +74,7 @@ Dots.Potting.prototype = {
     dotsLayer: null,
     makeDot: function(feature) {
         throw "You must implement makeDot(feature)";
-    },
+    },    
 
     outputContainer: null,
 
@@ -209,8 +209,7 @@ Dots.Potting.prototype = {
             var feature = features[i],
                 dot = this.makeDot(feature);
             if (dot) {
-                /* hack to work around DotMarkerLayer (seanc) */
-                var marker = (!dot.added) ? this.dotsLayer.addMarker(dot, feature) : dot;
+                var marker = this.dotsLayer.addMarker(dot, feature);
                 if (updateExtent && marker.location && marker.location.lat && marker.location.lon) {
                     locations.push(marker.location);
                 }

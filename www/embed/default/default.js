@@ -23,56 +23,68 @@ $(function() {
 try{
     // ensure map has height of 100%
     $("#map").css("height","100%");
-    var marker_props = {},
-    markers = [];
+    var marker_props = {};
+
     var ds_tooltip;
     var mm = com.modestmaps;
+ 
+    params = parseQueryString(location.search);
+    if (!params.baseURL) params.baseURL = baseURL;
 
-       params = parseQueryString(location.search);
-       //if (!params.base) params.base = "toner";
-       // TODO: uncomment me?
-       if (!params.baseURL) params.baseURL = baseURL;
+    // look for tooltip parameters
+    if(!params.tt && !params.tm){
+      isTip = false;
+    }else{
+      isTip = true;
+      if(params.tt){
+          tip_title = params.tt;
+      }else{
+          tip_title = "id";
+      }
+
+      if(params.tm){
+
+      //var re= new RegExp (/{(.*)}/gi);
+      var re= new RegExp (/{([\w:]*)?\s?(.*?)}/gi);
+
+      var m=re.exec(params.tm);
+
+      if(m && m[1]){
+          tip_sentence = {
+              "struct":params.tm,
+              "parts":m
+          };
+      }
+          tip_desc = params.tm;
+      }else{
+          tip_desc = "";
+      }
+    }
+
+    
        
        
 
        pot = new Dots.Potting(params);
        pot.setTitle();
        
+       
+       // map controls
+       $(".zoom-in").click(function(e){
+          e.preventDefault();
+          pot.map.zoomIn(); 
+       });
+       $(".zoom-out").click(function(e){
+          e.preventDefault();
+          pot.map.zoomOut(); 
+       });
+       
        // adjust controls if title
        if (params.title) {
            $(".controls").css("top",($("#title").height()+20)+"px");
        }
        
-       // look for tooltip
-       // look for tooltip parameters
-       if(!params.tt && !params.tm){
-           isTip = false;
-       }else{
-           isTip = true;
-           if(params.tt){
-               tip_title = params.tt;
-           }else{
-               tip_title = "id";
-           }
-
-           if(params.tm){
-
-           //var re= new RegExp (/{(.*)}/gi);
-           var re= new RegExp (/{([\w:]*)?\s?(.*?)}/gi);
-
-           var m=re.exec(params.tm);
-
-           if(m && m[1]){
-               tip_sentence = {
-                   "struct":params.tm,
-                   "parts":m
-               };
-           }
-               tip_desc = params.tm;
-           }else{
-               tip_desc = "";
-           }
-       }
+       
        
         /* TOOLTIP FUNCTIONS */
            
@@ -121,8 +133,8 @@ try{
                    tt.css("width",_w+"px");
                    tt.width(_w);
                    //
-                   
-                  // var _tc = $(current_marker).offset();
+                  
+                  
                    var _point = pot.map.locationPoint(current_prop.__dt_coords);
                    var _h = tt.height();
                    var _radius = current_marker.getAttribute('r');
@@ -152,9 +164,21 @@ try{
 
                function showTip(){
                    if(!current_prop)return;
+                   var _title = getTipTitle();
+                   var _desc = getTipDesc();
+                   if(_title){
+                       tt_title.css("display","block");
+                       tt_title.html(_title);
+                   }else{
+                       tt_title.css("display","none");
+                   }
+                   if(_desc){
+                       tt_desc.css("display","block");
+                       tt_desc.html(_desc);
+                   }else{
+                       tt_desc.css("display","none");
+                   }
                    
-                   tt_title.html(getTipTitle());
-                   tt_desc.html(getTipDesc());
                    dotAddClass(current_marker,"over_hover");
                    initialTipPosition();
                }
@@ -169,17 +193,16 @@ try{
                    cont_height = container.height();
                }
             
-               tip.show = function(){
-                   var id = $(this).attr('id');
+               tip.show = function(dot){
+                   var id = $(dot).attr('id');
                    if(!id)return;
                    if(!marker_props[String(id)])return;
-                   current_marker = this;
-                   console.log(current_marker);
+                   current_marker = dot;
                    current_prop = marker_props[String(id)];
-                   this.parentNode.appendChild(this);
+                   dot.parentNode.appendChild(dot);
                    showTip(); 
                }
-               tip.hide = function(){
+               tip.hide = function(dot){
                    dotRemoveClass(current_marker,"over_hover");
                    hideTip(); 
                }
@@ -191,16 +214,32 @@ try{
                return tip;
                
            }
-          
-          if(isTip)ds_tooltip = new TipController();
+         
 
        pot.dotsLayer = new mm.DotMarkerLayer(pot.map);
+       if(isTip){
+           ds_tooltip = new TipController();
+           pot.dotsLayer.markerEventHandler = function(e){
+               if(!this || !e)return;
+               switch(e.type){
+                   case "mouseover":
+                    ds_tooltip.show(this);
+                   break;
+                   case "mouseout":
+                    ds_tooltip.hide(this);
+                   break;
+                   case "click":
+                    //
+                   break;
+               }
+            }
+        }
+
+       
        
        
        pot.makeDot = function(feature) {
            var props = feature.properties,
-          // href = getHref(props, feature.id),
-           //desc = props["request"] || props["description"] || "",
            geom = (feature.geometry.type == 'GeometryCollection') ? feature.geometry.geometries : [ feature.geometry ];
 
            var coords = geom[0]['coordinates'];
@@ -208,7 +247,8 @@ try{
            var more_front = {
                style: over_style,
                id:pid,
-               radius:6
+               radius:6,
+               interactive:isTip
            };
 
            var more_back = {
@@ -219,20 +259,15 @@ try{
    		   var loc = new mm.Location(coords[1],coords[0]);
    		   props.__dt_coords = loc;
 
-           var marker = pot.dotsLayer.addMarker(more_front,loc);
+           var marker = more_front;
+           
+           // Dots.Potting class only takes one marker, 
+           // will manually add this one, for now, until I write a Kirby Dot markerLayer
            var c = pot.dotsLayer.addMarker(more_back,loc);
            c.toBack();
            
 
-           // interaction handlers
-
-
-           if(ds_tooltip){
-                marker.node.onmouseover = ds_tooltip.show;
-                marker.node.onmouseout = ds_tooltip.hide;
-           }
-           
-           markers.push(marker);
+            // store props in key / value pairs
            marker_props[String(pid)] = props;
                     
           
