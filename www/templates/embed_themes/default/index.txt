@@ -37,8 +37,9 @@
                         <select id="config_provider">
                             <option value="">Toner</option>
                             <option value="acetate">Acetate</option>
-                            <option value="cloudmade">Pale Dawn</option>
-                            <option value="mq">MapQuest Open Aerial</option>
+                            <option value="pale_dawn">Pale Dawn</option>
+                            <option value="mapquest">MapQuest</option>
+                            <option value="bing">Bing</option>
                         </select>
                         <span class="default">Default: Toner</span>
                     </p>
@@ -129,7 +130,7 @@
             <li><tt>title</tt> (optional): the title to display along the top of the frame</li>
             <li><tt>tt</tt> (optional): a column field to use as the title for tooltip</li>
             <li><tt>tm</tt> (optional): a column field to use as the message for tooltip</li>
-            <li><tt>base</tt> (optional): takes a tile URL.  Currently, default theme supports only <a href="http://citytracking.github.com/toner/">Toner</a>, <a href="http://developer.geoiq.com/tools/acetate/">Acetate</a>, <a href="http://cloudmade.com/">Pale Dawn</a> and <a href="http://developer.mapquest.com/web/products/open/map">MapQuest Open Aerial</a> tiles.</li>
+            <li><tt>base</tt> (optional): takes a tile URL.  Currently, default theme supports only <a href="http://citytracking.github.com/toner/">Toner</a>, <a href="http://developer.geoiq.com/tools/acetate/">Acetate</a>, <a href="http://cloudmade.com/">Pale Dawn</a>, <a href="http://developer.mapquest.com/web/products/open/map">MapQuest</a> and <a href="http://www.bing.com/maps/">Bing</a> tiles.</li>
         </ul>
 
         <p>You can also specify the initial map zoom and
@@ -338,19 +339,6 @@ $("#updateConfig").click(function(e){
     
 });
 
-// tile provider handler
-$("#config_provider").change(function(e){
-    e.preventDefault();
-   if($(this).val() == "cloudmade"){
-        $("#tileapi .label").html("Cloudmade <a href='http://cloudmade.com/register'>API Key</a>:")
-        $("#tileapi").show();
-   }else{
-    $("#tileapi").hide();
-    $("#tileapi input").val("");
-    $("#tileapi .label").html("");
-   }
-    
-});
 
 // select all text when embed code text area is clicked
 $("#example_text").click(function(e){
@@ -386,20 +374,6 @@ function processTitle(x){
     return x.replace(/\s/g, "+");
 }
 
-// process base tile provider
-function processBase(x){
-    if(x=="acetate"){
-        return "http://acetate.geoiq.com/tiles/acetate/{Z}/{X}/{Y}.png";
-    }else if(x == "cloudmade"){
-        //8ee2a50541944fb9bcedded5165f09d9
-        return "http://b.tile.cloudmade.com/"+$("#config_api").val()+"/998/256/{Z}/{X}/{Y}.png";
-    }else if(x == "mq"){
-        return "http://oatile1.mqcdn.com/naip/{Z}/{X}/{Y}.png";
-    }else{
-        return "";
-    }
-
-}
 
 // 
 function processFields(x){
@@ -418,7 +392,7 @@ function generateIframeSrc(){
         if(defaults[o]){
             if(o != "coords"){
                 if(o == 'base'){
-                     out += o + "=" +processBase(defaults[o]) + "&amp;";
+                     out += o + "=" +defaults[o] + "&amp;";
                 }else{
                     out += o + "=" + ((o == "title") ? processTitle(defaults[o]):defaults[o]) + "&amp;";
                 }
