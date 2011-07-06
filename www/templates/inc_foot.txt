@@ -16,6 +16,7 @@
 
 {* load page specific js handler (seanc|03102011) *}
 {include file='inc_js_includes.txt'}
+{include file='inc_trackers.txt'}
 
 </body>
 </html>
