@@ -28,7 +28,7 @@
 
 	if ($sheet['deleted']){
 		$GLOBALS['smarty']->display("page_sheet_deleted.txt");
-		exit();		
+		exit();
 	}
 
 	if ($sheet['user_id'] != $owner['id']){
@@ -88,15 +88,16 @@
 
 	$to_index = array($sheet['dots'][0]);
 	$dots_indexed = dots_indexed_on($to_index);
-	
+
 	$GLOBALS['smarty']->assign_by_ref("dots_indexed", $dots_indexed);
-	
+
 	# define the selected title field
 	$title_field = NULL;
 	#$sheet['dots'][0]['details']['title_internal'][0]['value'] = "{title} on {date}";
+
 	if(isset($sheet['dots'][0]['details']['title_internal'])){
 		preg_match_all("/[\{](.+?)[\}]/i", $sheet['dots'][0]['details']['title_internal'][0]['value'], $title_matches);
-		
+
 		if(isset($title_matches[1]) && !empty($title_matches[1])){
 			/*
 			foreach($title_matches[1] as $match){
@@ -109,12 +110,11 @@
 	//[\{](.+?)[\}] -- gets all template patterns
 	$GLOBALS['smarty']->assign_by_ref("assigned_title", $title_field);
 
-	
 	if ($is_own){
 		$smarty->assign("permissions_map", dots_permissions_map());
 		$smarty->assign("geocoder_map", geo_geocode_service_map());
 	}
-	
+
 	// create a simplfied object for js
 	$json_fields = array("id","created","details","geohash","is_interactive","latitude","longitude","user_id","perms","sheet_id");
 	if($sheet['dots']){
@@ -136,22 +136,21 @@
 						$tmp[$fi] = $dot[$fi];
 					}
 				}
-				
+
 				if(isset($dots_indexed)){
 					foreach($dots_indexed as $ifield){
 						if(isset($dot[$ifield])) $tmp[$ifield] = $dot[$ifield];
 					}
 				}
-				
+
 			}
 
 			$to_json[] =$tmp;
-			
 		}
+
 		//if( isset($owner.username) )$ddd[] = array('owner'=>$owner.username);
 		$smarty->assign("dots_simple", $to_json);
 	}
-	
 
 	$formats = array_values(formats_valid_export_map());
 	$GLOBALS['smarty']->assign("export_formats", $formats);
