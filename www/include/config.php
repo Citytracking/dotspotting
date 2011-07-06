@@ -345,7 +345,15 @@
 	$GLOBALS['cfg']['check_notices'] = 1;
 
 	$GLOBALS['cfg']['db_profiling'] = 0;
+	
+	#
+	# Analytic providers
+	# 
 
+    $GLOBALS['cfg']['google_analytics_id'] = '';
+    $GLOBALS['cfg']['mixpanel_id'] = '';
+    
+    
 	#
 	# USER STYLES
 	# not in effect, needs to be re-thought out (seanc | 6282011)

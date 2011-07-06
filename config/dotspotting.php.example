@@ -118,5 +118,11 @@
 	# $GLOBALS['cfg']['example_some_password'] = 'READ-FROM-SECRETS';
 	# include_once("your-secrets-file.php");
 	#
+	
+	#
+	#   Analytic / trackers
+	#
+    #$GLOBALS['cfg']['google_analytics_id'] = 'your_account_id_here';
+    #$GLOBALS['cfg']['mixpanel_id'] = 'your_project_token_here';
 
 ?>
