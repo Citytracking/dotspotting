@@ -283,8 +283,7 @@ if (!com.modestmaps) {
            this.canvas.clear();
         },
         
-        // marker event callback defined by user
-        markerEventHandler: null,
+   
         
         buildMarker: function(attrs) {
             var radius = (attrs.radius) ? attrs.radius : this.dotRadius;
@@ -297,12 +296,10 @@ if (!com.modestmaps) {
             if (attrs.id) {
                 dot.node.id = attrs.id;
             }
-            // set interactive handlers
-            if (attrs.interactive && (this.markerEventHandler && typeof this.markerEventHandler == "function")){
-                dot.node.onmouseover = this.markerEventHandler;
-                dot.node.onmouseout = this.markerEventHandler;
-                dot.node.onclick = this.markerEventHandler;
+            if(attrs.dotClass){
+                dot.node.setAttribute('class', attrs.dotClass);
             }
+
 
             return dot;
         },
@@ -329,11 +326,6 @@ if (!com.modestmaps) {
                 this.markers.splice(index, 1);
             }
             if(typeof marker.remove == "function"){
-                if(marker.attrs.interactive){
-                    marker.node.onmouseover = null;
-                    marker.node.onmouseout = null;
-                    marker.node.onclick = null;
-                }
                 marker.remove();
             }
             return marker;

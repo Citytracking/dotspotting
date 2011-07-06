@@ -8,14 +8,14 @@
 	
 	$sheet_url= "";
 	
-	# pass random URL to seed example
+	# if incoming owner id & sheet id
 	if( $_GET['oid'] && $_GET['sid'] ){
 	    $sheet = array(
 	       'user_id' => (int)$_GET['oid'],
 	       'id' => (int)$_GET['sid']
 	    );
 	    $sheet_url = urls_url_for_sheet( $sheet );
-	}else{
+	}else{ # pass random URL to seed example
     	$recent_sheets = sheets_recently_created($GLOBALS['cfg']['user_id']);
         
         if($recent_sheets){
@@ -28,7 +28,6 @@
     }
 	
 	$GLOBALS['smarty']->assign_by_ref("recent_sheet_url", $sheet_url);
-	
 	
 	if($_GET['type']=="crime"){
         $GLOBALS['smarty']->display('embed_themes/crime/index.txt');

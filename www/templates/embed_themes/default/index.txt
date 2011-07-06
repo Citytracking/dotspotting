@@ -61,19 +61,14 @@
                     </p>
                 
                      <hr/>
-                
-                    <p>
-                        <span class="label">Width:</span>
-                        <input id="config_width" value="400" />
-                        <span class="default">Default: 400</span>
+                     
+                     <p>
+                        <span class="label">Set map dimensions:</span><input id="config_width" value="400" style="width:3em;"/>
+                        <span style="font-size:12px;padding:0 3px 0 2px;"> x </span>
+                        <input id="config_height" value="400" style="width:3em;"/>
                     </p>
+                     <a href="#" id="previewConfig">Preview map dimensions</a>
 
-                    <p>
-                        <span class="label">Height:</span>
-                        <input id="config_height" value="400" />
-                        <span class="default">Default: 400</span>
-                    </p>
-                    
                      <hr/>
                  
                     <p>
@@ -100,7 +95,7 @@
             
             <div id="iframe_right">
                 <a id="close-preview-modal">[<span>&#215;</span>]</a>
-                <a href="#" id="previewConfig">Preview map</a>
+                
                 <iframe id="example_iframe" width="400" height="400" src=""></iframe>
                 <p><span class="label"></span><input value="" style="width:200px;"/><img id="location_copier" title="copy over to options" src="{$cfg.abs_root_url}images/embed_marker.png"/></p>
             </div>
@@ -195,47 +190,52 @@ $(document).ready(function() {
 ////////////////////////////////////////////////////////
 
 function getViewPort(){
-var viewportwidth;
- var viewportheight;
- 
- // the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
- 
- if (typeof window.innerWidth != 'undefined')
- {
+    /* from Andy Langton --> http://andylangton.co.uk/articles/javascript/get-viewport-size-javascript/ */
+    
+    var viewportwidth;
+    var viewportheight;
+
+    // the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
+
+    if (typeof window.innerWidth != 'undefined')
+    {
       viewportwidth = window.innerWidth,
       viewportheight = window.innerHeight
- }
- 
-// IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+    }
 
- else if (typeof document.documentElement != 'undefined'
+    // IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+
+    else if (typeof document.documentElement != 'undefined'
      && typeof document.documentElement.clientWidth !=
      'undefined' && document.documentElement.clientWidth != 0)
- {
+    {
        viewportwidth = document.documentElement.clientWidth,
        viewportheight = document.documentElement.clientHeight
- }
- 
- // older versions of IE
- 
- else
- {
+    }
+
+    // older versions of IE
+
+    else
+    {
        viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
        viewportheight = document.getElementsByTagName('body')[0].clientHeight
- }
- return [viewportwidth,viewportheight];
+    }
+    return [viewportwidth,viewportheight];
 }
+
 function doPreview(){
+    if(isPreview)return;
     isPreview = true;
     var vp = getViewPort();
     var content_offset = $("#content").offset();
     var configure_offset = $("#configure").offset();
     var content_width = $("#content").width();
-
     
-    //var _offset_left = (iframe_size[0] > content_width) ? -(content_offset.left/2) : (content_width - iframe_size[0])/2;
-    var _offset_left = (((vp[0]  - iframe_size[0]) / 2) - content_offset.left) ;
-    var _offset_top = (((vp[1]  - iframe_size[1]) / 2) - content_offset.top) - 10;
+    var map_width = parseInt($("#config_width").val());
+    var map_height = parseInt($("#config_height").val());
+
+    var _offset_left = (((vp[0]  - map_width) / 2) - content_offset.left) ;
+    var _offset_top = (((vp[1]  - map_height) / 2) - content_offset.top) - 10;
     
     
     $("#configure").addClass('preview');
@@ -243,10 +243,10 @@ function doPreview(){
     $("#iframe_right").css("left",_offset_left + "px");
     $("#iframe_right").css("top",_offset_top + "px");
     $("#iframe_right p").hide();
-    $("#previewConfig").hide();
+    //$("#previewConfig").hide();
     $("#close-preview-modal").show();
 
-    autoResize('example_iframe',iframe_size[0],iframe_size[1]);
+    autoResize('example_iframe',map_width,map_height);
     
     $('body').append('<div id="previewBackground"></div>');
     $("#previewBackground").show();
@@ -271,7 +271,7 @@ function doClosePreview(){
     $("#iframe_right").css("left","0px");
     $("#iframe_right p").show();
     $('#previewBackground').remove();
-    $("#previewConfig").show();
+    //$("#previewConfig").show();
 }
 
 function autoResize(id,w,h){
