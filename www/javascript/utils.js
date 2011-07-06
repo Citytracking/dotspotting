@@ -165,6 +165,7 @@ function utils_polymaps_add_compass(map){
 	map.add(compass);
 }
 
+// non-kirby
 function std_utils_polymaps_assign_dot_properties(e){
 
 	var count = e.features.length;
@@ -419,6 +420,45 @@ function utils_modestmap(map_id, more){
 
 function utils_modestmaps_add_compass(map){
     //com.modestmaps.Compass(map);
+}
+
+function utils_modestmaps_add_kirbydots(layer,features,more){
+    if (! more){
+		more = {};
+	}
+	var drawn = new Array();
+	var drawn_back = new Array();
+
+	var count_features = features.length;
+	
+	for (var i = 0; i < count_features; i++){
+	    var f = features[i],
+	    props = f.properties,
+	    geom = (f.geometry.type == 'GeometryCollection') ? f.geometry.geometries : [ f.geometry ],
+        coords = geom[0]['coordinates'],
+        loc = new com.modestmaps.Location(coords[1],coords[0]);
+	
+        var more_front = {
+           style: more['attrs'],
+           id: "dot_"+props.id,
+           radius:6
+       };
+       var more_back = {
+              style: more['attrs_back'],
+              radius:12
+        };
+        
+        var _front = layer.addMarker(more_front,loc);
+		var _back = layer.addMarker(more_back,loc);
+        _back.toBack();
+        drawn.push(_front);
+        
+        //
+        if(more['onload'])more['onload'](_front, props);
+        
+		
+	}
+	return drawn;
 }
 
 // quick and dirty function to tweak the extents of a bounding
@@ -968,4 +1008,17 @@ if (!Array.prototype.indexOf)
     }
     return -1;
   };
+}
+
+function defer(fn, ms, context) {
+    if (!ms) ms = 10;
+    return function() {
+        var args = arguments, that = context || this;
+        if (fn.timeout) clearTimeout(fn.timeout);
+        return fn.timeout = setTimeout(function() {
+            if (typeof fn === "function") {
+                fn.apply(that, args);
+            }
+        }, ms);
+    };
 }

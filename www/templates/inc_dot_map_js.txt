@@ -39,6 +39,7 @@ function draw_map_polymaps(dot){
 }
 
 function draw_map_modestmaps(dot){
+    var mm = com.modestmaps;
 	var more = { 'justzoom':1 };	 
 	var map = utils_modestmap('map', more);
 
@@ -63,9 +64,9 @@ function draw_map_modestmaps(dot){
 		'radius' : 6,
 	};
 
+
 	var markers = new com.modestmaps.Markers(map);
-	//markers.drawGeoJson(features, more);
-	markers.drawKirbys(features, more);
+    markers.drawKirbys(features, more);
 	
 	$("#map").bind('mapresize', function(e) {
 		var _w = Math.round($("#map").width());

@@ -27,7 +27,7 @@
 			    'user' : {ldelim} id : {if $cfg.user.id}{$cfg.user.id|escape}{else}null{/if} {rdelim},
 			    'maptiles_template_url' : '{$cfg.maptiles_template_url|escape}',
 			    'maptiles_template_hosts' : '{$cfg.maptiles_template_hosts|@join:","|escape}'.split(','),
-			    'use_polymaps' : Modernizr.svg,
+			    'use_polymaps' : false,//Modernizr.svg,
 				'enable_touch_support' : Modernizr.touch,
 			    'js_loadlib' : false,
 
@@ -69,10 +69,10 @@
 					.script(_dotspotting.abs_root_url + 'javascript/modestmaps.markers.js')
 					.script(_dotspotting.abs_root_url + 'javascript/modestmaps.compass.js')
 					.script(_dotspotting.abs_root_url + 'javascript/modestmaps.tilestache.js')
-					.script(_dotspotting.abs_root_url + 'javascript/modestmaps-htmapl.js')
-					.script(_dotspotting.abs_root_url + "javascript/htmapl.js")
+					//.script(_dotspotting.abs_root_url + 'javascript/modestmaps-htmapl.js')
+					//.script(_dotspotting.abs_root_url + "javascript/htmapl.js")
 					.wait(function(){
-						if($("div.map"))$("div.map").htmapl();
+						//if($("div.map"))$("div.map").htmapl();
 						_dotspotting.js_loadlib = true;
 					});
 					

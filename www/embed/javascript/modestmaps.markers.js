@@ -283,8 +283,6 @@ if (!com.modestmaps) {
            this.canvas.clear();
         },
         
-   
-        
         buildMarker: function(attrs) {
             var radius = (attrs.radius) ? attrs.radius : this.dotRadius;
             // position is set in repositionMarker function
@@ -382,5 +380,76 @@ if (!com.modestmaps) {
     };
     
     MM.extend(MM.DotMarkerLayer, MM.MarkerLayer);
+    
+    /* NOT WORKING */
+    MM.GeoJsonLayer = function(map, provider, parent) {
+        MM.DotMarkerLayer.call(this, map, provider, parent);
+    };
+    
+    MM.GeoJsonLayer.prototype = {
+        drawPoint: function(attrs){
+   
+            var radius = (attrs.radius) ? attrs.radius : this.dotRadius;
+            // position is set in repositionMarker function
+            var feature = this.canvas.circle(0, 0, radius);
+            
+            thing.attr(this.dotAttrs);
+            if (attrs.style) {
+                feature.attr(attrs.style);
+            }
+            if (attrs.id) {
+                feature.node.id = attrs.id;
+            }
+            if(attrs.dotClass){
+                feature.node.setAttribute('class', attrs.dotClass);
+            }
+            
+            return feature;
+            
+        },
+        drawPolygon: function(attrs){
+            
+        },
+        
+        buildMarker: function(attrs) {
+            
+            var feature;
+            if(attrs.type == "Point"){
+                feature = this.drawPoint(attrs);
+
+            }else if((attrs.type == 'Polygon') || (attrs.type == 'MultiPolygon')){
+                feature = this.drawPolygon(attrs);
+            }
+
+
+            return feature;
+            
+        },
+         addMarker: function(attrs, location) {
+            // if only location is provided, ignore attrs
+            if (arguments.length == 1) location = arguments[0];
+            // create a dot with the provided attrs
+            var feature = this.buildMarker(attrs);
+            feature.location = this.getLocation(location);
+            // stash the projected coordinate for later use
+            feature.coord = this.map.provider.locationCoordinate(dot.location);
+            feature.attrs = attrs;
+            // set its initial position
+            this.repositionMarker(dot);
+            this.markers.push(dot);
+
+            return dot;
+        },
+        repositionMarker: function(marker) {
+            if (marker.coord && marker.attrs.type == "Point") {
+                var pos = this.map.coordinatePoint(marker.coord);
+                // TODO: check to see if this works in IE
+                marker.attr("cx", pos.x - this.position.x);
+                marker.attr("cy", pos.y - this.position.y);
+            }
+        },
+    };
+    
+    MM.extend(MM.GeoJsonLayer, MM.DotMarkerLayer);
 
 })(com.modestmaps);

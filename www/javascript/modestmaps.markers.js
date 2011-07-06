@@ -40,8 +40,8 @@ com.modestmaps.Markers = function(mm){
 	});
 };
 
-/* not really sure why the resize callback is not getting called above, no time to worry about it
- * so just wrote this which is wired to the toggle map size button (seanc | 04042011)
+/* 
+ * resize Raphael canvas
 */
 com.modestmaps.Markers.prototype.forceAresize = function(){
 	this.canvas.setSize(this.container.offsetWidth,this.container.offsetHeight);

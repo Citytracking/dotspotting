@@ -651,12 +651,12 @@ function draw_map_modestmaps(dots,update_from_search){
 			});
 		}
 	};
-    
+	
 	var markers = new mm.Markers(map);
-	markers.drawKirbys(dots['features'], more);
+    markers.drawKirbys(dots['features'], more);
 
 	// not really doing anything right now because we have our own controls.
-	utils_modestmaps_add_compass(map);	
+	//utils_modestmaps_add_compass(map);	
 	
 	// create controls
 	utils_add_map_controls(map,"mm",extent);
