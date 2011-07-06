@@ -76,7 +76,14 @@ function utils_tile_provider(){
 
 function ensure_valid_url_template_provider(p){
 
-	// static is a flag that indicated these tiles are being
+	// The valid_providers hash is defined here because it's
+	// just the simplest thing to do right now. It may / should
+	// be moved in to a more global scope so that other parts
+	// of the site can access it. That being said nothing else
+	// is using it right now so it stays here for now.
+	// (20110706/straup)
+
+	// 'static' is a flag that indicated these tiles are being
 	// served using raw tilestache cache-style URLs
 
 	var cm_key = '1a1b06b230af4efdbb989ea99e9841af';
@@ -84,7 +91,7 @@ function ensure_valid_url_template_provider(p){
 
 	var mq_hosts = [1,2,3,4];
 
-	var valid = {
+	var valid_providers = {
 
 		// bing (todo)
 
@@ -106,10 +113,10 @@ function ensure_valid_url_template_provider(p){
 		'prettymaps' : { 'template' : 'http://prettymaps.stamen.com/201008/tiles/isola/{Z}/{X}/{Y}.png', 'hosts' : null, 'static' : 1 },
 	};
 
-	valid['bourne'] = valid['midnightcommander'];
-	valid['osm'] = valid['openstreetmap'];
+	valid_providers['bourne'] = valid_providers['midnightcommander'];
+	valid_providers['osm'] = valid_providers['openstreetmap'];
 
-	return valid[p];
+	return valid_providers[p];
 }
 
 function ensure_valid_url_template(t){
