@@ -44,30 +44,73 @@ function utils_tile_provider(){
 	qs = new Querystring(qs);
 
 	var t = (qs.contains('template')) ? qs.get('template') : null;
+	var p = (qs.contains('provider')) ? qs.get('provider') : null;
 
-	// currently only TileStache-style cache tile
-	// URLs are supported (20101111/straup)
+	// See that? We're redefining 'p' and 't' on the fly
 
-	// See that? We're redefining 't' on the fly
+	if ((p) && (p = ensure_valid_url_template_provider(p))){
 
-	if ((t) && (t = ensure_valid_url_template(t))){
+		template = p['template'];
+		hosts = p['hosts'];
+		static_tiles = p['static'];
+	}
+
+	else if ((t) && (t = ensure_valid_url_template(t))){
 
 		template = t;
 		hosts = null;
 		static_tiles = (qs.contains('static')) ? 1 : 0;
 	}
 
+	else {}
     }
 
     var rsp = {
 	'template' : template,
 	'hosts' : hosts,
 	'static' : static_tiles
-    };	
+    };
 
     return rsp;
 }
 
+function ensure_valid_url_template_provider(p){
+
+	// static is a flag that indicated these tiles are being
+	// served using raw tilestache cache-style URLs
+
+	var cm_key = '1a1b06b230af4efdbb989ea99e9841af';
+	var cm_hosts = ['a','b','c','d'];
+
+	var mq_hosts = [1,2,3,4];
+
+	var valid = {
+
+		// bing (todo)
+
+		// cloudmade
+		'lynch' : { 'template': 'http://{S}.tile.cloudmade.com/' + cm_key + '/2241/256/{Z}/{X}/{Y}.png', 'hosts' : cm_hosts, 'static' : 0 },
+		'midnightcommander' : { 'template': 'http://{S}.tile.cloudmade.com/' + cm_key + '/999/256/{Z}/{X}/{Y}.png', 'hosts' : cm_hosts, 'static' : 0 },
+		'paledawn' : { 'template': 'http://{S}.tile.cloudmade.com/' + cm_key + '/998/256/{Z}/{X}/{Y}.png', 'hosts' : cm_hosts, 'static' : 0 },
+
+		// google (todo)
+
+		// mapquest
+		'mapquest-road' : { 'template': 'http://otile{S}.mqcdn.com/tiles/1.0.0/osm/{Z}/{X}/{Y}.jpg', 'hosts' : mq_hosts, 'static' : 0 },
+		'mapquest-aerial' : { 'template': 'http://oatile{S}.mqcdn.com/naip/{Z}/{X}/{Y}.jpg', 'hosts' : mq_hosts, 'static' : 0 },
+
+		// osm
+		'openstreetmap' : { 'template' : 'http://{S}.tile.openstreetmap.org/{Z}/{X}/{Y}.png', 'hosts' : ['a','b','c'], 'static': 0 },
+
+		// stamen
+		'prettymaps' : { 'template' : 'http://prettymaps.stamen.com/201008/tiles/isola/{Z}/{X}/{Y}.png', 'hosts' : null, 'static' : 1 },
+	};
+
+	valid['bourne'] = valid['midnightcommander'];
+	valid['osm'] = valid['openstreetmap'];
+
+	return valid[p];
+}
 
 function ensure_valid_url_template(t){
 
