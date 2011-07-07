@@ -263,12 +263,15 @@ function collect_sheets(){
 }
 
 function draw_map_modestmaps(sheets,update_from_search){
+    // check to see if there incoming coordinates
+    var qs = new Querystring();
+	if(_dotspotting)_dotspotting.hashobj = qs;
+	
 	var incomingState=false;
 	var _extent = null;
 	var map = utils_modestmap('map');
 	
-	// check to see if there incoming coordinates 
-	var qs = doHashSetup();
+	
 	if(!update_from_search){
 		if(qs && qs.contains('c')){
 			var _mapstate = qs.get('c');
@@ -342,12 +345,15 @@ function draw_map_modestmaps(sheets,update_from_search){
 }
 
 function draw_map_polymaps(sheets,update_from_search){
+    // check to see if there incoming coordinates
+    var qs = new Querystring();
+    if(_dotspotting)_dotspotting.hashobj = qs;
+
 	var incomingState=false;
 	var extent = null;
 	var map = utils_polymap('map');
 	
-	// check to see if there incoming coordinates 
-	var qs = doHashSetup();
+
 	if(!update_from_search){
 		if(qs && qs.contains('c')){
 			var _mapstate = qs.get('c');

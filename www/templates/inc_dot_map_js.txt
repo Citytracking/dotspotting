@@ -2,7 +2,10 @@
 {literal}
 
 function draw_map_polymaps(dot){
-
+    // check to see if there incoming coordinates
+    var qs = new Querystring();
+	if(_dotspotting)_dotspotting.hashobj = qs;
+	
 	var more = { 'justzoom':1 };
 	var map = utils_polymap('map', more);
 
@@ -39,6 +42,10 @@ function draw_map_polymaps(dot){
 }
 
 function draw_map_modestmaps(dot){
+    // check to see if there incoming coordinates
+    var qs = new Querystring();
+    if(_dotspotting)_dotspotting.hashobj = qs;
+
     var mm = com.modestmaps;
 	var more = { 'justzoom':1 };	 
 	var map = utils_modestmap('map', more);

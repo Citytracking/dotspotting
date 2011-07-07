@@ -36,34 +36,29 @@ function utils_tile_provider(){
     var static_tiles = 0;
 
     // can has URL template?
+    // there should be querystring object by this stage...
+    var	qs = (_dotspotting && _dotspotting.hashobj) ? _dotspotting.hashobj : null;
+    if(qs){
+    	var t = (qs.contains('template')) ? qs.get('template') : null;
+    	var p = (qs.contains('provider')) ? qs.get('provider') : null;
 
-    var qs = (window.location.hash != '') ? window.location.hash.substring(1) : window.location.search.substring(1);
+    	// See that? We're redefining 'p' and 't' on the fly
 
-    if (qs){
+    	if ((p) && (p = ensure_valid_url_template_provider(p))){
 
-	qs = new Querystring(qs);
+    		template = p['template'];
+    		hosts = p['hosts'];
+    		static_tiles = p['static'];
+    	}
 
-	var t = (qs.contains('template')) ? qs.get('template') : null;
-	var p = (qs.contains('provider')) ? qs.get('provider') : null;
+    	else if ((t) && (t = ensure_valid_url_template(t))){
 
-	// See that? We're redefining 'p' and 't' on the fly
-
-	if ((p) && (p = ensure_valid_url_template_provider(p))){
-
-		template = p['template'];
-		hosts = p['hosts'];
-		static_tiles = p['static'];
-	}
-
-	else if ((t) && (t = ensure_valid_url_template(t))){
-
-		template = t;
-		hosts = null;
-		static_tiles = (qs.contains('static')) ? 1 : 0;
-	}
-
-	else {}
+    		template = t;
+    		hosts = null;
+    		static_tiles = (qs.contains('static')) ? 1 : 0;
+    	}
     }
+
 
     var rsp = {
 	'template' : template,
@@ -955,50 +950,66 @@ function utils_hash(map,type){
 	
 }
 
-function Querystring(qs) { // optionally pass a querystring to parse
-	this.params = {};
+/* Client-side access to querystring name=value pairs
+	Version 1.3
+	28 May 2008
 	
-	if (qs == null) qs = location.search.substring(1, location.search.length);
-	if (qs.length == 0) return;
+	License (Simplified BSD):
+	http://adamv.com/dev/javascript/qslicense.txt
+*/
+// we're smashing both the hash & search location properties together
+function Querystring() {
+	var params = {};
+	
+	var _hash = (window.location.hash != '') ? window.location.hash.substring(1) : '';
+	var _search = window.location.search.substring(1);
+	
+	if(_hash)parseIt(_hash);
+	if(_search)parseIt(_search);
+	
+	function parseIt(stuff){
+	    stuff = stuff.replace(/\+/g, ' ');
+    	var args = stuff.split('&'); // parse out name/value pairs separated via &
 
-	// Turn <plus> back to <space>
-	// See: http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1
-	qs = qs.replace(/\+/g, ' ');
-	var args = qs.split('&'); // parse out name/value pairs separated via &
-	
-	// split out each name=value pair
-	for (var i = 0; i < args.length; i++) {
-		var pair = args[i].split('=');
-		var name = decodeURIComponent(pair[0]);
-		
-		var value = (pair.length==2)
-			? decodeURIComponent(pair[1])
-			: name;
-		
-		this.params[name] = value;
+    	// split out each name=value pair
+    	for (var i = 0; i < args.length; i++) {
+    		var pair = args[i].split('=');
+    		var name = decodeURIComponent(pair[0]);
+
+    		var value = (pair.length==2)
+    			? decodeURIComponent(pair[1])
+    			: name;
+
+    		params[name] = value;
+    	}
 	}
 	
-	/**/
-	this.get = function(key, default_) {
-		var value = this.params[key];
-		return (value != null) ? value : default_;
+	return {
+	    get: function(key, default_) {
+    		var value = params[key];
+    		return (value != null) ? value : default_;
+    	},
+    	contains: function(key) {
+    		var value = params[key];
+    		return (value != null);
+    	}
+ 
 	}
-	
-	this.contains = function(key) {
-		var value = this.params[key];
-		return (value != null);
-	}
+
 }
 // probably don't need this, call Querystring on it's own
 // left incase needed to do anything else during this phase (seanc | 03112011)
 function doHashSetup(){
+    /*
 	qs = (window.location.hash != '') ? window.location.hash.substring(1) : window.location.search.substring(1);
+	
     if (qs){
 		qs = new Querystring(qs);
 	}else{
 		qs = null;
 	}
 	return qs;
+	*/
 }
 
 ////

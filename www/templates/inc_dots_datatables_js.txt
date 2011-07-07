@@ -68,7 +68,7 @@ $(document).ready(function(){
      dt.fnSetFilteringHooks();
 
 	// check to see if there incoming coordinates 
-	var qs = doHashSetup();
+	var qs =  new Querystring();//doHashSetup();
 	if(qs && qs.contains('s')){
 		dt.fnFilter(qs.get('s'));
 		_dotspotting.datatables_query = qs.get('s');

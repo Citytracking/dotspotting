@@ -109,13 +109,14 @@ function findMe(str){
 }
 
 function draw_map_polymaps(){
+    // check to see if there incoming coordinates
+    var qs = new Querystring();
+    if(_dotspotting)_dotspotting.hashobj = qs;
+
+
 	map = utils_polymap('map');
 	var current_map_zoom,extent = null;
 	var incomingState=false;
-	
-
-	var qs = doHashSetup();
-	if(_dotspotting)_dotspotting.hashobj = qs;
 	
 	if(qs && qs.contains('c')){
 		var _mapstate = qs.get('c');
@@ -134,10 +135,7 @@ function draw_map_polymaps(){
 	    map.zoom(2);
 	}
 		
-		
-    
 
-	
 	// adding our own controls
 	utils_polymaps_add_compass(map);
 	
@@ -167,14 +165,16 @@ function draw_map_polymaps(){
 }
 
 function draw_map_modestmaps(){
+    // check to see if there incoming coordinates
+    var qs = new Querystring();
+	if(_dotspotting)_dotspotting.hashobj = qs;
 
 	var mm = com.modestmaps;
 	map = utils_modestmap('map');
 	var extent = null;
-	var incomingState = false;
+	var incomingState = false; 
+
 	
-	// check to see if there incoming coordinates 
-	var qs = doHashSetup();
 	if(qs && qs.contains('c')){
 		var _mapstate = qs.get('c');
 		var args = _mapstate.split("/").map(Number);

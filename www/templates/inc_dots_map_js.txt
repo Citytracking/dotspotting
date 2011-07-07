@@ -574,15 +574,17 @@ function collect_dots(){
 
 
 function draw_map_modestmaps(dots,update_from_search){
-
+    
+    // check to see if there incoming coordinates 
+	var	qs = new Querystring();
+	if(_dotspotting)_dotspotting.hashobj = qs;
+	
 	var mm = com.modestmaps;
 	var map = utils_modestmap('map');
 	var extent = null;
 	var incomingState = false;
 	
-	// check to see if there incoming coordinates 
-	var qs = doHashSetup();
-	if(_dotspotting)_dotspotting.hashobj = qs;
+	
 	
 	if(qs && qs.contains('c')){
 		var _mapstate = qs.get('c');
@@ -686,6 +688,10 @@ function draw_map_modestmaps(dots,update_from_search){
 }
 
 function draw_map_polymaps(dots,update_from_search){
+    // check to see if there incoming coordinates
+    var qs = new Querystring();
+    if(_dotspotting)_dotspotting.hashobj = qs;
+
 	var map = utils_polymap('map');
 	var current_map_zoom,extent = null;
 	var incomingState=false;
@@ -693,8 +699,6 @@ function draw_map_polymaps(dots,update_from_search){
 	// init selected dot variable
 	_dotspotting.selected_dot = null;
 
-	var qs = doHashSetup();
-	if(_dotspotting)_dotspotting.hashobj = qs;
 	
 	if(!update_from_search){
 		if(qs && qs.contains('c')){
