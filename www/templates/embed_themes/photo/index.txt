@@ -1,4 +1,4 @@
-{assign var="page_title" value="Default Theme"}
+{assign var="page_title" value="Photo Theme"}
 {capture assign="extra_head"}
 <link rel="stylesheet" href="{$cfg.abs_root_url}css/embed.css">
 {/capture}
@@ -11,8 +11,8 @@
 <div id="section_about" class="section_bunch_o_text">
 
     <div class="theme" id="default">
-        <h2>Default Embed Theme</h2>
-        <p>This is a general use theme to display your dots outside the dotspotting garden.</p>
+        <h2>Photo Embed Theme</h2>
+        <p>Transform your dots into photo thumbnails. Requires a 'flickr:id' or 'photo_url' field in your dataset.</p>
         <p>To get started enter the URL to a Dotspotting sheet below.</p>
         <p>You can then customize the map a bit, by using the fields under 'Options'.</p> 
         <p>Click the 'Update embed code' button, to apply changes.</p>
@@ -347,6 +347,8 @@ $("#example_text").click(function(e){
    $(this).select();
 });
 
+
+
 // set fields from default object
 function wipeConfigSettings(){
      defaults = {
@@ -403,7 +405,7 @@ function processFields(x){
 }
 
 function generateIframeSrc(){
-    var out = root_url+"embed/default/map?";
+    var out = root_url+"embed/photo/map?";
     for(o in defaults){
         if(defaults[o]){
             if(o != "coords"){
@@ -488,6 +490,7 @@ function getSheet(u){
         wipeConfigSettings();
         defaults['title'] = d['dotspotting:title'];
         if(d.features[0]['properties']['user_id'] && d.features[0]['properties']['sheet_id']){
+            
             processFields(d.features[0]['properties']);
             defaults['user'] = parseInt(d.features[0]['properties']['user_id']);
             defaults['sheet'] = parseInt(d.features[0]['properties']['sheet_id']);

@@ -18,7 +18,10 @@
         <dt><a href="{$cfg.abs_root_url}embed/crime/" title=""><img src="{$cfg.abs_root_url}embed/crime/thumbnail.png" width="200" height="200"/></a></dt>
         <dd>Crime</dd>
     </dl>
-    
+    <dl>
+        <dt><a href="{$cfg.abs_root_url}embed/photo/" title=""><img src="{$cfg.abs_root_url}embed/photo/thumbnail.png" width="200" height="200"/></a></dt>
+        <dd>Photo</dd>
+    </dl>
     <div class="clear"></div>
 </div>
 {include file="inc_foot.txt"}

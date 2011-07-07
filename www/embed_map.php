@@ -9,6 +9,8 @@
         $GLOBALS['smarty']->display('embed_themes/crime/map.txt');
 	}else if($_GET['type']=="default"){
 	     $GLOBALS['smarty']->display('embed_themes/default/map.txt');
+	}else if($_GET['type']=="photo"){
+     	 $GLOBALS['smarty']->display('embed_themes/photo/map.txt');
 	}else{
 	    $GLOBALS['smarty']->display('page_embed.txt');
     }

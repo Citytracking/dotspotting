@@ -1,0 +1,27 @@
+/* PHOTO THEME */
+html,body{margin:0;padding:0;position:absolute;width:100%;height:100%;overflow:hidden;}
+body{font-family:"Helvetica Neue",Helvetica,Arial,clean,sans-serif;font-size:15px;line-height:20px;background:#fff;color:#000;}
+a:link,
+a:hover,
+a:visited{color:inherit;}
+#map{width:100%;height:100%;background-color:#ccc;}
+#copyright{margin:0;font-size:10px;line-height:14px;z-index:2001;position:absolute;left:5px;bottom:5px;color:#999;}
+#output{z-index:2000;position:absolute;top:0;left:0;width:100%;color:#fff;background:#000;}
+#output p{padding:5px;margin:0;}
+#output .error{color:#fff;background:#c33;}
+h1{font-size:20px;line-height:25px;font-weight:normal;margin:0;padding:5px;}
+h1 a{text-decoration:none;}
+
+/*MAP CONTROLS*/
+.controls{position:absolute;z-index:1000;top:10px;left:10px;}
+.controls a{display:block;text-decoration:none;font-weight:bold;background:transparent;color:#fff;padding:2px;line-height:0;cursor:pointer;}
+.controls a:hover{opacity:.7;}
+.controls a img{border:0 !important;vertical-align:middle;}
+.controls label{color:#666;display:none;}
+
+/* MARKER STYLES */
+.photodot{display:block;cursor:pointer;}
+.photodot div.photoContainer{background:#000;background:rgba(0,0,0,1);padding:5px;position:relative;}
+.photodot img{position:relative;}
+.ps{height:5px;width:5px;background:#ff0000;z-index:2000;position:relative;display:none;}
+.photo_nub{border-bottom:0;height:0;width:0;position:absolute;border-left:10px solid transparent;border-right:10px solid transparent;border-top:10px solid black;left:50%;bottom:-10px;}
