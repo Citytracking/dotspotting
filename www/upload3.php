@@ -320,9 +320,12 @@
 		#
 
 		if ($is_flickr){
-			$pre_process = $upload;
-		}
+		    // not entirely sure about this, there are many flickr cases (seanc | 07072011)
+			$upload = import_preprocess_address_fields($upload);
 
+			$pre_process = $upload;
+			
+		}
 		else {
 
 			$more = array(

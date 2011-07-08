@@ -24,7 +24,7 @@
 		#
 		# parse the file
 		#
-
+        
 		$process_rsp = import_process_file($file);
 
 		if (! $process_rsp['ok']){
@@ -242,8 +242,7 @@
 
 	#################################################################
 
-	function import_import_uri(&$user, $uri, $more=array()){
-
+	function import_import_uri(&$user, $uri, $more=array()){        
 		$upload = import_fetch_uri($uri, $more);
 
 		if (! $upload['ok']){
@@ -366,9 +365,12 @@
 		$rsp = call_user_func_array($func, array($fh, $more));
 
 		# sudo put me in a function? (20110610/straup)
+		# made it a function (20110707 | seanc)
 
 		if ($rsp['ok']){
-
+            $rsp = import_preprocess_address_fields($rsp);
+            
+            /*
 			loadlib("dots_address");
 
 			$needs_geocoding = 0;
@@ -387,8 +389,9 @@
 
 				$needs_geocoding += 1;
 			}
-
+            
 			$rsp['needs_geocoding'] = $needs_geocoding;
+			*/
 		}
 
 		# TO DO: check $GLOBALS['cfg'] to see whether we should
@@ -508,6 +511,38 @@
 		return array($lat, $lon);
 	}
 
+	#################################################################
+	
+	
+	// does stuff that front-end needs to create dataTable (seanc | 07072011)
+	#################################################################
+	
+	function import_preprocess_address_fields($rsp){
+	    if(!isset($rsp['data']) && empty($rsp['data']))return $rsp;
+	    
+        loadlib("dots_address");
+
+        $needs_geocoding = 0;
+
+        # note the pass-by-ref on $row
+
+        foreach ($rsp['data'] as &$row){
+
+        	if (($row['latitude']) && ($row['longitude'])){
+        		$row['_has_latlon'] = 1;
+        		continue;
+        	}
+
+        	$row['_has_latlon'] = 0;
+        	$row['_address'] = dots_address_parse_for_geocoding($row);
+
+        	$needs_geocoding += 1;
+        }
+
+        $rsp['needs_geocoding'] = $needs_geocoding;
+        
+        return $rsp;
+	}
 	#################################################################
 
 ?>

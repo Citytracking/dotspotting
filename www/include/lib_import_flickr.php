@@ -43,6 +43,7 @@
 	}
 
 	#################################################################
+	
 
 	function import_flickr_url($url, $more=array()){
 
@@ -52,6 +53,7 @@
 
 		if ($type == "set"){
 			$rows = import_flickr_photoset($uid, $more);
+    		
 			return array('ok' => 1, 'data' => $rows);
 		}
 

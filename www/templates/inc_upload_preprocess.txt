@@ -5,6 +5,7 @@
 #loader_table{position:relative;top:10%;left:5%;color:#999;font-size:16px;}
 .geohide{display:none;}
 strong{font-size: 15px;font-weight: 800;}
+#upload_file{display:none;}
 </style>
 {/literal}
 
@@ -381,17 +382,26 @@ function buildDataTable(){
 
 	/* Collection of event callback functions */
 	YT.tableReady = function(e){
-		$("#pre_process_container").css('visibility', 'visible');
-		$("#loader_table").remove();
-		$("#geoinstr").show();
-		preprocess_checkLatLon();
+
+	    if(preprocess_checkForValidData()){
+    		$("#pre_process_container").css('visibility', 'visible');
+    		$("#loader_table").remove();
+    		$("#geoinstr").show();
+    		$("#upload_file").show();
+    		preprocess_checkLatLon();
 		
-		YT.dataTable.unsubscribe('initEvent',YT.tableReady);
-		YT.preprocess_add_col_options();
+    		YT.dataTable.unsubscribe('initEvent',YT.tableReady);
+    		YT.preprocess_add_col_options();
 	
-		if(typeof preprocess_create_index == 'function') { 
-			preprocess_create_index();
-		}
+    		if(typeof preprocess_create_index == 'function') { 
+    			preprocess_create_index();
+    		}
+    	}else{
+    	
+    	    var __msg = "Ugh! Something bad happened. Please visit the <a href='"+_dotspotting.abs_root_url+"contact'>contact page</a> to send us a note detailing what happened."
+    	    $("#loader_table").html(__msg).css("left","0px").addClass("error");
+    	    $("#upload_file").remove();
+    	}
 	
 	}
 
@@ -539,11 +549,18 @@ function preprocess_collect_headers(){
 
 	return headers;
 }
-
+function preprocess_checkForValidData(){
+    var result = false;
+    var r = dt.dataTable.getRecord(0);
+    if(r){
+        result = r._oData.hasOwnProperty('_has_latlon');
+    }
+    return result;
+}
 function preprocess_checkLatLon(){
-	$(".yui-dt-data tr").each(function(i){
+	$(".yui-dt-data tr").map(function(i){
 		var r = dt.dataTable.getRecord(i);
-		var b = Number(oRecord._oData['_has_latlon']);
+		var b = Number(r._oData['_has_latlon']);
 		var _id = "r"+r._nCount;
 		if(b){
 			_processedRows[_id] = "good";
@@ -741,10 +758,10 @@ function preprocess_geocode_col(idx){
 				var out = "Processing: "+addy;
 				$("#modal_status").html(out);
 				
+				// update loading bar
 				var pct = (queueCounter/queueLength) * 100;
-				$(".meter > span").animate({
-                        width: pct + "%"
-                }, 1200);
+				$(".meter > span").css("width",pct+"%");
+				
 				
 
 				// geocode
