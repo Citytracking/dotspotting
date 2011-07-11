@@ -89,18 +89,22 @@ $(function() {
         // pulls rest of params from pot object
         // uses jQuery live
         ds_tooltip = new DotToolTip(".dott");
-
+        
+        ////////////////////////////
+        // ARE WE IN CONFIG MODE ////////////
+        // SHould we do this .. this way?? //
+        /////////////////////////////////////
+        var _inConfig = null;
+        try{ _inConfig = window.parent.ds_config.hasher; }catch(e){}
         /////////////////////////////////////////
         // used to update coordinates in config only
         function showhash(){
-          if(typeof window.parent.hashMe == 'function') {
-              if(ds_tooltip && ds_tooltip.active)ds_tooltip.updateSize();
-              window.parent.hashMe(location.hash);
-          }
+            if(ds_tooltip && ds_tooltip.active)ds_tooltip.updateSize();
+            _inConfig(location.hash);
         }
-
-        if(typeof window.parent.hashMe == 'function') {
-          pot.map.addCallback("drawn", defer(showhash, 100));
+        
+        if((_inConfig) && (typeof _inConfig == 'function')){
+            pot.map.addCallback("drawn", defer(showhash, 100));
         }
         ///////////////////////////////////////// 
     

@@ -26,17 +26,18 @@
             }
         }
     }
-	
-	$GLOBALS['smarty']->assign_by_ref("recent_sheet_url", $sheet_url);
+	$chosen_theme = "default";	
 	
 	if($_GET['type']=="crime"){
-        $GLOBALS['smarty']->display('embed_themes/crime/index.txt');
+	    $chosen_theme = "crime";
 	}else if($_GET['type']=="default"){
-	     $GLOBALS['smarty']->display('embed_themes/default/index.txt');
 	}else if($_GET['type']=="photo"){
-	    $GLOBALS['smarty']->display('embed_themes/photo/index.txt');
+	    $chosen_theme = "photo";
 	}else{
-	    $GLOBALS['smarty']->display('page_embed.txt');
     }
+
+    $GLOBALS['smarty']->assign_by_ref("recent_sheet_url", $sheet_url);
+	$GLOBALS['smarty']->assign_by_ref("chosen_theme", $chosen_theme);
+	$GLOBALS['smarty']->display('embed_themes/inc_themes_config.txt');
 	exit();
 ?>

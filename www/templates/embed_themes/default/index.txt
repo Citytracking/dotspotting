@@ -11,6 +11,9 @@
 <div id="section_about" class="section_bunch_o_text">
 
     <div class="theme" id="default">
+    
+    
+       <!-- include in description file -->
         <h2>Default Embed Theme</h2>
         <p>This is a general use theme to display your dots outside the dotspotting garden.</p>
         <p>To get started enter the URL to a Dotspotting sheet below.</p>
@@ -18,6 +21,11 @@
         <p>Click the 'Update embed code' button, to apply changes.</p>
         <p>Once everything is to your liking, copy the embed code and paste it into your web page.</p>
         <p><i>Gifted users can skip down to 'Instructions'.</i></p>
+        
+        
+        
+        
+        <!-- base config -->
         <h4 id="example_title"></h4>
         <div class="example">
             
@@ -99,6 +107,8 @@
                 
                 <iframe id="example_iframe" width="400" height="400" src=""></iframe>
                 <p><span class="label"></span><input value="" style="width:200px;"/><img id="location_copier" title="copy over to options" src="{$cfg.abs_root_url}images/embed_marker.png"/></p>
+            
+            
             </div>
             <div style="clear:both;"></div>
             
@@ -106,6 +116,7 @@
             <h3>Embed Code</h3>
             <textarea id="example_text"></textarea>
             </div>
+            
         </div>
         
 
@@ -494,10 +505,8 @@ function getSheet(u){
             setConfigSettings();
             setEmbed();
             $("#config_url_error").hide();
-            $("#options_panel").show();
-
-            
-            $("#example_title").html("Sheet #"+defaults['sheet'] + " is loaded.");
+            $("#config-options").show();
+            $("#config-message").html("Sheet #"+defaults['sheet'] + " is loaded.");
         }
       },
       error:function(){

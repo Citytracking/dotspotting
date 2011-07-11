@@ -1,0 +1,7 @@
+<h2>Default Embed Theme</h2>
+<p>This is a general use theme to display your dots outside the dotspotting garden.</p>
+<p>To get started enter the URL to a Dotspotting sheet below.</p>
+<p>You can then customize the map a bit, by using the fields under 'Options'.</p> 
+<p>Click the 'Update embed code' button, to apply changes.</p>
+<p>Once everything is to your liking, copy the embed code and paste it into your web page.</p>
+<p><i>Gifted users can skip down to 'Instructions'.</i></p>

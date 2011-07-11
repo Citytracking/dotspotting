@@ -113,7 +113,12 @@ otting?</h3>
 
 {/if}
 
-{if $pre_process.data}
+{* 
+look for the existance of $pre_process.needs_geocoding, 
+which kinda of a flag indicating the data addresses have been inspected 
+*}
+
+{if $pre_process.data && isset($pre_process.needs_geocoding)}
 {include file="inc_upload_preprocess.txt data=$pre_process.data columns=$pre_process.data.0|@array_keys errors=$pre_process.errors}
 {else}
 <p class="error">Hey! That doesn't look like valid data.</p>
