@@ -1,13 +1,13 @@
 var pot, params;
+
 $(function() {
 try {
-
     var mm = com.modestmaps;
 
     params = parseQueryString(location.search);
     if (!params.base) params.base = "pale_dawn";
     // TODO: uncomment me?
-    // if (!params.baseURL) params.baseURL = baseURL;
+    if (!params.baseURL) params.baseURL = baseURL;
 
     pot = new Dots.Potting(params);
     pot.setTitle();
@@ -36,6 +36,8 @@ try {
                 props: feature.properties
             },
             marker = $.tmpl(dotTemplate, data);
+            
+        
         marker.data("feature", feature);
         marker.data("crime_type", crime_type);
         marker.data("crime_group", crime_group);
@@ -51,6 +53,23 @@ try {
     };
 
     var req = pot.load();
+    
+    ////////////////////////////
+    // ARE WE IN CONFIG MODE ////////////
+    // SHould we do this .. this way?? //
+    /////////////////////////////////////
+    var _inConfig = null;
+    try{ _inConfig = window.parent.ds_config.hasher; }catch(e){}
+    /////////////////////////////////////////
+    // used to update coordinates in config only
+    function showhash(){
+        _inConfig(location.hash);
+    }
+
+    if((_inConfig) && (typeof _inConfig == 'function')){
+        pot.map.addCallback("drawn", defer(showhash, 100));
+    }
+    /////////////////////////////////////////
 
 } catch (e) {
     console.error("ERROR: ", e);

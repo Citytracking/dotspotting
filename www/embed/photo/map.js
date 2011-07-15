@@ -1,11 +1,16 @@
 var pot,params,marker_props;   	
-   	
+var THUMB_MAX_WIDTH = 100,
+    THUMB_MAX_HEIGHT = 70;
+    
+var tip_params = {};
+tip_params.activate = true;
+    
 $(function() {
     try{
         $("#map").css("height","100%");
 
         var mm = com.modestmaps,
-        ds_tooltip = null;
+        
         
         marker_props = {};
 
@@ -29,44 +34,67 @@ $(function() {
         if (params.title) {
            $(".controls").css("top",($("#title").height()+20)+"px");
         }
+        
+        if (params.ph_w){
+            THUMB_MAX_WIDTH = Math.floor(Number(params.ph_w));
+        }
+        if (params.ph_h){
+            THUMB_MAX_HEIGHT = Math.floor(Number(params.ph_h));
+        }
+        
+        //checkForTooltipParams();
 
         pot.dotsLayer = new mm.MarkerLayer(pot.map);
 
         var dotTemplate = $("#dot").template();
         pot.makeDot = function(feature) {
-           var props = feature.properties,
-           geom = (feature.geometry.type == 'GeometryCollection') ? feature.geometry.geometries : [ feature.geometry ];
-           
-           
-           var coords = geom[0]['coordinates'];
-           var pid = "dot_"+props.id;
-           var loc = new mm.Location(coords[1],coords[0]);
-           props.__dt_coords = loc;
-          
-          
-          var data = {
+            var props = feature.properties,
+            geom = (feature.geometry.type == 'GeometryCollection') ? feature.geometry.geometries : [ feature.geometry ];
+
+
+            var coords = geom[0]['coordinates'];
+            var pid = "dot_"+props.id;
+            var loc = new mm.Location(coords[1],coords[0]);
+            props.__dt_coords = loc;
+
+
+            var data = {
                   photo_id: pid
               },
-        marker = $.tmpl(dotTemplate, data);
+            marker = $.tmpl(dotTemplate, data);
+            marker_props[String(pid)] = props;  
         
-        marker_props[String(pid)] = props;  
-        
-        
-        // will look for flickr photo id or a 'photo_url' property
-        if(props['flickr:id'] || props['photo_url']){
-            if(props['flickr:id']){
-                getFlickrImg(
-                    (function(e){
+            // will look for flickr photo id or a 'photo_url' property
+            if(props['flickr:id'] || props['photo_url']){
+                if(props['flickr:id']){
+                    getFlickrImg(
+                        (function(e){
                      
-                        return e;
-                    })([props['flickr:id'],marker[0]])
+                            return e;
+                        })([props['flickr:id'],marker[0]])
                 
-                 ); 
-             }else{
-                 loadTheImage(marker[0],props['photo_url'],"","");
-             }
+                     ); 
+                 }else{
+                     var __title = "";
+                     if(tip_params.activate && props[tip_params.tip_title]){
+                         __title = props[tip_params.tip_title];
+                         
+                     }
+                     
+                     loadTheImage(marker[0],props['photo_url'],__title,"");
+                 }
  
-        }
+            }else{
+                var __title = "";
+                 if(tip_params.activate && props[tip_params.tip_title]){
+                     __title = props[tip_params.tip_title];
+                     
+                 }
+                 var photo_url = baseURL+"embed/photo/images/cameradot_30.png";
+                 THUMB_MAX_WIDTH = 30;
+                 THUMB_MAX_HEIGHT = 30;
+                 loadTheImage(marker[0],photo_url,__title,"","photoNoNo");
+            }
 
           return marker[0];
         };
@@ -88,51 +116,87 @@ $(function() {
                 $(markers[i].parentNode).append(markers[i]);
             }
             
+           
+            
         },null);
-
+        
+         ////////////////////////////
+        // ARE WE IN CONFIG MODE ////////////
+        // SHould we do this .. this way?? //
+        /////////////////////////////////////
+        var _inConfig = null;
+        try{ _inConfig = window.parent.ds_config.hasher; }catch(e){}
         /////////////////////////////////////////
         // used to update coordinates in config only
         function showhash(){
-          if(typeof window.parent.hashMe == 'function') {
-              if(ds_tooltip && ds_tooltip.active)ds_tooltip.updateSize();
-              window.parent.hashMe(location.hash);
-          }
+            _inConfig(location.hash);
         }
 
-        if(typeof window.parent.hashMe == 'function') {
-          pot.map.addCallback("drawn", defer(showhash, 100));
+        if((_inConfig) && (typeof _inConfig == 'function')){
+            pot.map.addCallback("drawn", defer(showhash, 100));
         }
-        //
-        ///////////////////////////////////////// 
+        /////////////////////////////////////////
+ 
     
     }catch (e) {
         console.error("ERROR: ", e);
         pot.error("ERROR: " + e);
     }
 });
-function loadTheImage(elm,url,title,alt){
+
+
+function checkForTooltipParams(){
+    // look for tooltip parameters
+    if(!params.tt && !params.tm){
+      tip_params.activate = false;
+    }else{
+      tip_params.activate = true;
+      if(params.tt){
+          tip_params.tip_title = params.tt;
+      }else{
+          tip_params.tip_title = "id";
+      }
+
+      if(params.tm){
+
+      //var re= new RegExp (/{(.*)}/gi);
+      var re= new RegExp (/{([\w:]*)?\s?(.*?)}/gi);
+
+      var m=re.exec(params.tm);
+
+      if(m && m[1]){
+          tip_params.tip_sentence = {
+              "struct":params.tm,
+              "parts":m
+          };
+      }
+            
+          tip_params.tip_desc = params.tm;
+      }else{
+          tip_params.tip_desc = "";
+      }
+    }
+
+}
+
+
+
+function hasBorderRadius() {
+    //http://www.swedishfika.com/2010/03/19/rounded-corners-on-images-with-css3-2/
+    var d = document.createElement("div").style;
+    if (typeof d.borderRadius !== "undefined") return true;
+    if (typeof d.WebkitBorderRadius !== "undefined") return true;
+    if (typeof d.MozBorderRadius !== "undefined") return true;
+    return false;
+}
+
+function loadTheImage(elm,url,title,alt,ughClass){
     var imgHolder = $("<div/>");
 	imgHolder.attr("class","photoContainer");
-	var thisNub = $('<div class="photo_nub"></div>');
-	imgHolder.append(thisNub);
+	//var thisNub = $('<div class="photo_nub"></div>');
+	//imgHolder.append(thisNub);
 	$(elm).append(imgHolder);
 	var img = new Image();
-	
-	/* events */
-	$(elm).click(function(e){
-	    e.preventDefault();
-	    var id = $(this).attr('id');
-	    if(prop = marker_props[String(id)]){
-	        location.href = params.baseURL+"u/"+prop.user_id+"/dots/"+prop.id;
-	    }
-	});
-	$(img).mouseover(function(e){
-	    
-	});
-	$(img).mouseout(function(e){
-
-	});
-	
 
 	// img loader
 	$(img)
@@ -145,26 +209,76 @@ function loadTheImage(elm,url,title,alt){
 		    imgHolder.append(this);
 
 			//set variables for resizing
-			var maxWidth = 300; 	                        // Max width for the image ( 1/2 the available width )
-			var maxHeight = 200;   	                		// Max height for the image
+			var maxWidth = THUMB_MAX_WIDTH; 	            // Max width for the image ( 1/2 the available width )
+			var maxHeight = THUMB_MAX_HEIGHT;        		// Max height for the image
 			var ratio = 0;                                  // Used for aspect ratio
-			var width = $(this).width();    				// Current image width
-			var height = $(this).height();  				// Current image height
-
-            
-            if ($(this).height() > $(this).width()) {
-                var h = maxWidth;
-                var w = Math.ceil($(this).width() / $(this).height() * maxWidth);
+			var _width = $(this).width();    				// Current image width
+			var _height = $(this).height();  				// Current image height
+            var _h=THUMB_MAX_HEIGHT,
+                _w=THUMB_MAX_WIDTH; 
+            // scale thumbnail
+            if (_height > _width) {
+                _h = maxHeight;
+                _w = Math.ceil(_width / _height * maxHeight);
               } else {
-                var w = maxWidth;
-                var h = Math.ceil($(this).height() / $(this).width() * maxWidth);
+                _w = maxWidth;
+                _h = Math.ceil(_height / _width * maxWidth);
               }
+             
+             $(this).width(_w);
+             $(this).height(_h) 
 
-			
-			$(this).show();
-			$(imgHolder).css("top","-"+(imgHolder.innerHeight()+10)+"px");
-			$(imgHolder).css("left",-(imgHolder.innerWidth()/2)+"px");
-			$(thisNub).css("left",((imgHolder.innerWidth()/2)-10)+"px");
+			// reposition parent to center on point
+			var elm_offset = $(elm).offset();
+
+			var new_elm_left = elm_offset.left - (imgHolder.innerWidth()/2);
+			var new_elm_top = elm_offset.top - (imgHolder.innerHeight()/2);
+	
+			$(elm).css("top",new_elm_top+"px");
+		    $(elm).css("left",new_elm_left+"px");
+            
+            
+            
+		    if (hasBorderRadius() && !ughClass) {
+		        var imgSrc = $(this).attr("src");
+		        $(imgHolder).addClass("roundedCorners");
+        
+		        $(imgHolder)
+                      .css("background-image", "url(" + imgSrc + ")")
+                      .css("background-repeat","no-repeat")
+                      .css("height", _h + "px")
+                      .css("width", _w + "px");
+
+                $(this).remove();
+	        }else{
+	            if(ughClass)$(imgHolder).addClass(ughClass);
+	            $(this).show();
+	        }
+
+	        
+	        /* events */
+        	$(elm).click(function(e){
+        	    e.preventDefault();
+        	    var id = $(this).attr('id');
+        	    if(prop = marker_props[String(id)]){
+        	        location.href = params.baseURL+"u/"+prop.user_id+"/dots/"+prop.id;
+        	    }
+        	});
+        	
+        	if(tip_params.activate){
+            	/* tooltip */
+            	$(function(){
+            	    var that = elm;
+            	 $(elm).tipTip({
+                	    maxWidth: "auto", 
+                	    edgeOffset: 1,
+                	    delay:100,
+                	    content:title,
+                	    enter:function(e){$(that).addClass("photodot_over")},
+                        exit:function(){$(that).removeClass("photodot_over")}
+                	});
+            	});
+    	    }
 			
 		})
 

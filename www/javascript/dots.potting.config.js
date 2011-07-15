@@ -3,20 +3,25 @@
 ////////////////////////////////////////////////////////
 
 if (typeof Dots === "undefined") Dots = {};
-Dots.Config = function(more,theme) {
+Dots.Config = function(more,theme,base) {
     // set theme
     this.theme = (theme == undefined) ? ds_chosen_theme : theme;
     if(!this.theme){
         this.theme = "default";
     }
+    if(base){
+        Dots.Config.defaultParams['base']=base;
+    }
     
-    // pull in default options
-    this.defaults = Dots.Config.defaultParams;
+    this.setThemeSelection();
     
     // add more options if needed
     if(more){
         this.addExtraOptions(more);
     }
+    
+    // clone base config object
+    this.defaults = jQuery.extend({}, Dots.Config.defaultParams);
     
     // add handlers and dispatcher
     this.addHandlers();
@@ -31,9 +36,13 @@ Dots.Config.defaultParams = {
     sheet:'',
     title:'',
     base:'',
-    tm:'',
-    tt:'',
     coords:''
+}
+
+Dots.Config.defaultSizes = {
+    large:[940,500],
+    medium:[600,450],
+    small:[400,300]
 }
 
 Dots.Config.prototype = {
@@ -41,22 +50,33 @@ Dots.Config.prototype = {
         panel: "#config-options",
         container: "#config-content",
         map: "#config-map",
-        extras: "#config-extras"
+        extras: "#config-extras",
+        theme_selector: "#config_opt_theme"
     },
     theme: 'default',
     defaults: null,
     isPreview: false,
-    iframe_size: [400,400],
+    iframe_size: [940,500],
     init_coords: false,
     sheet_columns: [],
     configEvent:null,
     _begin:false,
     more:null,
     hasher:null,
+    currentSize: 'large',
+    isUpdating: false,
+    
+    setThemeSelection: function(){
+        $(this.selectors.theme_selector).val(this.theme);
+        // using Custom Select Box CSS Style Plugin by www.adamcoulombe.info
+        $(this.selectors.theme_selector).parent().find(".customStyleSelectBoxInner").html(this.theme);
+    },
     
     addExtraOptions: function(more){
+        if(!more && !more.length)return;
+        var len = more.length;
         var _panel = $(this.selectors.extras);
-        for(var i=0;i<more.length;i++){
+        for(var i=0;i<len;i++){
             var item = more[i];
             var _insert = "";
             if(item.type == "heading"){
@@ -64,29 +84,34 @@ Dots.Config.prototype = {
             }else{
                 _insert = "<span class='label'>"+item.label+"</span>";
                 if (item.type == "text"){
-                    _insert += "<input id='config_opt_"+item.id+"' value='"+item['default']+"'/>";
+                    _insert += "<input id='config_opt_"+item.id+"' value='"+item['default']+"' class='autoUpdate'/>";
                 }else if (item.type == "select"){
-                    _insert += "<select id='config_opt_"+item.id+"'></select>";
+                    _insert += "<select id='config_opt_"+item.id+"' class='autoUpdate'></select>";
                 }
                 
                 if (item.helper){
                     _insert += "<span class='helper'>"+item.helper+"</span>";
                 }
                 
-                // add new options to defaults object
-                if(!this.defaults[item.id]){
-                    this.defaults[item.id] = item['default'];
+                // add new options to base config object
+                if(!Dots.Config.defaultParams[item.id]){
+                    Dots.Config.defaultParams[item.id] = item['default'];
                 }
             }
-            if(_insert)_panel.append("<p>"+_insert+"</p>");
+            if(_insert){
+                _panel.append("<p class='grid_3'>"+_insert+"</p>");
+            }
         }
+         _panel.append("<div class='clear'>&nbsp;</div>");
         
         // store more
         this.more = more;
     },
     
     loadSheet: function(){
-        this.getSheet($("#config_opt_url").val());
+        if(!incoming_sheet)return;
+        this.getSheet(incoming_sheet);
+        //this.getSheet($("#config_opt_url").val());
     },
     
     // straight from Polymaps
@@ -137,14 +162,38 @@ Dots.Config.prototype = {
         
         // used for location img button
         $("#location_copier").hover(
-            function(e){$(this).css("opacity",.4)},
-            function(e){$(this).css("opacity",.7)}
+            function(e){$(this).css("opacity",.5)},
+            function(e){$(this).css("opacity",1)}
         );
         
         // copies location to input in config panel
         $("#location_copier").click(function(e){
              e.preventDefault();
-             $("#config_opt_coords").val($("#config-map input").val());
+             var _new = $("#config_opt_hash").val();
+             $("#config_opt_coords").val(_new);
+             that.defaults['coords'] = _new;
+             $("#example_text").val( that.getEmbedCode(that.generateIframeSrc()) );
+        });
+        
+        $("#config_opt_mapsize").change(function(e){
+            var val = $(this).val();
+            if(val != "custom"){
+                $("#custom_map_fields").hide();
+                this.currentSize = $(this).val();
+                this.iframe_size = Dots.Config.defaultSizes[this.currentSize];
+                $("#config_opt_width").val(parseInt(this.iframe_size[0]));
+                $("#config_opt_height").val(parseInt(this.iframe_size[1]));
+            }else{
+                $("#custom_map_fields").css("display","block");
+            }
+        });
+        
+        $("#config_opt_theme").change(function(e){
+            var _val = $(this).val();
+            if(ds_chosen_theme != _val){
+                var _url = _dotspotting.abs_root_url+"embed/"+_val+"?oid="+that.defaults.user+"&sid="+that.defaults.sheet;
+                location.href = _url;
+            }
         });
 
         // process Sheet URL handler
@@ -171,6 +220,19 @@ Dots.Config.prototype = {
            $(this).select();
         });
         
+        $(".autoUpdate").change(function(e){
+             e.preventDefault();
+             /*
+             that.grabConfigSettings();
+             $("#example_text").val( that.getEmbedCode(that.generateIframeSrc()) );
+             */
+             if(!that.isUpdating){
+                 that.isUpdating = true;
+                 that.grabConfigSettings();
+                 that.setEmbed();
+             }
+        });
+        
         this.configEvent = this.dispatch(this);
         
     },
@@ -190,12 +252,9 @@ Dots.Config.prototype = {
             // ok lazy coming...
             if(x == "0/0/0")return;
 
-            // show the coordinate display
-            if(!that.isPreview)$("#config-map p").show();
 
             //update coordinate box
-            $("#config-map .label").html("Current Coordinates: ");
-            $("#config-map input").val(x);
+            $("#config_opt_hash").val(x);
             if(!that.init_coords){
                 $("#config_opt_coords").val(x);
                 that.defaults['coords'] = x;
@@ -209,11 +268,14 @@ Dots.Config.prototype = {
     },
     // set fields from default object
     wipeConfigSettings: function(){
+        /*
         for(i in this.defaults){
             this.defaults[i] = '';
         }
+        */
+        this.defaults = jQuery.extend({}, Dots.Config.defaultParams);
 
-        this.iframe_size = [400,400];
+        this.iframe_size = [940,500];
         this.init_coords = false;
         this.setConfigSettings();
     },
@@ -242,13 +304,9 @@ Dots.Config.prototype = {
         return x.replace(/\s/g, "+");
     },
 
-    // adds dropdowns for tooltip fields
+    // process column fields
     processFields: function(x){
-        $("#config_opt_tt").append('<option value=""></option>');
-        $("#config_opt_tm").append('<option value=""></option>');
         for(f in x){
-            $("#config_opt_tt").append('<option value="'+f+'">'+f+'</option>');
-            $("#config_opt_tm").append('<option value="'+f+'">'+f+'</option>');
             this.sheet_columns.push(f);
         }
     },
@@ -261,7 +319,7 @@ Dots.Config.prototype = {
             if(this.defaults[o]){
                 if(o != "coords"){
                     if(o == 'base'){
-                         out += o + "=" +this.defaults[o] + "&amp;";
+                         if(this.defaults[o] != Dots.Config.defaultParams['base'])out += o + "=" +this.defaults[o] + "&amp;";
                     }else{
                         out += o + "=" + ((o == "title") ? this.processTitle(this.defaults[o]):this.defaults[o]) + "&amp;";
                     }
@@ -281,17 +339,43 @@ Dots.Config.prototype = {
         var iframe_pre = '<iframe type="text/html" width="'+this.iframe_size[0]+'" height="'+this.iframe_size[1]+'" src="';
          return iframe_pre + x + '"></iframe>';     
     },
+    
+    updateIframeSize: function(){
+        // resize iframe
+        var map_width = parseInt($("#config_opt_width").val());
+        var map_height = parseInt($("#config_opt_height").val());
+        this.autoResize('example_iframe',map_width,map_height);
+        
+        // reposition map
+        var parent_width = $("#config-map").width();
+        var parent_height = $("#config-map").height();
+        var leftPos = (parent_width - map_width) / 2;
+        var topPos = (parent_height - map_height) / 2;
+        if(topPos < 0)topPos = 0;
+        
+        $("#example_iframe").css("left",leftPos + "px");
+        $("#example_iframe").css("top",topPos + "px");
+        
+    },
 
 
     // set embed code textarea
     setEmbed:function(){
+        var that = this;
         var out = this.generateIframeSrc();
         var current_embed = $("#example_text").val();
         var new_embed = this.getEmbedCode(out);
-
         if(current_embed != new_embed){
             $("#example_text").val( new_embed );
+            /*
+            $('iframe').unbind('load').bind('load',function(e){
+                        //console.log("iframe loaded");
+                        that.isUpdating = false;
+            });
+            */
             $("#example_iframe").attr('src',out);
+            this.updateIframeSize();
+            this.isUpdating = false;
         }
     },
 
@@ -351,7 +435,7 @@ Dots.Config.prototype = {
                 that.setEmbed();
                 $("#config_url_error").hide();
                 $("#config-options").show();
-                $("#config-message").html("Sheet #"+that.defaults['sheet'] + " is loaded.");
+                $("#config-message").html("<a href='"+incoming_sheet+"'>Sheet #"+that.defaults['sheet'] + "</a> is loaded.");
                 that.configEvent({type: "json_loading_success"});
             }
           },
@@ -383,7 +467,6 @@ Dots.Config.prototype = {
         map.addClass('preview');
         map.css("left",_offset_left + "px");
         map.css("top",_offset_top + "px");
-        $("#config-map p").hide();
 
         $("#close-preview-modal").show();
 

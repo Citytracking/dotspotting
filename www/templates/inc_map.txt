@@ -17,6 +17,7 @@
 	</div>
 	
 	{if $display_embed}
+	{* js functions for this section are in javascript/sheet.js *}
 	<div id="embed_map_box">
     	<div id="embed_map_box_inner">
     	
@@ -27,7 +28,16 @@
     	
     	    <div id="embed_box">
         	    <h4>Embed Code:</h4>
-        	    <a href="{$cfg.abs_root_url}embed/default?oid={$owner.id}&amp;sid={$sheet.id}" class="txt_small blue_links">more config options</a>
+        	    <div id="theme_support">
+        	        <span class="txt_small">Theme Styles:</span>
+        	        <select id="ds_theme_options">
+                        <option value="default">Default</option>
+                        <option value="photo">Photo</option>
+                        <option value="crime">Crime</option>
+                    </select>
+                    <a href="{$cfg.abs_root_url}embed/default?oid={$owner.id}&amp;sid={$sheet.id}" class="txt_small blue_links" id="theme_more_config">more config options</a>
+                </div>
+        	    
         	    <textarea id="embed_ta" readonly="readonly"></textarea>
         	</div>
         	<div id="export_box">
@@ -48,6 +58,7 @@
         	</div>
         </div>
     </div>
+
     {/if}
     
 </div>

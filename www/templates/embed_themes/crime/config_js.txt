@@ -1,0 +1,28 @@
+{literal}
+<script>
+    var ds_config;
+
+   $(document).ready(function() {
+
+    var $more = [];
+    
+    // create the config object
+    ds_config = new Dots.Config($more,"crime","pale_dawn");
+
+    // register events before calling the loadSheet method...
+    ds_config.on("json_loading_begin",function(){
+    //console.log("loading begin");
+    });
+    ds_config.on("json_loading_success",function(){
+    //console.log("loading success");
+    });
+    ds_config.on("json_loading_error",function(){
+    //console.log("loading error");
+    });
+
+    ds_config.loadSheet();
+    
+    });
+
+</script>
+{/literal}

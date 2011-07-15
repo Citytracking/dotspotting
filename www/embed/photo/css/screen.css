@@ -20,8 +20,17 @@ h1 a{text-decoration:none;}
 .controls label{color:#666;display:none;}
 
 /* MARKER STYLES */
-.photodot{display:block;cursor:pointer;}
-.photodot div.photoContainer{background:#000;background:rgba(0,0,0,1);padding:5px;position:relative;}
+.photodot{display:block;cursor:pointer;position:relative;}
+.photodot div.photoContainer{background:#000;background:rgba(0,0,0,1);padding:3px 3px 1px;position:relative;z-index:4;}
 .photodot img{position:relative;}
 .ps{height:5px;width:5px;background:#ff0000;z-index:2000;position:relative;display:none;}
 .photo_nub{border-bottom:0;height:0;width:0;position:absolute;border-left:10px solid transparent;border-right:10px solid transparent;border-top:10px solid black;left:50%;bottom:-10px;}
+.photodot_over{z-index:1001;}
+.roundedCorners{
+	padding: 0 !important;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+	border: 2px solid black;
+}
+.photoNoNo{background-color:transparent !important;}

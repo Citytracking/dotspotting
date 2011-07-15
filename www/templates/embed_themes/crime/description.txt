@@ -1,0 +1,4 @@
+<p>A pannable and zoomable
+map in the style of <a href="http://oakland.crimespotting.org/">Crimespotting</a>,
+with dots colored according to three broad crime type
+categories</p>

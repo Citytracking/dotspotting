@@ -1,11 +1,12 @@
 function sheet_ready_function(){
+    var _theme = "default";
     // set embed / export toggler
     // embed props are taken care of in inc_dots_js.txt
     $("#embedexportToggler").toggle(
         function(e){
             $(this).removeClass('taller').addClass('shorter');
             e.preventDefault(); 
-            set_embed_code();
+            set_embed_code(_theme);
             $("#embed_map_box").show();
             
         },
@@ -28,20 +29,30 @@ function sheet_ready_function(){
        $(this).select();
     });
     
+    var theme_link = $("#theme_more_config");
+    $("#ds_theme_options").change(function(e){
+        if(_dotspotting.embed_props && _dotspotting.embed_props.uid && _dotspotting.embed_props.sid){
+            var _val = $(this).val();
+            var _href = _dotspotting.abs_root_url+"embed/"+_val+"?oid="+_dotspotting.embed_props.uid+"&sid="+_dotspotting.embed_props.sid;
+            theme_link.attr('href',_href);
+            set_embed_code(_val);
+        }
+    });
+    
     
 }
 
 function clear_embed_code(){
     $("#embed_ta").val("");
 }
-function set_embed_code(){
+function set_embed_code(_theme){
     var src = "sorry could not generate an embed code...";
     var pre = '<iframe type="text/html" width="400" height="400" src="';
     var post = '"></iframe>';
     //
     if(_dotspotting.embed_props && _dotspotting.embed_props.uid && _dotspotting.embed_props.sid){
         // minimum
-        src = _dotspotting.abs_root_url+"embed/default/map?user="+_dotspotting.embed_props.uid+"&amp;sheet="+_dotspotting.embed_props.sid;
+        src = _dotspotting.abs_root_url+"embed/"+_theme+"/map?user="+_dotspotting.embed_props.uid+"&amp;sheet="+_dotspotting.embed_props.sid;
         
         // label
         if(_dotspotting.embed_props.label){

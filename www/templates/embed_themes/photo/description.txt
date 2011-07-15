@@ -1,7 +1,7 @@
-<p>This is a general use theme to display your dots outside the dotspotting garden.</p>
+<p>Transform your dots into photo thumbnails. Requires a 'flickr:id' or 'photo_url' field in your dataset.</p>
 <!--
-<h2>Default Embed Theme</h2>
-<p>This is a general use theme to display your dots outside the dotspotting garden.</p>
+<h2>Photo Embed Theme</h2>
+<p>Transform your dots into photo thumbnails. Requires a 'flickr:id' or 'photo_url' field in your dataset.</p>
 <p>To get started enter the URL to a Dotspotting sheet below.</p>
 <p>You can then customize the map a bit, by using the fields under 'Options'.</p> 
 <p>Click the 'Update embed code' button, to apply changes.</p>

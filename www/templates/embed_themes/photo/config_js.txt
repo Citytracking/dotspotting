@@ -3,21 +3,21 @@
     var ds_config;
 
    $(document).ready(function() {
-   
+
     var $more = [
         {
-            'label': 'Tooltip Title:',
-            'type': 'select',
-            'id': 'tt',
-            'default': '',
-            'helper': 'Column to be used as the title for tooltip'
+            'label': 'Thumbnail max width:',
+            'type': 'text',
+            'id': 'ph_w',
+            'default': '100',
+            'helper': 'Maximum width for thumbnail'
         },
         {
-            'label': 'Tooltip Message:',
-            'type': 'select',
-            'id': 'tm',
-            'default': '',
-            'helper': 'Column to be used as the body for tooltip'
+            'label': 'Thumbnail max height:',
+            'type': 'text',
+            'id': 'ph_h',
+            'default': '70',
+            'helper': 'Maximum height for thumbnail'
         }
     ];
     
@@ -36,8 +36,6 @@
     ds_config.on("json_loading_error",function(){
      //console.log("loading error");
     });
-    
-    
 
     ds_config.loadSheet();
     

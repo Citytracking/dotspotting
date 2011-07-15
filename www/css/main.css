@@ -286,6 +286,8 @@ table.page_dot td{text-align:left;padding:5px;border-top:1px solid #000;}
 
 
 #embedexportToggler{padding:0 15px 0 0;text-decoration:none;}
+/* embed box styles */
+
 /*
 #sheetoptionsBtn:hover{text-decoration:none;text-shadow:0px 1px 1px #9c9c9c;}
 #sheetoptionsBtn.taller{background:url(../images/map/enlarge-map-arrow.png) no-repeat 0 center;}
@@ -339,10 +341,8 @@ table.page_dot td{text-align:left;padding:5px;border-top:1px solid #000;}
 	    float:left;
 	}
 	#map_wrapper #embed_map_box #embed_box a{
-	    float:right;
-        margin-right: 30px;
         position: relative;
-        top: 4px;
+        top: 2px;
 	}
 
 	#map_wrapper #embed_map_box #embed_box textarea{
@@ -366,6 +366,23 @@ table.page_dot td{text-align:left;padding:5px;border-top:1px solid #000;}
 	#map_wrapper #embed_map_box #export_box a:hover{
 	    border-color:#666;
 	}
+	
+	#map_wrapper #embed_map_box #theme_support{
+        float:right;
+        margin-right: 30px;
+    }
+    
+    #map_wrapper #embed_map_box #theme_support span{
+        font-size:12px;
+    }
+    
+    #map_wrapper #embed_map_box #theme_more_config{
+
+    }
+    
+    #map_wrapper #embed_map_box #ds_theme_options{
+        margin-right:20px;
+    }
 
 /*
 MAP TOOLTIP 

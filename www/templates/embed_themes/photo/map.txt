@@ -7,6 +7,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/photo/css/screen.css">
+        <link rel="stylesheet" href="{$cfg.abs_root_url}embed/photo/css/tipTip.css">
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>
@@ -14,6 +15,8 @@
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/utils.js"></script>
         <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/dots.potting.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/photo/jquery.tipTip.minified.js"></script>
+        
         <script type="text/javascript">
             var _dotspotting = {literal}{{/literal}
                 'abs_root_url' : '{$cfg.abs_root_url}'
@@ -35,7 +38,18 @@
         		<a class="zoom-out" href="#zoom-out"><img alt="out" src="images/zoom-out.png"/></a>
         </div>
         <p id="copyright">Map data &copy;<a href="https://www.openstreetmap.org/" title="OpenStreetMap site">OpenStreetMap</a> contributors, CC-BY-SA; designed by <a href="http://www.stamen.com/" title="stamen site">Stamen</a> &amp; <a href="http://www.geoiq.com/">GeoIQ</a></p>
+	
+		<div id="tiptip_holder">
+            <div id="tiptip_content">
+                <div id="tiptip_arrow">
+                    <div id="tiptip_arrow_inner"></div>
+                </div>
+            </div>
+        </div>
+        
 	</div>
+	
+
 	
 	{literal}
     <script id="dot" type="text/jquery-template">
