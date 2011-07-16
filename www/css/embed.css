@@ -5,10 +5,11 @@ ul{}
 ul,ul li{list-style:none;text-align:center;}
 textarea{display:block;width:100%;height:auto;min-height:4em;margin:0 0 20px 0;word-wrap:break-word;}
 input[type="text"]{padding:2px;}
-iframe{overflow:hidden;border:none !important;margin:0;height:400px;border-top-width:0;}
+iframe{overflow:hidden;border:none !important;margin:0;border-top-width:0;}
 .required{font-weight:600 !important;}
 .alignright{text-align:right;}
 .hider{display:none;}
+h2,h3,h4,h5{color:#000;}
 
 
 /*#config-wrapper{position:relative;display:block;margin:0;padding:0;}*/
@@ -27,7 +28,7 @@ iframe{overflow:hidden;border:none !important;margin:0;height:400px;border-top-w
 #config-content .helper{display:block;color:#73b249;font-size:12px;}
 #config-extras{margin-top:0;}
 #config-extras p{margin-top:-20px;}
-#custom_map_fields{}
+#custom_map_fields{padding-top:4px;}
 #code_to_embed{clear:both;color:#000;margin-bottom:10px;}
 #code_to_embed textarea{margin:0;}
 
@@ -58,6 +59,17 @@ iframe{overflow:hidden;border:none !important;margin:0;height:400px;border-top-w
 .property { background:  #23965E; }
 .qol { background: #3489BA; }
 .unknown { background: #D9A200; }
+.crime_extras{color:#000;font-size:13px;margin-bottom:20px;margin-top:20px;}
+.crime_extras ul {
+    text-align:left;
+    padding-left: 1.8em;
+    margin-left: 0;
+}
+.crime_extras ul, .crime_extras ul li {
+    text-align:left;
+    list-style: square;
+}
+.crime_extras ul li{padding:5px 0;}
     
     
 /* PREVIEW */

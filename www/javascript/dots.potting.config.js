@@ -26,6 +26,7 @@ Dots.Config = function(more,theme,base) {
     // add handlers and dispatcher
     this.addHandlers();
     
+        
     this.hasher = this.hashMe();
 }
 
@@ -68,8 +69,6 @@ Dots.Config.prototype = {
     
     setThemeSelection: function(){
         $(this.selectors.theme_selector).val(this.theme);
-        // using Custom Select Box CSS Style Plugin by www.adamcoulombe.info
-        $(this.selectors.theme_selector).parent().find(".customStyleSelectBoxInner").html(this.theme);
     },
     
     addExtraOptions: function(more){
@@ -87,6 +86,8 @@ Dots.Config.prototype = {
                     _insert += "<input id='config_opt_"+item.id+"' value='"+item['default']+"' class='autoUpdate'/>";
                 }else if (item.type == "select"){
                     _insert += "<select id='config_opt_"+item.id+"' class='autoUpdate'></select>";
+                }else if(item.type == "checkbox"){
+                    _insert += "<input type='checkbox' id='config_opt_"+item.id+"' class='autoUpdate'/>";
                 }
                 
                 if (item.helper){
@@ -98,8 +99,9 @@ Dots.Config.prototype = {
                     Dots.Config.defaultParams[item.id] = item['default'];
                 }
             }
+     
             if(_insert){
-                _panel.append("<p class='grid_3'>"+_insert+"</p>");
+                _panel.append("<div class='grid_3'>"+_insert+"</div>");
             }
         }
          _panel.append("<div class='clear'>&nbsp;</div>");
@@ -111,7 +113,6 @@ Dots.Config.prototype = {
     loadSheet: function(){
         if(!incoming_sheet)return;
         this.getSheet(incoming_sheet);
-        //this.getSheet($("#config_opt_url").val());
     },
     
     // straight from Polymaps
@@ -268,11 +269,7 @@ Dots.Config.prototype = {
     },
     // set fields from default object
     wipeConfigSettings: function(){
-        /*
-        for(i in this.defaults){
-            this.defaults[i] = '';
-        }
-        */
+        // clone original static object
         this.defaults = jQuery.extend({}, Dots.Config.defaultParams);
 
         this.iframe_size = [940,500];
@@ -282,7 +279,18 @@ Dots.Config.prototype = {
     // set fields from default object
     setConfigSettings: function(){
         for(i in this.defaults){
-            $("#config_opt_"+i).val(this.defaults[i]);
+            var elm = $("#config_opt_"+i);
+            if(elm.is(":checkbox")){
+                if(this.defaults[i]=="1"){
+                    elm.attr('checked','checked');
+                }else{
+                   // do nothing because this should only be called in beginning 
+                }
+            }else{
+                //console.log(this.defaults[i]);
+                elm.val(this.defaults[i]);
+            }
+            
         };
 
         $("#config_opt_width").val(parseInt(this.iframe_size[0]));
@@ -292,7 +300,12 @@ Dots.Config.prototype = {
     // update defaults with fields
     grabConfigSettings: function(){
         for(i in this.defaults){
-            this.defaults[i] = $("#config_opt_"+i).val();
+            var elm = $("#config_opt_"+i);
+            if(elm.is(":checkbox")){
+                this.defaults[i] = (elm.is(':checked')) ? "1":"0";
+            }else{
+                this.defaults[i] = elm.val();
+            }
         };
 
         this.iframe_size[0] = parseInt($("#config_opt_width").val());
@@ -358,7 +371,6 @@ Dots.Config.prototype = {
         
     },
 
-
     // set embed code textarea
     setEmbed:function(){
         var that = this;
@@ -366,15 +378,26 @@ Dots.Config.prototype = {
         var current_embed = $("#example_text").val();
         var new_embed = this.getEmbedCode(out);
         if(current_embed != new_embed){
+            // set embed test
             $("#example_text").val( new_embed );
-            /*
-            $('iframe').unbind('load').bind('load',function(e){
-                        //console.log("iframe loaded");
+            
+             // dump the old iframe
+            $("#example_iframe").remove();
+            // create a new one
+            var _i = $(new_embed);
+            _i.attr("id","example_iframe");
+            _i.attr("width",this.iframe_size[0]);
+            _i.attr("height",this.iframe_size[1]);
+            
+            /* check for iframe load before allowing to update the iframe again*/
+            _i.unbind('load').bind('load',function(e){
                         that.isUpdating = false;
             });
-            */
-            $("#example_iframe").attr('src',out);
-            this.updateIframeSize();
+            
+            $("#config-map").append(_i); // append it to load it
+            that.updateIframeSize(); // update iframe size
+            this.isUpdating = false; //  i lie
+        }else{
             this.isUpdating = false;
         }
     },
@@ -397,7 +420,7 @@ Dots.Config.prototype = {
     getSheet: function(u){
         // check for things
         if(!_dotspotting.abs_root_url && !u)return;
-
+        
         // split on hash
         var _url = u.split("#");
 
@@ -416,18 +439,21 @@ Dots.Config.prototype = {
 
         // create url that fetches geojson for sheet
         var _export_url = _url[0]+"/export?format=json";
-        
+                
         var that = this;
         this.configEvent({type: "json_loading_begin"});
+        
         
         // get sheet geojson
         $.ajax({
           url: _export_url,
           dataType:"jsonp",
           success: function(d){
-            that.wipeConfigSettings();
+            // uncomment if allowing user to resubmit a URL
+            //that.wipeConfigSettings();
             that.defaults['title'] = d['dotspotting:title'];
             if(d.features[0]['properties']['user_id'] && d.features[0]['properties']['sheet_id']){
+                
                 that.processFields(d.features[0]['properties']);
                 that.defaults.user = parseInt(d.features[0]['properties']['user_id']);
                 that.defaults.sheet = parseInt(d.features[0]['properties']['sheet_id']);

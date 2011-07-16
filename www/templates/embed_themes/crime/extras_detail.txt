@@ -1,0 +1,40 @@
+<a name="extra_details"></a>
+<div class="crime_extras">
+<h3>Crime Fields:</h3>
+<p>The crime theme assumes that each of your dots has the following fields defined:</p>
+<ul>
+<li><strong>"crime type"</strong>: The specific
+crime type, as defined by <a href="http://oakland.crimespotting.org">Crimespotting</a>.
+Recognized (case-insensitive) values are:
+    <ul>
+        <li><span class="crime violent">Aggravated Assault</span></li>
+        <li><span class="crime violent">Simple Assault</span></li>
+        <li><span class="crime violent">Murder</span> or <span class="crime violent">Homicide</span></li>
+        <li><span class="crime violent">Robbery</span></li>
+        <li><span class="crime qol">Disturbing the Peace</span></li>
+        <li><span class="crime qol">Drugs</span> or <span class="crime qol">Narcotics</span></li>
+        <li><span class="crime qol">Alcohol</span></li>
+        <li><span class="crime qol">Prostitution</span></li>
+        <li><span class="crime property">Theft</span></li>
+        <li><span class="crime property">Vehicle Theft</span></li>
+        <li><span class="crime property">Vandalism</span></li>
+        <li><span class="crime property">Burglary</span></li>
+        <li><span class="crime property">Arson</span></li>
+    </ul>
+    All other values are displayed as <span class="crime unknown">unknown</span>.
+</li>
+
+<li><strong>"description"</strong> or
+<strong>"crime description"</strong>: The crime
+description, listed in the tooltip.</li>
+
+<li><strong>"date"</strong> and <strong>"time"</strong>:
+The crime date and time, with no formatting in
+particular. These values are listed underneath
+the description in a slightly darker color.</li>
+</ul>
+</div>
+
+{*
+*}
+

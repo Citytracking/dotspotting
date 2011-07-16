@@ -1,19 +1,10 @@
 {assign var="page_title" value="Default Theme"}
 {capture assign="extra_head"}
 <link rel="stylesheet" href="{$cfg.abs_root_url}css/embed.css">
-<link rel="stylesheet" href="{$cfg.abs_root_url}css/uniform.default.css">
-<script type="text/javascript" src="{$cfg.abs_root_url}javascript/customselect.jquery.js"></script>
 <script type="text/javascript">
 var ds_chosen_theme = '{$chosen_theme}';
 var incoming_sheet = '{$recent_sheet_url}';
-{literal}
-
-$(document).ready(function() {
-$('.customStyleSelectBox').customStyle();
-});
-
 </script>
-{/literal}
 {/capture}
 
 {include file="inc_head.txt"}
@@ -31,7 +22,7 @@ $('.customStyleSelectBox').customStyle();
         <div class='grid_4 alignright' style="padding-top:5px;"> 
             <span class="label">Available Themes:</span>
        
-            <select id="config_opt_theme" class="customStyleSelectBox">
+            <select id="config_opt_theme">
                 <option value="default">Default</option>
                 <option value="photo">Photo</option>
                 <option value="crime">Crime</option>
@@ -73,7 +64,7 @@ $('.customStyleSelectBox').customStyle();
         </div>
          <div class="grid_3">
                 <span class="label">Tile provider:</span>
-                <select id="config_opt_base" class="autoUpdate customStyleSelectBox">
+                <select id="config_opt_base" class="autoUpdate">
                     <option value="">Toner</option>
                     <option value="acetate">Acetate</option>
                     <option value="pale_dawn">Pale Dawn</option>
@@ -82,19 +73,19 @@ $('.customStyleSelectBox').customStyle();
                 </select>
             </div>
         {* sizes (4:3) *}
-        <div class="grid_3" style="height:45px;">
+        <div class="grid_3 alignright" style="height:45px;">
             <span class="label">Map size:</span>
-            <select id="config_opt_mapsize" class="autoUpdate customStyleSelectBox">
+            <select id="config_opt_mapsize" class="autoUpdate">
                 <option value="large">Large (940x500)</option>
                 <option value="medium">Medium (600x450)</option>
                 <option value="small">Small (400x300)</option>
                 <option value="custom">custom</option>
             </select>
             
-            <span id="custom_map_fields" class="hider autoUpdate">
-            <input id="config_opt_width" value="" style="width:3em;"/>
+            <span id="custom_map_fields" class="hider">
+            <input id="config_opt_width" value="" style="width:3em;" class="autoUpdate"/>
             <span style="font-size:12px;padding:0 3px 0 2px;"> x </span>
-            <input id="config_opt_height" value="" style="width:3em;"/>
+            <input id="config_opt_height" value="" style="width:3em;" class="autoUpdate"/>
             </span>
         </div>
        
@@ -122,7 +113,16 @@ $('.customStyleSelectBox').customStyle();
     <div class='clear'>&nbsp;</div>
     *}
     
- 
+    {* extras *}
+
+    <div class='grid_12'>
+    {include file="embed_themes/$chosen_theme/extras_detail.txt"}
+    </div>
+    <div class='clear'>&nbsp;</div>
+
+    
+    
+ {* the end *}
 </div>
 
 

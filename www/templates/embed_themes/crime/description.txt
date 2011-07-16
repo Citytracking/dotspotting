@@ -1,4 +1,3 @@
 <p>A pannable and zoomable
-map in the style of <a href="http://oakland.crimespotting.org/">Crimespotting</a>,
-with dots colored according to three broad crime type
-categories</p>
+map in the style of <a href="http://oakland.crimespotting.org/" title="view crime types">Crimespotting</a>,
+with dots colored according to the <a href="#extra_details">values in the crime type column.</a></p>

@@ -1,4 +1,4 @@
-var pot, params;
+var pot, params, typeSelector;
 
 $(function() {
 try {
@@ -8,14 +8,30 @@ try {
     if (!params.base) params.base = "pale_dawn";
     // TODO: uncomment me?
     if (!params.baseURL) params.baseURL = baseURL;
+    
 
     pot = new Dots.Potting(params);
     pot.setTitle();
+    
+    // map controls
+    $(".zoom-in").click(function(e){
+      e.preventDefault();
+      pot.map.zoomIn(); 
+    });
+    $(".zoom-out").click(function(e){
+      e.preventDefault();
+      pot.map.zoomOut(); 
+    });
+    
+    // adjust controls if title
+    if (params.title) {
+       $(".controls").css("top",($("#title").height()+20)+"px");
+    }
 
     pot.dotsLayer = new mm.MarkerLayer(pot.map);
 
     if (params.ui == "1") {
-        var typeSelector = new CrimeTypeSelector("#crime_types", pot.dotsLayer);
+        typeSelector = new CrimeTypeSelector("#crime_types_wrap","#crime_types", pot.dotsLayer);
         if (params.types) {
             typeSelector.defaultTypeSelected = false;
             typeSelector.selectTypes(params.types.split(","));
@@ -37,7 +53,7 @@ try {
             },
             marker = $.tmpl(dotTemplate, data);
             
-        
+
         marker.data("feature", feature);
         marker.data("crime_type", crime_type);
         marker.data("crime_group", crime_group);
@@ -51,8 +67,12 @@ try {
         }
         return marker[0];
     };
-
-    var req = pot.load();
+    // need a callback on load to resize menu
+    var req = pot.load(null, function(){
+        if (typeSelector) {
+            typeSelector.resize();
+        }
+    },null);
     
     ////////////////////////////
     // ARE WE IN CONFIG MODE ////////////
@@ -77,7 +97,8 @@ try {
 }
 });
 
-function CrimeTypeSelector(selector, layer) {
+function CrimeTypeSelector(wrapper,selector, layer) {
+    this.wrapper = $(wrapper);
     this.container = $(selector);
     this.layer = layer;
     this.labelsByType = {};
@@ -91,6 +112,7 @@ CrimeTypeSelector.prototype = {
     labelsByType: null,
     selectedTypes: null,
     defaultTypeSelected: true,
+    wrapper:null,
 
     getSortKey: function(data) {
         var indexes = {"violent": 1, "qol": 2, "property": 3};
@@ -207,6 +229,7 @@ CrimeTypeSelector.prototype = {
             var label = $(el),
                 key = label.data("sort");
             labels[key] = label;
+            /*console.log(label[0],key)*/
             return key;
         });
         sortables = sortables.sort(function(a, b) {
@@ -215,6 +238,16 @@ CrimeTypeSelector.prototype = {
         var len = sortables.length;
         for (var i = 0; i < len; i++) {
             labels[sortables[i]].appendTo(this.container);
+        }
+    }, 
+    resize: function(){
+
+        var _parent = this.container.parent();
+        var _container_offset = this.container.offset();
+        if(_container_offset.top + this.container.height() > _parent.height()){
+            var _w = this.container.width();
+            var _h = (_parent.height() - _container_offset.top) - 20;
+            this.container.css("width",_w+25+"px").css("height",_h+"px").css("overflow","auto").css("padding-top","10px").css("padding-bottom","10px");
         }
     }
 };
@@ -233,21 +266,41 @@ function getCrimeGroup(crime_type) {
         case "MURDER": case "HOMICIDE":
         case "ROBBERY":
         case "SIMPLE ASSAULT":
+        case "BATTERY":
+        case "SUICIDE":
+        case "DOMESTIC VIOLENCE":
             return "violent";
         case "DISTURBING THE PEACE":
         case "NARCOTICS": case "DRUGS":
         case "ALCOHOL":
         case "PROSTITUTION":
+        case "SOLICITING A PROSTITUTE":
+        case "ATTEMPTED BATTERY":
+        case "CIVIL SIDEWALKS/SIT-LIE":
+        case "DRUNK DRIVING":
             return "qol";
         case "THEFT":
         case "VEHICLE THEFT":
         case "VANDALISM":
         case "BURGLARY":
         case "ARSON":
+        case "AUTO THEFT":
+        case "BICYCLE THEFT":
+        case "MOTORCYCLE THEFT":
+        case "GRAFFITI":
+        case "BURGLARY HOME":
+        case "BURGLARY - HOME":
+        case "BURGLARY COMMERCIAL":
+        case "BURGLARY - COMMERCIAL":
+        case "BURGLARY VEHICLE":
+        case "BURGLARY - VEHICLE":
+        case "FRAUD":
             return "property";
     }
     return "unknown";
 }
+
+
 
 function getDateTime(props) {
     if (props.hasOwnProperty("date") && props.hasOwnProperty("time")) {
@@ -263,6 +316,7 @@ function getDateTime(props) {
 
 function abbreviate(group) {
     var words = group.split(" ");
+    //console.log(group, group.indexOf(" "), words.concat());
     if (words.length > 1) {
         var first = words.shift();
         while (abbreviate.stopWords.indexOf(words[0].toLowerCase()) > -1) {

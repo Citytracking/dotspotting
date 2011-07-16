@@ -22,8 +22,14 @@
         <div id="output">
             <h1 id="title"></h1>
         </div>
+        <div class="controls">
+                <label>Zoom:</label> <a class="zoom-in" href="#zoom-in"><img alt="in" src="images/zoom-in.png"/></a>
+        		<a class="zoom-out" href="#zoom-out"><img alt="out" src="images/zoom-out.png"/></a>
+        </div>
     </div>
-    <ul id="crime_types"></ul>
+
+        <ul id="crime_types"></ul>
+
 
 {literal}
 <script id="dot" type="text/jquery-template">

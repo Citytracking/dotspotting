@@ -1,10 +1,31 @@
+{*
+The $more array, takes an object like this:
+{
+    'label': 'A label to show',
+    'type': 'text',                         // text, checkbox, or select, so far
+    'id': 'id',                             // id used in your theme 
+    'default': '100',                       // default value
+    'helper': 'Maximum width for thumbnail' // goes beneath input
+}
+
+checkbox types, return 0 or 1
+
+*}
 {literal}
 <script>
     var ds_config;
 
    $(document).ready(function() {
 
-    var $more = [];
+    var $more = [
+         {
+            'label': 'Crime type selector:',
+            'type': 'checkbox',
+            'id': 'ui',
+            'default': '1',
+            'helper': 'Toggle crime menu.'
+        }
+    ];
     
     // create the config object
     ds_config = new Dots.Config($more,"crime","pale_dawn");
@@ -20,7 +41,10 @@
     //console.log("loading error");
     });
 
+
     ds_config.loadSheet();
+    
+    
     
     });
 
