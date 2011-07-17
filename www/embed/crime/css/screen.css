@@ -174,22 +174,44 @@ h1 a {
 .report:hover .group {
     z-index: 1002;
 }
-#crime_types_wrapper{}
+#crime_types_wrapper{
+    position:absolute;
+    top: 30%;
+    right: 0;
+    background: #DCE8EF;
+    width: auto;
+    height: auto;
+    z-index: 2001;
+}
 
 #crime_types {
     position: relative;
     list-style: none;
     width: auto;
     height: auto;
-    position: absolute;
     display: block;
-    margin: -5em 0 0 0;
+    margin: 0;
     padding: 0;
-    z-index: 2001;
-    top: 40%;
-    right: 0;
-    background: #DCE8EF;
 }
+    #crime_types_wrapper h5{
+        font-size: 10px;
+        text-transform:uppercase;
+        color:#000;
+        margin:0;
+        padding:5px 0;
+        text-align:center;
+    }
+    #crime_types_wrapper h5 span{
+        text-transform:none;
+        padding-left:10px;
+    }
+    #crime_types_wrapper h5 span a{
+        color:#356A94;
+        text-decoration:none;
+    }
+    #crime_types_wrapper h5 span a:hover{
+        text-decoration:underline;
+    }
 
     #crime_types li {
         cursor: pointer;

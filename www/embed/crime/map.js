@@ -1,4 +1,4 @@
-var pot, params, typeSelector;
+var pot, params;
 
 $(function() {
 try {
@@ -31,7 +31,7 @@ try {
     pot.dotsLayer = new mm.MarkerLayer(pot.map);
 
     if (params.ui == "1") {
-        typeSelector = new CrimeTypeSelector("#crime_types_wrap","#crime_types", pot.dotsLayer);
+        var typeSelector = new CrimeTypeSelector("#crime_types_wrapper","#crime_types", pot.dotsLayer);
         if (params.types) {
             typeSelector.defaultTypeSelected = false;
             typeSelector.selectTypes(params.types.split(","));
@@ -70,7 +70,7 @@ try {
     // need a callback on load to resize menu
     var req = pot.load(null, function(){
         if (typeSelector) {
-            typeSelector.resize();
+            typeSelector.labelsAdded();
         }
     },null);
     
@@ -103,6 +103,7 @@ function CrimeTypeSelector(wrapper,selector, layer) {
     this.layer = layer;
     this.labelsByType = {};
     this.selectedTypes = {};
+    this.labels = [];
 }
 
 CrimeTypeSelector.prototype = {
@@ -113,7 +114,10 @@ CrimeTypeSelector.prototype = {
     selectedTypes: null,
     defaultTypeSelected: true,
     wrapper:null,
+    show_all:$("#ct_show_all"),
+    hide_all:$("#ct_hide_all"),
 
+    
     getSortKey: function(data) {
         var indexes = {"violent": 1, "qol": 2, "property": 3};
         return [indexes[data.group] || 9, data.label || data.type].join(":");
@@ -163,7 +167,9 @@ CrimeTypeSelector.prototype = {
             label.addClass("off");
             this.unselectType(type);
         }
+        this.labels.push(label);
         return label;
+        
     },
 
     onLabelClick: function(label, e) {
@@ -229,7 +235,7 @@ CrimeTypeSelector.prototype = {
             var label = $(el),
                 key = label.data("sort");
             labels[key] = label;
-            /*console.log(label[0],key)*/
+            //console.log(label[0],key);
             return key;
         });
         sortables = sortables.sort(function(a, b) {
@@ -240,14 +246,46 @@ CrimeTypeSelector.prototype = {
             labels[sortables[i]].appendTo(this.container);
         }
     }, 
-    resize: function(){
+    labelsAdded: function(){
+        var that = this;
+       this.resize(); 
+       this.show_all.click(function(e){
+            e.preventDefault();
+            var len = that.labels.length;
+            for (var i = 0; i < len; i++) {
+            var label = that.labels[i];
+            var selected = true,
+                type = label.data("type");
+            label.data("selected", selected);
+            that.selectType(type);
+            label.toggleClass("off", !selected);
+            }
+       });
+        this.hide_all.click(function(e){
+            e.preventDefault();
+            var len = that.labels.length;
+            for (var i = 0; i < len; i++) {
+                var label = that.labels[i];
+                var selected = false,
+                 type = label.data("type");
+                label.data("selected", selected);
+                that.unselectType(type);
+                label.toggleClass("off", !selected);
+            }
 
-        var _parent = this.container.parent();
-        var _container_offset = this.container.offset();
-        if(_container_offset.top + this.container.height() > _parent.height()){
+        });
+    },
+    
+    resize: function(){
+   
+        var _parent = this.wrapper.parent();
+        var _container_offset = this.wrapper.offset();
+
+        if(_container_offset.top + this.wrapper.height() > _parent.height()){
+           
             var _w = this.container.width();
-            var _h = (_parent.height() - _container_offset.top) - 20;
-            this.container.css("width",_w+25+"px").css("height",_h+"px").css("overflow","auto").css("padding-top","10px").css("padding-bottom","10px");
+            var _h = (_parent.height() - _container_offset.top) - 40;
+            this.container.css("width",_w+25+"px").css("height",_h+"px").css("overflow","auto").css("padding-bottom","10px");
         }
     }
 };
@@ -276,6 +314,7 @@ function getCrimeGroup(crime_type) {
         case "PROSTITUTION":
         case "SOLICITING A PROSTITUTE":
         case "ATTEMPTED BATTERY":
+        case "CIVIL SIDEWALKS": case "SIT-LIE":
         case "CIVIL SIDEWALKS/SIT-LIE":
         case "DRUNK DRIVING":
             return "qol";

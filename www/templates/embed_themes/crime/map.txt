@@ -27,9 +27,10 @@
         		<a class="zoom-out" href="#zoom-out"><img alt="out" src="images/zoom-out.png"/></a>
         </div>
     </div>
-
+    <div id="crime_types_wrapper">
+        <h5>Crime Type <span><a href="" id="ct_show_all">Show All</a> | <a href="" id="ct_hide_all">Hide All</a></span></h5>
         <ul id="crime_types"></ul>
-
+    </div>
 
 {literal}
 <script id="dot" type="text/jquery-template">
