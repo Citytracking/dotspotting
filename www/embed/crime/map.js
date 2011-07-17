@@ -37,7 +37,7 @@ try {
             typeSelector.selectTypes(params.types.split(","));
         }
     } else {
-        $("#crime_types").remove();
+        $("#crime_types_wrapper").remove();
     }
 
     var dotTemplate = $("#dot").template();
