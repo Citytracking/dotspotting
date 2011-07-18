@@ -57,6 +57,22 @@ try {
         marker.data("feature", feature);
         marker.data("crime_type", crime_type);
         marker.data("crime_group", crime_group);
+        
+        
+
+        //tooltip
+	    marker.tipTip({
+    	    maxWidth: "auto", 
+    	    edgeOffset: 12,
+    	    delay:100,
+    	    content:data.desc,
+    	    forcePosition:false,
+    	    enter:function(){
+    	        //$("#tiptip_holder").removeClass("classtype_tip")
+    	    },
+            exit:function(){}
+    	});
+   
 
         if (typeSelector) {
             var label = typeSelector.addLabel(data);
@@ -131,6 +147,7 @@ CrimeTypeSelector.prototype = {
             label.data("count", label.data("count") + 1);
             return  label;
         }
+        
 
         var label = $("<li/>")
             .data("type", type)
@@ -142,7 +159,8 @@ CrimeTypeSelector.prototype = {
                     .text(data.label))
             .append($('<span class="title"/>')
                 .text(data.title || data.type));
-
+                
+        
         var that = this;
         label.click(function(e) {
             that.onLabelClick($(this), e);
@@ -248,10 +266,39 @@ CrimeTypeSelector.prototype = {
     }, 
     labelsAdded: function(){
         var that = this;
-       this.resize(); 
-       this.show_all.click(function(e){
+        var len = this.labels.length;
+
+        // add alternating rows and tooltips
+        var _items = this.container.find("li");
+        _items.each(function(i){
+    
+            var label = $(this);
+            if(i % 2 == 0){
+                $(label).addClass("altrow");
+            }
+   
+            var tip_str = $(label).find('.title').text() + "<br/>" + label.data('count') +": reports";
+              label.tipTip({
+          	    maxWidth: "auto", 
+          	    edgeOffset: 0,
+          	    delay:100,
+          	    defaultPosition:"left",
+          	    forcePosition:true,
+          	    content:tip_str,
+          	    enter:function(){},
+                exit:function(){}
+          	});
+  	
+    
+        });
+        
+        // resize crime type selector widget
+        this.resize(); 
+        
+        // add show all & hide all events
+        this.show_all.click(function(e){
             e.preventDefault();
-            var len = that.labels.length;
+
             for (var i = 0; i < len; i++) {
             var label = that.labels[i];
             var selected = true,
@@ -260,10 +307,10 @@ CrimeTypeSelector.prototype = {
             that.selectType(type);
             label.toggleClass("off", !selected);
             }
-       });
+        });
         this.hide_all.click(function(e){
             e.preventDefault();
-            var len = that.labels.length;
+
             for (var i = 0; i < len; i++) {
                 var label = that.labels[i];
                 var selected = false,

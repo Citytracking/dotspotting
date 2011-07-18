@@ -7,12 +7,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <link rel="stylesheet" href="{$cfg.abs_root_url}embed/crime/css/screen.css">
+    <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/tipTip.css">
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/utils.js"></script>
     <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/dots.potting.js"></script>
+     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tipTip.minified.js"></script>
     <script type="text/javascript" defer="defer">
     var baseURL = '{$cfg.abs_root_url}';
     </script>
@@ -26,10 +28,20 @@
                 <label>Zoom:</label> <a class="zoom-in" href="#zoom-in"><img alt="in" src="images/zoom-in.png"/></a>
         		<a class="zoom-out" href="#zoom-out"><img alt="out" src="images/zoom-out.png"/></a>
         </div>
+        
+        <p id="copyright">Map data &copy;<a href="https://www.openstreetmap.org/" title="OpenStreetMap site">OpenStreetMap</a> contributors, CC-BY-SA; designed by <a href="http://www.stamen.com/" title="stamen site">Stamen</a> &amp; <a href="http://www.geoiq.com/">GeoIQ</a></p>
+        
     </div>
     <div id="crime_types_wrapper">
         <h5>Crime Type <span><a href="" id="ct_show_all">Show All</a> | <a href="" id="ct_hide_all">Hide All</a></span></h5>
         <ul id="crime_types"></ul>
+    </div>
+    
+    <div id="tiptip_holder">
+        <div id="tiptip_arrow">
+            <div id="tiptip_arrow_inner"></div>
+        </div>
+        <div id="tiptip_content"></div>
     </div>
 
 {literal}

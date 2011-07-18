@@ -167,21 +167,29 @@ h1 a {
 }
 /* description above all other markers */
 .report:hover .desc {
-    z-index: 1001;
-    display: block;
+    /* z-index: 1001;
+   display: block;*/
 }
 /* icon above the description */
 .report:hover .group {
     z-index: 1002;
 }
+
+
 #crime_types_wrapper{
     position:absolute;
     top: 30%;
     right: 0;
     background: #DCE8EF;
+    background: rgba(220,232,239,.8);
     width: auto;
     height: auto;
     z-index: 2001;
+    padding:0 5px;
+}
+li.altrow{
+    background:#DBDFE3;
+    background:rgba(100,100,100,.1);
 }
 
 #crime_types {
@@ -249,3 +257,10 @@ h1 a {
     #crime_types li.off .group {
         background-image: url(../images/icons/faded.png) !important;
     }
+    
+#tiptip_holder.classtype_tip #tip_content{background:#fff;color:#000;}
+
+#tiptip_holder.classtype_tip #tiptip_arrow_inner {
+    border-left-color: #fff;
+    border-left-color: rgba(255, 255, 255, 0.92);
+}
