@@ -308,7 +308,7 @@ circle{cursor:pointer;}
 	#map_wrapper #embed_map_box textarea{
 		position: relative;
         width: 96%;
-        height: 4em;
+        height: 1.5em;
         border: 1px solid #CCC;
         margin: 0;
         resize: none;
@@ -333,6 +333,9 @@ circle{cursor:pointer;}
 
 	#map_wrapper #embed_map_box #embed_box textarea{
 	    clear:both;
+	}
+	#map_wrapper #embed_map_box #embed_box #embed_ta{
+	    height: 4em;
 	}
 	#map_wrapper #embed_map_box #export_box{
 	    margin:10px 0 0 0;
