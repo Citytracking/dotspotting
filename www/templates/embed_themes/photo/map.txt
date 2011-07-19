@@ -55,6 +55,7 @@
     <script id="dot" type="text/jquery-template">
     <div class="photodot" href="#" id="${photo_id}">
         <div class="ps"></div>
+        <div class="kirby_bottom"></div>
     </div>
     </script>
     {/literal}

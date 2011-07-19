@@ -21,16 +21,38 @@ h1 a{text-decoration:none;}
 
 /* MARKER STYLES */
 .photodot{display:block;cursor:pointer;position:relative;}
-.photodot div.photoContainer{background:#000;background:rgba(0,0,0,1);padding:3px 3px 1px;position:relative;z-index:4;}
-.photodot img{position:relative;}
+.photodot div.photoContainer{background:#000;background:rgba(0,0,0,1);padding:0;position:relative;z-index:4;}
+.photodot img{position:relative;border: 1px solid #ccc;}
 .ps{height:5px;width:5px;background:#ff0000;z-index:2000;position:relative;display:none;}
 .photo_nub{border-bottom:0;height:0;width:0;position:absolute;border-left:10px solid transparent;border-right:10px solid transparent;border-top:10px solid black;left:50%;bottom:-10px;}
-.photodot_over{z-index:1001;}
+.photodot_over div.photoContainer{z-index:1001;}
 .roundedCorners{
 	padding: 0 !important;
-	-moz-border-radius: 7px;
-	-webkit-border-radius: 7px;
-	border-radius: 7px;
-	border: 2px solid black;
+	-moz-border-radius: 1px;
+	-webkit-border-radius: 1px;
+	border-radius: 1px;
+	border: 1px solid #ccc;
 }
 .photoNoNo{background-color:transparent !important;}
+.photoNoNo img{border: none !important;}
+.kirby_bottom{
+    background:#000;
+    background:rgba(0,0,0,.8);
+    width:100%;
+    height:100%;
+    position:absolute;
+    padding:8px;
+    z-index:0 !important;
+}
+
+/* for testing only */
+.hit{
+    position:relative;
+    z-index:3000;
+    width:4px;
+    height:4px;
+    background:#ff0000;
+    display:block;
+    margin-left:-2px;
+    margin-top:-2px;
+}

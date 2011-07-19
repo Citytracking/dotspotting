@@ -64,7 +64,7 @@ try {
 	    marker.tipTip({
     	    maxWidth: "auto", 
     	    edgeOffset: 12,
-    	    delay:100,
+    	    delay:200,
     	    content:data.desc,
     	    forcePosition:false,
     	    enter:function(){

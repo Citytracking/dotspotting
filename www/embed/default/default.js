@@ -8,12 +8,11 @@ var over_style = {
 	'stroke-width' : 1
 };
 var under_style = {
-	'fill' : 'rgb(10,10,10)',
-	'fill-opacity' : 1,
-	'stroke' : 'rgb(10,10,10)',
+	'fill' : 'rgb(255,255,255)',
+	'fill-opacity' : .8,
+	'stroke' : 'rgb(207,207,207)',
 	'stroke-width' : 1
-};
-   	
+};  	
    	
 $(function() {
     try{

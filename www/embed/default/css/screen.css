@@ -103,7 +103,7 @@ h1 a {
 	
 /* MARKER STYLES */
 .dot{fill:rgb(11,189,255);fill-opacity:1;cursor:pointer;z-index:100;}
-.under{fill:rgb(10,10,10);fill-opacity:1;cursor:pointer;z-index:200;}
+.under{fill:rgb(255,255,255);fill-opacity:.9;stroke:#ccc;stroke-opacity:1;cursor:pointer;z-index:200;}
 .over_hover{fill:#000;fill-opacity:1;stroke:rgb(11,189,255);stroke-width:4 !important;stroke-opacity:1;}
 .under_hover{}
 

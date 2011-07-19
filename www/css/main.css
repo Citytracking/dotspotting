@@ -230,32 +230,18 @@ table.page_dot td{text-align:left;padding:5px;border-top:1px solid #000;}
 /* 	dot & sheet styles can be set in config as well
 	config will override
 */
-/*
-.dot{fill:rgb(11,189,255);fill-opacity:1;stroke:#fff;stroke-width:3;stroke-opacity:1;cursor:pointer;}
-.dotHover{fill:#00ddee;fill-opacity:1;stroke:#00112d;stroke-width:5;stroke-opacity:1;}
-*/
-/*
-.dot{
-	fill: rgb(11,189,255);
-    fill-opacity: 1;
-    stroke: rgb(255,255,255);
-    stroke-width: 3;	
-    stroke-opacity: 1;
-}
-.over_hover{fill:#000;fill-opacity:1;stroke:rgb(11,189,255);stroke-width:4;stroke-opacity:1;}
-*/
-
+/* dots */
 .dot{fill:rgb(11,189,255);fill-opacity:1;cursor:pointer;z-index:100;}
-.under{fill:rgb(10,10,10);fill-opacity:1;cursor:pointer;z-index:200;}
+.under{fill:rgb(255,255,255);fill-opacity:.8;stroke:#ccc;stroke-opacity:1;cursor:pointer;z-index:200;}
 .over_hover{fill:#000;fill-opacity:1;stroke:rgb(11,189,255);stroke-width:4 !important;stroke-opacity:1;}
 .under_hover{}
-
-
 .dot_private{fill:red !important;}
+
+/* sheets */
 .sheet{fill:rgb(11,189,255);fill-opacity:.5;stroke:rgb(11,189,255);stroke-opacity:1;stroke-width:4;}
 .sheet:hover{fill:rgb(11,189,255);fill-opacity:.1;stroke:rgb(11,189,255);stroke-width:4;stroke-opacity:1;cursor:pointer;}
 .highlighted{background-color:#ccffff !important;}
-
+circle{cursor:pointer;}
 
 
 /**/

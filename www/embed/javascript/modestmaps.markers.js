@@ -197,6 +197,7 @@ if (!com.modestmaps) {
             this.repositionMarker(marker);
             this.parent.appendChild(marker);
             this.markers.push(marker);
+            
             return marker;
         },
 

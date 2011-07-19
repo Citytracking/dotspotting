@@ -547,8 +547,6 @@ function utils_adjust_bbox(bbox){
 
 
 ////////////// seanc dumping ground //////////////////
-
-
 function get_mm_dot_styles(){
     
     var over = {
@@ -559,9 +557,9 @@ function get_mm_dot_styles(){
    	};
 
    	var under = {
-   		'fill' : 'rgb(10,10,10)',
-   		'fill-opacity' : 1,
-   		'stroke' : 'rgb(10,10,10)',
+   		'fill' : 'rgb(255,255,255)',
+   		'fill-opacity' : .8,
+   		'stroke' : 'rgb(204,204,204)',
    		'stroke-width' : 1
    	};
 

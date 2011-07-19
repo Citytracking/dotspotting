@@ -65,7 +65,7 @@ var incoming_sheet = '{$recent_sheet_url}';
          <div class="grid_3">
                 <span class="label">Tile provider:</span>
                 <select id="config_opt_base" class="autoUpdate">
-                    <option value="">Toner</option>
+                    <option value="toner">Toner</option>
                     <option value="acetate">Acetate</option>
                     <option value="pale_dawn">Pale Dawn</option>
                     <option value="mapquest">MapQuest</option>

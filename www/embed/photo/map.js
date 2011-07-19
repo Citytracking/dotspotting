@@ -1,6 +1,7 @@
 var pot,params,marker_props;   	
 var THUMB_MAX_WIDTH = 100,
-    THUMB_MAX_HEIGHT = 70;
+    THUMB_MAX_HEIGHT = 70,
+    THUMB_PADDING = null;
     
 var tip_params = {};
 tip_params.activate = true;
@@ -10,7 +11,6 @@ $(function() {
         $("#map").css("height","100%");
 
         var mm = com.modestmaps,
-        
         
         marker_props = {};
 
@@ -47,6 +47,15 @@ $(function() {
         pot.dotsLayer = new mm.MarkerLayer(pot.map);
 
         var dotTemplate = $("#dot").template();
+        
+        // get padding for later
+        // this may not stick
+        var get_kirby_padding = $("<div class='kirby_bottom'></div>").hide().appendTo("body");
+        THUMB_PADDING = ($(get_kirby_padding).css("padding-top")) ? parseInt($(get_kirby_padding).css("padding-top").replace("px", "")) : 8;
+        get_kirby_padding.remove();
+        
+        
+        
         pot.makeDot = function(feature) {
             var props = feature.properties,
             geom = (feature.geometry.type == 'GeometryCollection') ? feature.geometry.geometries : [ feature.geometry ];
@@ -95,12 +104,18 @@ $(function() {
                  THUMB_MAX_HEIGHT = 30;
                  loadTheImage(marker[0],photo_url,__title,"","photoNoNo");
             }
-
+        
+     /*
+            var _hit = $("<div class='hit'></div>");
+            pot.dotsLayer.addMarker(_hit[0],feature);
+     */
+               
           return marker[0];
         };
 
        
         var req = pot.load(null,function(){
+        
             var markers = pot.dotsLayer.markers,
                 len = markers.length;
             function latitude(marker) {
@@ -115,10 +130,10 @@ $(function() {
             for (var i = 0; i < len; i++) {
                 $(markers[i].parentNode).append(markers[i]);
             }
-            
-           
+       
             
         },null);
+
         
          ////////////////////////////
         // ARE WE IN CONFIG MODE ////////////
@@ -197,6 +212,9 @@ function loadTheImage(elm,url,title,alt,ughClass){
 	//imgHolder.append(thisNub);
 	$(elm).append(imgHolder);
 	var img = new Image();
+	
+	var kirby = $(elm).find(".kirby_bottom");
+	
 
 	// img loader
 	$(img)
@@ -224,21 +242,25 @@ function loadTheImage(elm,url,title,alt,ughClass){
                 _w = maxWidth;
                 _h = Math.ceil(_height / _width * maxWidth);
               }
+              
              
              $(this).width(_w);
-             $(this).height(_h) 
+             $(this).height(_h);
 
 			// reposition parent to center on point
 			var elm_offset = $(elm).offset();
+			var padding = THUMB_PADDING;
+			
+            // adding in padding
+			var new_elm_left = elm_offset.left - ((_w+(padding*2))/2);
+			var new_elm_top = elm_offset.top - ((_h+(padding*2))/2);
 
-			var new_elm_left = elm_offset.left - (imgHolder.innerWidth()/2);
-			var new_elm_top = elm_offset.top - (imgHolder.innerHeight()/2);
-	
-			$(elm).css("top",new_elm_top+"px");
-		    $(elm).css("left",new_elm_left+"px");
-            
-            
-            
+			//$(elm).css("top",new_elm_top+"px");
+		    //$(elm).css("left",new_elm_left+"px");
+		    $(elm).css("margin-left",-((_w+(padding*2))/2) + "px")
+		        .css("margin-top",-((_h+(padding*2))/2) + "px")
+
+            /*
 		    if (hasBorderRadius() && !ughClass) {
 		        var imgSrc = $(this).attr("src");
 		        $(imgHolder).addClass("roundedCorners");
@@ -247,14 +269,25 @@ function loadTheImage(elm,url,title,alt,ughClass){
                       .css("background-image", "url(" + imgSrc + ")")
                       .css("background-repeat","no-repeat")
                       .css("height", _h + "px")
-                      .css("width", _w + "px");
+                      .css("width", _w + "px")
+                      .css("left","5px") // adjust for padding
+                      .css("top","5px"); // adjust for padding
 
                 $(this).remove();
 	        }else{
 	            if(ughClass)$(imgHolder).addClass(ughClass);
-	            $(this).show();
+   	            $(this).show();
 	        }
-
+	        */
+	        
+            if(ughClass)$(imgHolder).addClass(ughClass);
+            $(imgHolder).css("left",padding-1+"px") // adjust for padding
+                        .css("top",padding-1+"px") // adjust for padding
+                        .css("height", _h + "px")
+                        .css("width", _w + "px");
+	        $(this).show();
+	        
+	        
 	        
 	        /* events */
         	$(elm).click(function(e){

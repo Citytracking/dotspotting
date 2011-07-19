@@ -23,7 +23,7 @@
     
     
     // create the config object
-    ds_config = new Dots.Config($more);
+    ds_config = new Dots.Config($more,"photo","toner");
     
     // register events before calling the loadSheet method...
     ds_config.on("json_loading_begin",function(){
