@@ -45,25 +45,32 @@ function sheet_ready_function(){
 function clear_embed_code(){
     $("#embed_ta").val("");
 }
+
 function set_embed_code(_theme){
     var src = "sorry could not generate an embed code...";
     var pre = '<iframe type="text/html" width="400" height="400" src="';
-    var post = '"></iframe>';
+    var post = '" frameborder="0"></iframe>';
+    var sheet_link,sheet_title,link_back;
     //
     if(_dotspotting.embed_props && _dotspotting.embed_props.uid && _dotspotting.embed_props.sid){
+        link_back = "";
         // minimum
         src = _dotspotting.abs_root_url+"embed/"+_theme+"/map?user="+_dotspotting.embed_props.uid+"&amp;sheet="+_dotspotting.embed_props.sid;
-        
+        sheet_link = _dotspotting.abs_root_url + "u/"+_dotspotting.embed_props.uid+"/sheets/"+_dotspotting.embed_props.sid;
         // label
         if(_dotspotting.embed_props.label){
             src += "&amp;title="+_dotspotting.embed_props.label;
+            sheet_title = _dotspotting.embed_props.label;
+        }else{
+            sheet_title = "Sheet #" + _dotspotting.embed_props.sid;
         }
         // coords
         if(_dotspotting.embed_props.c){
     	    src += "#"+_dotspotting.embed_props.c;
     	}
+    	link_back = "<p><a href='"+sheet_link+"'>"+sheet_title+"</a> on <a href='"+_dotspotting.abs_root_url+"'>Dotspotting</a>"+"</p>"; 
         // oh good
-        $("#embed_ta").val(pre+src+post);
+        $("#embed_ta").val(pre+src+post+link_back);
     }else{
         // oh bad
         $("#embed_ta").val(src);

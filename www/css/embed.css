@@ -30,7 +30,7 @@ h2,h3,h4,h5{color:#000;}
 #config-extras p{margin-top:-20px;}
 #custom_map_fields{padding-top:4px;}
 #code_to_embed{clear:both;color:#000;margin-bottom:10px;}
-#code_to_embed textarea{margin:0;}
+#code_to_embed textarea{margin:0;height:5em;overflow:auto;padding:4px;}
 
 #tileapi{display:none;}
 

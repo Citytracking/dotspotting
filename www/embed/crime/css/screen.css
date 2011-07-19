@@ -185,7 +185,7 @@ h1 a {
     width: auto;
     height: auto;
     z-index: 2001;
-    padding:0 5px;
+    padding:0 5px 5px;
 }
 li.altrow{
     background:#DBDFE3;

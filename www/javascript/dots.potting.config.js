@@ -66,6 +66,8 @@ Dots.Config.prototype = {
     hasher:null,
     currentSize: 'large',
     isUpdating: false,
+    current_iframe_src: "",
+    current_embed_code: "",
     
     setThemeSelection: function(){
         $(this.selectors.theme_selector).val(this.theme);
@@ -173,7 +175,7 @@ Dots.Config.prototype = {
              var _new = $("#config_opt_hash").val();
              $("#config_opt_coords").val(_new);
              that.defaults['coords'] = _new;
-             $("#example_text").val( that.getEmbedCode(that.generateIframeSrc()) );
+             that.setEmbed(false);
         });
         
         $("#config_opt_mapsize").change(function(e){
@@ -211,7 +213,7 @@ Dots.Config.prototype = {
         $("#updateConfig").click(function(e){
             e.preventDefault();
             that.grabConfigSettings();
-            that.setEmbed();
+            that.setEmbed(true);
         });
 
         // select all text when embed code text area is clicked
@@ -223,14 +225,10 @@ Dots.Config.prototype = {
         
         $(".autoUpdate").change(function(e){
              e.preventDefault();
-             /*
-             that.grabConfigSettings();
-             $("#example_text").val( that.getEmbedCode(that.generateIframeSrc()) );
-             */
              if(!that.isUpdating){
                  that.isUpdating = true;
                  that.grabConfigSettings();
-                 that.setEmbed();
+                 that.setEmbed(true);
              }
         });
         
@@ -240,10 +238,8 @@ Dots.Config.prototype = {
     // utility function to read hash from map iframe
     hashMe: function(x){
         var that = this;
-
         
         return function(x){
-            
             if(!that.defaults)return;
             if(!x)return;
 
@@ -253,19 +249,16 @@ Dots.Config.prototype = {
             // ok lazy coming...
             if(x == "0/0/0")return;
 
-
             //update coordinate box
             $("#config_opt_hash").val(x);
             if(!that.init_coords){
                 $("#config_opt_coords").val(x);
                 that.defaults['coords'] = x;
-
-                $("#example_text").val( that.getEmbedCode(that.generateIframeSrc()) );
+                that.setEmbed(false);
+                //$("#example_text").val( that.getEmbedCode(that.generateIframeSrc()) );
                 that.init_coords = true;
             }
-            
         }
-
     },
     // set fields from default object
     wipeConfigSettings: function(){
@@ -339,18 +332,32 @@ Dots.Config.prototype = {
                 }
             }
         }
-
-
+        
         if(out.slice(-5) == "&amp;"){
             out = out.slice(0,-5);
         }
         if(this.defaults['coords'])out += "#"+this.defaults['coords'];
         return out;
     },
+    
+    getLinkBack: function(){
+        var pre_out = "";
+        if(this.defaults.user && this.defaults.sheet){
+            var sheet_link = _dotspotting.abs_root_url + "u/"+this.defaults.user+"/sheets/"+this.defaults.sheet;
+            var sheet_title = (this.defaults.title) ? this.defaults.title : "Sheet #"+this.defaults.sheet;
+            pre_out = "<a href='"+sheet_link+"'>"+sheet_title+"</a> on ";
+        }else{
+            pre_out = "This map is a product of "
+        }
+         
+        return  "<p>"+pre_out + "<a href='"+_dotspotting.abs_root_url+"'>Dotspotting</a>"+"</p>"; 
+            
+       
+    },
 
-    getEmbedCode: function(x){
-        var iframe_pre = '<iframe type="text/html" width="'+this.iframe_size[0]+'" height="'+this.iframe_size[1]+'" src="';
-         return iframe_pre + x + '"></iframe>';     
+    getEmbedCode: function(){
+        var iframe_val = '<iframe type="text/html" width="'+this.iframe_size[0]+'" height="'+this.iframe_size[1]+'" src="'+ this.current_iframe_src + '" frameborder="0"></iframe>';
+        return iframe_val;  
     },
     
     updateIframeSize: function(){
@@ -372,19 +379,24 @@ Dots.Config.prototype = {
     },
 
     // set embed code textarea
-    setEmbed:function(){
+    // @param force iframe reload
+    setEmbed:function(updateIframe){
+        if (updateIframe == undefined || updateIframe == null)updateIframe = false;
         var that = this;
-        var out = this.generateIframeSrc();
-        var current_embed = $("#example_text").val();
-        var new_embed = this.getEmbedCode(out);
-        if(current_embed != new_embed){
-            // set embed test
-            $("#example_text").val( new_embed );
-            
+        var old_iframe_src = this.current_iframe_src;
+        
+        this.current_iframe_src = this.generateIframeSrc();
+        this.current_embed_code = this.getEmbedCode();
+        
+        // set embed test
+        $("#example_text").val( this.current_embed_code + this.getLinkBack());
+        
+        //reload iframe?
+        if(updateIframe && (old_iframe_src != this.current_iframe_src)){
              // dump the old iframe
             $("#example_iframe").remove();
             // create a new one
-            var _i = $(new_embed);
+            var _i = $(this.current_embed_code);
             _i.attr("id","example_iframe");
             _i.attr("width",this.iframe_size[0]);
             _i.attr("height",this.iframe_size[1]);
@@ -458,7 +470,7 @@ Dots.Config.prototype = {
                 that.defaults.user = parseInt(d.features[0]['properties']['user_id']);
                 that.defaults.sheet = parseInt(d.features[0]['properties']['sheet_id']);
                 that.setConfigSettings();
-                that.setEmbed();
+                that.setEmbed(true);
                 $("#config_url_error").hide();
                 $("#config-options").show();
                 $("#config-message").html("<a href='"+incoming_sheet+"'>Sheet #"+that.defaults['sheet'] + "</a> is loaded.");

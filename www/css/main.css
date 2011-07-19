@@ -308,12 +308,12 @@ circle{cursor:pointer;}
 	#map_wrapper #embed_map_box textarea{
 		position: relative;
         width: 96%;
-        height: 25px;
+        height: 4em;
         border: 1px solid #CCC;
         margin: 0;
         resize: none;
         padding: 5px;
-        overflow:hidden;
+        overflow:auto;
 	}
 	
 	#map_wrapper #embed_map_box h4{
