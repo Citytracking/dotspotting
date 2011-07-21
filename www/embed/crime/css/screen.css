@@ -257,7 +257,10 @@ li.altrow{
     #crime_types li.off .group {
         background-image: url(../images/icons/faded.png) !important;
     }
-    
+
+/* The UGH! using 2 different tooltips for now until I merge them into super tooltip */
+
+/* tooltip for crime type selector */
 #tiptip_holder.classtype_tip #tip_content{background:#fff;color:#000;}
 
 #tiptip_holder.classtype_tip #tiptip_arrow_inner {
@@ -272,3 +275,16 @@ li.altrow{
 #tiptip_content{
     line-height:16px;
 }
+
+/*
+used for crime dots on map
+MAP TOOLTIP 
+co-opted from Portland crime map: https://github.com/Caged/portlandcrime
+*/
+div.maptip{background:#000;z-index:99999;margin-top:-30px;color:#fff;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}
+div.maptip-cnt{background:inherit;margin:8px 30px 8px 8px;width:auto;}
+.maptip span.close{color:#0BBDFF;color:#0BBDFF;cursor:pointer;display:block;font-size:14px;font-weight:bold;position:absolute;right:5px;top:1px;}
+.maptip span.close:hover{opacity:.7;}
+.maptip #maptip_bdy{padding:0;line-height:1.2em;font-size:12px;margin:0;font-weight:bold;}
+.maptip #maptip_bdy span{display:block;font-size:16px;padding-bottom:2px;}
+.nub{border-bottom:0;height:0;width:0;position:absolute;border-top:6px solid transparent;border-right:6px solid #000;border-bottom:6px solid transparent;left:-6px;top:24px;}

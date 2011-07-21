@@ -1,4 +1,6 @@
 var pot, params;
+var tip_selected_type = null,
+    tip_selected_elm = null;
 
 $(function() {
 try {
@@ -44,6 +46,16 @@ try {
         $("#crime_types_wrapper").remove();
     }
 
+    function dot_onclick(e,elm){
+        if(!elm)return;
+        
+        if(elm[0] == tip_selected_elm){
+            //console.log("YOU HAVE SELECTED THE SAME TIP");  
+        }else{
+            $("#map").trigger('markerclick',elm);
+        }
+    }
+
     var dotTemplate = $("#dot").template();
     var tipTemplate = $.template("tipTemplate",  "<span>${crime_type}</span>${time}<br/>${day} ${date}");
     pot.makeDot = function(feature) {
@@ -65,8 +77,9 @@ try {
         marker.data("crime_group", crime_group);
         
         
-        var tip_str = $.tmpl(tipTemplate, data.props);
+        feature.properties['tip_str'] = $.tmpl(tipTemplate, data.props);
         //tooltip
+        /*
 	    marker.tipTip({
 	        activation:"hover",
     	    maxWidth: "300", 
@@ -89,6 +102,13 @@ try {
                 //pot.map.removeCallback("drawn");
             }
     	});
+    	*/
+    	
+    	
+    	marker.click(function(e) {
+            dot_onclick(e,$(this));
+            e.preventDefault();
+        });
      
    
 
@@ -103,6 +123,8 @@ try {
     };
     // need a callback on load to resize menu
     var req = pot.load(null, function(){
+        // map tooltip
+    	utils_add_map_tooltip(pot.map,$("#map").parent(),"mm");
         if (typeSelector) {
             typeSelector.labelsAdded();
         }
@@ -232,6 +254,7 @@ CrimeTypeSelector.prototype = {
     },
 
     unselectType: function(type) {
+        if(type == tip_selected_type)$("#map").trigger('tip_close_tip');
         var markers = this.layer.markers,
             len = markers.length;
         for (var i = 0; i < len; i++) {
@@ -332,7 +355,7 @@ CrimeTypeSelector.prototype = {
         });
         this.hide_all.click(function(e){
             e.preventDefault();
-
+            
             for (var i = 0; i < len; i++) {
                 var label = that.labels[i];
                 var selected = false,
@@ -437,4 +460,237 @@ function abbreviate(group) {
     }
 } 
 abbreviate.stopWords = ["of", "the", "for", "and", "with", "-"];
+/*
+var tip_selected_type = null,
+    tip_selected_elm = null;
+*/   
+
+function utils_add_map_tooltip(map,mapel,map_type){
+
+    $(".maptip").each(function(){
+    	$(this).remove();
+    });
+	
+	
+	
+	$("#map").unbind('markerclick');
+	$("#map").bind('markerclick', function(e,elm) {
+		
+    if(mapel.length == 0) return;
+    var f = $(elm).data('feature');
+    if(!f)return;
+    var p = f.properties;
+
+    // set elm & type for others
+    tip_selected_elm = elm;
+    tip_selected_type = p['crime_type'];
+
+    // set property object that feeds into tip
+    var props = new Object();
+    props.location = elm.location,
+    props.map = map,
+    props.map_type = map_type,
+    props.content = p['tip_str'];
+    
+    // create tip
+     mapel.maptip(this)
+      .data(props)
+      .map(map)
+      .location(props.location)
+      .classNames(function(d) {
+        return d.code
+      })
+      .top(function(tip) {
+        var point = tip.props.map.locationPoint(this.props.location);
+    
+        return parseFloat(point.y);
+      }).left(function(tip) {
+        var offset = 18, 
+            point = tip.props.map.locationPoint(this.props.location);
+
+        return parseFloat(point.x + offset);
+      }).content(function(d) {
+
+    	var _tip = null;
+	
+        var self = this,
+            props = d,
+            cnt = $('<div/>'),
+            bdy = $('<div id="maptip_bdy"/>'),
+		
+            close = $('<span/>').addClass('close').html('X')
+
+    		cnt.append(close);
+		
+            bdy.html(props.content);
+
+            cnt.append($('<div/>').addClass('nub'));
+            cnt.append(bdy);
+		
+            close.click(function() {
+    			closeTip(self);
+            });
+          
+            $("#map").unbind("tip_close_tip").bind("tip_close_tip",function(e){
+                closeTip(self);
+        	});
+
+    		function closeTip(_tipRef){
+    			if(!_tipRef)return;
+    			_tipRef.hide();
+    		}
+
+        	return cnt;
+      }).render()
+
+
+    });
+
+}
+
+/**
+ * MapTip - [Alpha Quality]
+ * Flexible Polymaps Tooltips
+ * Copyright (c) 2011 Justin Palmer
+ * http://labratrevenge.com
+ * Released under the MIT License
+ */
+;(function($) {
+  function MapTip(el, target) {
+    this.canvas = el;
+    this.target = target;
+    this.defaultClassName = 'maptip';
+    this.el = $('<div />')
+        .addClass(this.defaultClassName)
+        .css('position', 'absolute');
+
+    this.cnt = $('<div />').addClass(this.defaultClassName + '-cnt');
+    this.el.append(this.cnt);
+    this.props = {};
+  }
+  
+  MapTip.prototype = {
+    data: function(d) {
+        this.props.data = d;
+        return this;
+    },
+    
+    map: function(el) {
+        var self = this
+        this.props.map = el;
+
+        this.props.map.addCallback('drawn', function() { self.move() });
+        this.props.map.addCallback('resized', function() { self.resize() });
+
+        return this;
+    },
+    
+    classNames: function(fn) {
+        if($.isFunction(fn)) {
+            this.props.classNames = fn.call(this, this.props.data);
+        } else {
+            this.props.classNames = fn;
+        }
+        this.el.attr('class', '');
+        this.el
+            .addClass(this.defaultClassName)
+            .addClass(this.props.classNames)
+        
+        return this;
+    },
+    
+    location: function(latlon) {
+        this.props.location = latlon;
+        return this;
+    },
+    
+    left: function(fn) {
+        if($.isFunction(fn)) {
+            this.props.callbackLeft = fn;
+            this.props.left = fn.call(this, this);
+        } else {
+            this.props.left = fn;
+        }
+
+        return this;
+    },
+    
+    top: function(fn) {
+        if($.isFunction(fn)) {
+            this.props.callbackTop = fn;
+            this.props.top = fn.call(this, this);
+        } else {
+            this.props.top = fn;
+        }
+        return this;
+    },
+    
+    content: function(fn) {
+        if($.isFunction(fn)) {
+            this.props.content = fn.call(this, this.props.data);
+            return this;
+        }
+        this.props.content = fn;
+        return this;
+    },
+    
+    className: function(fn) {
+        if($.isFunction(fn)) {
+            this.props.className = fn.call(this, this.props.data);
+            return this;
+        }
+
+        this.props.className = fn;
+        return this;
+    },
+    
+    page: function(fn) {
+        return this;
+    },
+    
+    hide: function(fn) {
+        var el = this.el;
+        this.el.fadeOut(function() {
+            el.remove();
+        });
+    },
+    
+    move: function(event) {
+        this.left(this.props.callbackLeft).top(this.props.callbackTop)
+        var size = {x:this.props.map.parent.offsetWidth,y:this.props.map.parent.offsetHeight};
+
+        if( (this.props.left > 0 && this.props.left < size.x) && (this.props.top > 0 && this.props.top < size.y) ){
+            this.el.css({left: this.props.left + 'px', top: this.props.top + 'px'});
+            this.el.css("visibility","");
+        }else{
+            this.el.css("visibility","hidden");
+        }
+        
+        return this;
+    },
+    
+    resize: function(event) {
+        return this.move(event);
+    },
+    
+    render: function() {
+        this.cnt.html('').append(this.props.content)
+        this.canvas.prepend(this.el)  
+        this.el
+            .show()
+            .css({left: this.props.left + 'px', top: this.props.top + 'px'});
+    }
+    //end
+  }
+  
+  $.fn.maptip = function(target) {
+    var tip = $.data(this, 'maptip-callout');
+    if(!tip) {
+        tip = new MapTip(this, target);
+        $.data(this, 'maptip-callout', tip);
+    }
+
+    return tip; 
+  }
+})(jQuery);
 
