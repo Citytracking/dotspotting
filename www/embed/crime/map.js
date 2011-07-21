@@ -57,7 +57,7 @@ try {
     }
 
     var dotTemplate = $("#dot").template();
-    var tipTemplate = $.template("tipTemplate",  "<span>${crime_type}</span>${time}<br/>${day} ${date}");
+    var tipTemplate = $.template("tipTemplate",  "<span>${description || crime_type}</span>${time}<br/>${day} ${date}");
     pot.makeDot = function(feature) {
         normalizeFeature(feature);
         var crime_type = getCrimeType(feature.properties),
