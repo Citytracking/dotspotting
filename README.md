@@ -1,19 +1,19 @@
 Dotspotting
 ==
 
-First things first:** THIS IS NOT PRODUCTION-READY CODE YET.**
+First things first:** THIS CODE IS BEING ACTIVELY DEVELOPED.**
 
-That said, it works. It probably doesn't work everywhere and there are almost certainly bugs left to be found but more importantly it is still at a stage where *the code and the architecture need to be able to change* without necessarily ensuring backwards compatibility.
+That said, it totally works! It's what we're using to run the http://www.dotspotting.org/ website.
 
-There are a whole bunch of features slated for a "1.0" release that simply haven't even been started yet. These include: API endpoints, import and export support for multiple data formats, interactive maps not to mention install scripts and tools that don't require you to think about all the stuff below. In short: There are lots of things left to do.
+There are almost certainly bugs left to be found but more importantly it is still at a stage where *the code and the architecture need to be able to change* without necessarily ensuring backwards compatibility.
+
+There are a whole bunch of features slated for futures release that simply haven't even been started yet. These include: API endpoints, import and export support for multiple data formats, interactive maps not to mention install scripts and tools that don't require you to think about all the stuff below. In short: There are lots of things left to do.
 
 But per the terms of the [Knight News Challenge Grant](http://content.stamen.com/we_got_a_knight_news_grant) that is funding the development of Dotspotting we are committed to working (and hopefully not failing too much) in public so this is the first step in that process.
 
 *(We think this is a good thing, by the way :-)*
 
 Once a stable baseline for the code and the architecture has been established Dotspotting will follow the conventions established for versioning and changes proposed in the Semantic Versioning specification ([http://semver.org/](http://semver.org/ "Semantic Versioning")).
-
-Right now, the version number for Dotspotting is: **"Super Alpha-Beta Disco-Ball"**.
 
 Also, if you haven't already read the [the introductory blog post about Dotspotting](http://content.stamen.com/working_on_the_knight_moves) you should do that now.
 
