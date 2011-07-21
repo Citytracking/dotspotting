@@ -59,6 +59,7 @@ try {
     var dotTemplate = $("#dot").template();
     var tipTemplate = $.template("tipTemplate",  "<span>${crime_type}</span>${time}<br/>${day} ${date}");
     pot.makeDot = function(feature) {
+        normalizeFeature(feature);
         var crime_type = getCrimeType(feature.properties),
             crime_group = getCrimeGroup(crime_type),
             data = {
@@ -69,7 +70,7 @@ try {
                 props: feature.properties
             },
             marker = $.tmpl(dotTemplate, data);
-            feature.properties['crime_type'] = crime_type
+            //feature.properties['crime_type'] = crime_type
             
 
         marker.data("feature", feature);
@@ -383,11 +384,11 @@ CrimeTypeSelector.prototype = {
 };
 
 function getCrimeDesc(props) {
-    return props["description"] || props["crime description"] || "?";
+    return props["description"] || props["crime_description"] || "?";
 }
 
 function getCrimeType(props) {
-    return props["crime type"] || props["Crime Type"] || props["Crime type"] || "Unknown";
+    return props["crime_type"] || "Unknown";
 }
 
 function getCrimeGroup(crime_type) {
@@ -431,7 +432,15 @@ function getCrimeGroup(crime_type) {
     return "unknown";
 }
 
-
+function normalizeFeature(feature) {
+    var props = feature.properties;
+    for (var p in props) {
+        var norm = p.replace(/ /g, "_").toLowerCase();
+        if (!props.hasOwnProperty(norm)) {
+            props[norm] = props[p];
+        }
+    }
+}
 
 function getDateTime(props) {
     if (props.hasOwnProperty("date") && props.hasOwnProperty("time")) {
