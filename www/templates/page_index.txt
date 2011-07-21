@@ -22,14 +22,14 @@
 {* start thumbnail section *}
 <div id="home_recents">
 	{if $recent_sheets|@count}
-		<div class="thumbnail_head clearfix"><h5 class="left">Recent sheets:</h5><a href="{$cfg.abs_root_url}recent/sheets" class="right txt_small">see more</a></div>
+		<div class="thumbnail_head clearfix"><h5 class="left">Recent sheets:</h5><!--<a href="{$cfg.abs_root_url}recent/sheets" class="right txt_small">see more</a>--></div>
 		{foreach from=$recent_sheets item=sh name=thumbs}
-			{if $smarty.foreach.thumbs.index < 12}
+			{if $smarty.foreach.thumbs.index < 60}
 			     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.iteration % 4 == 0} last_thumb{/if}">
 				<dt><a href="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}" title=""><img src="{$cfg.abs_root_url}u/{$sh.user_id}/sheets/{$sh.id}/export.png?height=156&width=234&dot_size=12" width="234" height="156"/></a></dt>
 				<dd class="txt_small thumb_title">
 				{if $sh.label}
-					<a href="{$sh|@urls_url_for_sheet}">{$sh.label|truncate:70:"...":true|escape}</a>
+					<a href="{$sh|@urls_url_for_sheet}">{$sh.label|truncate:50:"...":true|escape}</a>
 				{else}
 					<span class="untitled"><a href="{$sh|@urls_url_for_sheet}">untitled</a></span>
 				{/if}

@@ -5,6 +5,7 @@
 <head>
 	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width" />
 	
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/photo/css/screen.css">
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/photo/css/tipTip.css">
