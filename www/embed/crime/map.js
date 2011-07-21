@@ -36,11 +36,16 @@ try {
             typeSelector.defaultTypeSelected = false;
             typeSelector.selectTypes(params.types.split(","));
         }
+
+        var pos = ($("#title").length > 0) ? $("#title").innerHeight() : 0;
+        $("#crime_types_wrapper").css("top",pos+"px");
+        
     } else {
         $("#crime_types_wrapper").remove();
     }
 
     var dotTemplate = $("#dot").template();
+    var tipTemplate = $.template("tipTemplate",  "<span>${crime_type}</span>${time}<br/>${day} ${date}");
     pot.makeDot = function(feature) {
         var crime_type = getCrimeType(feature.properties),
             crime_group = getCrimeGroup(crime_type),
@@ -52,6 +57,7 @@ try {
                 props: feature.properties
             },
             marker = $.tmpl(dotTemplate, data);
+            feature.properties['crime_type'] = crime_type
             
 
         marker.data("feature", feature);
@@ -59,19 +65,31 @@ try {
         marker.data("crime_group", crime_group);
         
         
-
+        var tip_str = $.tmpl(tipTemplate, data.props);
         //tooltip
 	    marker.tipTip({
-    	    maxWidth: "auto", 
+	        activation:"hover",
+    	    maxWidth: "300", 
     	    edgeOffset: 12,
     	    delay:200,
-    	    content:data.desc,
+    	    content:tip_str,
     	    forcePosition:false,
-    	    enter:function(){
-    	        //$("#tiptip_holder").removeClass("classtype_tip")
+    	    keepAlive:false,
+    	    defaultPosition:"top",
+    	    manualClose:false,
+    	    closeContent:"",
+    	    //addTo:pot.dotsLayer.parent,
+    	    
+    	    enter:function(e){
+	            //var that = marker;
+	            //pot.map.addCallback("drawn", function(){that.trigger('custom', ['Custom', 'Event'])} );
+	            //$("#tiptip_holder").removeClass("classtype_tip")
     	    },
-            exit:function(){}
+            exit:function(){
+                //pot.map.removeCallback("drawn");
+            }
     	});
+     
    
 
         if (typeSelector) {
@@ -263,6 +281,7 @@ CrimeTypeSelector.prototype = {
         for (var i = 0; i < len; i++) {
             labels[sortables[i]].appendTo(this.container);
         }
+        
     }, 
     labelsAdded: function(){
         var that = this;
@@ -277,8 +296,11 @@ CrimeTypeSelector.prototype = {
                 $(label).addClass("altrow");
             }
    
-            var tip_str = $(label).find('.title').text() + "<br/>" + label.data('count') +": reports";
-              label.tipTip({
+            var tip_str = $(label).find('.title').text() + "<br/>" + label.data('count') +" "+pluralize("report",label.data('count') );
+            
+            
+        
+             label.tipTip({
           	    maxWidth: "auto", 
           	    edgeOffset: 0,
           	    delay:100,

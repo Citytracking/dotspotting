@@ -123,7 +123,8 @@ Dots.Potting.prototype = {
         if (title) {
             $(this.selectors.title).text(title);
         } else {
-            $(this.selectors.title).css("display", "none");
+            $(this.selectors.title).remove();
+            //$(this.selectors.title).css("display", "none");
         }
     },
 

@@ -264,3 +264,11 @@ li.altrow{
     border-left-color: #fff;
     border-left-color: rgba(255, 255, 255, 0.92);
 }
+#tiptip_content span{
+    display:block;
+    font-size:16px;
+    padding-bottom:2px;
+}
+#tiptip_content{
+    line-height:16px;
+}

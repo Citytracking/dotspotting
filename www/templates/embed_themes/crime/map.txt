@@ -37,12 +37,7 @@
         <ul id="crime_types"></ul>
     </div>
     
-    <div id="tiptip_holder">
-        <div id="tiptip_arrow">
-            <div id="tiptip_arrow_inner"></div>
-        </div>
-        <div id="tiptip_content"></div>
-    </div>
+    
 
 {literal}
 <script id="dot" type="text/jquery-template">

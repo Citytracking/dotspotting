@@ -31,6 +31,10 @@ function capitalize(str, ignore) {
     }).join(" ");
 }
 
+function pluralize(word,num,plural){
+    return (num == 1)? word : plural || word+"s";
+}
+
 function capitalizeWord(word) {
     return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
 }

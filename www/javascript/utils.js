@@ -805,13 +805,14 @@ function utils_add_map_tooltip(map,mapel,map_type){
 				/* 	attempt to allow clicking anywhere on map as a way to close tooltip
 					seems to be working
 				*/	
-				
+				/*
 				// put a delay on creating handlers
 				_timer = setInterval(function(){
 					setupMapCloseHandlers();
-					console.log("timer: ",_timer);
+					//console.log("timer: ",_timer);
 					clearInterval(_timer);
 				}, 1000);
+				*/
 				
 				function setupMapCloseHandlers(){
 					_tip = self;
