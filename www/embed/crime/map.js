@@ -527,7 +527,7 @@ function utils_add_map_tooltip(map,mapel,map_type){
             cnt = $('<div/>'),
             bdy = $('<div id="maptip_bdy"/>'),
 		
-            close = $('<span/>').addClass('close').html('X')
+            close = $('<span/>').addClass('close').html('x')
 
     		cnt.append(close);
 		
@@ -535,8 +535,11 @@ function utils_add_map_tooltip(map,mapel,map_type){
 
             cnt.append($('<div/>').addClass('nub'));
             cnt.append(bdy);
+            
+            
+            
 		
-            close.click(function() {
+            close.unbind('click').bind('click',function() {
     			closeTip(self);
             });
           
@@ -658,6 +661,8 @@ function utils_add_map_tooltip(map,mapel,map_type){
     },
     
     hide: function(fn) {
+        this.props.map.removeCallback('drawn');
+        this.props.map.removeCallback('resized');
         var el = this.el;
         this.el.fadeOut(function() {
             el.remove();
@@ -685,9 +690,41 @@ function utils_add_map_tooltip(map,mapel,map_type){
     render: function() {
         this.cnt.html('').append(this.props.content)
         this.canvas.prepend(this.el)  
-        this.el
-            .show()
-            .css({left: this.props.left + 'px', top: this.props.top + 'px'});
+        this.el.show();
+        
+        // adjust width
+        this.cnt.css("width","auto");
+        if(this.cnt.width() > 200){
+            this.cnt.css("width","200px");
+        }else if(this.cnt.width() < 60){
+            this.cnt.css("width","60px");
+        }else{
+            this.cnt.css("width",this.cnt.width()+"px");
+        }
+        
+        this.el.css({left: this.props.left + 'px', top: this.props.top + 'px'});
+            
+        var that = this;
+        var p1 = this.props.map.locationPoint(this.props.location);
+        p1.x += (this.el.width() / 2);
+        var p2 = this.props.map.locationPoint(this.props.map.getCenter()); //center
+
+        var panx = p2.x - p1.x;
+        var pany = p2.y - p1.y;
+        
+        // simple animater
+        var step = 50;
+        var that = this;
+        for (i=0; i<step; i++) {
+            var px = panx/step;
+            var py = pany/step;
+            setTimeout(function(){
+              that.props.map.panBy(px,py);
+            },5*(i+1));
+        
+        }
+        
+        
     }
     //end
   }
