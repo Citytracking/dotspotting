@@ -33,7 +33,7 @@
 
 		$type = $rsp['headers']['content-type'];
 
-		if (! preg_match("/^image\/", $type)){
+		if (! preg_match("/^image\//", $type)){
 			return array(
 				'ok' => 0,
 				'error' => "expected an image but got {$type} instead",
