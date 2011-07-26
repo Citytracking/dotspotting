@@ -106,6 +106,9 @@ function ensure_valid_url_template_provider(p){
 
 		// stamen
 		'prettymaps' : { 'template' : 'http://prettymaps.stamen.com/201008/tiles/isola/{Z}/{X}/{Y}.png', 'hosts' : null, 'static' : 1 },
+		
+		// acetate 
+		'acetate' : {'template': 'http://acetate.geoiq.com/tiles/acetate/{Z}/{X}/{Y}.png', 'hosts': null, 'static': 0},
 	};
 
 	valid_providers['bourne'] = valid_providers['midnightcommander'];
