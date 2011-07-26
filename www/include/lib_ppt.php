@@ -46,6 +46,7 @@
 
 			$img_more['dot_size'] = 25;
 			$img_more['width'] = $img_more['height'];
+			$img_more['img_prefix'] = 'ppt';
 
 			foreach ($dots as $dot){
 
@@ -129,8 +130,12 @@
 		$writer = PHPPowerPoint_IOFactory::createWriter($ppt, 'PowerPoint2007');
 		$writer->save($more['path']);
 
+		$writer = null;
+
 		foreach ($maps as $path){
-			unlink($path);
+			if (! unlink($path)){
+				error_log("[EXPORT] (ppt) unlink {$path} : {$ok}");
+			}
 		}
 
 		return $more['path'];

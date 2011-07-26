@@ -99,7 +99,7 @@
 		foreach ($clusters as $dots){
 
 			list($map, $gd_img) = maps_image_for_dots($dots, $img_more);
-			$maps[] = maps_gd_to_png($gd_img);
+			$maps[] = maps_gd_to_png($gd_img, 'pdf');
 		}
 
 		# Now figure out the what is the what of the dots
@@ -192,7 +192,7 @@
 				if ($str_width > $col_width){
 					$lines = ceil($str_width / $col_width);
 					$_h = max($_h, ($lines * $row_h));
-				}		
+				}
 			}
 
 			$row_heights[] = $_h * 1.1;
@@ -348,7 +348,7 @@
 			$y = $margin;
 
 			$z = 0;
-	
+
 			foreach ($page as $data){
 
 				$style = ($data['bold']) ? 'B' : '';
@@ -428,8 +428,13 @@
 		$pdf->Close();
 		$pdf->Output($more['path'], 'F');
 
+		$pdf = null;
+
 		foreach ($maps as $map_img){
-			unlink($map_img);
+
+			if (! unlink($map_img)){
+				error_log("[EXPORT] (pdf) unlink {$map_img} : {$ok}");
+			}
 		}
 
 		return $more['path'];

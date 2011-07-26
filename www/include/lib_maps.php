@@ -12,7 +12,8 @@
 
 		list ($map, $gd_img) = maps_image_for_dots($dots, $more);
 
-		return maps_gd_to_png($gd_img);
+		$prefix = ($more['img_prefix']) ? $more['img_prefix'] : 'nyan';
+		return maps_gd_to_png($gd_img, $prefix);
 	}
 
 	#################################################################
@@ -84,7 +85,7 @@
 
 		# draw by extent
 
-		else { 
+		else {
 
 			$swlat = null;
 			$swlon = null;
@@ -117,28 +118,27 @@
 		}
 
 		#
-		
+
 		if ($more['draw_dots']){
-			
+
 			if(isset($GLOBALS['cfg']['dot_color_scheme'])){
 				$red_fill_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['fill'][0]) ) ? $GLOBALS['cfg']['dot_color_scheme']['fill'][0] : 11;
 				$green_fill_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['fill'][1]) ) ? $GLOBALS['cfg']['dot_color_scheme']['fill'][1] : 189;
 				$blue_fill_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['fill'][2]) ) ? $GLOBALS['cfg']['dot_color_scheme']['fill'][2] : 255;
-				
+
 				# alpha value: convert alpha scale from 0,1 to 127,0
 				$alpha_fill_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['fill'][3]) ) ? floor( abs(($GLOBALS['cfg']['dot_color_scheme']['fill'][3] * 127) - 127) ) : 96;
-				
+
 				$red_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][0]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][0] : 255;
 				$green_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][1]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][1] : 255;
 				$blue_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][2]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][2] : 255;
-				
+
 				$fill = imagecolorallocatealpha($img, $red_fill_val, $green_fill_val, $blue_fill_val, $alpha_fill_val);
 				$stroke = imagecolorallocate($img, $red_stroke_val, $green_stroke_val, $blue_stroke_val);
 			}else{
 				$fill = imagecolorallocatealpha($img, 11, 189, 255, 96);
 				$stroke = imagecolorallocate($img, 255, 255, 255);
 			}
-			
 
 			foreach ($dots as $dot){
 
@@ -159,9 +159,9 @@
 
 	#################################################################
 
-	function maps_gd_to_png($gd){
+	function maps_gd_to_png($gd, $prefix='nyan'){
 
-		$tmp = tempnam(sys_get_temp_dir(), "pdf") . ".png";
+		$tmp = tempnam(sys_get_temp_dir(), "export-{$prefix}-") . ".png";
 
 		imagepng($gd, $tmp);
 		imagedestroy($gd);
