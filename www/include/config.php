@@ -56,6 +56,12 @@
 	$GLOBALS['cfg']['password_retrieval_from_email'] = "do-not-reply@{$_SERVER['SERVER_NAME']}";
 	$GLOBALS['cfg']['password_retrieval_from_name'] = 'Dotspotting Password Helper Robot';
 
+	$GLOBALS['cfg']['enable_feature_wscompose'] = 0;	# Use the ModestMaps wscompose server for rendering maps
+								# This is off by default because it requires running a
+								# separate service.
+	$GLOBALS['cfg']['wscompose_host'] = 'http://127.0.0.1';
+	$GLOBALS['cfg']['wscompose_port'] = 9999;
+
 	$GLOBALS['cfg']['enable_feature_geocoding'] = 1;
 
 	$GLOBALS['cfg']['enable_feature_search'] = 0;
