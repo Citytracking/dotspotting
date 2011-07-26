@@ -2,9 +2,6 @@
 
 	loadlib("http");
 
-	$GLOBALS['cfg']['wscompose_host'] = 'http://127.0.0.1/';
-	$GLOBALS['cfg']['wscompose_port'] = '9999';
-
 	########################################################################
 
 	function wscompose_get($args){
