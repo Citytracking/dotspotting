@@ -1,9 +1,47 @@
-{"HTTP/1.1 404 Not Found"|header}{include file='inc_head.txt' page_title='Page Not Found'}
+{"HTTP/1.1 404 Not Found"|header}
+
+{capture assign="extra_head"}
+{literal}
+<style>
+#content{
+    background: url({/literal}{$cfg.abs_root_url}{literal}images/cat_404.gif) no-repeat center center fixed;
+   -webkit-background-size: cover;
+   -moz-background-size: cover;
+   -o-background-size: cover;
+   background-size: cover;
+   height: 800px;
+}
+.section_bunch_o_text{
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 10px;
+    color:#fff;
+}
+/*
+html{
+    background: url({/literal}{$cfg.abs_root_url}{literal}images/cat_404.gif) no-repeat center center fixed;
+   -webkit-background-size: cover;
+   -moz-background-size: cover;
+   -o-background-size: cover;
+   background-size: cover;
+}
+body{background:transparent !important;}
+#main{background:transparent !important;}
+#nav{border:none !important;}
+#content{border:none !important;}
+*/
+</style>
+{/literal}
+{/capture}
+
+
+{include file='inc_head.txt' page_title='Page Not Found'}
 
 <div class="section_bunch_o_text">
 <h1>Page not found</h1>
 
-<p>We can't find the page you requested.</p>
+{* <p>We can't find the page you requested.</p> *}
 
 {if 'staff'|@auth_has_role}
 <div class="admin-section">
