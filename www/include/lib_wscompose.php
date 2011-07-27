@@ -4,12 +4,9 @@
 
 	########################################################################
 
-	function wscompose_get($args){
+	function wscompose_get(&$map){
 
-		$defaults = array(
-			'provider' => $GLOBALS['cfg']['maptiles_template_url'],
-			'method' => 'center',
-		);
+		$url = _wscompose_request_url($map);
 
 		$headers = array();
 
@@ -17,12 +14,54 @@
 			'http_port' => $GLOBALS['cfg']['wscompose_port'],
 		);
 
+		$rsp = http_get($url, $headers, $more);
+		return _wscompose_parse_response($rsp);
+	}
+
+	########################################################################
+
+	function wscompose_get_many(&$maps){
+
+		$requests = array();
+
+		$more = array(
+			'http_port' => $GLOBALS['cfg']['wscompose_port'],
+		);
+
+		foreach ($maps as $map){
+			$url = _wscompose_request_url($map);
+			$requests[] = array('url' => $url, 'more' => $more);
+		}
+
+		$_responses = http_multi($requests);
+		$responses = array();
+
+		foreach ($_responses as $rsp){
+			$responses[] = _wscompose_parse_response($rsp);
+		}
+
+		return $responses;
+	}
+
+	########################################################################
+
+	function _wscompose_request_url($args){
+
+		$defaults = array(
+			'provider' => $GLOBALS['cfg']['maptiles_template_url'],
+			'method' => 'center',
+		);
+
 		$args = array_merge($defaults, $args);
 		$query = http_build_query($args);
 
 		$url = $GLOBALS['cfg']['wscompose_host'] . "?" . $query;
+		return $url;
+	}
 
-		$rsp = http_get($url, $headers, $more);
+	########################################################################
+
+	function _wscompose_parse_response($rsp){
 
 		if (! $rsp['ok']){
 			return $rsp;
