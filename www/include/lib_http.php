@@ -117,8 +117,6 @@
 		$GLOBALS['timings']['http_count'] += count($handlers);
 		$GLOBALS['timings']['http_time'] += $end-$start;
 
-		# this doesn't deal with redirects yets
-
 		foreach ($handles as $ch){
 
 			$raw = curl_multi_getcontent($ch);
@@ -159,16 +157,21 @@
 		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 		curl_setopt($ch, CURLOPT_HEADER, true);
 
+		if ($more['http_port']){
+			curl_setopt($ch, CURLOPT_PORT, $more['http_port']);
+		}
+
+		if ($more['follow_redirects']){
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_MAXREDIRS, intval($more['follow_redirects']));
+		}
+
 		return $ch;
 	}
 
 	########################################################################
 
 	function _http_request($ch, $url, $more=array()){
-
-		#
-		# execute request
-		#
 
 		$start = microtime_ms();
 
@@ -182,26 +185,7 @@
 		$GLOBALS['timings']['http_count']++;
 		$GLOBALS['timings']['http_time'] += $end-$start;
 
-		$rsp = _http_parse_response($raw, $info);
-
-		$status = $rsp['info']['http_code'];
-
-		if (in_array($method, array('GET', 'POST')) && $more['follow_redirects'] && ($status == 301 || $status == 302)){
-
-			$more['follow_redirects'] ++;	# should we check to see that we're not trapped in a loop?
-
-			if (preg_match("/^http\:\/\//", $rsp['headers']['location'])){
-				$redirect = $rsp['headers']['location'];
-			}
-
-			else {
-				$redirect = $rsp['req_headers']['host'] . $rsp['headers']['location'];
-			}
-
-			return http_get($redirect, $headers, $more);
-		}
-
-		return $rsp;
+		return _http_parse_response($raw, $info);
 	}
 
 	########################################################################
