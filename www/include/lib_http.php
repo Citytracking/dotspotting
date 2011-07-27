@@ -3,10 +3,6 @@
 	# $Id$
 	#
 
-	# This file has been copied from the Citytracking fork of flamework.
-	# It has not been forked, or cloned or otherwise jiggery-poked, but
-	# copied: https://github.com/Citytracking/flamework (straup/20101213)
-
 	########################################################################
 
 	$GLOBALS['timings']['http_count']	= 0;
@@ -15,41 +11,24 @@
 
 	########################################################################
 
-	function http_head($url, $headers=array()){
-		return http_get($url, $headers, array('head' => 1));
+	function http_head($url, $headers=array(), $more=array()){
+		$more['head'] = 1;
+		return http_get($url, $headers, $more);
 	}
 
 	########################################################################
 
 	function http_get($url, $headers=array(), $more=array()){
 
-		$defaults = array(
-			'http_timeout' => $GLOBALS['cfg']['http_timeout'],
-		);
-
-		$more = array_merge($defaults, $more);
-
-		#
-
-		$headers_prepped = _http_prepare_outgoing_headers($headers);
-
-		$ch = curl_init();
-
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers_prepped);
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_TIMEOUT, $more['http_timeout']);
-		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-		curl_setopt($ch, CURLOPT_HEADER, true);
-
-		if ($more['http_port']){
-			curl_setopt($ch, CURLOPT_PORT, $more['http_port']);
-		}
+		$ch = _http_curl_handle($url, $headers, $more);
 
 		if ($more['head']){
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
 			curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+		}
+
+		if ($more['return_curl_handle']){
+			return $ch;
 		}
 
 		return _http_request($ch, $url, $more);
@@ -59,6 +38,109 @@
 
 	function http_post($url, $post_fields, $headers=array(), $more=array()){
 
+		$ch = _http_curl_handle($url, $headers, $more);
+
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+
+		if ($more['return_curl_handle']){
+			return $ch;
+		}
+
+		return _http_request($ch, $url, $more);
+	}
+
+	########################################################################
+
+	function http_multi(&$requests){
+
+		$handles = array();
+		$responses = array();
+
+		foreach ($requests as $req){
+
+			$url = $req['url'];
+
+			$method = (isset($req['method'])) ? strtoupper($req['method']) : 'GET';
+			$headers = (is_array($req['headers'])) ? $req['headers'] : array();
+			$more = (is_array($req['more'])) ? $req['more'] : array();
+
+			$more['return_curl_handle'] = 1;
+
+			if ($method == 'HEAD'){
+				$ch = http_head($url, $headers, $more);
+			}
+
+			else if ($method == 'POST'){
+				$ch = http_post($url, $headers, $more);
+			}
+
+			else if ($method == 'GET'){
+				$ch = http_get($url, $headers, $more);
+			}
+
+			else {
+				log_warning("http", "unsupported HTTP method : {$method}");
+				continue;
+			}
+
+			$handles[] = $ch;
+		}
+
+		# http://us.php.net/manual/en/function.curl-multi-init.php
+
+		$mh = curl_multi_init();
+
+		foreach ($handles as $ch){
+			curl_multi_add_handle($mh, $ch);
+		}
+
+		$active = null;
+		$start = microtime_ms();
+
+		# this syntax makes my eyes bleed but whatever...
+
+		do {
+			$mrc = curl_multi_exec($mh, $active);
+		} while ($mrc == CURLM_CALL_MULTI_PERFORM);
+
+		while ($active && $mrc == CURLM_OK){
+			if (curl_multi_select($mh) != -1){
+				do {
+					$mrc = curl_multi_exec($mh, $active);
+				} while ($mrc == CURLM_CALL_MULTI_PERFORM);
+			}
+		}
+
+		$end = microtime_ms();
+
+		$GLOBALS['timings']['http_count'] += count($handlers);
+		$GLOBALS['timings']['http_time'] += $end-$start;
+
+		# this doesn't deal with redirects yets
+
+		foreach ($handles as $ch){
+
+			$raw = curl_multi_getcontent($ch);
+			$info = curl_getinfo($ch);
+
+			curl_multi_remove_handle($mh, $ch);
+
+			$rsp = _http_parse_response($raw, $info);
+			$responses[] = $rsp;
+		}
+
+		curl_multi_close($mh);
+
+		return $responses;
+	}
+
+	########################################################################
+
+	# returns a plain vanilla curl handler with basic/common options set
+
+	function _http_curl_handle($url, $headers=array(), $more=array()){
+
 		$defaults = array(
 			'http_timeout' => $GLOBALS['cfg']['http_timeout'],
 		);
@@ -77,10 +159,7 @@
 		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 		curl_setopt($ch, CURLOPT_HEADER, true);
 
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
-
-		return _http_request($ch, $url, $more);
+		return $ch;
 	}
 
 	########################################################################
@@ -103,10 +182,31 @@
 		$GLOBALS['timings']['http_count']++;
 		$GLOBALS['timings']['http_time'] += $end-$start;
 
+		$rsp = _http_parse_response($raw, $info);
 
-		#
-		# parse request & response
-		#
+		$status = $rsp['info']['http_code'];
+
+		if (in_array($method, array('GET', 'POST')) && $more['follow_redirects'] && ($status == 301 || $status == 302)){
+
+			$more['follow_redirects'] ++;	# should we check to see that we're not trapped in a loop?
+
+			if (preg_match("/^http\:\/\//", $rsp['headers']['location'])){
+				$redirect = $rsp['headers']['location'];
+			}
+
+			else {
+				$redirect = $rsp['req_headers']['host'] . $rsp['headers']['location'];
+			}
+
+			return http_get($redirect, $headers, $more);
+		}
+
+		return $rsp;
+	}
+
+	########################################################################
+
+	function _http_parse_response($raw, $info){
 
 		list($head, $body) = explode("\r\n\r\n", $raw, 2);
 		list($head_out, $body_out) = explode("\r\n\r\n", $info['request_header'], 2);
@@ -118,31 +218,12 @@
 		preg_match("/^([A-Z]+)\s/", $headers_out['_request'], $m);
 		$method = $m[1];
 
-		log_notice("http", "{$method} {$url}", $end-$start);
-
-		#
-		# return
-		#
-
-		$status = $info['http_code'];
-
-		if (in_array($method, array('GET', 'POST')) && $more['follow_redirects'] && ($status == 301 || $status == 302)){
-
-			$more['follow_redirects'] ++;	# should we check to see that we're not trapped in a loop?
-
-			if (preg_match("/^http\:\/\//", $headers_in['location'])){
-				$redirect = $headers_in['location'];
-			}
-
-			else {
-				$redirect = $headers_out['host'] . $headers_in['location'];
-			}
-
-			return http_get($redirect, $headers, $more);
-		}
+		# log_notice("http", "{$method} {$url}", $end-$start);
 
 		# http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2
 		# http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success (note HTTP 207 WTF)
+
+		$status = $info['http_code'];
 
 		if (($status < 200) || ($status > 299)){
 
@@ -150,7 +231,8 @@
 				'ok'		=> 0,
 				'error'	=> 'http_failed',
 				'code'		=> $info['http_code'],
-				'url'		=> $url,
+				'method'	=> $method,
+				'url'		=> $info['url'],
 				'info'		=> $info,
 				'req_headers'	=> $headers_out,
 				'headers'	=> $headers_in,
@@ -160,8 +242,9 @@
 
 		return array(
 			'ok'		=> 1,
-			'url'		=> $url,
+			'url'		=> $info['url'],
 			'info'		=> $info,
+			'method'	=> $method,
 			'req_headers'	=> $headers_out,
 			'headers'	=> $headers_in,
 			'body'		=> $body,
