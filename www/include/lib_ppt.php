@@ -48,12 +48,13 @@
 			$img_more['width'] = $img_more['height'];
 			$img_more['img_prefix'] = 'ppt';
 
-			foreach ($dots as $dot){
+			$_dots = array();
 
-				$_dots = array($dot);
- 				$maps[] = maps_png_for_dots($_dots, $img_more);
+			foreach ($dots as $dot){
+				$_dots[] = array($dot);
 			}
 
+			$maps = maps_png_for_dots_multi($_dots, $img_more);
 		}
 
 		# now draw all the maps...
