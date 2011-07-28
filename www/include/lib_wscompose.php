@@ -26,6 +26,7 @@
 
 		$more = array(
 			'http_port' => $GLOBALS['cfg']['wscompose_port'],
+			'http_timeout' => 10,		# sudo make me a config flag somewhere
 		);
 
 		foreach ($maps as $map){
@@ -48,7 +49,7 @@
 	function _wscompose_request_url($args){
 
 		$defaults = array(
-			'provider' => $GLOBALS['cfg']['maptiles_template_url'],
+			'provider' => $GLOBALS['cfg']['maptiles_template_url'],	# sudo make me not dotspotting specific
 			'method' => 'center',
 		);
 
@@ -76,6 +77,13 @@
 			);
 		}
 
+		if (! $rsp['body']){
+			return array(
+				'ok' => 0,
+				'error' => "empty image body...that's weird",
+			);
+		}
+
 		$im = imagecreatefromstring($rsp['body']);
 
 		if ($im === false){
@@ -100,7 +108,6 @@
 		$rsp['details'] = $details;
 
 		unset($rsp['body']);
-
 		return $rsp;
 	}
 
