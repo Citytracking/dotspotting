@@ -44,7 +44,7 @@
 
 		$maps = array($dots);
 
-		$rsp = map_images_for_dots($maps, $more);
+		$rsp = maps_images_for_dots($maps, $more);
 		return $rsp[0];
 	}
 
