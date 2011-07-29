@@ -294,15 +294,19 @@
 		for ($i = 0; $i < $count_queue; $i++){
 
 			list($mm, $img) = $queue[$i];
-			$dots = $bag_of_dots[$i];
+			$_dots = $bag_of_dots[$i];
 
-			foreach ($dots as $dot){
-				$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
-				$pt = $map->locationPoint($loc);
+			# because GD images get passed around as 'null' values...
 
-				imagefilledellipse($img, $pt->x, $pt->y, $more['dot_size'], $more['dot_size'], $fill);
-				imagesetthickness($img, 3);
-				imagearc($img, $pt->x, $pt->y, $more['dot_size'], $more['dot_size'], 0, 359.9, $stroke);
+			if ($img !== false){
+
+				foreach ($_dots as $dot){
+					$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
+					$pt = $map->locationPoint($loc);
+					imagefilledellipse($img, $pt->x, $pt->y, $more['dot_size'], $more['dot_size'], $fill);
+					imagesetthickness($img, 3);
+					imagearc($img, $pt->x, $pt->y, $more['dot_size'], $more['dot_size'], 0, 359.9, $stroke);
+				}
 			}
 
 			$rsp[] = array($mm, $img);
