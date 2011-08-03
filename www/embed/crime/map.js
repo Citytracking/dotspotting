@@ -55,9 +55,19 @@ try {
             $("#map").trigger('markerclick',elm);
         }
     }
-
+    
+    // clustering
+    function doCluster(){
+        clusterMarkers(pot.dotsLayer.markers);
+        pot.map.setZoom(pot.map.getZoom());
+    }
+    
+    var days_of_week = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    var monthsAPShort = ["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."];
+    
     var dotTemplate = $("#dot").template();
-    var tipTemplate = $.template("tipTemplate",  "<span>${description || crime_type}</span>${time}<br/>${day} ${date}");
+    var tipTemplate = $.template("tipTemplate",  "<span>${description || crime_type}</span>${time}<br/>${date_formatted}");
     pot.makeDot = function(feature) {
         normalizeFeature(feature);
         var crime_type = getCrimeType(feature.properties),
@@ -77,6 +87,17 @@ try {
         marker.data("crime_type", crime_type);
         marker.data("crime_group", crime_group);
         
+        // format date
+        if(data.props.date){
+            var dt = new Date(data.props.date);
+            if(dt && dt.getMonth()){
+                data.props.date_formatted = days_of_week[dt.getDay()] + ", " + monthsAPShort[dt.getMonth()] + " " + dt.getDate() + ", " + dt.getFullYear();
+            }else{
+                data.props.date_formatted = data.props.date;
+            }
+        }else{
+            data.props.date_formatted = "";
+        }
         
         feature.properties['tip_str'] = $.tmpl(tipTemplate, data.props);
         //tooltip
@@ -104,8 +125,7 @@ try {
             }
     	});
     	*/
-    	
-    	
+        
     	marker.click(function(e) {
             dot_onclick(e,$(this));
             e.preventDefault();
@@ -120,10 +140,14 @@ try {
             } else {
             }
         }
+        
+        
+         defer(doCluster, 100)();
+         
         return marker[0];
     };
     // need a callback on load to resize menu
-    var req = pot.load(null, function(){
+    var req = pot.load(null, function(){   
         // map tooltip
     	utils_add_map_tooltip(pot.map,$("#map").parent(),"mm");
         if (typeSelector) {
