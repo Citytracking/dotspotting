@@ -13,6 +13,18 @@
 
 	loadlib("geo_utils");
 
+	# See below (inre: Kellan)
+
+	#################################################################
+
+	$GLOBALS['dots_reserved'] = array(
+		'id',
+		'sheet_id',
+		'user_id',
+		'perms',
+		'created',
+	);
+
 	#################################################################
 
 	function dots_permissions_map($string_keys=0){
@@ -1069,8 +1081,16 @@
 			'geohash'
 		);
 
+
 		foreach (array_merge($geo_bits, $index_on) as $what){
-			$dot[$what] = (isset($dot['details'][$what])) ? $dot['details'][$what][0]['value'] : '';
+
+			# Edge cases. that's where I'm a viking! I was pretty sure this
+			# was going to happen and started to write the code to deal with
+			# it and then decided to JUST SHIP and here I am now. I blame Kellan.
+			# Even though he had nothing to do with this... (20110726/straup)
+
+			$key = (in_array($what, $GLOBALS['dots_reserved'])) ? "sheet:{$what}": $what;
+			$dot[$key] = (isset($dot['details'][$what])) ? $dot['details'][$what][0]['value'] : '';
 		}
 
 		$listview = array();
@@ -1081,7 +1101,7 @@
 				$listview[] = $label;
 			}
 		}
-		
+
 		$dot['details_listview'] = implode(", ", $listview);
 
 		#
@@ -1108,12 +1128,16 @@
 		$indexed = array();
 
 		foreach ($dots as $dot){
-			
+
 			if (! is_array($dot['index_on'])){
 				continue;
 			}
 
 			foreach ($dot['index_on'] as $i){
+
+				if (in_array($i, $GLOBALS['dots_reserved'])){
+					$i = "sheet:{$i}";
+				}
 
 				if (! in_array($i, $indexed)){
 					$indexed[] = $i;

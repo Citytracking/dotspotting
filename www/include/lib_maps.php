@@ -5,6 +5,7 @@
 	#
 
 	loadpear("modestmaps/ModestMaps");
+	loadlib("wscompose");
 
 	#################################################################
 
@@ -54,6 +55,15 @@
 			$template = str_replace("{S}", $hosts[0], $template);
 		}
 
+		# If $GLOBALS['cfg']['enable_feature_wscompose'] is true then the drawing of
+		# actual raster maps will be delegated to a wscompose server running on the
+		# host and port of your choosing. The advantage of doing it this way is that
+		# the PHP port of ModestMaps fetches tiles (for a map image) one at a time
+		# while the Python version fetches them in a thread. If you're going to use
+		# the wscompose stuff you should probably run the WSGIComposeServer under a
+		# not-single-threaded server like gunicorn. Note that we still use ModestMaps.php
+		# to draw dots. For now. (20110726/straup)
+
 		# null island
 
 		if (count($dots) == 0){
@@ -65,7 +75,26 @@
 			$dims = new MMaps_Point($more['width'], $more['height']);
 
 			$map = MMaps_mapByCenterZoom($provider, $centroid, 18, $dims);
-			$img = $map->draw();
+
+			if ($GLOBALS['cfg']['enable_feature_wscompose']){
+
+				$args = array(
+					'provider' => $template,
+					'method' => 'center',
+					'latitude' => 0,
+					'longitude' => 0,
+					'zoom' => 18,
+					'height' => $more['height'],
+					'width' => $more['width'],
+				);
+
+				$rsp = wscompose_get($args);
+				$img = $rsp['image'];
+			}
+
+			else {
+				$img = $map->draw();
+			}
 		}
 
 		# center zoom
@@ -80,7 +109,26 @@
 			$dims = new MMaps_Point($more['width'], $more['height']);
 
 			$map = MMaps_mapByCenterZoom($provider, $centroid, 17, $dims);
-			$img = $map->draw();
+
+			if ($GLOBALS['cfg']['enable_feature_wscompose']){
+
+				$args = array(
+					'provider' => $template,
+					'method' => 'center',
+					'latitude' => $dot['latitude'],
+					'longitude' => $dot['longitude'],
+					'zoom' => 17,
+					'height' => $more['height'],
+					'width' => $more['width'],
+				);
+
+				$rsp = wscompose_get($args);
+				$img = $rsp['image'];
+			}
+
+			else {
+				$img = $map->draw();
+			}
 		}
 
 		# draw by extent
@@ -106,18 +154,42 @@
 
 			$dims = new MMaps_Point($more['width'], $more['height']);
 
+			$wscompose_args = array(
+				'provider' => $template,
+				'height' => $more['height'],
+				'width' => $more['width'],
+			);
+
 			if (($swlat == $nelat) && ($swlon == $nelon)){
+
 				$map = MMaps_mapByCenterZoom($provider, $sw, 17, $dims);
+
+				$wscompose_args['method'] = 'center';
+				$wscompose_args['latitude'] = $swlat;
+				$wscompose_args['longitude'] = $swlon;
+				$wscompose_args['zoom'] = 17;
 			}
 
 			else {
 				$map = MMaps_mapByExtent($provider, $sw, $ne, $dims);
+
+				$wscompose_args['method'] = 'extent';
+				$wscompose_args['bbox'] = implode(",", array($swlat, $swlon, $nelat, $nelon));
 			}
 
-			$img = $map->draw();
+			if ($GLOBALS['cfg']['enable_feature_wscompose']){
+				$rsp = wscompose_get($wscompose_args);
+				$img = $rsp['image'];
+			}
+
+			else {
+				$img = $map->draw();
+			}
 		}
 
-		#
+		# Carry on and draw the dots using ModestMaps.php - at some point this
+		# may be functionality that is also delegated to wscompose/pinwin but
+		# for now it is not. (20110726/straup)
 
 		if ($more['draw_dots']){
 
@@ -135,7 +207,9 @@
 
 				$fill = imagecolorallocatealpha($img, $red_fill_val, $green_fill_val, $blue_fill_val, $alpha_fill_val);
 				$stroke = imagecolorallocate($img, $red_stroke_val, $green_stroke_val, $blue_stroke_val);
-			}else{
+			}
+
+			else{
 				$fill = imagecolorallocatealpha($img, 11, 189, 255, 96);
 				$stroke = imagecolorallocate($img, 255, 255, 255);
 			}

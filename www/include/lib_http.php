@@ -43,6 +43,10 @@
 		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 		curl_setopt($ch, CURLOPT_HEADER, true);
 
+		if ($more['http_port']){
+			curl_setopt($ch, CURLOPT_PORT, $more['http_port']);
+		}
+
 		if ($more['head']){
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
 			curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
