@@ -276,6 +276,7 @@ function clusterMarkers(markers) {
             prec = .001,
             x = Number(loc.lon),
             y = Number(loc.lat);
+            
         try {
             return quantize(x, prec)+ "," + quantize(y, prec);
         } catch (e) {
@@ -290,7 +291,9 @@ function clusterMarkers(markers) {
             loc = marker.location,
             corner = getCorner(marker);
         if (loc.lat != 0 && loc.lon != 0) {
-            marker._coord = marker.coord.clone();
+            
+            marker._coord = marker.coord.copy();
+            
             if (corner in corners) {
                 corners[corner].push(marker);
             } else {
@@ -298,10 +301,12 @@ function clusterMarkers(markers) {
             }
         }
     }
+    
 
     for (var corner in corners) {
         var m = corners[corner];
         if (m.length > 1) {
+            //.0000004,
             var r = .0000004,
                 // TODO: use the center instead?
                 c = m[0]._coord,
@@ -313,6 +318,7 @@ function clusterMarkers(markers) {
                         row: Math.cos(a) * r,
                         col: Math.sin(a) * r
                     };
+            
                 mark.coord.row += offset.row;
                 mark.coord.column += offset.col;
                 a += step;
