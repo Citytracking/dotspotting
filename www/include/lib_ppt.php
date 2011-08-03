@@ -48,6 +48,8 @@
 			$img_more['width'] = $img_more['height'];
 			$img_more['img_prefix'] = 'ppt';
 
+			# remember: 1 dot per slide
+
 			$_dots = array();
 
 			foreach ($dots as $dot){
@@ -90,6 +92,11 @@
 				if (! $_dot['id']){
 					continue;
 				}
+
+				$shape = $slide->createDrawingShape();
+				$shape->setName('map');
+				$shape->setDescription('');
+				$shape->setPath($map);
 
 				$text = $slide->createRichTextShape();
 				$text->setHeight($h);

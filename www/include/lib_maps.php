@@ -229,7 +229,7 @@
 
 				list($mm, $ignore) = $queue[$i];
 				$_rsp = $rsp[$i];
-				$img = ($_rsp['ok']) ? $_rsp['image'] : null;		# are images being passed properly?
+				$img = ($_rsp['ok']) ? $_rsp['image'] : null;
 				$queue[$i] = array($mm, $img);
 			}
 		}
@@ -283,6 +283,8 @@
 			# alpha value: convert alpha scale from 0,1 to 127,0
 			$alpha_fill_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['fill'][3]) ) ? floor( abs(($GLOBALS['cfg']['dot_color_scheme']['fill'][3] * 127) - 127) ) : 96;
 
+			$alpha_fill_val = 255;
+
 			$red_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][0]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][0] : 255;
 			$green_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][1]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][1] : 255;
 			$blue_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][2]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][2] : 255;
@@ -302,7 +304,7 @@
 
 				foreach ($_dots as $dot){
 					$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
-					$pt = $map->locationPoint($loc);
+					$pt = $mm->locationPoint($loc);
 					imagefilledellipse($img, $pt->x, $pt->y, $more['dot_size'], $more['dot_size'], $fill);
 					imagesetthickness($img, 3);
 					imagearc($img, $pt->x, $pt->y, $more['dot_size'], $more['dot_size'], 0, 359.9, $stroke);
