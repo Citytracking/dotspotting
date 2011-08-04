@@ -244,8 +244,6 @@
 				$img = ($rsp['ok']) ? $rsp['image'] : null;
 				$queue[$i] = array($mm, $img);
 			}
-
-			exit();
 		}
 
 		# fallback on ModestMaps.php
