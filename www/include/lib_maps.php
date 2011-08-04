@@ -281,8 +281,6 @@
 			# alpha value: convert alpha scale from 0,1 to 127,0
 			$alpha_fill_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['fill'][3]) ) ? floor( abs(($GLOBALS['cfg']['dot_color_scheme']['fill'][3] * 127) - 127) ) : 96;
 
-			$alpha_fill_val = 255;
-
 			$red_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][0]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][0] : 255;
 			$green_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][1]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][1] : 255;
 			$blue_stroke_val = ( isset($GLOBALS['cfg']['dot_color_scheme']['stroke'][2]) ) ? $GLOBALS['cfg']['dot_color_scheme']['stroke'][2] : 255;
