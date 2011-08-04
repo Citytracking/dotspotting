@@ -298,7 +298,7 @@
 
 			# because GD images get passed around as 'null' values...
 
-			if ($img !== false){
+			if ($img){
 
 				foreach ($_dots as $dot){
 					$loc = new MMaps_Location($dot['latitude'], $dot['longitude']);
@@ -318,6 +318,10 @@
 	#################################################################
 
 	function maps_gd_to_png($gd, $prefix='nyan'){
+
+		if (! $gd){
+			return null;
+		}
 
 		$tmp = tempnam(sys_get_temp_dir(), "export-{$prefix}-") . ".png";
 

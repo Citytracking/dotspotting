@@ -141,8 +141,9 @@
 		$writer = null;
 
 		foreach ($maps as $path){
-			if (! unlink($path)){
-				error_log("[EXPORT] (ppt) unlink {$path} : {$ok}");
+
+			if (($path) && (! file_exists($path)) && (! unlink($path))){
+				error_log("[EXPORT] (ppt) failed to unlink {$path}");
 			}
 		}
 
