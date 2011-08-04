@@ -135,5 +135,8 @@
 	$GLOBALS['cfg']['enable_feature_wscompose'] = 0;
 	$GLOBALS['cfg']['wscompose_enable_multigets'] = 0;
 
+	# This is to prevent Dotspoting from accidentally DOS-ing itself.
+
+	$GLOBALS['cfg']['wscompose_max_dots_for_multigets'] = 25;
 
 ?>

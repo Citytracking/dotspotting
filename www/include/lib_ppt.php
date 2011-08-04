@@ -56,7 +56,18 @@
 				$_dots[] = array($dot);
 			}
 
+			# See this? It's to prevent Dotspoting from accidentally
+			# DOS-ing itself.
+
+			$enable_multigets = $GLOBALS['cfg']['wscompose_enable_multigets'];
+
+			if (($dot_per_slide) && (count($dots) > $GLOBALS['cfg']['wscompose_max_dots_for_multigets'])){
+				$GLOBALS['cfg']['wscompose_enable_multigets'] = 0;
+			}
+
 			$maps = maps_png_for_dots_multi($_dots, $img_more);
+
+			$GLOBALS['cfg']['wscompose_enable_multigets'] = $enable_multigets;
 		}
 
 		# now draw all the maps...
