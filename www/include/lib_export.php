@@ -270,7 +270,10 @@
 		# clean up ?
 
 		if ($more['unlink_file']){
-			unlink($path);
+
+			if (($path) && (file_exists($path)) && (! unlink($path))){
+				error_log("[EXPORT] failed to unlink {$path}");
+			}
 		}
 	}
 

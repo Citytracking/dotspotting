@@ -11,7 +11,7 @@
 	#
 	# Any settings you define here will overwrite settings in the Flamework and Dotspotting
 	# include/config.php files.
-	# 
+	#
 	# Which means two things:
 	#
 	# 1) Not all of the config parameters you may want or need to tweak are listed here. Only the bare
@@ -29,7 +29,7 @@
 	# https://github.com/Citytracking/dotspotting/blob/master/README.CONFIG.md
 	#
 
-	# The simplest database configs you'll need to get started. 
+	# The simplest database configs you'll need to get started.
 
 	$GLOBALS['cfg']['db_main']['host'] = '';
 	$GLOBALS['cfg']['db_main']['name'] = '';	# as in the name of your database
@@ -51,7 +51,7 @@
 	# );
 
 
-	#	
+	#
 	# If you have the various db_enable_poormans_* config flags set (they are on by default in
 	# dotspotting) you don't need to worry about configs for the 'db_main_slaves', 'db_users'
 	# and 'db_tickets' database clusters. The db_enable_poormans_* flags will auto-populate the
@@ -92,7 +92,7 @@
 	# $GLOBALS['cfg']['abs_root_url'] = '';
 	# $GLOBALS['cfg']['safe_abs_root_url'] = $GLOBALS['cfg']['abs_root_url'];
 	# $GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
-	
+
 	# $GLOBALS['cfg']['auth_cookie_name'] = 'a';
 
 	# $GLOBALS['cfg']['auth_cookie_secure'] = 0;		# see also: http://github.com/blog/737-sidejack-prevention
@@ -118,11 +118,25 @@
 	# $GLOBALS['cfg']['example_some_password'] = 'READ-FROM-SECRETS';
 	# include_once("your-secrets-file.php");
 	#
-	
+
 	#
 	#   Analytic / trackers
 	#
-    #$GLOBALS['cfg']['google_analytics_id'] = 'your_account_id_here';
-    #$GLOBALS['cfg']['mixpanel_id'] = 'your_project_token_here';
+	# $GLOBALS['cfg']['google_analytics_id'] = 'your_account_id_here';
+	# $GLOBALS['cfg']['mixpanel_id'] = 'your_project_token_here';
+
+	# wscompose support.
+	# This should still be considered experimental as of 20110803. It works
+	# using the wsgicompose branch of https://github.com/stamen/modestmaps-py
+	# running under something like gunicorn allowing for images (maps) to
+	# be rendered using multiple threads (in python) and optionally using
+	# multigets (in php).
+
+	$GLOBALS['cfg']['enable_feature_wscompose'] = 0;
+	$GLOBALS['cfg']['wscompose_enable_multigets'] = 0;
+
+	# This is to prevent Dotspoting from accidentally DOS-ing itself.
+
+	$GLOBALS['cfg']['wscompose_max_dots_for_multigets'] = 25;
 
 ?>

@@ -48,12 +48,26 @@
 			$img_more['width'] = $img_more['height'];
 			$img_more['img_prefix'] = 'ppt';
 
-			foreach ($dots as $dot){
+			# remember: 1 dot per slide
 
-				$_dots = array($dot);
- 				$maps[] = maps_png_for_dots($_dots, $img_more);
+			$_dots = array();
+
+			foreach ($dots as $dot){
+				$_dots[] = array($dot);
 			}
 
+			# See this? It's to prevent Dotspoting from accidentally
+			# DOS-ing itself.
+
+			$enable_multigets = $GLOBALS['cfg']['wscompose_enable_multigets'];
+
+			if (($dot_per_slide) && (count($dots) > $GLOBALS['cfg']['wscompose_max_dots_for_multigets'])){
+				$GLOBALS['cfg']['wscompose_enable_multigets'] = 0;
+			}
+
+			$maps = maps_png_for_dots_multi($_dots, $img_more);
+
+			$GLOBALS['cfg']['wscompose_enable_multigets'] = $enable_multigets;
 		}
 
 		# now draw all the maps...
@@ -89,6 +103,11 @@
 				if (! $_dot['id']){
 					continue;
 				}
+
+				$shape = $slide->createDrawingShape();
+				$shape->setName('map');
+				$shape->setDescription('');
+				$shape->setPath($map);
 
 				$text = $slide->createRichTextShape();
 				$text->setHeight($h);
@@ -133,8 +152,9 @@
 		$writer = null;
 
 		foreach ($maps as $path){
-			if (! unlink($path)){
-				error_log("[EXPORT] (ppt) unlink {$path} : {$ok}");
+
+			if (($path) && (! file_exists($path)) && (! unlink($path))){
+				error_log("[EXPORT] (ppt) failed to unlink {$path}");
 			}
 		}
 
