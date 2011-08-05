@@ -6,6 +6,21 @@
 .geohide{display:none;}
 strong{font-size: 15px;font-weight: 800;}
 #upload_file{display:none;}
+.needsGeocoding{background-color:#FA5C5C !important;}
+.deleting{
+position:absolute;
+background:#fff;
+background:rgba(255,255,255,.8);
+width:100%;
+height:100%;
+z-index:9999;
+top:0;
+left:0;
+}
+.deleting h3{position:relative;top:150px;text-align:center;}
+#pre_process_container{position:relative;}
+
+
 </style>
 {/literal}
 
@@ -61,7 +76,14 @@ strong{font-size: 15px;font-weight: 800;}
 
 <tbody>
 {foreach from=$data item="row" name="records"}
-{if $row._has_latlon || $row._address} {* skipping rows that don't have a lat/lon or generated _address value *}
+
+
+
+
+
+
+
+
 {assign var="row_idx" value=$smarty.foreach.records.index+1}
 
 <a name="row{$row_idx|escape}"></a>
@@ -89,7 +111,13 @@ strong{font-size: 15px;font-weight: 800;}
 <td></td>
 *}
 </tr>
-{/if}
+
+
+
+
+
+
+
 
 {/foreach}
 </tbody>
@@ -237,7 +265,9 @@ var mo,
 	geocoder,
 	dt,
 	gc_ok = false,
-	_processedRows = {};
+	_processedRows = {}
+	geocode_not_possible = false,
+	isDeleting = false;
 	
 $(document).ready(function(){
 	
@@ -252,29 +282,32 @@ $(document).ready(function(){
 	
 	geocoder = new google.maps.Geocoder();
 	
+	
+	/*
+	//gc_ok = checkGC();
+	
 	if(!gc_ok){
-		$("#geocodeBtn").click(function(e){
-			e.preventDefault();
-			if(!dt)return;
-			preprocess_geocode_col();
-		});
-		$("#submitBtn input").attr('disabled', 'disabled');
-		$("#submitBtn input").css('cursor','none');
-		$("#submitBtn").css('opacity',.3);
+		enableGC();
 	}else{
-		$("#geocodeBtn").hide();
-		$("#geocode_msg").hide();
+		disableGC();
 	}
+	*/
 
 });
 
 
 // build data table
 YAHOO.util.Event.addListener(window, "load", function() {
-
-buildDataTable();
-	
+    
+    /*
+    $("#pre_process_container").css('visibility', 'visible');
+    $("#loader_table").remove();
+    return;
+    */
+    buildDataTable();
 });
+
+
 
 
 function buildDataTable(){
@@ -388,7 +421,7 @@ function buildDataTable(){
     		$("#loader_table").remove();
     		$("#geoinstr").show();
     		$("#upload_file").show();
-    		preprocess_checkLatLon();
+    		
 		
     		YT.dataTable.unsubscribe('initEvent',YT.tableReady);
     		YT.preprocess_add_col_options();
@@ -396,6 +429,9 @@ function buildDataTable(){
     		if(typeof preprocess_create_index == 'function') { 
     			preprocess_create_index();
     		}
+    	    
+    	    preprocess_checkLatLon();
+
     	}else{
     	
     	    var __msg = "Ugh! Something bad happened. Please visit the <a href='"+_dotspotting.abs_root_url+"contact'>contact page</a> to send us a note detailing what happened."
@@ -413,6 +449,27 @@ function buildDataTable(){
 	};
 
 	YT.rowDeleteHandler = function(oArgs){
+	    //console.log(oArgs);
+	    //console.log(YT.dataTable.getRecordSet());
+	
+	    var rset = YT.dataTable.getRecordSet();
+	    var records = rset._records;
+	    var len = records.length;
+	    for(i=0;i<len;i++){
+	        var newRowId = i+1;
+	        newRowId += '<a href="#" onclick="preprocess_delete_row('+i+'); return false;"><img src="'+_dotspotting.abs_root_url+'images/x.png"/></a>';
+	
+		  
+			YT.dataTable.updateCell(records[i],'row id',newRowId);
+	    }
+	    
+	    preprocess_checkLatLon();
+	    isDeleting =false;
+	    
+	    $(".deleting").remove();
+	    
+	    
+	/*
 		$(".yui-dt-data tr").map(function(i, row){
 
 			var oRecord = dt.dataTable.getRecord(i);
@@ -421,23 +478,33 @@ function buildDataTable(){
 			var delCol = $(row).find("td a").eq(0);
 		
 			newRowId += '<a href="#" onclick="preprocess_delete_row('+i+'); return false;"><img src="'+_dotspotting.abs_root_url+'images/x.png"/></a>';
-		
+	
+		  
 			YT.dataTable.updateCell(oRecord,'row id',newRowId);
-		
+		    
+	
 			if (delCol.length){
 				delete_col = delCol[0];
 				delete_col.setAttribute('onclick', action);
 			}
 		
+		
 		});
+		
+		//preprocess_checkLatLon();
+	*/
+	
 	};
 
 	YT.columnChangeHandler = function(oArgs){
+	    console.log("CHANGE HANDLER")
 		YT.preprocess_add_col_options();
 
 		if(typeof preprocess_create_index == 'function') { 
 			preprocess_create_index();
 		}	
+		
+		preprocess_checkLatLon();
 	}
 
 
@@ -558,6 +625,9 @@ function preprocess_checkForValidData(){
     return result;
 }
 function preprocess_checkLatLon(){
+
+     var result = 1;
+     geocode_not_possible = false;
 	$(".yui-dt-data tr").map(function(i){
 		var r = dt.dataTable.getRecord(i);
 		var b = Number(r._oData['_has_latlon']);
@@ -567,9 +637,73 @@ function preprocess_checkLatLon(){
 		}else{
 			_processedRows[_id] = "bad";
 		}
+		
+		
+		///
+		if( !b || b == 0 ){
+		    result = 0;
+		    if(!r._oData['_address']){
+		        $("#"+r._sId).addClass('needsGeocoding');
+		        geocode_not_possible = true;
+		    }else{
+		        $("#"+r._sId).removeClass('needsGeocoding');
+		    }
+		}else{
+		    $("#"+r._sId).removeClass('needsGeocoding');
+		}		
 
 	});
+	
+	//
+	gc_ok = result;
+	if(geocode_not_possible){
+	    gcNotPossible();
+	}else{
+    	if(!gc_ok){
+    		enableGC();
+    	}else{
+    		disableGC();
+    	}
+	}
+
+	return result;
 }
+
+function enableGC(){
+    $("#geocodeBtn").click(function(e){
+		e.preventDefault();
+		if(!dt)return;
+		preprocess_geocode_col();
+	});
+	$("#submitBtn input").attr('disabled', 'disabled');
+	$("#submitBtn input").css('cursor','none');
+	$("#submitBtn").css('opacity',.3);
+}
+
+function disableGC(){
+    $("#geocodeBtn").hide();
+	$("#geocode_msg").hide();
+	$("#geocode_info h4").html("Dotspotting understands your data. Press \"submit\" to upload your dots and generate a map.");
+	$("#geocode_info p").hide();
+	 $("#geocode_info h4").removeClass("needsGeocoding");
+	
+	$("#submitBtn").show();
+	$("#submitBtn input").attr('disabled', '');
+	$("#submitBtn input").css('cursor','pointer');
+	$("#submitBtn").css('opacity',1);
+	
+}
+
+function gcNotPossible(){
+    $("#submitBtn").hide();
+    $("#geocodeBtn").hide();
+    $("#geocode_msg").hide();
+    $("#geocode_info h4").html("Dotspotting found some rows in your data that can not be geocoded!");
+    var output =  "Delete the bad rows or correct your original source data and try the upload again. \nFor more details about uploading <a href='"+_dotspotting.abs_root_url+"faq'>please visit the FAQ page</a>";
+    $("#geocode_info p").html(output);
+    $("#geocode_info h4").addClass("needsGeocoding");
+}
+
 
 function preprocess_collect_data(){
 	if(!dt.dataTable)return;
@@ -623,14 +757,22 @@ function preprocess_collect_data(){
 // delete row
 function preprocess_delete_row(idx){
 	if(!dt.dataTable)return;
-	
-	var prompt = "Are you sure you want to delete this row?";
+	if(isDeleting)return;
 
+	var r = dt.dataTable.getRecord(idx);
+	
+	var prompt = "Are you sure you want to delete this row ?";
+    $("#pre_process_container").append("<div class='deleting'><h3>Deleting row...</h3></div>");
+    
 	if (! confirm(prompt)){
+	    $(".deleting").remove();
 		return;
 	}
 	
-	dt.dataTable.deleteRow(Number(idx));
+	isDeleting = true;
+	
+
+	dt.dataTable.deleteRow(r);
 
 }
 
@@ -905,8 +1047,8 @@ function preprocess_geocode_col(idx){
 	
 	
 	this.majorError = function(q){
-	    $("#geocode_info h4").html("Sorry the geocoding feature could not be enabled.");
-	    var out_p = "<strong>Please fix problem in original source data.  <a href='"+_dotspotting.abs_root_url+"upload'>Then re-upload the file.</a></strong><br/>";
+	    $("#geocode_info h4").html("Sorry there was an error processing your file.");
+	    var out_p = "<strong>Please go back to your original source data and check everything is valid.  <a href='"+_dotspotting.abs_root_url+"upload'>Then re-upload the file.</a></strong><br/>";
 		out_p += "For more details about uploading <a href='"+_dotspotting.abs_root_url+"faq'>please visit the FAQ page</a>";
 	    $("#geocode_info p").html(out_p);
 	    $("#geocode_info h4").css("background-color","#e9b8b8");
