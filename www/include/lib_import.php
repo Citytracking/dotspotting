@@ -21,10 +21,8 @@
 			);
 		}
 
-		#
-		# parse the file
-		#
-        
+		# Parse the file
+
 		$process_rsp = import_process_file($file);
 
 		if (! $process_rsp['ok']){
@@ -268,6 +266,11 @@
 
 		$map = formats_valid_import_map();
 
+		if ($GLOBALS['cfg']['enable_feature_ogre']){
+			$ogre_map = formats_valid_ogre_import_map();
+			$map = array_merge($map, $ogre_map);
+		}
+
 		if (isset($map[$type])){
 
 			$file['type'] = $type;
@@ -299,6 +302,58 @@
 	# It is assumed that you've checked $file['type'] by now
 
 	function import_process_file(&$file){
+
+		# Is this something that we are going to try parsing with
+		# ogre (assuming it's been enabled). If it has then it will
+		# return GeoJSON and we'll just carry on pretending that's
+		# what the file is.
+
+		$use_ogre = 0;
+
+		if ($GLOBALS['cfg']['enable_feature_ogre']){
+
+			$ogre_map = formats_valid_ogre_import_map();
+
+			if (isset($ogre_map[$file['type']])){
+				$use_ogre = 1;
+			}
+		}
+
+		if ($use_ogre){
+
+			$new_path = "{$file['path']}.{$file['extension']}";
+			rename($file['path'], $new_path);
+
+			$file['path'] = $new_path;
+
+			loadlib("geo_ogre");
+			$rsp = geo_ogre_convert_file($file['path']);
+
+			if (! $rsp['ok']){
+				$rsp['details'] = $rsp['error'];
+				$rsp['error'] = 'ogre_fail';
+				return $rsp;
+			}
+
+			$fh = fopen($file['path'], 'w');
+			fwrite($fh, json_encode($rsp['data']));
+			fclose($fh);
+
+			$map = formats_valid_import_map("key by extension");
+
+			$old_path = $file['path'];
+			$new_path = str_replace(".{$file['extension']}", ".json", $file['path']);
+
+			rename($old_path, $new_path);
+
+			$file = array(
+				'path' => $new_path,
+				'name' => basename($new_path),
+				'size' => filesize($new_path),
+				'extension' => 'json',
+				'type' => $map['json'],
+			);
+		}
 
 		#
 		# Basic setup stuff
@@ -540,9 +595,9 @@
         }
 
         $rsp['needs_geocoding'] = $needs_geocoding;
-        
+
         return $rsp;
 	}
-	#################################################################
 
+	#################################################################
 ?>
