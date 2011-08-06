@@ -134,9 +134,17 @@
 
 	$GLOBALS['cfg']['enable_feature_wscompose'] = 0;
 	$GLOBALS['cfg']['wscompose_enable_multigets'] = 0;
-
 	# This is to prevent Dotspoting from accidentally DOS-ing itself.
-
 	$GLOBALS['cfg']['wscompose_max_dots_for_multigets'] = 25;
+
+	# ogre support (http://github.com/wavded/ogre) for converting shps, etc.
+	# experimental and not part of the master branch yet; it remains
+	# to be seen whether it is better to use ogre or simply shell out
+	# in php (20110805/straup)
+
+	$GLOBALS['cfg']['enable_feature_ogre'] = 0;
+	$GLOBALS['cfg']['ogre_host'] = 'http://localhost/';
+	$GLOBALS['cfg']['ogre_port'] = 3000;
+	$GLOBALS['cfg']['ogre_convert_endpoint'] = 'convert/';
 
 ?>
