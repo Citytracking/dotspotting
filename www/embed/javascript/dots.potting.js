@@ -55,7 +55,7 @@ Dots.Potting.sourceAliases = (function() {
     };
     aliases.prettymaps = {
         template: "http://tms.stamen.com/prettymaps/{Z}/{X}/{Y}.png",
-        copyright: MICROSOFT_TM
+        copyright: PRETTYMAPS_TM
     };
 
     return aliases;
