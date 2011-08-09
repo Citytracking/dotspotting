@@ -699,7 +699,7 @@ function draw_map_polymaps(dots,update_from_search){
 	// init selected dot variable
 	_dotspotting.selected_dot = null;
 
-	
+
 	if(!update_from_search){
 		if(qs && qs.contains('c')){
 			var _mapstate = qs.get('c');
@@ -716,6 +716,7 @@ function draw_map_polymaps(dots,update_from_search){
 	
 		}
 	}
+	
  	if(!incomingState){
 		if (dots.features.length == 1){
 			map.center(dots.center);

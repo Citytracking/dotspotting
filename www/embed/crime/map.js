@@ -310,8 +310,8 @@ CrimeTypeSelector.prototype = {
     },
 
     onLabelClick: function(label, e) {
+        /*
         var selected_type = label.data("type");
-        
         var len = this.labels.length;
         var selected;
         for (var i = 0; i < len; i++) {
@@ -328,9 +328,9 @@ CrimeTypeSelector.prototype = {
             }
             l.toggleClass("off", !selected);
         }
+        */
         
-        
-        /*
+  
         var selected = !label.data("selected"),
             type = label.data("type");
         label.data("selected", selected);
@@ -340,7 +340,7 @@ CrimeTypeSelector.prototype = {
             this.unselectType(type);
         }
         label.toggleClass("off", !selected);
-        */
+       
     },
 
     selectType: function(type) {

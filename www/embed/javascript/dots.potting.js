@@ -103,7 +103,16 @@ Dots.Potting.prototype = {
 
     createMap: function() {
         var provider = this.getMapProvider(this.params.base);
-        this.map = new com.modestmaps.Map(this.mapContainer[0], provider);
+        var handlers = [];
+        /*
+    	if(touchSupport){
+    	    handlers.push(	new com.modestmaps.TouchHandler() );
+	    }else{
+	        handlers.push( new com.modestmaps.MouseHandler() );
+	    }
+	    */
+	    handlers.push( new com.modestmaps.MouseHandler() );
+        this.map = new com.modestmaps.Map(this.mapContainer[0], provider,null,handlers);
 
         if (provider.copyright) {
             this.addCopyright(provider.copyright);
