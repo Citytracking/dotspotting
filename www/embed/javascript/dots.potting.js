@@ -27,6 +27,7 @@ Dots.Potting.sourceAliases = (function() {
         ACETATE_TM = 'Map data &copy;<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>; designed by <a href="http://www.stamen.com/">Stamen</a> &amp; <a href="http://www.geoiq.com/">GeoIQ</a>',
         // FIXME: update MS copyright for each extent?
         MICROSOFT_TM = '&copy;{Y} Microsoft Corporation  &copy;2010 NAVTEQ';
+        PRETTYMAPS_TM = OSM_TM;
 
     aliases.toner = {
         template: "http://spaceclaw.stamen.com/tiles/dotspotting/world/{Z}/{X}/{Y}.png",
@@ -50,6 +51,10 @@ Dots.Potting.sourceAliases = (function() {
 
     aliases.bing = {
         template: "http://ecn.t{S:0,1,2}.tiles.virtualearth.net/tiles/r{Q}?g=689&mkt=en-us&lbl=l1&stl=h",
+        copyright: MICROSOFT_TM
+    };
+    aliases.prettymaps = {
+        template: "http://tms.stamen.com/prettymaps/{Z}/{X}/{Y}.png",
         copyright: MICROSOFT_TM
     };
 
