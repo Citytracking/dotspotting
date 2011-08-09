@@ -199,7 +199,7 @@ function checkCustomIcon(marker,data){
         var url = (data.props.custom_icon) ? data.props.custom_icon.replace(/ /g, "_") : data.props.crime_type.replace(/ /g, "_");
         var extension = url.substr( (url.lastIndexOf('.') +1) );
         url = custom_icon_base + url;
-        if(extension != "png" || extension != "jpg") url += ".png";
+        if(extension != "png" || extension != "jpg" || extension != "gif") url += ".png";
         
         var icon = $(marker).find(".group");
         var default_classes = ['violent','property','gol','unknown'];
