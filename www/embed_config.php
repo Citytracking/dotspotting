@@ -30,10 +30,10 @@
 	
 	if($_GET['type']=="crime"){
 	    $chosen_theme = "crime";
-	}else if($_GET['type']=="default"){
 	}else if($_GET['type']=="photo"){
 	    $chosen_theme = "photo";
-	}else{
+	}else if($_GET['type']=="bucket"){
+	    $chosen_theme = "bucket";
     }
 
     $GLOBALS['smarty']->assign_by_ref("recent_sheet_url", $sheet_url);

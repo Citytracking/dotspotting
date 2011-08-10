@@ -1,0 +1,37 @@
+<h3>Instructions</h3>
+
+<p>You can embed the map using an html <a href="http://www.w3.org/wiki/HTML/Elements/iframe"><tt>&lt;iframe&gt;</tt></a>
+with the <tt>src</tt> attribute of:</p>
+<textarea>{$cfg.abs_root_url}embed/default/</textarea>
+
+<p>and the following <a href="http://en.wikipedia.org/wiki/Query_string">query string</a> parameters:</p>
+
+<ul>
+    <li><tt>user</tt>: a Dotspotting user ID. You can
+    find the user ID of a sheet's owner in the URL,
+    after the <tt>/u/</tt> part and before the <tt>/sheets/</tt> part:
+<pre>{$cfg.abs_root_url}u/<u>203</u>/sheets/869
+                             (203)</pre></li>
+    <li><tt>sheet</tt>: a Dotspotting <a href="{$cfg.abs_root_url}faq/#sheets">sheet ID</a>, which you can find after the <tt>/sheets/</tt> part of a sheet's URL:
+<pre>{$cfg.abs_root_url}u/203/sheets/<u>869</u>
+                                        (869)</pre></li>
+    <li><tt>title</tt> (optional): the title to display along the top of the frame</li>
+    <li><tt>tt</tt> (optional): a column field to use as the title for tooltip</li>
+    <li><tt>tm</tt> (optional): a column field to use as the message for tooltip</li>
+    <li><tt>base</tt> (optional): takes a tile URL.  Currently, default theme supports only <a href="http://citytracking.github.com/toner/">Toner</a>, <a href="http://developer.geoiq.com/tools/acetate/">Acetate</a>, <a href="http://cloudmade.com/">Pale Dawn</a>, <a href="http://developer.mapquest.com/web/products/open/map">MapQuest</a> and <a href="http://www.bing.com/maps/">Bing</a> tiles.</li>
+</ul>
+
+<p>You can also specify the initial map zoom and
+center by appending a <a href="http://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a>
+onto the URL in the following form:
+
+<pre>#{literal}{zoom}/{latitude}/{longitude}{/literal}</pre>
+
+<p>where <tt>zoom</tt> is a whole number between 4
+and 17 (the minimum and maximum allowed zoom levels
+of the map), <tt>latitude</tt> is a decimal number
+between -85 and 85, and <tt>longitude</tt> is a
+decimal number between -180 and 180. 
+<a href="http://www.getlatlon.com/">Get Lat Lon</a>
+can help you find the zoom, latitude and longitude of
+most places.</p>

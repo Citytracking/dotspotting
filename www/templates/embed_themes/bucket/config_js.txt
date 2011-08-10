@@ -1,0 +1,59 @@
+{literal}
+<script>
+    var ds_config;
+
+   $(document).ready(function() {
+   
+    var $more = [
+        {
+            'label': 'Tooltip Title:',
+            'type': 'select',
+            'id': 'tt',
+            'default': '',
+            'helper': 'Column to be used as the title for tooltip'
+        },
+        {
+            'label': 'Tooltip Message:',
+            'type': 'select',
+            'id': 'tm',
+            'default': '',
+            'helper': 'Column to be used as the body for tooltip'
+        }
+    ];
+    
+    
+    // create the config object
+    ds_config = new Dots.Config($more,"default","toner");
+    
+    // register events before calling the loadSheet method...
+    ds_config.on("json_loading_begin",function(){
+     //console.log("loading begin");
+    });
+    ds_config.on("json_loading_success",function(){
+     //console.log("loading success");
+     setSelects();
+    });
+    ds_config.on("json_loading_error",function(){
+     //console.log("loading error");
+    });
+    
+    
+
+    ds_config.loadSheet();
+    
+    // do stuff with our new options here...
+    function setSelects(){
+        var _fields = ds_config.sheet_columns;
+        if(!_fields)return;
+        $("#config_opt_tm").append('<option value=""></option>');
+        $("#config_opt_tt").append('<option value=""></option>');
+        for(f in _fields){
+            $("#config_opt_tm").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
+            $("#config_opt_tt").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
+        }
+    }
+
+   });
+
+</script>
+{/literal}
