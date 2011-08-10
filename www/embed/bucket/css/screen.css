@@ -158,7 +158,7 @@ h1 a {
 /**/
 #menu_wrapper{
     position:absolute;
-    top: 30%;
+    top: 0;
     right: 0;
     background: #DCE8EF;
     background: rgba(220,232,239,.8);
@@ -167,6 +167,30 @@ h1 a {
     z-index: 2001;
     padding:0 5px 5px;
 }
+    #menu_wrapper h5{
+        font-size: 12px;
+        text-transform:uppercase;
+        color:#000;
+        margin:0;
+        padding:5px 0 0;
+        text-align:left;
+        position:relative;
+        border-bottom: 1px solid #ccc;
+    }
+    #menu_wrapper h5 span{
+        text-transform:none;
+        position:absolute;
+        right:10px;
+        top:5px;
+        font-size: 10px;
+    }
+    #menu_wrapper h5 span a{
+        color:#356A94;
+        text-decoration:none;
+    }
+    #menu_wrapper h5 span a:hover{
+        text-decoration:underline;
+    }
 li.altrow{
     background:#DBDFE3;
     background:rgba(100,100,100,.1);
@@ -177,28 +201,10 @@ li.altrow{
     width: auto;
     height: auto;
     display: block;
-    margin: 0;
+    margin: 10px 0 0;
     padding: 0;
 }
-    #menu_types_wrapper h5{
-        font-size: 10px;
-        text-transform:uppercase;
-        color:#000;
-        margin:0;
-        padding:5px 0;
-        text-align:center;
-    }
-    #menu_types_wrapper h5 span{
-        text-transform:none;
-        padding-left:10px;
-    }
-    #menu_types_wrapper h5 span a{
-        color:#356A94;
-        text-decoration:none;
-    }
-    #menu_types_wrapper h5 span a:hover{
-        text-decoration:underline;
-    }
+    
 
     #menu_types li {
         cursor: pointer;
@@ -240,4 +246,23 @@ li.altrow{
         -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=20)";  
         filter: alpha(opacity=20);
         /*background-image: url(../images/icons/faded.png) !important;*/
+    }
+    
+    /* The UGH! using 2 different tooltips for now until I merge them into super tooltip */
+
+    /* tooltip for menu type selector */
+    #tiptip_holder{top:10px !important;}
+    #tiptip_holder.classtype_tip #tip_content{background:#fff;color:#000;}
+
+    #tiptip_holder.classtype_tip #tiptip_arrow_inner {
+        border-left-color: #fff;
+        border-left-color: rgba(255, 255, 255, 0.92);
+    }
+    #tiptip_content span{
+        display:block;
+        font-size:16px;
+        padding-bottom:2px;
+    }
+    #tiptip_content{
+        line-height:16px;
     }

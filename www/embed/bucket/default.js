@@ -32,10 +32,39 @@ $(function() {
         params = parseQueryString(location.search);
         if (!params.baseURL) params.baseURL = baseURL;
         
+        if(params.provider)params.base = params.provider;
+        if (!params.base)params.base = "acetate";
+        
         if(params.bucket)bucketColumn = params.bucket;
+        
+        var pos = ($("#title").length > 0) ? $("#title").innerHeight() : 0;
+        $("#crime_types_wrapper").css("top",pos+"px");
+        
+        if (params.ui == "1") {
+            
+        }else{
+            
+        }
 
         pot = new Dots.Potting(params);
         pot.setTitle();
+        pot.dotsLayer = new mm.DotMarkerLayer(pot.map);
+        
+        params.ui = 1;
+        
+        if (params.ui == "1") {
+            var typeSelector = new MenuSelector("#menu_types_wrapper","#menu_types", pot.dotsLayer);
+            
+            if (params.types) {
+               // typeSelector.defaultTypeSelected = false;
+               // typeSelector.selectTypes(params.types.split(","));
+            }
+            var pos = ($("#title").length > 0) ? $("#title").innerHeight() : 0;
+            $("#menu_wrapper").css("top",pos+"px");
+        }else{
+            $("#menu_wrapper").remove();
+        }
+        
 
         // map controls
         $(".zoom-in").click(function(e){
@@ -51,12 +80,11 @@ $(function() {
         if (params.title) {
            $(".controls").css("top",($("#title").height()+20)+"px");
         }
-
-        pot.dotsLayer = new mm.DotMarkerLayer(pot.map);
         
-        // borough
-        var typeSelector = new MenuSelector("#menu_types_wrapper","#menu_types", pot.dotsLayer);
-        
+        function doCluster(){
+            clusterMarkers(pot.dotsLayer.markers);
+            pot.map.setZoom(pot.map.getZoom());
+        }
 
          
         pot.makeDot = function(feature) {
@@ -97,7 +125,7 @@ $(function() {
           return marker;
         };
 
-
+        //load markers and do things when done
         var req = pot.load(null,function(){
             if (typeSelector) {
                 
@@ -109,13 +137,14 @@ $(function() {
                     for(i=0;i<len;i++){
                         if(c == markers[i].attrs['type']){
                             markers[i].attr("fill",co[c]);
+                            markers[i].attr("fill-opacity",.8);
                         }
                     }
                 }
 
                 
             }
-
+            doCluster();
         });
         
         // create tooltip
@@ -166,13 +195,14 @@ function normalizeFeature(feature) {
 function MenuSelector(wrapper,selector, layer) {
     this.wrapper = $(wrapper);
     this.container = $(selector);
-    this.canvas = Raphael("menu_types", this.menuWidth, 200);
+    this.canvas = Raphael("menu_types", this.menuWidth, this.menuHeight);
     this.layer = layer;
     this.labelsByType = {};
     this.selectedTypes = {};
     this.buttonSets = {};
     this.colorScheme = {};
     this.labelStates = {};
+    this.labelCounts = {};
     
     var that = this;
     this.show_all.click(function(e){
@@ -201,11 +231,13 @@ MenuSelector.prototype = {
     buttonSets: null,
     labelsByType: null,
     labelStates: null,
+    labelCounts:null,
     buttonLength:0,
     selectedTypes: null,
     colorScheme: null,
     defaultTypeSelected: true,
     menuWidth:200,
+    menuHeight:200,
     wrapper:null,
     show_all:$("#ct_show_all"),
     hide_all:$("#ct_hide_all"),
@@ -220,6 +252,18 @@ MenuSelector.prototype = {
         for(set in this.buttonSets){
             
             this.buttonSets[set][2].attr("width",this.menuWidth);
+            var ts = set + ": "+ this.labelCounts[set];
+            $(this.buttonSets[set][2].node).tipTip({
+        	    maxWidth: "auto", 
+        	    edgeOffset: 0,
+        	    delay:100,
+        	    defaultPosition:"left",
+        	    forcePosition:true,
+        	    content:ts,
+        	    enter:function(){},
+                exit:function(){}
+        	});
+       
         }
     },
     
@@ -228,6 +272,7 @@ MenuSelector.prototype = {
         
         if (this.labelsByType[type]) {
             var label = this.labelsByType[type];
+            this.labelCounts[type]++;
             //label.data("count", label.data("count") + 1);
             return label;
         }
@@ -240,6 +285,7 @@ MenuSelector.prototype = {
         this.colorScheme[type] = clr;
         label.attr({
             "fill":clr,
+            "fill-opacity":.8,
             "stroke-width":0
             });
         label.node.id = "c_"+type;
@@ -292,12 +338,13 @@ MenuSelector.prototype = {
         this.labelsByType[type] = label;
         this.buttonSets[type] = [label,txt,btn];
         this.labelStates[type] = true;
+        this.labelCounts[type] = 1;
         this.buttonLength ++;
         
         this.menuWidth = Math.max(this.menuWidth,(txt.node.clientWidth+50));
+        this.menuHeight = Math.max(this.menuHeight,yPos+20);
 
-        this.canvas.setSize(this.menuWidth,yPos+20);
-        //if(yPos > 200)this.canvas.attr("height",yPos+0);
+        this.canvas.setSize(this.menuWidth,this.menuHeight);
         return label;
         
     },
@@ -523,7 +570,7 @@ DotToolTip.prototype = {
         if(!this.currentProp)return;
         var _title = this.getTipTitle();
         var _desc = this.getTipDesc();
-
+        if(!_title.length && !_desc.length)return;
         if(_title){
             this.tt_title.css("display","block");
             this.tt_title.html(_title);
@@ -688,4 +735,5 @@ DotToolTip.prototype = {
         return isTip;
     }
 }
+
 
