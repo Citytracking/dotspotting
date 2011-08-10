@@ -276,10 +276,15 @@ MenuSelector.prototype = {
         }
         btn.node.onmouseover = function(e){
             var id = $(this).attr("id");
+            id = id.slice(2);
             btn.attr("fill-opacity",.3);
+            if(that.labelStates[id])that.highlightMarkers(id);
         }
         btn.node.onmouseout = function(e){
+            var id = $(this).attr("id");
+            id = id.slice(2);
             btn.attr("fill-opacity",0);
+            if(that.labelStates[id])that.unhighlightMarkers(id);
            
         }
 
@@ -312,7 +317,25 @@ MenuSelector.prototype = {
         }
     },
  
-    
+    highlightMarkers: function(t){
+        var markers = this.layer.markers,
+        len = markers.length;
+        for(i=0;i<len;i++){
+            if(t == markers[i].attrs['type']){
+                if(!dotHasClass(markers[i].node,"over_hover"))dotAddClass(markers[i].node,"over_hover");
+                markers[i].toFront();
+            }
+        }
+    },
+    unhighlightMarkers: function(t){
+        var markers = this.layer.markers,
+        len = markers.length;
+        for(i=0;i<len;i++){
+            if(t == markers[i].attrs['type']){
+                dotRemoveClass(markers[i].node,"over_hover");
+            }
+        }
+    },
     hideMarkers: function(t){
         var markers = this.layer.markers,
         len = markers.length;
@@ -336,6 +359,62 @@ MenuSelector.prototype = {
     },
     
     
+};
+
+
+function dotHasClass(element, $class) {
+    if(!element.className.baseVal)return false;
+    var pattern = new RegExp("(^| )" + $class + "( |$)");
+    return pattern.test(element.className.baseVal) ? true : false;
+};
+
+function dotAddClass(element, $class) {
+	if(!element)return;
+    var i,newClass;
+    //is the element array-like?
+    if(element.length) {
+        for (i = 0; i < element.length; i++) {
+
+            if (!this.dotHasClass(element[i], $class)) {
+				newClass = element[i].className.baseVal;
+                newClass += element[i].className.baseVal === "" ? 
+                $class : " "+$class;
+				element.setAttribute('class', newClass);
+            }
+        }
+    }
+    else { //not array-like
+        if (!this.dotHasClass(element, $class)) {
+			newClass = element.className.baseVal;
+            newClass += (element.className.baseVal === "") ? $class : " "+$class;
+			element.setAttribute('class', newClass);
+        }
+    }
+    return element;
+};
+
+function dotRemoveClass(element, $class) {
+	if(!element)return;
+
+    var pattern = new RegExp("(^| )" + $class + "( |$)");
+    var i,newClass;
+
+    //is element array-like?
+    if(element.length) {
+        for (i = 0; i < element.length; i++) {
+			newClass = element[i].className.baseVal;
+            newClass = newClass.replace(pattern, "$1");
+            newClass = newClass.replace(/ $/, "");  
+			element.setAttribute('class', newClass);          
+        }
+    }
+    else { //nope
+		newClass = element.className.baseVal;
+        newClass = newClass.replace(pattern, "$1");
+        newClass = newClass.replace(/ $/, ""); 
+		element.setAttribute('class', newClass); 
+    }
+    return element;
 };
 
 
