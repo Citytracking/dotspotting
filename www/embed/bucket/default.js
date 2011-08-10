@@ -78,22 +78,12 @@ $(function() {
                props:props
            };
            
-           /*
-           var more_back = {
-               style: under_style,
-               radius:12
-           };
-           */
 
     	   var loc = new mm.Location(coords[1],coords[0]);
     	   props.__dt_coords = loc;
 
            var marker = more_front;
-           
-           // Dots.Potting class only takes one marker, 
-           // will manually add this one, for now, until I write a Kirby Dot markerLayer
-          // var c = pot.dotsLayer.addMarker(more_back,loc);
-          // c.toBack();
+
    
             // store props in key / value pairs
            marker_props[String(pid)] = props;  
@@ -111,7 +101,7 @@ $(function() {
         var req = pot.load(null,function(){
             if (typeSelector) {
                 
-               
+               typeSelector.selectorComplete();
                 var markers = pot.dotsLayer.markers,
                 len = markers.length,
                 co = typeSelector.colorScheme;
@@ -123,7 +113,7 @@ $(function() {
                     }
                 }
 
-
+                
             }
 
         });
@@ -176,7 +166,7 @@ function normalizeFeature(feature) {
 function MenuSelector(wrapper,selector, layer) {
     this.wrapper = $(wrapper);
     this.container = $(selector);
-    this.canvas = Raphael("menu_types", 200, 200);
+    this.canvas = Raphael("menu_types", this.menuWidth, 200);
     this.layer = layer;
     this.labelsByType = {};
     this.selectedTypes = {};
@@ -215,6 +205,7 @@ MenuSelector.prototype = {
     selectedTypes: null,
     colorScheme: null,
     defaultTypeSelected: true,
+    menuWidth:200,
     wrapper:null,
     show_all:$("#ct_show_all"),
     hide_all:$("#ct_hide_all"),
@@ -225,7 +216,13 @@ MenuSelector.prototype = {
         //return [indexes[data.group] || 9, data.label || data.type].join(":");
         return 1;
     },
-
+    selectorComplete: function(){
+        for(set in this.buttonSets){
+            
+            this.buttonSets[set][2].attr("width",this.menuWidth);
+        }
+    },
+    
     addLabel: function(data) {
         var type = data.bucketType;
         
@@ -242,7 +239,8 @@ MenuSelector.prototype = {
         var _id = "c_"+type;
         this.colorScheme[type] = clr;
         label.attr({
-            "fill":clr
+            "fill":clr,
+            "stroke-width":0
             });
         label.node.id = "c_"+type;
         txt.node.id = "t_"+type;
@@ -290,6 +288,10 @@ MenuSelector.prototype = {
         this.labelStates[type] = true;
         this.buttonLength ++;
         
+        this.menuWidth = Math.max(this.menuWidth,(txt.node.clientWidth+50));
+
+        this.canvas.setSize(this.menuWidth,yPos+20);
+        //if(yPos > 200)this.canvas.attr("height",yPos+0);
         return label;
         
     },
