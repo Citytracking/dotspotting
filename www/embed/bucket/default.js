@@ -268,6 +268,7 @@ MenuSelector.prototype = {
             if(state){
                 that.unselectButtons(id);
                 that.showMarkers(id);
+                that.highlightMarkers(id);
             }else{
                 that.selectButtons(id);
                 that.hideMarkers(id);
@@ -316,6 +317,8 @@ MenuSelector.prototype = {
             set[i].attr("opacity",1);
         }
     },
+    
+    
  
     highlightMarkers: function(t){
         var markers = this.layer.markers,
@@ -343,6 +346,7 @@ MenuSelector.prototype = {
             if(t == markers[i].attrs['type']){
                 markers[i].attrs['props']['__active'] = false;
                 markers[i].attr("fill-opacity",0);
+                if(dotHasClass(markers[i].node,"over_hover"))dotRemoveClass(markers[i].node,"over_hover");
             }
         }
     },
