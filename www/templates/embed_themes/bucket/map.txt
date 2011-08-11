@@ -16,6 +16,7 @@
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/utils.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/dots.potting.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tipTip.minified.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/colorbrewer.js"></script>
         <script type="text/javascript">
             var _dotspotting = {literal}{{/literal}
                 'abs_root_url' : '{$cfg.abs_root_url}'

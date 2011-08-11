@@ -1,33 +1,29 @@
-var pot,params,marker_props;
+//define globals
+var pot,params,colors,bucketColumn,mdict,ds_tooltip;
 
-// style objects for dot layers
+// style objects for dot
 var over_style = {
 	'fill' : 'rgb(11,189,255)',
 	'fill-opacity' : 1,
-	'stroke' : 'rgb(11,189,255)',
-	'stroke-width' : 1,
-	'stroke-opacity':0
-};
-var under_style = {
-	'fill' : 'rgb(255,255,255)',
-	'fill-opacity' : .8,
-	'stroke' : 'rgb(207,207,207)',
-	'stroke-width' : 1
-};  
+	'stroke' : '#666666',
+	'stroke-width' : 2,
+	'stroke-opacity':.8
+}; 
 
-var colors,bucketColumn;
-   	
+// go on then	
 $(function() {
     try{
-        
+        mdict = {};
         colors = d3.scale.category10();
+        
+        // see colorbrewer.js for more info
+        //colors = d3.scale.ordinal().range(colorbrewer.Spectral[9]);
         
         $("#map").css("height","100%");
 
         var mm = com.modestmaps,
         ds_tooltip = null;
-        
-        marker_props = {};
+
 
         params = parseQueryString(location.search);
         if (!params.baseURL) params.baseURL = baseURL;
@@ -36,22 +32,13 @@ $(function() {
         if (!params.base)params.base = "acetate";
         
         if(params.bucket)bucketColumn = params.bucket;
-        
-        var pos = ($("#title").length > 0) ? $("#title").innerHeight() : 0;
-        $("#crime_types_wrapper").css("top",pos+"px");
-        
-        if (params.ui == "1") {
-            
-        }else{
-            
-        }
+
 
         pot = new Dots.Potting(params);
         pot.setTitle();
         pot.dotsLayer = new mm.DotMarkerLayer(pot.map);
         
-        params.ui = 1;
-        
+        params.ui = "1";
         if (params.ui == "1") {
             var typeSelector = new MenuSelector("#menu_types_wrapper","#menu_types", pot.dotsLayer);
             
@@ -65,6 +52,11 @@ $(function() {
             $("#menu_wrapper").remove();
         }
         
+        // adjust controls if title
+        if (params.title) {
+           $(".controls").css("top",($("#title").height()+20)+"px");
+        }
+        
 
         // map controls
         $(".zoom-in").click(function(e){
@@ -76,10 +68,6 @@ $(function() {
           pot.map.zoomOut(); 
         });
 
-        // adjust controls if title
-        if (params.title) {
-           $(".controls").css("top",($("#title").height()+20)+"px");
-        }
         
         function doCluster(){
             clusterMarkers(pot.dotsLayer.markers);
@@ -89,40 +77,34 @@ $(function() {
          
         pot.makeDot = function(feature) {
             normalizeFeature(feature);
-           var props = feature.properties,
-           bucket_type = getBucketType(props),
-           geom = (feature.geometry.type == 'GeometryCollection') ? feature.geometry.geometries : [ feature.geometry ];
-           
-           props.bucketType = bucket_type;
-           props.__active = true;
-           var coords = geom[0]['coordinates'];
-           var pid = "dot_"+props.id;
-           var more_front = {
+            var props = feature.properties,
+            bucket_type = getBucketType(props),
+            geom = (feature.geometry.type == 'GeometryCollection') ? feature.geometry.geometries : [ feature.geometry ];
+
+            props.bucketType = bucket_type;
+            props.__active = true;
+            var coords = geom[0]['coordinates'];
+            var pid = "dot_"+props.id;
+            var more_front = {
                style: over_style,
                id:pid,
                radius:8,
                dotClass:"dott",
                type:bucket_type,
                props:props
-           };
-           
+            };
 
-    	   var loc = new mm.Location(coords[1],coords[0]);
-    	   props.__dt_coords = loc;
 
-           var marker = more_front;
+            var loc = new mm.Location(coords[1],coords[0]);
+            props.__dt_coords = loc;
 
-   
-            // store props in key / value pairs
-           marker_props[String(pid)] = props;  
-           
-           
-           if (typeSelector) {
+            var marker = more_front;
+
+            if (typeSelector) {
                var label = typeSelector.addLabel(props);
-           }
-           
-  
-          return marker;
+            }
+
+            return marker;
         };
 
         //load markers and do things when done
@@ -138,6 +120,7 @@ $(function() {
                         if(c == markers[i].attrs['type']){
                             markers[i].attr("fill",co[c]);
                             markers[i].attr("fill-opacity",.8);
+                            if(!mdict[markers[i].attrs.id])mdict[markers[i].attrs.id] = markers[i];
                         }
                     }
                 }
@@ -145,6 +128,8 @@ $(function() {
                 
             }
             doCluster();
+            
+         
         });
         
         // create tooltip
@@ -189,6 +174,62 @@ function normalizeFeature(feature) {
         }
     }
 }
+
+function dotHasClass(element, $class) {
+    if(!element.className.baseVal)return false;
+    var pattern = new RegExp("(^| )" + $class + "( |$)");
+    return pattern.test(element.className.baseVal) ? true : false;
+};
+
+function dotAddClass(element, $class) {
+	if(!element)return;
+    var i,newClass;
+    //is the element array-like?
+    if(element.length) {
+        for (i = 0; i < element.length; i++) {
+
+            if (!this.dotHasClass(element[i], $class)) {
+				newClass = element[i].className.baseVal;
+                newClass += element[i].className.baseVal === "" ? 
+                $class : " "+$class;
+				element.setAttribute('class', newClass);
+            }
+        }
+    }
+    else { //not array-like
+        if (!this.dotHasClass(element, $class)) {
+			newClass = element.className.baseVal;
+            newClass += (element.className.baseVal === "") ? $class : " "+$class;
+			element.setAttribute('class', newClass);
+        }
+    }
+    return element;
+};
+
+function dotRemoveClass(element, $class) {
+	if(!element)return;
+
+    var pattern = new RegExp("(^| )" + $class + "( |$)");
+    var i,newClass;
+
+    //is element array-like?
+    if(element.length) {
+        for (i = 0; i < element.length; i++) {
+			newClass = element[i].className.baseVal;
+            newClass = newClass.replace(pattern, "$1");
+            newClass = newClass.replace(/ $/, "");  
+			element.setAttribute('class', newClass);          
+        }
+    }
+    else { //nope
+		newClass = element.className.baseVal;
+        newClass = newClass.replace(pattern, "$1");
+        newClass = newClass.replace(/ $/, ""); 
+		element.setAttribute('class', newClass); 
+    }
+    return element;
+};
+
 
 
 // borough
@@ -242,17 +283,28 @@ MenuSelector.prototype = {
     show_all:$("#ct_show_all"),
     hide_all:$("#ct_hide_all"),
 
-    
-    getSortKey: function(data) {
-        var indexes = {"violent": 1, "qol": 2, "property": 3};
-        //return [indexes[data.group] || 9, data.label || data.type].join(":");
-        return 1;
+
+    sortLabels: function(arr){
+        arr = arr.sort(function(a, b) {
+            return (b > a) ? -1 : (b < a) ? 1 : 0;
+        });
+        var len = arr.length;
+        for(i=0;i<len;i++){
+            var yPos = 10 + (i * 25);
+            this.buttonSets[arr[i]][0].attr("cy",yPos);
+            this.buttonSets[arr[i]][1].attr("y",yPos);
+            this.buttonSets[arr[i]][2].attr("y",yPos - 10);
+        }
     },
     selectorComplete: function(){
+        var s = [];
         for(set in this.buttonSets){
             
+            // resize menu buttons
             this.buttonSets[set][2].attr("width",this.menuWidth);
-            var ts = set + ": "+ this.labelCounts[set];
+            
+            // set tips for selection menu buttons
+            var ts = " " + this.labelCounts[set] + " ";
             $(this.buttonSets[set][2].node).tipTip({
         	    maxWidth: "auto", 
         	    edgeOffset: 0,
@@ -263,8 +315,11 @@ MenuSelector.prototype = {
         	    enter:function(){},
                 exit:function(){}
         	});
+        	
+        	s.push(set);
        
         }
+        this.sortLabels(s);
     },
     
     addLabel: function(data) {
@@ -273,7 +328,6 @@ MenuSelector.prototype = {
         if (this.labelsByType[type]) {
             var label = this.labelsByType[type];
             this.labelCounts[type]++;
-            //label.data("count", label.data("count") + 1);
             return label;
         }
         var pos = this.buttonLength;
@@ -286,7 +340,9 @@ MenuSelector.prototype = {
         label.attr({
             "fill":clr,
             "fill-opacity":.8,
-            "stroke-width":0
+            'stroke' : '#666666',
+        	'stroke-width' : 2,
+        	'stroke-opacity':.8
             });
         label.node.id = "c_"+type;
         txt.node.id = "t_"+type;
@@ -412,63 +468,8 @@ MenuSelector.prototype = {
     
 };
 
-
-function dotHasClass(element, $class) {
-    if(!element.className.baseVal)return false;
-    var pattern = new RegExp("(^| )" + $class + "( |$)");
-    return pattern.test(element.className.baseVal) ? true : false;
-};
-
-function dotAddClass(element, $class) {
-	if(!element)return;
-    var i,newClass;
-    //is the element array-like?
-    if(element.length) {
-        for (i = 0; i < element.length; i++) {
-
-            if (!this.dotHasClass(element[i], $class)) {
-				newClass = element[i].className.baseVal;
-                newClass += element[i].className.baseVal === "" ? 
-                $class : " "+$class;
-				element.setAttribute('class', newClass);
-            }
-        }
-    }
-    else { //not array-like
-        if (!this.dotHasClass(element, $class)) {
-			newClass = element.className.baseVal;
-            newClass += (element.className.baseVal === "") ? $class : " "+$class;
-			element.setAttribute('class', newClass);
-        }
-    }
-    return element;
-};
-
-function dotRemoveClass(element, $class) {
-	if(!element)return;
-
-    var pattern = new RegExp("(^| )" + $class + "( |$)");
-    var i,newClass;
-
-    //is element array-like?
-    if(element.length) {
-        for (i = 0; i < element.length; i++) {
-			newClass = element[i].className.baseVal;
-            newClass = newClass.replace(pattern, "$1");
-            newClass = newClass.replace(/ $/, "");  
-			element.setAttribute('class', newClass);          
-        }
-    }
-    else { //nope
-		newClass = element.className.baseVal;
-        newClass = newClass.replace(pattern, "$1");
-        newClass = newClass.replace(/ $/, ""); 
-		element.setAttribute('class', newClass); 
-    }
-    return element;
-};
-
-
+//////////////////////////
+/////////////////////////
 
 function DotToolTip(selector) {
     if(!pot){
@@ -525,17 +526,20 @@ DotToolTip.prototype = {
         $(this.listenFrom).live("mouseover mouseout", function(event) {
             event.preventDefault();
             if ( event.type == "mouseover" ) {
-                var id = $(this).attr('id');
+                
+                var id = String($(this).attr('id'));
                 if(!id)return;
-                if(!marker_props[String(id)])return;
-                if(!marker_props[String(id)]['__active'])return;
+                if(!mdict[id])return;
+                if(!mdict[id].attrs.props['__active'])return;
+               
+                mdict[id].attrs.props["__dt_coords"] = mdict[id].coord;
                 /// proceed
                 that.currentDot = this;
-                that.currentProp = marker_props[String(id)];
+                that.currentProp = mdict[id].attrs.props;
                 this.parentNode.appendChild(this);
                 that.showTip();
             } else {
-                that.dotRemoveClass(that.currentDot,"over_hover");
+                dotRemoveClass(that.currentDot,"over_hover");
                 that.hideTip();
             }
             return false;
@@ -584,11 +588,12 @@ DotToolTip.prototype = {
             this.tt_desc.css("display","none");
         }
 
-        this.dotAddClass(this.currentDot,"over_hover");
+        dotAddClass(this.currentDot,"over_hover");
         this.initialTipPosition();
     },
     
     initialTipPosition: function(){
+        
         this.tt.css("left","-9999px")
         this.tt.css("width","auto");
         var _w = (this.tt.width() < this.TT_WIDTH) ? this.tt.width() : this.TT_WIDTH;
@@ -596,9 +601,7 @@ DotToolTip.prototype = {
         this.tt.css("width",_w+"px");
         this.tt.width(_w);
         //
-
-
-        var _point = this.map.locationPoint(this.currentProp.__dt_coords);
+        var _point = this.map.coordinatePoint(this.currentProp.__dt_coords);
         var _h = this.tt.height();
         var _radius = this.currentDot.getAttribute('r');
         var _x = parseFloat(_point.x - 10);
@@ -625,60 +628,6 @@ DotToolTip.prototype = {
         this.cont_offset = this.container.offset();
         this.cont_width = this.container.width();
         this.cont_height = this.container.height();
-    },
-    
-    dotHasClass: function(element, $class) {
-        var pattern = new RegExp("(^| )" + $class + "( |$)");
-        return pattern.test(element.className.baseVal) ? true : false;
-    },
-
-    dotAddClass: function(element, $class) {
-    	if(!element)return;
-        var i,newClass;
-        //is the element array-like?
-        if(element.length) {
-            for (i = 0; i < element.length; i++) {
-
-                if (!this.dotHasClass(element[i], $class)) {
-    				newClass = element[i].className.baseVal;
-                    newClass += element[i].className.baseVal === "" ? 
-                    $class : " "+$class;
-    				element.setAttribute('class', newClass);
-                }
-            }
-        }
-        else { //not array-like
-            if (!this.dotHasClass(element, $class)) {
-    			newClass = element.className.baseVal;
-                newClass += (element.className.baseVal === "") ? $class : " "+$class;
-    			element.setAttribute('class', newClass);
-            }
-        }
-        return element;
-    },
-
-    dotRemoveClass: function(element, $class) {
-    	if(!element)return;
-
-        var pattern = new RegExp("(^| )" + $class + "( |$)");
-        var i,newClass;
-
-        //is element array-like?
-        if(element.length) {
-            for (i = 0; i < element.length; i++) {
-    			newClass = element[i].className.baseVal;
-                newClass = newClass.replace(pattern, "$1");
-                newClass = newClass.replace(/ $/, "");  
-    			element.setAttribute('class', newClass);          
-            }
-        }
-        else { //nope
-    		newClass = element.className.baseVal;
-            newClass = newClass.replace(pattern, "$1");
-            newClass = newClass.replace(/ $/, ""); 
-    		element.setAttribute('class', newClass); 
-        }
-        return element;
     },
     
     unselectAllDots: function(){
