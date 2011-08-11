@@ -263,6 +263,8 @@ li.altrow{
         font-size:16px;
         padding-bottom:2px;
     }
+    #tiptip_arrow_inner{border-left-color:#356A94 !important;}
     #tiptip_content{
         line-height:16px;
+        background:#356A94 !important;
     }

@@ -318,6 +318,7 @@ MenuSelector.prototype = {
     },
     selectorComplete: function(){
         var s = [];
+        var that = this;
         for(set in this.buttonSets){
             
             // resize menu buttons
@@ -339,6 +340,16 @@ MenuSelector.prototype = {
         	s.push(set);
        
         }
+        
+        
+        $(this.container).mouseleave(function(){
+            console.log("FOCUS");
+            if (that.unAllReal.timeout) clearTimeout(that.unAllReal.timeout);
+            that.unAll(10);
+           // this.unAllReal();
+        });
+
+        
         this.sortLabels(s);
     },
     
@@ -398,6 +409,7 @@ MenuSelector.prototype = {
             that.labelStates[id] = state;
         }
         btn.node.onmouseover = function(e){
+            
             var id = $(this).attr("id");
             id = id.slice(2);
             btn.attr("fill-opacity",.3);
@@ -408,9 +420,10 @@ MenuSelector.prototype = {
             id = id.slice(2);
             btn.attr("fill-opacity",0);
             //if(that.labelStates[id])that.unhighlightMarkers(id);
-            that.unAll();
+            that.unAll(800);
            
         }
+        
 
         this.labelsByType[type] = label;
         this.buttonSets[type] = [label,txt,btn];
@@ -520,15 +533,19 @@ MenuSelector.prototype = {
                }
            }
        },
-       unAll: function(){
+       unAll: function(ms){
+           if(!ms)ms = 400;
            var that = this;
            if (this.unAllReal.timeout) clearTimeout(this.unAllReal.timeout);
            this.unAllReal.timeout = setTimeout(function() {
                that.unAllReal.apply(that);
-           }, 1000);
+           }, ms);
        },
        animate: function(elm,val,t){
            elm.animate({"opacity":val},t);
+       },
+       stageCheck: function(){
+           
        },
     
     
