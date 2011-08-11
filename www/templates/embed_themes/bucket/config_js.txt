@@ -6,6 +6,13 @@
    
     var $more = [
         {
+            'label': 'Bucket Column:',
+            'type': 'select',
+            'id': 'bucket',
+            'default': '',
+            'helper': 'Column to be used to bucket data'
+        },
+        {
             'label': 'Tooltip Title:',
             'type': 'select',
             'id': 'tt',
@@ -23,7 +30,7 @@
     
     
     // create the config object
-    ds_config = new Dots.Config($more,"default","toner");
+    ds_config = new Dots.Config($more,"bucket","acetate");
     
     // register events before calling the loadSheet method...
     ds_config.on("json_loading_begin",function(){
@@ -47,9 +54,11 @@
         if(!_fields)return;
         $("#config_opt_tm").append('<option value=""></option>');
         $("#config_opt_tt").append('<option value=""></option>');
+        $("#config_opt_bucket").append('<option value=""></option>');
         for(f in _fields){
             $("#config_opt_tm").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
             $("#config_opt_tt").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
+            $("#config_opt_bucket").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
         }
     }
 

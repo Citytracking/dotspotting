@@ -33,8 +33,21 @@ The crime date and time, with no formatting in
 particular. These values are listed underneath
 the description in a slightly darker color.</li>
 </ul>
+<h3>Custom Icons:</h3>
+<p>The crime theme has basic support for allowing custom crime type icons.</p>
+
+<h4>Two ways to get them to show up:</h4>
+<ol style="padding-left:1.8em;">
+<li>Add a "custom_icon" column to your spreadsheet and enter the URL or the FILE_NAME to the custom icon there. If you just specify the FILE_NAME, you will need to use the "iconbase" query string parameter.  The value of this would be the base directory URL to the location of the icons. Trailing slash needed for now.</li>
+<li>If your icons are all named exactly like the crime types, you can just use the "iconbase" query string parameter and not create a custom_icon column.</li>
+</ol>
+<h4>Some caveats:</h4>
+<p><small>If the icon fails to load, the default icons will be used.</small></p>
+<p><small>Icons should be 26x26 png|jpg|gif files.</small></p>
+</ul>
+
+
 </div>
 
-{*
-*}
+{* I'm a comment :-) *}
 

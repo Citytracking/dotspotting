@@ -302,8 +302,9 @@ MenuSelector.prototype = {
     wrapper:null,
     show_all:$("#ct_show_all"),
     hide_all:$("#ct_hide_all"),
+    init:false,
 
-
+    // sort labels function
     sortLabels: function(arr){
         arr = arr.sort(function(a, b) {
             return (b > a) ? -1 : (b < a) ? 1 : 0;
@@ -316,15 +317,23 @@ MenuSelector.prototype = {
             this.buttonSets[arr[i]][2].attr("y",yPos - 10);
         }
     },
+    
+    // onComplete function
     selectorComplete: function(){
+        if(this.init)return;
+        this.init = true;
+        
+        // temporary array for sorting
         var s = [];
+        // context
         var that = this;
+        
+        // adjust size of buttons to canvas size
+        // set tooltips for buttons
         for(set in this.buttonSets){
-            
-            // resize menu buttons
+            // resize
             this.buttonSets[set][2].attr("width",this.menuWidth);
-            
-            // set tips for selection menu buttons
+            // set tips
             var ts = " " + this.labelCounts[set] + " ";
             $(this.buttonSets[set][2].node).tipTip({
         	    maxWidth: "auto", 
@@ -336,38 +345,43 @@ MenuSelector.prototype = {
         	    enter:function(){},
                 exit:function(){}
         	});
-        	
+            
+            // store label in temp array
         	s.push(set);
-       
         }
         
+        // sort labels by name
+        this.sortLabels(s);
         
+        // show all dots after mouse leaves container
         $(this.container).mouseleave(function(){
-            console.log("FOCUS");
             if (that.unAllReal.timeout) clearTimeout(that.unAllReal.timeout);
             that.unAll(10);
-           // this.unAllReal();
         });
 
-        
-        this.sortLabels(s);
     },
     
+    // adds button elements
+    // todo: create custom method to wrap the three button elements
     addLabel: function(data) {
         var type = data.bucketType;
+        var that = this;
         
+        // check for label
         if (this.labelsByType[type]) {
             var label = this.labelsByType[type];
             this.labelCounts[type]++;
             return label;
         }
+        
+        // create label
         var pos = this.buttonLength;
-        var yPos = 10 + (pos * 25);
-        var label = this.canvas.circle(10, yPos, 8);
-        var txt = this.canvas.text(30, yPos, type);
+        var yPos = 10 + (pos * 25);    
         var clr = colors(pos);
-        var _id = "c_"+type;
         this.colorScheme[type] = clr;
+        
+        // draw circle
+        var label = this.canvas.circle(10, yPos, 8);
         label.attr({
             "fill":clr,
             "fill-opacity":1,
@@ -376,6 +390,9 @@ MenuSelector.prototype = {
         	'stroke-opacity':1
             });
         label.node.id = "c_"+type;
+        
+        // make text
+        var txt = this.canvas.text(30, yPos, type);
         txt.node.id = "t_"+type;
         txt.attr({
             "font-size":12,
@@ -383,6 +400,7 @@ MenuSelector.prototype = {
             "text-anchor":"start"
         });
         
+        // make button area
         var btn = this.canvas.rect(2,yPos - 10,190,20);
         btn.node.id = "b_"+type;
         btn.attr({
@@ -391,7 +409,8 @@ MenuSelector.prototype = {
             "fill-opacity":0,
             "stroke-width":0
         });
-        var that = this;
+        
+        // events
         btn.node.onclick = function(e){
             var id = $(this).attr("id");
             id = id.slice(2);
@@ -424,17 +443,20 @@ MenuSelector.prototype = {
            
         }
         
-
+        // housekeeping
         this.labelsByType[type] = label;
         this.buttonSets[type] = [label,txt,btn];
         this.labelStates[type] = true;
         this.labelCounts[type] = 1;
         this.buttonLength ++;
         
+        // adjust menu container
+        // todo: check for container height
         this.menuWidth = Math.max(this.menuWidth,(txt.node.clientWidth+50));
         this.menuHeight = Math.max(this.menuHeight,yPos+20);
-
         this.canvas.setSize(this.menuWidth,this.menuHeight);
+        
+        // returns the dot
         return label;
         
     },

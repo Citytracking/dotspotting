@@ -1,4 +1,4 @@
-{assign var="page_title" value="Default Theme"}
+{assign var="page_title" value="$chosen_theme Theme"}
 {capture assign="extra_head"}
 <link rel="stylesheet" href="{$cfg.abs_root_url}css/embed.css">
 <script type="text/javascript">
@@ -26,6 +26,7 @@ var incoming_sheet = '{$recent_sheet_url}';
                 <option value="default">Default</option>
                 <option value="photo">Photo</option>
                 <option value="crime">Crime</option>
+                <option value="bucket">Bucket</option>
             </select> 
        
             </div>
