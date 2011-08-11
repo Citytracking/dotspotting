@@ -1,19 +1,28 @@
 //define globals
-var pot,params,colors,bucketColumn,mdict,ds_tooltip;
+var pot,params,colors,bucketColumn,mdict,ds_tooltip,backdict;
 
 // style objects for dot
 var over_style = {
 	'fill' : 'rgb(11,189,255)',
 	'fill-opacity' : 1,
 	'stroke' : '#666666',
-	'stroke-width' : 2,
-	'stroke-opacity':.8
+	'stroke-width' : 1,
+	'stroke-opacity':0
 }; 
+
+var under_style = {
+	'fill' : 'rgb(33,33,33)',
+	'fill-opacity' : .8,
+	'stroke' : 'rgb(66,66,66)',
+	'stroke-width' : 1
+};  	
+
 
 // go on then	
 $(function() {
     try{
         mdict = {};
+        backdict = {};
         colors = d3.scale.category10();
         
         // see colorbrewer.js for more info
@@ -70,8 +79,8 @@ $(function() {
 
         
         function doCluster(){
-            clusterMarkers(pot.dotsLayer.markers);
-            pot.map.setZoom(pot.map.getZoom());
+            //clusterMarkers(pot.dotsLayer.markers);
+            //pot.map.setZoom(pot.map.getZoom());
         }
 
          
@@ -88,17 +97,28 @@ $(function() {
             var more_front = {
                style: over_style,
                id:pid,
-               radius:8,
+               radius:6,
                dotClass:"dott",
                type:bucket_type,
                props:props
             };
+            
+            var more_back = {
+                   style: under_style,
+                   radius:12
+               };
 
 
             var loc = new mm.Location(coords[1],coords[0]);
             props.__dt_coords = loc;
 
             var marker = more_front;
+            
+            // Dots.Potting class only takes one marker, 
+               // will manually add this one, for now, until I write a Kirby Dot markerLayer
+               var c = pot.dotsLayer.addMarker(more_back,loc);
+               c.toBack();
+               backdict[pid] = c;
 
             if (typeSelector) {
                var label = typeSelector.addLabel(props);
@@ -119,7 +139,7 @@ $(function() {
                     for(i=0;i<len;i++){
                         if(c == markers[i].attrs['type']){
                             markers[i].attr("fill",co[c]);
-                            markers[i].attr("fill-opacity",.8);
+                            //markers[i].attr("fill-opacity",1);
                             if(!mdict[markers[i].attrs.id])mdict[markers[i].attrs.id] = markers[i];
                         }
                     }
@@ -339,10 +359,10 @@ MenuSelector.prototype = {
         this.colorScheme[type] = clr;
         label.attr({
             "fill":clr,
-            "fill-opacity":.8,
+            "fill-opacity":1,
             'stroke' : '#666666',
-        	'stroke-width' : 2,
-        	'stroke-opacity':.8
+        	'stroke-width' : 1,
+        	'stroke-opacity':1
             });
         label.node.id = "c_"+type;
         txt.node.id = "t_"+type;
@@ -387,7 +407,8 @@ MenuSelector.prototype = {
             var id = $(this).attr("id");
             id = id.slice(2);
             btn.attr("fill-opacity",0);
-            if(that.labelStates[id])that.unhighlightMarkers(id);
+            //if(that.labelStates[id])that.unhighlightMarkers(id);
+            that.unAll();
            
         }
 
@@ -419,26 +440,40 @@ MenuSelector.prototype = {
         for(i=0;i<set.length-1;i++){
             set[i].attr("opacity",1);
         }
-    },
-    
-    
+    },    
  
     highlightMarkers: function(t){
+        if (this.unAllReal.timeout) clearTimeout(this.unAllReal.timeout);
         var markers = this.layer.markers,
         len = markers.length;
         for(i=0;i<len;i++){
-            if(t == markers[i].attrs['type']){
-                if(!dotHasClass(markers[i].node,"over_hover"))dotAddClass(markers[i].node,"over_hover");
-                markers[i].toFront();
+            if(markers[i].attrs.id){
+                if(t == markers[i].attrs['type']){
+                    //if(!dotHasClass(markers[i].node,"over_hover"))dotAddClass(markers[i].node,"over_hover");
+                    markers[i].toFront();
+                    backdict[markers[i].attrs.id].attr("opacity",1);
+                    markers[i].attr("opacity",1);
+                }else{
+                    if( markers[i].attrs['props']['__active']){
+                        backdict[markers[i].attrs.id].attr("opacity",.2);
+                        markers[i].attr("opacity",0);
+                    }
+                }
             }
+
         }
     },
     unhighlightMarkers: function(t){
         var markers = this.layer.markers,
         len = markers.length;
         for(i=0;i<len;i++){
-            if(t == markers[i].attrs['type']){
-                dotRemoveClass(markers[i].node,"over_hover");
+            if(markers[i].attrs.id){
+                if(t == markers[i].attrs['type']){
+                    //dotRemoveClass(markers[i].node,"over_hover");
+                }else{
+                    //backdict[markers[i].attrs.id].attr("opacity",1);
+                    //markers[i].attr("opacity",1);
+                }
             }
         }
     },
@@ -446,10 +481,13 @@ MenuSelector.prototype = {
         var markers = this.layer.markers,
         len = markers.length;
         for(i=0;i<len;i++){
-            if(t == markers[i].attrs['type']){
-                markers[i].attrs['props']['__active'] = false;
-                markers[i].attr("fill-opacity",0);
-                if(dotHasClass(markers[i].node,"over_hover"))dotRemoveClass(markers[i].node,"over_hover");
+            if(markers[i].attrs.id){
+                if(t == markers[i].attrs['type']){
+                    markers[i].attrs['props']['__active'] = false;
+                    markers[i].attr("fill-opacity",0);
+                    backdict[markers[i].attrs.id].attr("opacity",0);
+                    //if(dotHasClass(markers[i].node,"over_hover"))dotRemoveClass(markers[i].node,"over_hover");
+                }
             }
         }
     },
@@ -457,13 +495,41 @@ MenuSelector.prototype = {
         var markers = this.layer.markers,
         len = markers.length;
         for(i=0;i<len;i++){
-
-            if(t == markers[i].attrs['type']){
-                markers[i].attrs['props']['__active'] = true;
-                markers[i].attr("fill-opacity",1);
+            if(markers[i].attrs.id){
+                if(t == markers[i].attrs['type']){
+                    markers[i].attrs['props']['__active'] = true;
+                    markers[i].attr("fill-opacity",1);
+                    backdict[markers[i].attrs.id].attr("opacity",1);
+                }
             }
         }
     },
+    /// delay for unhighlighting markers ???
+    unAllReal: function(){
+           var markers = this.layer.markers,
+           len = markers.length;
+           for(i=0;i<len;i++){
+               if(markers[i].attrs.id){
+                  if( markers[i].attrs['props']['__active']){
+                      //backdict[markers[i].attrs.id].attr("opacity",1);
+                      //markers[i].attr("opacity",1);
+                      this.animate(backdict[markers[i].attrs.id],1,200);
+                      this.animate(markers[i],1,200);
+                  }
+
+               }
+           }
+       },
+       unAll: function(){
+           var that = this;
+           if (this.unAllReal.timeout) clearTimeout(this.unAllReal.timeout);
+           this.unAllReal.timeout = setTimeout(function() {
+               that.unAllReal.apply(that);
+           }, 1000);
+       },
+       animate: function(elm,val,t){
+           elm.animate({"opacity":val},t);
+       },
     
     
 };

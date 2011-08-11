@@ -3,12 +3,14 @@ if (typeof console == "undefined") console = {};
 if (typeof console.log == "undefined") console.log = function() {};
 
 function defer(fn, ms, context) {
+    
     if (!ms) ms = 10;
     return function() {
         var args = arguments, that = context || this;
         if (fn.timeout) clearTimeout(fn.timeout);
         return fn.timeout = setTimeout(function() {
             if (typeof fn === "function") {
+                
                 fn.apply(that, args);
             }
         }, ms);

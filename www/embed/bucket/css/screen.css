@@ -1,4 +1,3 @@
-
 html, body {
     margin: 0;
     padding: 0;
@@ -104,7 +103,8 @@ h1 a {
 /* MARKER STYLES */
 .dot{fill:rgb(11,189,255);fill-opacity:1;cursor:pointer;z-index:100;}
 .under{fill:rgb(255,255,255);fill-opacity:.9;stroke:#ccc;stroke-opacity:1;cursor:pointer;z-index:200;}
-.over_hover{fill-opacity:.7 !important;stroke:rgb(50,50,50) !important;stroke-width:4 !important;stroke-opacity:1 !important;cursor:pointer;}
+/*.over_hover{fill-opacity:.7 !important;stroke:rgb(50,50,50) !important;stroke-width:4 !important;stroke-opacity:1 !important;cursor:pointer;}*/
+.over_hover{fill-opacity:1 !important;stroke:rgb(255,255,255) !important;stroke-width:4 !important;stroke-opacity:1 !important;cursor:pointer;}
 .under_hover{}
 
 .dot .desc {
