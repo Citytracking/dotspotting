@@ -1,4 +1,4 @@
-{* beginnings of a page specific js handler / included into footer *}
+{* beginnings of a page specific js handling / included into footer *}
 
 
 
@@ -18,7 +18,20 @@
 			    $(this).css("border-color","#000");
 			  }
 		);
+		
+		if($("#upload-is-easy")){
+    		$("#upload-is-easy").click(function(){
+    		    location.href = "{/literal}{$cfg.abs_root_url}{literal}upload";
+    		});
+		
+    		$("#upload-is-easy").hover(
+              function () { $("#home_meezy li a").css("color","black");$(this).css("cursor","pointer");  }, 
+              function () { $("#home_meezy li a").css("color","")}
+            );
+        }
 	});
+	
+
 	</script>
 	{/literal}
 

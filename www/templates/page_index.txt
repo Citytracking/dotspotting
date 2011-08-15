@@ -8,7 +8,7 @@
 {else}
 	<div id="home_meezy">
 	<h3>Dotspotting is easy:</h3>
-	<ul class="clearfix">
+	<ul class="clearfix" id="upload-is-easy">
 		<li class="first_meezy"><span>Upload your dots</span></li>
 		<li class="second_meezy"><span>Make a map</span></li>
 		<li class="third_meezy"><span>Export and share</span></li>
