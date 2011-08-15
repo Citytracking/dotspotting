@@ -102,10 +102,10 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 
 /* recent thumbnails section */
 #home_recents{overflow:hidden !important;}
-#home_recents div.thumbnail_head{margin:20px 0 5px;}
+#home_recents div.thumbnail_head{margin:20px 0 0;}
 #home_recents div.thumbnail_head a:hover{text-shadow:0px 1px 1px #9c9c9c;}
-#home_recents div.thumbnail_head a{padding-top:4px;margin-right:10px;}
-#home_recents h5{}
+#home_recents div.thumbnail_head a{padding-top:0;margin-right:10px;line-height:18px;}
+#home_recents h5{margin-top:-5px;}
 #home_recents .recent_thumbnails{margin:0 11px 0 0;float:left;width:235px;height:220px;}
 #home_recents dl.last_thumb{margin:0;}
 #home_recents .recent_thumbnails dt{height:156px;border:1px solid #000;overflow:hidden;}

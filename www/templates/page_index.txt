@@ -22,7 +22,7 @@
 {* start thumbnail section *}
 <div id="home_recents">
 	{if $recent_sheets|@count}
-		<div class="thumbnail_head clearfix"><h5 class="left">Recent sheets:</h5><!--<a href="{$cfg.abs_root_url}recent/sheets" class="right txt_small">see more</a>--></div>
+		<div class="thumbnail_head clearfix"><h5 class="left">Recent sheets:</h5><a href="{$cfg.abs_root_url}recent/sheets" class="right txt_small blue_links">see more</a></div>
 		{foreach from=$recent_sheets item=sh name=thumbs}
 			{if $smarty.foreach.thumbs.index < 60}
 			     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.iteration % 4 == 0} last_thumb{/if}">
