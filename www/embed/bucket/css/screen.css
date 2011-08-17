@@ -1,0 +1,270 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, clean, sans-serif;
+    font-size: 15px;
+    line-height: 20px;
+
+    background: #fff;
+    color: #000;
+}
+
+a:link,
+a:hover,
+a:visited{
+    color:inherit;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background-color: #ccc;
+}
+
+#copyright {
+    margin: 0;
+    font-size: 10px;
+    line-height: 14px;
+    z-index: 2001;
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    color: #999;
+}
+
+#output {
+    z-index: 2000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    color: #fff;
+    background: #000;
+}
+
+#output p { padding: 5px; margin: 0; }
+#output .error {
+    color: #fff;
+    background: #c33;
+}
+
+h1 {
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: normal;
+    margin: 0;
+    padding: 5px;
+}
+
+h1 a {
+    text-decoration: none;
+}
+
+/*MAP CONTROLS*/
+.controls {
+	position: absolute;
+	z-index: 1000;
+	top: 10px;
+	left: 10px;
+}
+
+	.controls a {
+		display: block;
+		text-decoration: none;
+		font-weight: bold;
+		background: transparent;
+		color: #fff;
+		padding: 2px;
+		line-height: 0;
+		cursor:pointer;
+	}
+	.controls a:hover{
+		opacity:.7;
+	}
+
+	.controls a img {
+		border: 0 !important;
+		vertical-align: middle;
+	}
+
+	.controls label {
+		color: #666;
+		display: none;
+	}
+	
+/* MARKER STYLES */
+.dot{fill:rgb(11,189,255);fill-opacity:1;cursor:pointer;z-index:100;}
+.under{fill:rgb(255,255,255);fill-opacity:.9;stroke:#ccc;stroke-opacity:1;cursor:pointer;z-index:200;}
+/*.over_hover{fill-opacity:.7 !important;stroke:rgb(50,50,50) !important;stroke-width:4 !important;stroke-opacity:1 !important;cursor:pointer;}*/
+.over_hover{fill-opacity:1 !important;stroke:rgb(255,255,255) !important;stroke-width:4 !important;stroke-opacity:1 !important;cursor:pointer;}
+.under_hover{}
+
+.dot .desc {
+    display: none;
+}
+
+/* TOOL TIP */
+#mm_tip{
+    position: absolute;
+    z-index: 2999;
+    background: #000;
+    color: #fff;
+    width: 300px;
+    display: none;
+    text-align: center;
+    margin-left: 0;
+    padding:0;
+    
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 0 2px #333;
+    -webkit-box-shadow: 0 0 2px #333;
+    box-shadow: 0 0 2px #333;
+}
+
+#mm_tip #mm_tip_title{text-align: left;margin:0;font-weight:600;padding:10px 10px 10px;font-size:16px;}
+
+#mm_tip #mm_tip_desc {
+    margin: 0;
+    padding: 0 10px 10px;
+    text-align: left;
+    font-size:12px;
+    font-weight:200;
+    line-height:16px;
+}
+
+
+#mm_tip #mm_tip_nub{
+    border-bottom: 0;
+    height: 0;
+    width: 0;
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid black;
+    left: 30%;
+    bottom: -10px;
+}
+
+/**/
+#menu_wrapper{
+    position:absolute;
+    top: 0;
+    right: 0;
+    background: #DCE8EF;
+    background: rgba(220,232,239,.8);
+    width: auto;
+    height: auto;
+    z-index: 2001;
+    padding:0 5px 5px;
+}
+    #menu_wrapper h5{
+        font-size: 12px;
+        text-transform:uppercase;
+        color:#000;
+        margin:0;
+        padding:5px 0 0;
+        text-align:left;
+        position:relative;
+        border-bottom: 1px solid #ccc;
+    }
+    #menu_wrapper h5 span{
+        text-transform:none;
+        position:absolute;
+        right:10px;
+        top:5px;
+        font-size: 10px;
+    }
+    #menu_wrapper h5 span a{
+        color:#356A94;
+        text-decoration:none;
+    }
+    #menu_wrapper h5 span a:hover{
+        text-decoration:underline;
+    }
+li.altrow{
+    background:#DBDFE3;
+    background:rgba(100,100,100,.1);
+}
+#menu_types {
+    position: relative;
+    list-style: none;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 10px 0 0;
+    padding: 0;
+}
+    
+
+    #menu_types li {
+        cursor: pointer;
+        list-style: none;
+        display: block;
+        margin: 0;
+        padding: 5px;
+        padding-right: 8px;
+        height: 26px;
+        line-height: 26px;
+        clear: both;
+    }
+
+    #menu_types li .title {
+        font-size: 11px;
+    }
+
+    #menu_types .group {
+        position: relative !important;
+        top: 0;
+        left: 0;
+        margin: 0 4px 0 0;
+        display: block;
+        float: left;
+    }
+
+    #menu_types li:hover .title {
+        text-decoration: underline;
+    }
+
+    #menu_types li.off .title {
+        /* color: #ccc; */
+    }
+
+    #menu_types li.off .group {
+        opacity: .2;
+        -moz-opacity: .2;
+        -khtml-opacity: .2; 
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=20)";  
+        filter: alpha(opacity=20);
+        /*background-image: url(../images/icons/faded.png) !important;*/
+    }
+    
+    /* The UGH! using 2 different tooltips for now until I merge them into super tooltip */
+
+    /* tooltip for menu type selector */
+    #tiptip_holder{top:10px !important;}
+    #tiptip_holder.classtype_tip #tip_content{background:#fff;color:#000;}
+
+    #tiptip_holder.classtype_tip #tiptip_arrow_inner {
+        border-left-color: #fff;
+        border-left-color: rgba(255, 255, 255, 0.92);
+    }
+    #tiptip_content span{
+        display:block;
+        font-size:16px;
+        padding-bottom:2px;
+    }
+    #tiptip_arrow_inner{border-left-color:#356A94 !important;}
+    #tiptip_content{
+        line-height:16px;
+        background:#356A94 !important;
+    }

@@ -2,7 +2,6 @@
 {assign var="sheets_view_style" value="grid"}
 {include file="inc_head.txt"}
 
-
 {* sheet title area *}
 <ul id="sheet_head" class="clearfix">
 	<li>
@@ -20,7 +19,10 @@
 {if $sheets_view_style == "map"}
 {include file="inc_sheets_list.txt" sheets=$recent_sheets}
 {else}
+{include file="inc_pagination.txt"}
 {include file="inc_recent_sheets_grid.txt" sheets=$recent_sheets}
 {/if}
+
+{include file="inc_pagination.txt"}
 
 {include file="inc_foot.txt"}

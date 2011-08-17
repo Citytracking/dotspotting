@@ -1,0 +1,523 @@
+{assign var="page_title" value="Bucket Theme"}
+{capture assign="extra_head"}
+<link rel="stylesheet" href="{$cfg.abs_root_url}css/embed.css">
+{/capture}
+
+{include file="inc_head.txt"}
+
+
+{* title *}
+
+<div id="section_about" class="section_bunch_o_text">
+
+    <div class="theme" id="default">
+    
+    
+       <!-- include in description file -->
+        <h2>Bucket Theme</h2>
+        <p>This is a general use theme to display your dots outside the dotspotting garden.</p>
+        <p>To get started enter the URL to a Dotspotting sheet below.</p>
+        <p>You can then customize the map a bit, by using the fields under 'Options'.</p> 
+        <p>Click the 'Update embed code' button, to apply changes.</p>
+        <p>Once everything is to your liking, copy the embed code and paste it into your web page.</p>
+        <p><i>Gifted users can skip down to 'Instructions'.</i></p>
+        
+        
+        
+        
+        <!-- base config -->
+        <h4 id="example_title"></h4>
+        <div class="example">
+            
+            <div id="configure">
+                <h5>Enter a <a href="{$cfg.abs_root_url}recent/sheets">sheet URL</a>:</h5>
+                <p> 
+                    <input id="config_url" value="{$recent_sheet_url}" style="width:300px;"/>
+                </p>
+                <p id="config_url_error" class="error"></p>
+                <p><input id="startConfig" type="button" value="Generate embed code"/></p>
+                
+           
+                <div id="options_panel">
+                    <h5>Options:</h5>
+                    <p>
+                        <span class="label">Tile provider:</span>
+                        <select id="config_provider">
+                            <option value="">Toner</option>
+                            <option value="acetate">Acetate</option>
+                            <option value="pale_dawn">Pale Dawn</option>
+                            <option value="mapquest">MapQuest</option>
+                            <option value="bing">Bing</option>
+                        </select>
+                        <span class="default">Default: Toner</span>
+                    </p>
+                    
+                    <p id="tileapi">
+                        <span class="label">API Key:</span>
+                        <input id="config_api" value=""/>
+                    </p>
+                    
+                    <hr/>
+
+                    <p>
+                        <span class="label">Title:</span>
+                        <input id="config_title" value="" style="width:300px;"/>
+                    </p>
+                
+                    <p>
+                        <span class="label">Coordinates:</span>
+                        <input id="config_coords" value="" style="width:200px;"/>
+                    </p>
+                
+                     <hr/>
+                     
+                     <p>
+                        <span class="label">Set map dimensions:</span><input id="config_width" value="400" style="width:3em;"/>
+                        <span style="font-size:12px;padding:0 3px 0 2px;"> x </span>
+                        <input id="config_height" value="400" style="width:3em;"/>
+                    </p>
+                     <a href="#" id="previewConfig">Preview map dimensions</a>
+
+                     <hr/>
+                 
+                    <p>
+                        <span class="label">Tooltip Title:</span>
+                        <select id="config_tt"></select>
+                        <span class="helper">Column to be used as the title for tooltip</span>
+                    </p>
+
+                    <p>
+                        <span class="label">Tooltip Message:</span>
+                        <select id="config_tm"></select>
+                        <span class="helper">Column to be used as the body for tooltip</span>
+                    </p>
+                
+                    </hr>
+                    <p>
+                    <input id="updateConfig" type="button" value="Update embed code"/>
+                    </p>
+                    </hr>
+                </div>
+
+
+            </div>
+            
+            <div id="iframe_right">
+                <a id="close-preview-modal">[<span>&#215;</span>]</a>
+                
+                <iframe id="example_iframe" width="400" height="400" src=""></iframe>
+                <p><span class="label"></span><input value="" style="width:200px;"/><img id="location_copier" title="copy over to options" src="{$cfg.abs_root_url}images/embed_marker.png"/></p>
+            
+            
+            </div>
+            <div style="clear:both;"></div>
+            
+            <div id="code_to_embed">
+            <h3>Embed Code</h3>
+            <textarea id="example_text"></textarea>
+            </div>
+            
+        </div>
+        
+
+        <h3>Instructions</h3>
+
+        <p>You can embed the map using an html <a href="http://www.w3.org/wiki/HTML/Elements/iframe"><tt>&lt;iframe&gt;</tt></a>
+        with the <tt>src</tt> attribute of:</p>
+<textarea>
+{$cfg.abs_root_url}embed/default/
+</textarea>
+        <p>and the following <a href="http://en.wikipedia.org/wiki/Query_string">query string</a> parameters:</p>
+
+        <ul>
+            <li><tt>user</tt>: a Dotspotting user ID. You can
+            find the user ID of a sheet's owner in the URL,
+            after the <tt>/u/</tt> part and before the <tt>/sheets/</tt> part:
+<pre>{$cfg.abs_root_url}u/<u>203</u>/sheets/869
+                                     (203)</pre></li>
+            <li><tt>sheet</tt>: a Dotspotting <a href="{$cfg.abs_root_url}faq/#sheets">sheet ID</a>, which you can find after the <tt>/sheets/</tt> part of a sheet's URL:
+<pre>{$cfg.abs_root_url}u/203/sheets/<u>869</u>
+                                                (869)</pre></li>
+            <li><tt>title</tt> (optional): the title to display along the top of the frame</li>
+            <li><tt>tt</tt> (optional): a column field to use as the title for tooltip</li>
+            <li><tt>tm</tt> (optional): a column field to use as the message for tooltip</li>
+            <li><tt>base</tt> (optional): takes a tile URL.  Currently, default theme supports only <a href="http://citytracking.github.com/toner/">Toner</a>, <a href="http://developer.geoiq.com/tools/acetate/">Acetate</a>, <a href="http://cloudmade.com/">Pale Dawn</a>, <a href="http://developer.mapquest.com/web/products/open/map">MapQuest</a> and <a href="http://www.bing.com/maps/">Bing</a> tiles.</li>
+        </ul>
+
+        <p>You can also specify the initial map zoom and
+        center by appending a <a href="http://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a>
+        onto the URL in the following form:
+
+        <pre>#{literal}{zoom}/{latitude}/{longitude}{/literal}</pre>
+
+        <p>where <tt>zoom</tt> is a whole number between 4
+        and 17 (the minimum and maximum allowed zoom levels
+        of the map), <tt>latitude</tt> is a decimal number
+        between -85 and 85, and <tt>longitude</tt> is a
+        decimal number between -180 and 180. 
+        <a href="http://www.getlatlon.com/">Get Lat Lon</a>
+        can help you find the zoom, latitude and longitude of
+        most places.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+{literal}
+<script>
+
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+var isPreview = false;
+var root_url = "{/literal}{$cfg.abs_root_url}{literal}";
+var defaults = {
+'user':203,
+'sheet':869,
+'title':'',
+'base':'',
+'tm':'',
+'tt':'',
+'coords':''
+};
+var iframe_size = [400,400],
+    init_coords = false;
+    
+    
+$(document).ready(function() {
+     $('#previewConfig').click(function(e) {
+          e.preventDefault();
+          doPreview();
+     });
+
+});
+
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
+function getViewPort(){
+    /* from Andy Langton --> http://andylangton.co.uk/articles/javascript/get-viewport-size-javascript/ */
+    
+    var viewportwidth;
+    var viewportheight;
+
+    // the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
+
+    if (typeof window.innerWidth != 'undefined')
+    {
+      viewportwidth = window.innerWidth,
+      viewportheight = window.innerHeight
+    }
+
+    // IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+
+    else if (typeof document.documentElement != 'undefined'
+     && typeof document.documentElement.clientWidth !=
+     'undefined' && document.documentElement.clientWidth != 0)
+    {
+       viewportwidth = document.documentElement.clientWidth,
+       viewportheight = document.documentElement.clientHeight
+    }
+
+    // older versions of IE
+
+    else
+    {
+       viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
+       viewportheight = document.getElementsByTagName('body')[0].clientHeight
+    }
+    return [viewportwidth,viewportheight];
+}
+
+function doPreview(){
+    if(isPreview)return;
+    isPreview = true;
+    var vp = getViewPort();
+    var content_offset = $("#content").offset();
+    var configure_offset = $("#configure").offset();
+    var content_width = $("#content").width();
+    
+    var map_width = parseInt($("#config_width").val());
+    var map_height = parseInt($("#config_height").val());
+
+    var _offset_left = (((vp[0]  - map_width) / 2) - content_offset.left) ;
+    var _offset_top = (((vp[1]  - map_height) / 2) - content_offset.top) - 10;
+    
+    
+    $("#configure").addClass('preview');
+    $("#iframe_right").addClass('preview');
+    $("#iframe_right").css("left",_offset_left + "px");
+    $("#iframe_right").css("top",_offset_top + "px");
+    $("#iframe_right p").hide();
+    //$("#previewConfig").hide();
+    $("#close-preview-modal").show();
+
+    autoResize('example_iframe',map_width,map_height);
+    
+    $('body').append('<div id="previewBackground"></div>');
+    $("#previewBackground").show();
+    $('#previewBackground').unbind('click').bind('click', function(e) {
+        e.preventDefault();
+        doClosePreview();
+    });
+    
+    $("#close-preview-modal").unbind('click').bind('click', function(e) {
+        e.preventDefault();
+       doClosePreview();
+    });
+}
+function doClosePreview(){
+    isPreview = false;
+    $("#close-preview-modal").unbind('click');
+    $('#previewBackground').unbind('click');
+    $("#close-preview-modal").hide();
+    autoResize('example_iframe',400,400);
+    $("#configure").removeClass('preview');
+    $("#iframe_right").removeClass('preview');
+    $("#iframe_right").css("left","0px");
+    $("#iframe_right p").show();
+    $('#previewBackground').remove();
+    //$("#previewConfig").show();
+}
+
+function autoResize(id,w,h){
+    var newheight = h;
+    var newwidth = w;
+
+    document.getElementById(id).style.height = (newheight) + "px";
+    document.getElementById(id).style.width = (newwidth) + "px";
+}
+
+
+// utility function to read hash from map iframe
+function hashMe(x){
+    if(!x)return;
+    
+    // strip # from coords
+    x = x.replace("#","");
+    
+    // ok lazy coming...
+    if(x == "0/0/0")return;
+    
+    // show the coordinate display
+    if(!isPreview)$("#iframe_right p").show();
+    
+    //update coordinate box
+    $("#iframe_right .label").html("Current Coordinates: ");
+    $("#iframe_right input").val(x);
+    if(!init_coords){
+        $("#config_coords").val(x);
+        defaults['coords'] = x;
+       
+        $("#example_text").val( getEmbedCode(generateIframeSrc()) );
+        init_coords = true;
+    }
+}
+
+//
+$("#location_copier").hover(
+    function(e){$(this).css("opacity",.4)},
+    function(e){$(this).css("opacity",.7)}
+);
+$("#location_copier").click(function(e){
+     e.preventDefault();
+     $("#config_coords").val($("#iframe_right input").val());
+})
+
+// process Sheet URL handler
+$("#startConfig").click(function(e){
+    e.preventDefault();
+    if($("#config_url").val()){
+        getSheet($("#config_url").val());
+    }else{
+        $("#config_url_error").html("please enter a Dotspotting url").show();
+    }
+    
+    
+});
+
+// update embed code handler
+$("#updateConfig").click(function(e){
+    e.preventDefault();
+    grabConfigSettings();
+    setEmbed();
+    
+});
+
+
+// select all text when embed code text area is clicked
+$("#example_text").click(function(e){
+    e.preventDefault();
+   $(this).focus();
+   $(this).select();
+});
+
+// set fields from default object
+function wipeConfigSettings(){
+     defaults = {
+    'user':0,
+    'sheet':0,
+    'title':'',
+    'base':'',
+    'tm':'',
+    'tt':'',
+    'coords':''
+    }
+    iframe_size = [400,400];
+    init_coords = false;
+    setConfigSettings();
+}
+
+// set fields from default object
+function setConfigSettings(){
+    $("#config_provider").val(defaults['base']);
+    $("#config_title").val(defaults['title']);
+    $("#config_tt").val(defaults['tt']);
+    $("#config_tm").val(defaults['tm']);
+    $("#config_coords").val(defaults['coords']);
+    $("#config_width").val(parseInt(iframe_size[0]));
+    $("#config_height").val(parseInt(iframe_size[1]));
+}
+
+// update defaults with fields
+function grabConfigSettings(){
+    defaults['base'] = $("#config_provider").val();
+    defaults['title'] = $("#config_title").val();
+    defaults['tt'] = $("#config_tt").val();
+    defaults['tm'] = $("#config_tm").val();
+    defaults['coords'] = $("#config_coords").val();
+    iframe_size[0] = parseInt($("#config_width").val());
+    iframe_size[1] = parseInt($("#config_height").val());
+}
+
+// process title for output
+function processTitle(x){
+    return x.replace(/\s/g, "+");
+}
+
+
+// 
+function processFields(x){
+    $("#config_tt").append('<option value=""></option>');
+    $("#config_tm").append('<option value=""></option>');
+    for(f in x){
+        $("#config_tt").append('<option value="'+f+'">'+f+'</option>');
+        $("#config_tm").append('<option value="'+f+'">'+f+'</option>');
+    }
+    
+}
+
+function generateIframeSrc(){
+    var out = root_url+"embed/default/map?";
+    for(o in defaults){
+        if(defaults[o]){
+            if(o != "coords"){
+                if(o == 'base'){
+                     out += o + "=" +defaults[o] + "&amp;";
+                }else{
+                    out += o + "=" + ((o == "title") ? processTitle(defaults[o]):defaults[o]) + "&amp;";
+                }
+            }
+        }
+    }
+
+    if(out.slice(-5) == "&amp;"){
+        out = out.slice(0,-5);
+    }
+    if(defaults['coords'])out += "#"+defaults['coords'];
+    return out;
+}
+
+function getEmbedCode(x){
+    var iframe_pre = '<iframe type="text/html" width="'+iframe_size[0]+'" height="'+iframe_size[1]+'" src="';
+     return iframe_pre + x + '"></iframe>';     
+}
+
+
+// set embed code textarea
+function setEmbed(){
+    var out = generateIframeSrc();
+    var current_embed = $("#example_text").val();
+    var new_embed = getEmbedCode(out);
+
+    if(current_embed  != new_embed){
+        $("#example_text").val( new_embed );
+        $("#example_iframe").attr('src',out);
+        
+    }
+}
+
+// parses a hash into key/values
+function getParams(u){
+    // gather page parameters from the query string
+    var params = {},
+        paramMatch = u.match(/(\w+)=([^&$]+)/g);
+    if (paramMatch) {
+        var len = paramMatch.length;
+        for (var i = 0; i < len; i++) {
+            var part = paramMatch[i].split("=");
+            params[part[0]] = decodeURIComponent(part[1]).replace(/\+/g, " ");
+        }
+    }
+    return params;
+}
+
+function getSheet(u){
+    // check for things
+    if(!root_url && !u)return;
+    
+    // split on hash
+    var _url = u.split("#");
+    
+    // check for the existence of something
+    if(!_url[0])return;
+   
+    // chop trailing slash
+    if(_url[0].slice(-1) == "/")_url[0] = _url[0].slice(0,-1);
+    
+    // if there are coordinates in hash, store them in default object
+    if(_url[1]){
+        var params = getParams(_url[1]);
+        if(params['c'])defaults['coords'] = params['c'];
+    }
+    init_coords = false;
+    
+    // create url that fetches geojson for sheet
+    var _export_url = _url[0]+"/export?format=json";
+    
+    // get sheet geojson
+    $.ajax({
+      url: _export_url,
+      dataType:"jsonp",
+      success: function(d){
+        wipeConfigSettings();
+        defaults['title'] = d['dotspotting:title'];
+        if(d.features[0]['properties']['user_id'] && d.features[0]['properties']['sheet_id']){
+            processFields(d.features[0]['properties']);
+            defaults['user'] = parseInt(d.features[0]['properties']['user_id']);
+            defaults['sheet'] = parseInt(d.features[0]['properties']['sheet_id']);
+            setConfigSettings();
+            setEmbed();
+            $("#config_url_error").hide();
+            $("#config-options").show();
+            $("#config-message").html("Sheet #"+defaults['sheet'] + " is loaded.");
+        }
+      },
+      error:function(){
+        $("#config_url_error").html("ugh! check your URL and try again.").show();
+      }
+    });
+}
+
+getSheet($("#config_url").val());
+
+</script>
+{/literal}
+
+{include file="inc_foot.txt"}

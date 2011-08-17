@@ -337,6 +337,8 @@
 	#
 
 	$GLOBALS['cfg']['flickr_apikey'] = 'READ-FROM-CONFIG';
+	$GLOBALS['cfg']['google_analytics_id'] = '';
+    $GLOBALS['cfg']['mixpanel_id'] = '';
 
 	#
 	# Things you can probably not worry about
@@ -352,17 +354,18 @@
 
 	$GLOBALS['cfg']['db_profiling'] = 0;
 	
-	#
-	# Analytic providers
-	# 
-
-    $GLOBALS['cfg']['google_analytics_id'] = '';
-    $GLOBALS['cfg']['mixpanel_id'] = '';
+	
+    #
+    # MISC
+    #
+    
+    // basic | pretty
+    $GLOBALS['cfg']['pagination_style'] = "pretty";
     
     
 	#
 	# USER STYLES
-	# not in effect, needs to be re-thought out (seanc | 6282011)
+	# not in effect, needs to be re-thought out after switching to kirby dot (seanc | 6282011)
 	#
 	# implemented in global styles and include/lib_maps.php
 	# TODO: apply these to other export options

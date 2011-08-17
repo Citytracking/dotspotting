@@ -325,16 +325,16 @@ Dots.Config.prototype = {
             if(this.defaults[o]){
                 if(o != "coords"){
                     if(o == 'base'){
-                         if(this.defaults[o] != Dots.Config.defaultParams['base'])out += o + "=" +this.defaults[o] + "&amp;";
+                         if(this.defaults[o] != Dots.Config.defaultParams['base'])out += o + "=" +this.defaults[o] + "&";
                     }else{
-                        out += o + "=" + ((o == "title") ? this.processTitle(this.defaults[o]):this.defaults[o]) + "&amp;";
+                        out += o + "=" + ((o == "title") ? this.processTitle(this.defaults[o]):this.defaults[o]) + "&";
                     }
                 }
             }
         }
         
-        if(out.slice(-5) == "&amp;"){
-            out = out.slice(0,-5);
+        if(out.slice(-1) == "&"){
+            out = out.slice(0,-1);
         }
         if(this.defaults['coords'])out += "#"+this.defaults['coords'];
         return out;

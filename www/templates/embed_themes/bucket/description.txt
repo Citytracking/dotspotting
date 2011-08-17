@@ -1,0 +1,1 @@
+<p>Buckets your data by a specified column.</p>

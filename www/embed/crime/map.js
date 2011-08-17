@@ -1,17 +1,28 @@
 var pot, params;
 var tip_selected_type = null,
     tip_selected_elm = null;
+    
+// custom icons
+var custom_icon_base = "";
+
 
 $(function() {
 try {
     var mm = com.modestmaps;
-
+    
     params = parseQueryString(location.search);
     if (!params.base) params.base = "pale_dawn";
     // TODO: uncomment me?
     if (!params.baseURL) params.baseURL = baseURL;
     
-
+    
+    // look for custom icon url base
+    if(params.iconbase){
+        custom_icon_base = params.iconbase;
+        // wipe the angle brackets from a url
+        custom_icon_base = custom_icon_base.replace(/[<>]/g,'');
+    }
+    
     pot = new Dots.Potting(params);
     pot.setTitle();
     
@@ -67,7 +78,7 @@ try {
     var monthsAPShort = ["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."];
     
     var dotTemplate = $("#dot").template();
-    var tipTemplate = $.template("tipTemplate",  "<span>${description || crime_type}</span>${time}<br/>${date_formatted}");
+    var tipTemplate = $.template("tipTemplate", "<span>${description || crime_type}</span>${time}<br/>${date_formatted}");
     pot.makeDot = function(feature) {
         normalizeFeature(feature);
         var crime_type = getCrimeType(feature.properties),
@@ -82,7 +93,9 @@ try {
             marker = $.tmpl(dotTemplate, data);
             //feature.properties['crime_type'] = crime_type
             
-
+        //look for custom icon
+        checkCustomIcon(marker,data);
+        
         marker.data("feature", feature);
         marker.data("crime_type", crime_type);
         marker.data("crime_group", crime_group);
@@ -178,6 +191,41 @@ try {
 }
 });
 
+/// Custom Icon 
+
+function checkCustomIcon(marker,data){
+    if(data.props.custom_icon || custom_icon_base.length){
+        
+        var url = (data.props.custom_icon) ? data.props.custom_icon.replace(/ /g, "_") : data.props.crime_type.replace(/ /g, "_");
+        
+        var extension = url.substr( (url.lastIndexOf('.') +1) );
+        url = custom_icon_base + url;
+        if(extension != "png" || extension != "jpg" || extension != "gif") url += ".png";
+        
+        var icon = $(marker).find(".group");
+        var default_classes = ['violent','property','gol','unknown'];
+        
+        // check if icon image is out there
+        // probably need to see if this will work in all browsers
+        $('<img/>').attr('src', url).load(function() {
+            // attach icon
+            icon.css("backgroundImage", "url("+url +") !important");
+            icon.css("width", "25px !important");
+            icon.css("height", "25px !important");
+            icon.html("");
+            // remove old class
+            var p = icon.parent();
+            p.removeClass(default_classes.join(" "));
+
+        });
+        
+        // store icon url in marker, for future reference
+        marker.data("custom_icon", url);
+    }
+}
+
+/// end custom icon
+
 function CrimeTypeSelector(wrapper,selector, layer) {
     this.wrapper = $(wrapper);
     this.container = $(selector);
@@ -225,20 +273,25 @@ CrimeTypeSelector.prototype = {
             .append($('<span class="title"/>')
                 .text(data.title || data.type));
                 
+        //look for custom icon
+        checkCustomIcon(label,data);
         
         var that = this;
         label.click(function(e) {
-            that.onLabelClick($(this), e);
             e.preventDefault();
+            that.onLabelClick($(this), e);
+            
         });
 
         this.container.append(label);
         this.labelsByType[type] = label;
         this.sortLabels();
 
+        // huh?
         if (this.selectedTypes.hasOwnProperty(data.label)) {
             this.selectedTypes[type] = this.selectedTypes[data.label];
         }
+        
         var selected = this.selectedTypes[type];
         if (typeof selected == "undefined") {
             selected = this.selectedTypes[type] = this.defaultTypeSelected;
@@ -250,12 +303,35 @@ CrimeTypeSelector.prototype = {
             label.addClass("off");
             this.unselectType(type);
         }
+        
+        
         this.labels.push(label);
         return label;
         
     },
 
     onLabelClick: function(label, e) {
+        /*
+        var selected_type = label.data("type");
+        var len = this.labels.length;
+        var selected;
+        for (var i = 0; i < len; i++) {
+            var l = this.labels[i];
+            var type = l.data("type");
+            if(type == selected_type){
+                selected = true;
+                l.data("selected", selected);
+                this.selectType(type);
+            }else{
+                selected = false;
+                l.data("selected", selected);
+                this.unselectType(type); 
+            }
+            l.toggleClass("off", !selected);
+        }
+        */
+        
+  
         var selected = !label.data("selected"),
             type = label.data("type");
         label.data("selected", selected);
@@ -265,6 +341,7 @@ CrimeTypeSelector.prototype = {
             this.unselectType(type);
         }
         label.toggleClass("off", !selected);
+       
     },
 
     selectType: function(type) {
@@ -384,7 +461,7 @@ CrimeTypeSelector.prototype = {
             for (var i = 0; i < len; i++) {
                 var label = that.labels[i];
                 var selected = false,
-                 type = label.data("type");
+                type = label.data("type");
                 label.data("selected", selected);
                 that.unselectType(type);
                 label.toggleClass("off", !selected);
@@ -405,6 +482,7 @@ CrimeTypeSelector.prototype = {
             this.container.css("width",_w+25+"px").css("height",_h+"px").css("overflow","auto").css("padding-bottom","10px");
         }
     }
+    
 };
 
 function getCrimeDesc(props) {

@@ -102,10 +102,10 @@ body {text-align: center;background-color: #fff;margin: 0;padding: 0;font-family
 
 /* recent thumbnails section */
 #home_recents{overflow:hidden !important;}
-#home_recents div.thumbnail_head{margin:20px 0 5px;}
+#home_recents div.thumbnail_head{margin:20px 0 0;}
 #home_recents div.thumbnail_head a:hover{text-shadow:0px 1px 1px #9c9c9c;}
-#home_recents div.thumbnail_head a{padding-top:4px;margin-right:10px;}
-#home_recents h5{}
+#home_recents div.thumbnail_head a{padding-top:0;margin-right:10px;line-height:18px;}
+#home_recents h5{margin-top:-5px;}
 #home_recents .recent_thumbnails{margin:0 11px 0 0;float:left;width:235px;height:220px;}
 #home_recents dl.last_thumb{margin:0;}
 #home_recents .recent_thumbnails dt{height:156px;border:1px solid #000;overflow:hidden;}
@@ -535,4 +535,35 @@ table.ds_table thead tr .headerSortDown,table.ds_table thead tr .headerSortUp{}
         background-image: -moz-linear-gradient(top, #B5D6D8, #519394);
         background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #B5D6D8),color-stop(1, #519394));
         background-image: -webkit-linear-gradient(#B5D6D8, #519394);
+}
+
+/*pagination*/
+#pagination{margin:0 0 20px;}
+/* pagination header */
+.ds_pag_head{margin:0 0 10px;text-align:center;border: 1px solid #fff;display:none;}
+/* pagination active items */
+.ds_pag{
+    text-decoration: none;
+    border: 1px solid #AAA;
+    padding: 0.3em 0.5em;
+    color: #0BBDFF;
+    margin: 0 2px;
+    background:#fff;
+}
+/* pagination inactive items */
+.ds_pag_inactive{
+    border: 1px solid #AAA;
+    padding: 0.3em 0.5em;
+    color: #999;
+    margin: 0 2px;
+    background:#fff;
+}
+/* pagination ellipses */
+.ds_pag_ellipses{
+    text-decoration: none;
+    border: 1px solid #fff;
+    padding: 0.1em 0.1em;
+    color: #999;
+    margin: 0;
+    background:#fff;
 }

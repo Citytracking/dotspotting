@@ -135,6 +135,9 @@ h1 a {
     /* background-image: url(icons/faded.png) !important; */
     opacity: .8;
     -moz-opacity: .8;
+    -khtml-opacity: .8; 
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=80)";  
+    filter: alpha(opacity=80);
 }
 
 .report .desc {
@@ -255,7 +258,12 @@ li.altrow{
     }
 
     #crime_types li.off .group {
-        background-image: url(../images/icons/faded.png) !important;
+        opacity: .2;
+        -moz-opacity: .2;
+        -khtml-opacity: .2; 
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=20)";  
+        filter: alpha(opacity=20);
+        /*background-image: url(../images/icons/faded.png) !important;*/
     }
 
 /* The UGH! using 2 different tooltips for now until I merge them into super tooltip */

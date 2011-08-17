@@ -1,0 +1,54 @@
+{assign var="page_title" value="Bucket Map"}
+
+{utf8_headers}<!DOCTYPE html> 
+<html>
+<head>
+	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+        <link rel="stylesheet" href="{$cfg.abs_root_url}embed/bucket/css/screen.css">
+        <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/tipTip.css">
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/d3.min.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/raphael-min.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/utils.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/dots.potting.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tipTip.minified.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/colorbrewer.js"></script>
+        <script type="text/javascript">
+            var _dotspotting = {literal}{{/literal}
+                'abs_root_url' : '{$cfg.abs_root_url}'
+                {literal}}{/literal};
+            var baseURL = '{$cfg.abs_root_url}';
+        </script>
+        
+        
+</head>
+<body>
+
+	<div id="map">
+	    <div id="output">
+            <h1 id="title"></h1>
+        </div>
+        <div class="controls">
+                <label>Zoom:</label> <a class="zoom-in" href="#zoom-in"><img alt="in" src="images/zoom-in.png"/></a>
+        		<a class="zoom-out" href="#zoom-out"><img alt="out" src="images/zoom-out.png"/></a>
+        </div>
+        <p id="copyright">Map data &copy;<a href="https://www.openstreetmap.org/" title="OpenStreetMap site">OpenStreetMap</a> contributors, CC-BY-SA; designed by <a href="http://www.stamen.com/" title="stamen site">Stamen</a> &amp; <a href="http://www.geoiq.com/">GeoIQ</a></p>
+        <div id="mm_tip">
+            <span id="mm_tip_nub"></span>
+            <p id="mm_tip_title"></p>
+            <p id="mm_tip_desc"></p>
+        </div>
+	</div>
+	<div id="menu_wrapper">
+           <h5>Categories <span><a href="" id="ct_show_all">Show All</a> | <a href="" id="ct_hide_all">Hide All</a></span></h5>
+           <ul id="menu_types"></ul>
+    </div>
+    
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/bucket/default.js" defer="defer"></script>
+ 
+</body>
+</html>

@@ -430,28 +430,16 @@
 
 	#################################################################
 
-	function sheets_recently_created($viewer_id=0, $limit=50){
+	function sheets_recently_created($viewer_id=0, $more=array()){
 
-		$enc_limit = AddSlashes($limit);
+        $defaults = array(
+            'per_page' => 50,
+        );
+        
+        $args = array_merge($defaults, $more);
 
-		/*
-		$sql = "SELECT * FROM SheetsLookup WHERE";
-
-		if ($viewer_id){
-			$enc_viewer = AddSlashes($viewer_id);
-			$sql .= " (user_id='{$enc_viewer}' OR counts_dots_public > 0)";
-		}
-
-		else {
-			$sql .= " counts_dots_public > 0";
-		}
-
-		$sql .= " AND deleted=0";
-		$sql .= " ORDER BY created DESC LIMIT {$enc_limit}";
-		*/
-
-		$sql = "SELECT * FROM SheetsLookup WHERE deleted=0 AND count_dots_public > 0 ORDER BY created DESC LIMIT {$limit}";
-		$rsp = db_fetch($sql);
+		$sql = "SELECT * FROM SheetsLookup WHERE deleted=0 AND count_dots_public > 0 ORDER BY created DESC";
+		$rsp = db_fetch_paginated($sql, $args);
 
 		if (! $rsp['ok']){
 			return $rsp;

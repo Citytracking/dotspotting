@@ -8,7 +8,7 @@
 {else}
 	<div id="home_meezy">
 	<h3>Dotspotting is easy:</h3>
-	<ul class="clearfix">
+	<ul class="clearfix" id="upload-is-easy">
 		<li class="first_meezy"><span>Upload your dots</span></li>
 		<li class="second_meezy"><span>Make a map</span></li>
 		<li class="third_meezy"><span>Export and share</span></li>
@@ -22,7 +22,7 @@
 {* start thumbnail section *}
 <div id="home_recents">
 	{if $recent_sheets|@count}
-		<div class="thumbnail_head clearfix"><h5 class="left">Recent sheets:</h5><!--<a href="{$cfg.abs_root_url}recent/sheets" class="right txt_small">see more</a>--></div>
+		<div class="thumbnail_head clearfix"><h5 class="left">Recent sheets:</h5><a href="{$cfg.abs_root_url}recent/sheets" class="right txt_small blue_links">see more</a></div>
 		{foreach from=$recent_sheets item=sh name=thumbs}
 			{if $smarty.foreach.thumbs.index < 60}
 			     <dl class="recent_thumbnails{if $smarty.foreach.thumbs.iteration % 4 == 0} last_thumb{/if}">
