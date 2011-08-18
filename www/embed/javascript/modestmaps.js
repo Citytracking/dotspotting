@@ -790,6 +790,7 @@ if (!com) {
             MM.addEvent(map.parent, 'touchstart', this.getTouchStartMachine());
             MM.addEvent(map.parent, 'touchmove', this.getTouchMoveMachine());
             MM.addEvent(map.parent, 'touchend', this.getTouchEndMachine());
+ 
         },
 
         // Essentially the entry point for touches to this control -
@@ -868,7 +869,7 @@ if (!com) {
                 var events = this.events;
 
                 this.getTouchStartMachineHandler = function(e) {
-                    
+             
                     theHandler.interruptTouches(events);
                     
                     for (var i = 0; i < e.changedTouches.length; i += 1) {

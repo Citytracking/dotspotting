@@ -104,16 +104,31 @@ Dots.Potting.prototype = {
     createMap: function() {
         var provider = this.getMapProvider(this.params.base);
         var handlers = [];
-        /*
+        
     	if(touchSupport){
     	    handlers.push(	new com.modestmaps.TouchHandler() );
+    	    
+            /*
+    	    $("body").bind('touchstart',function(e){
+    	        e.preventDefault();
+    	        console.log("move")
+    	    });
+    	    $("body").bind('touchmove',function(e){
+                  e.preventDefault();
+                  console.log(e.touches[0].pageX);
+                  //CODE GOES HERE
+            });
+           */
+           
 	    }else{
 	        handlers.push( new com.modestmaps.MouseHandler() );
 	    }
-	    */
-	    handlers.push( new com.modestmaps.MouseHandler() );
+	    
+	    
+	    //handlers.push( new com.modestmaps.MouseHandler() );
         this.map = new com.modestmaps.Map(this.mapContainer[0], provider,null,handlers);
-
+   
+            
         if (provider.copyright) {
             this.addCopyright(provider.copyright);
         }
