@@ -21,7 +21,7 @@
 		$base_url = isset($GLOBALS['cfg']) && isset($GLOBALS['cfg']['abs_root_url'])
 		    ? rtrim($GLOBALS['cfg']['abs_root_url'], '/')
 		    : '';
-		
+
 		if ($redir){
 			header("Location: {$base_url}/signin/?redir=".urlencode($redir));
 		}else{
@@ -102,8 +102,10 @@
 
 	function login_do_login(&$user, $redir=''){
 
+		$expires = time() * 2;
+
 		$auth_cookie = login_generate_auth_cookie($user);
-		login_set_cookie($GLOBALS['cfg']['auth_cookie_name'], $auth_cookie);
+		login_set_cookie($GLOBALS['cfg']['auth_cookie_name'], $auth_cookie, $expires);
 
 		$base_url = isset($GLOBALS['cfg']) && isset($GLOBALS['cfg']['abs_root_url'])
 		    ? rtrim($GLOBALS['cfg']['abs_root_url'], '/')

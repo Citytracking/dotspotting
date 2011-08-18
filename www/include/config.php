@@ -172,7 +172,7 @@
 	$GLOBALS['cfg']['auth_cookie_domain'] = parse_url($GLOBALS['cfg']['abs_root_url'], 1);
 	$GLOBALS['cfg']['auth_cookie_name'] = 'a';
 
-	$GLOBALS['cfg']['maptiles_template_url'] = 'http://spaceclaw.stamen.com/tiles/dotspotting/world/{Z}/{X}/{Y}.png';
+	$GLOBALS['cfg']['maptiles_template_url'] = 'http://spaceclaw.stamen.com/toner/{Z}/{X}/{Y}.png';
 	$GLOBALS['cfg']['maptiles_template_hosts'] = array();
 
 	$GLOBALS['cfg']['maptiles_license'] = 'Map data <a href="http://creativecommons.org/licenses/by-sa/3.0/">CCBYSA</a> 2010 <a href="http://openstreetmap.org/">OpenStreetMap.org</a> contributors';

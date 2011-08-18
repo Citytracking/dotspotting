@@ -39,19 +39,41 @@
 
 	#################################################################
 
+	function formats_valid_ogre_import_map($key_by_extension=0){
+
+		$map = array(
+			'application/gpx+xml' => 'gpx',
+			'application/vnd.google-earth.kml+xml' => 'kml',
+			'application/x-zip' => 'zip',
+		);
+
+		# we assume zip will be shapefiles
+
+		if ($key_by_extension){
+			$map = array_flip($map);
+		}
+
+		return $map;
+	}
+
+	#################################################################
+
 	function formats_valid_import_map($key_by_extension=0){
 
 		$map = array(
 			'text/csv' => 'csv',
 			#'application/gpx+xml' => 'gpx',
-			#'application/x-javascript' => 'json',
-			#'application/vnd.google-earth.kml+xml' => 'kml',
+			# 'application/vnd.google-earth.kml+xml' => 'kml',
 			'application/rss+xml' => 'rss',
 			# 'application/vnd.esri-shapefile' => 'shp',
 			'application/vnd.ms-excel' => 'xls',
 			'text/plain' => 'csv',
 			'text/plain' => 'txt',
 		);
+
+		if ($GLOBALS['cfg']['enable_feature_ogre']){
+			$map['application/x-javascript'] = 'json';
+		}
 
 		# TODO: fix me so that this will work for mime-types
 		# with multiple valid extensions (20101215/straup)
@@ -64,9 +86,9 @@
 	}
 
 	#################################################################
-		
+
 	function formats_valid_export_map($key_by_extension=0){
-		
+
 		$map = array(
 			'text/csv' => 'csv',
 			'application/gpx+xml' => 'gpx',
@@ -76,7 +98,7 @@
 			'application/rss+xml' => 'rss',
 			'application/vnd.ms-excel' => 'xls',
 		);
-	
+
 		# Ensure that we can actually generate PNG files
 		# Also, we don't strictly speaking need GD to
 		# generate PDF files except for the part where we
