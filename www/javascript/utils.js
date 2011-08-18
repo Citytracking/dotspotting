@@ -916,7 +916,11 @@ function utils_hash(map,type){
 		clearInterval(this.hashInterval);
 		//console.log(this.coords,this.search);
 		this.search = (!_dotspotting.datatables_query) ? '': _dotspotting.datatables_query;
+		
 		var newHash = '';
+		if(_dotspotting.fullscreen_flag){
+		    newHash += "ff=1";
+		}
 		if(this.search.length){
 			newHash  += "s="+this.search;
 		}
