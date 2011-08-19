@@ -9,6 +9,7 @@
 	
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/photo/css/screen.css">
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/photo/css/tipTip.css">
+        <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>
@@ -24,6 +25,7 @@
                 {literal}}{/literal};
             var baseURL = '{$cfg.abs_root_url}';
             var apikey = '{$cfg.flickr_apikey|escape}';
+            var touchSupport = Modernizr.touch;
         </script>
         
         

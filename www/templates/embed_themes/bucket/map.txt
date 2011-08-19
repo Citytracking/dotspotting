@@ -8,6 +8,7 @@
 	
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/bucket/css/screen.css">
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/tipTip.css">
+        <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/d3.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
@@ -22,6 +23,7 @@
                 'abs_root_url' : '{$cfg.abs_root_url}'
                 {literal}}{/literal};
             var baseURL = '{$cfg.abs_root_url}';
+            var touchSupport = Modernizr.touch;
         </script>
         
         

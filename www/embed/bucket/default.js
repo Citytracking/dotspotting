@@ -264,25 +264,6 @@ function MenuSelector(wrapper,selector, layer) {
     this.colorScheme = {};
     this.labelStates = {};
     this.labelCounts = {};
-    
-    var that = this;
-    this.show_all.click(function(e){
-        e.preventDefault();
-        for(t in that.labelStates){
-            that.labelStates[t] = true;
-            that.unselectButtons(t);
-            that.showMarkers(t);
-        }
-        
-    });
-    this.hide_all.click(function(e){
-        e.preventDefault();
-        for(t in that.labelStates){
-            that.labelStates[t] = false;
-            that.selectButtons(t);
-            that.hideMarkers(t);
-        }
-    });
 }
 
 MenuSelector.prototype = {
@@ -358,7 +339,25 @@ MenuSelector.prototype = {
             if (that.unAllReal.timeout) clearTimeout(that.unAllReal.timeout);
             that.unAll(10);
         });
+        
+        this.show_all.click(function(e){
+               e.preventDefault();
+               for(t in that.labelStates){
+                   that.labelStates[t] = true;
+                   that.unselectButtons(t);
+                   that.showMarkers(t);
+               }
 
+           });
+           this.hide_all.click(function(e){
+               e.preventDefault();
+               for(t in that.labelStates){
+                   that.labelStates[t] = false;
+                   that.selectButtons(t);
+                   that.hideMarkers(t);
+               }
+           });
+           
     },
     
     // adds button elements

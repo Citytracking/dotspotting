@@ -7,6 +7,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/default/css/screen.css">
+        <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>
@@ -18,6 +19,7 @@
                 'abs_root_url' : '{$cfg.abs_root_url}'
                 {literal}}{/literal};
             var baseURL = '{$cfg.abs_root_url}';
+            var touchSupport = Modernizr.touch;
         </script>
         
         

@@ -105,6 +105,7 @@ Dots.Potting.prototype = {
         var provider = this.getMapProvider(this.params.base);
         var handlers = [];
         
+        if(typeof touchSupport == 'undefined')touchSupport = false;
     	if(touchSupport){
     	    handlers.push(	new com.modestmaps.TouchHandler() );
     	    
