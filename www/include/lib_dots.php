@@ -950,6 +950,7 @@
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);
 
 		#
+		var_dump($rsp);
 
 		$dots = array();
 
