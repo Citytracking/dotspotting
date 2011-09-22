@@ -7,7 +7,7 @@
 	include("include/init.php");
 	loadlib("geo_geocode");
 	loadlib("formats");
-
+    
 	$owner = users_ensure_valid_user_from_url();
 
 	$sheet_id = get_int64('sheet_id');
@@ -46,6 +46,12 @@
 
 	$smarty->assign_by_ref("owner", $owner);
 	$smarty->assign_by_ref("sheet", $sheet);
+	
+	
+	var_dump($owner);
+	print "<br/>";
+	var_dump($sheet);
+	
 
 	# delete this sheet?
 
@@ -99,11 +105,6 @@
 		preg_match_all("/[\{](.+?)[\}]/i", $sheet['dots'][0]['details']['title_internal'][0]['value'], $title_matches);
 
 		if(isset($title_matches[1]) && !empty($title_matches[1])){
-			/*
-			foreach($title_matches[1] as $match){
-				var_dump($match);
-			}
-			*/
 			$title_field = $title_matches[1][0];
 		}
 	}
@@ -148,7 +149,6 @@
 			$to_json[] =$tmp;
 		}
 
-		//if( isset($owner.username) )$ddd[] = array('owner'=>$owner.username);
 		$smarty->assign("dots_simple", $to_json);
 	}
 

@@ -117,3 +117,6 @@ RewriteRule ^magicwords/?$				magicwords.php?%{QUERY_STRING} [L]
 RewriteRule ^embed/?$					embed.php?%{QUERY_STRING} [L]
 RewriteRule ^embed/([a-z0-9]+)/?$					embed_config.php?type=$1&%{QUERY_STRING} [L]
 RewriteRule ^embed/([a-z0-9]+)/map/?$					embed_map.php?type=$1&%{QUERY_STRING} [L]
+
+# api
+#RewriteRule ^api/?$					api_rest.php?%{QUERY_STRING} [L]

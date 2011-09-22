@@ -52,16 +52,20 @@
 		#
 
 		$method = request_str('method');
+		
 
 		if (! $method){
 			api_output_error(404, 'Method not found');
 		}
-
+		
+		
 		if (! isset($GLOBALS['cfg']['api']['methods'][$method])){
 			api_output_error(404, 'Method not found');
 		}
+		
 
 		$method_row = $GLOBALS['cfg']['api']['methods'][$method];
+		
 
 		if (! $method_row['enabled']){
 			api_output_error(404, 'Method not found');
@@ -72,6 +76,7 @@
 
 		$method = explode(".", $method);
 		$function = $lib . "_" . array_pop($method);
+		
 
 		if (! function_exists($function)){
 			api_output_error(404, 'Method not found');

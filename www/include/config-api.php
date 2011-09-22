@@ -13,5 +13,13 @@
 			'library' => 'api_dots',
 		),
 	);
+	
+	$GLOBALS['cfg']['api']['formats'] = array(
+	   'valid'=>array(
+	       'json'.
+	       'jsop'
+	   ),
+	   'default'=>'json'
+	);
 
 ?>
