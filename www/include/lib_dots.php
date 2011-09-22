@@ -926,7 +926,7 @@
 
 		if ($viewer_id !== $sheet['user_id']){
 
-			$sql = _dots_where_public_sql($sql);
+			//$sql = _dots_where_public_sql($sql);
 		}
 
 		$order_by = 'id';
