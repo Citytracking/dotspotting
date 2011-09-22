@@ -915,14 +915,17 @@
 			return $cache['data'];
 		}
 
-		#
 
 		$user = users_get_by_id($sheet['user_id']);
 
 		$enc_id = AddSlashes($sheet['id']);
 
 		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_id}'";
-
+        
+        var_dump($viewer_id);
+        print "<br/>";
+        var_dump($sheet['user_id']);
+        
 		if ($viewer_id !== $sheet['user_id']){
 
 			$sql = _dots_where_public_sql($sql);
