@@ -91,6 +91,10 @@
 	);
 
 	$sheet['dots'] = dots_get_dots_for_sheet($sheet, $GLOBALS['cfg']['user']['id'], $more);
+	
+
+	var_dump($sheet['dots']);
+	
 
 	$to_index = array($sheet['dots'][0]);
 	$dots_indexed = dots_indexed_on($to_index);
