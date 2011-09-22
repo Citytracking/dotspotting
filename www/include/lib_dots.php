@@ -905,13 +905,9 @@
 
 		$cache_key = "dots_for_sheet_{$sheet['id']}";
 
-		if ($sheet['user_id'] != $viewer_id){
+		if ($sheet['user_id'] != (string)$viewer_id){
 			$cache_key .= "_public";
 		}
-        
-        var_dump($viewer_id);
-        print "<br/>";
-        var_dump($sheet['user_id']);
         
 		$cache = cache_get($cache_key);
 
@@ -928,7 +924,7 @@
         
         
         
-		if ($viewer_id !== $sheet['user_id']){
+		if ((string)$viewer_id !== $sheet['user_id']){
 
 			$sql = _dots_where_public_sql($sql);
 		}
