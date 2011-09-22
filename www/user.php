@@ -15,7 +15,9 @@
 	$smarty->assign("is_own", $is_own);
 
 	#################################################################
-
+    
+    // need to look more into whether $GLOBALS['cfg']['user']['id'] should always be a string
+    // because it is failing when doing strict type comparisons 
 	$owner['counts'] = sheets_counts_for_user($owner, (string)$GLOBALS['cfg']['user']['id']);
 
 	# fetch some recent sheets for this user

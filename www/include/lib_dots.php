@@ -902,7 +902,7 @@
 	#################################################################
 
 	function dots_get_dots_for_sheet(&$sheet, $viewer_id=0, $more=array()){
-
+        
 		$cache_key = "dots_for_sheet_{$sheet['id']}";
 
 		if ($sheet['user_id'] != (string)$viewer_id){
@@ -923,7 +923,8 @@
 		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_id}'";
         
         
-        
+        // problem here -- $sheet['user_id'] is String & $viewer_id is coming in as an 'int'
+        // so far now, casting it as a String
 		if ((string)$viewer_id !== $sheet['user_id']){
 
 			$sql = _dots_where_public_sql($sql);
