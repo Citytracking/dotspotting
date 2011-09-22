@@ -16,7 +16,7 @@
 
 	#################################################################
 
-	$owner['counts'] = sheets_counts_for_user($owner, $GLOBALS['cfg']['user']['id']);
+	$owner['counts'] = sheets_counts_for_user($owner, (string)$GLOBALS['cfg']['user']['id']);
 
 	# fetch some recent sheets for this user
 
@@ -25,7 +25,7 @@
 		'per_page' => 10,
 	);
 
-	$sheets = sheets_sheets_for_user($owner, $GLOBALS['cfg']['user']['id'], $args);
+	$sheets = sheets_sheets_for_user($owner, (string)$GLOBALS['cfg']['user']['id'], $args);
 
 	$is_own = ($owner['id'] == $GLOBALS['cfg']['user']['id']) ? 1 : 0;
 
@@ -33,7 +33,6 @@
 	$smarty->assign_by_ref('sheets', $sheets);
 
 	#
-
 	$smarty->display('page_user.txt');
 	exit();
 ?>
