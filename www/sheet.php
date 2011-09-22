@@ -47,11 +47,6 @@
 	$smarty->assign_by_ref("owner", $owner);
 	$smarty->assign_by_ref("sheet", $sheet);
 	
-	/*
-	var_dump($owner);
-	print "<br/>";
-	var_dump($sheet);
-	*/
 
 	# delete this sheet?
 
@@ -91,9 +86,6 @@
 	);
 
 	$sheet['dots'] = dots_get_dots_for_sheet($sheet, $GLOBALS['cfg']['user']['id'], $more);
-	
-
-	var_dump($sheet['dots']);
 	
 
 	$to_index = array($sheet['dots'][0]);

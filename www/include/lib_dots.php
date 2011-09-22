@@ -916,7 +916,6 @@
 		}
 
 		#
-		
 
 		$user = users_get_by_id($sheet['user_id']);
 
@@ -926,7 +925,7 @@
 
 		if ($viewer_id !== $sheet['user_id']){
 
-			//$sql = _dots_where_public_sql($sql);
+			$sql = _dots_where_public_sql($sql);
 		}
 
 		$order_by = 'id';
@@ -948,9 +947,6 @@
 		$sql .= " ORDER BY {$order_by} {$order_sort}";
 
 		$rsp = db_fetch_paginated_users($user['cluster_id'], $sql, $more);
-
-		#
-		var_dump($rsp);
 
 		$dots = array();
 
