@@ -908,7 +908,11 @@
 		if ($sheet['user_id'] != $viewer_id){
 			$cache_key .= "_public";
 		}
-
+        
+        var_dump($viewer_id);
+        print "<br/>";
+        var_dump($sheet['user_id']);
+        
 		$cache = cache_get($cache_key);
 
 		if ($cache['ok']){
@@ -922,9 +926,7 @@
 
 		$sql = "SELECT * FROM Dots WHERE sheet_id='{$enc_id}'";
         
-        var_dump($viewer_id);
-        print "<br/>";
-        var_dump($sheet['user_id']);
+        
         
 		if ($viewer_id !== $sheet['user_id']){
 
