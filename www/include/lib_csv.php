@@ -37,9 +37,16 @@
 			}
 
 			$row = str_getcsv($ln);
+			
 
 			if (! $row){
 				continue;
+			}
+			
+			// lets do away with any row, whose combined string length is empty (seanc | 20110926)
+			$row2str = implode("",$row);
+			if(strlen($row2str) < 1){
+			    continue;
 			}
 
 			if (($record === 1) && (! $field_names)){
@@ -53,6 +60,10 @@
 				foreach ($row as $col){
 
 					$col = strtolower($col);
+					
+					// do away with columns that are empty  (seanc | 20110926)
+					if(strlen(trim($col))<1)continue;
+	
 
 					if ((! $has_latitude) && (in_array($col, $possible_lat))){
 						$col = 'latitude';
