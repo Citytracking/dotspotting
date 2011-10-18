@@ -255,9 +255,11 @@ $(function() {
 
             for(i=0;i<len;i++){
                 if(markers[i].attrs._kirbyPos == "front"){
-                    var max = (markers[i].attrs.markerSize) ? (markers[i].attrs.markerSize / maxValue) * maxSize : minSize;
-                    if(max < minSize)max = minSize;
-                    markers[i].attr("r",max);
+                    //var max = (markers[i].attrs.markerSize) ? (markers[i].attrs.markerSize / maxValue) * maxSize : minSize;
+                    var size = (markers[i].attrs.markerSize) ? (markers[i].attrs.markerSize) : minSize;
+                    var radius =  (((Math.sqrt(Math.abs(size))) / Math.sqrt(maxValue))) * maxSize;
+                    if(radius < minSize)radius = minSize;
+                    markers[i].attr("r",radius);
                     if(!mdict[markers[i].attrs.id])mdict[markers[i].attrs.id] = markers[i];
                     
                     
