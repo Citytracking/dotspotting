@@ -164,7 +164,7 @@ h1 a {
     right: 0;
     background: #DCE8EF;
     background: rgba(220,232,239,.8);
-    width: 30%;
+    width: 50%;
     height: auto;
     z-index: 2001;
     padding:0 5px 5px;
@@ -173,29 +173,5 @@ h1 a {
         margin:0;padding:.5em;
         font-size:1.15em;
         font-weight:bold;
-        text-align: justify;text-justify: newspaper;
-    }
-    #menu_wrapper h5{
-        font-size: 12px;
-        text-transform:uppercase;
-        color:#000;
-        margin:0;
-        padding:5px 0 0;
-        text-align:left;
-        position:relative;
-        border-bottom: 1px solid #ccc;
-    }
-    #menu_wrapper h5 span{
-        text-transform:none;
-        position:absolute;
-        right:10px;
-        top:5px;
-        font-size: 10px;
-    }
-    #menu_wrapper h5 span a{
-        color:#356A94;
-        text-decoration:none;
-    }
-    #menu_wrapper h5 span a:hover{
-        text-decoration:underline;
+        /*text-align: justify;text-justify: newspaper;*/
     }
