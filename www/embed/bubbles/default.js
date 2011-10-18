@@ -69,7 +69,7 @@ $(function() {
             //pot.map.setZoom(pot.map.getZoom());
         }
         
-        var bubbleSizeColumn = (params.valcol) ? params.valcol : "discharges";
+        var bubbleSizeColumn = (params.valcol) ? params.valcol : "id";
         var maxSize = (params.max) ? parseFloat(params.max) : 50,
             minSize = (params.min) ? parseFloat(params.min) : 6,
             renderAsNodes = (params.nodes && params.nodes == 1) ? true : false,
