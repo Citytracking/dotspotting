@@ -1,0 +1,72 @@
+{literal}
+<script>
+    var ds_config;
+
+   $(document).ready(function() {
+   
+    var $more = [
+        {
+            'label': 'Bubble Column:',
+            'type': 'select',
+            'id': 'valcol',
+            'default': '',
+            'helper': 'Column to be used to size bubbles'
+        },
+        {
+            'label': 'Max Size:',
+            'type': 'text',
+            'id': 'max',
+            'default': '50',
+            'helper': 'Max. size of bubble.'
+        },
+        {
+            'label': 'Min Size:',
+            'type': 'text',
+            'id': 'min',
+            'default': '6',
+            'helper': 'Min. size of bubble.'
+        },
+        {
+            'label': 'Nodes?:',
+            'type': 'checkbox',
+            'id': 'nodes',
+            'default': '0',
+            'helper': 'Render as nodes?'
+        }
+    ];
+   
+    
+    
+    // create the config object
+    ds_config = new Dots.Config($more,"bubbles","acetate");
+    
+    // register events before calling the loadSheet method...
+    ds_config.on("json_loading_begin",function(){
+     //console.log("loading begin");
+    });
+    ds_config.on("json_loading_success",function(){
+     //console.log("loading success");
+     setSelects();
+    });
+    ds_config.on("json_loading_error",function(){
+     //console.log("loading error");
+    });
+    
+    
+
+    ds_config.loadSheet();
+    
+    // do stuff with our new options here...
+    function setSelects(){
+        var _fields = ds_config.sheet_columns;
+        if(!_fields)return;
+        $("#config_opt_valcol").append('<option value=""></option>');
+        for(f in _fields){
+            $("#config_opt_valcol").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
+        }
+    }
+
+   });
+
+</script>
+{/literal}

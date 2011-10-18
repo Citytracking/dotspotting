@@ -13,6 +13,8 @@
      	 $GLOBALS['smarty']->display('embed_themes/photo/map.txt');
 	}else if($_GET['type']=="bucket"){
         $GLOBALS['smarty']->display('embed_themes/bucket/map.txt');
+    }else if($_GET['type']=="bubbles"){
+        $GLOBALS['smarty']->display('embed_themes/bubbles/map.txt');
 	}else{
 	    $GLOBALS['smarty']->display('page_embed.txt');
     }

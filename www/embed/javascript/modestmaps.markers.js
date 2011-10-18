@@ -271,8 +271,9 @@ if (!com.modestmaps) {
         this.canvas = Raphael(this.parent, this.map.dimensions.x * 3, this.map.dimensions.y * 3 );
         
         this.dotAttrs = {"fill": "#f0f"};
-
-        this.map.addCallback("panned", defer(this.getRedraw(), 200));
+        
+        var that = this;
+        this.map.addCallback("panned", that.getRedraw());//defer(this.getRedraw(), 200)
     };
     
     MM.DotMarkerLayer.prototype = {
@@ -341,6 +342,7 @@ if (!com.modestmaps) {
             if (marker.coord) {
                 var pos = this.map.coordinatePoint(marker.coord);
                 // TODO: check to see if this works in IE
+                
                 marker.attr("cx", pos.x - this.position.x);
                 marker.attr("cy", pos.y - this.position.y);
             }

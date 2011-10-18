@@ -34,6 +34,8 @@
 	    $chosen_theme = "photo";
 	}else if($_GET['type']=="bucket"){
 	    $chosen_theme = "bucket";
+    }else if($_GET['type']=="bubbles"){
+        $chosen_theme = "bubbles";
     }
 
     $GLOBALS['smarty']->assign_by_ref("recent_sheet_url", $sheet_url);

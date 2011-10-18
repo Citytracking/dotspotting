@@ -300,7 +300,7 @@ Dots.Config.prototype = {
                 this.defaults[i] = elm.val();
             }
         };
-
+        
         this.iframe_size[0] = parseInt($("#config_opt_width").val());
         this.iframe_size[1] = parseInt($("#config_opt_height").val());
     },
@@ -390,9 +390,8 @@ Dots.Config.prototype = {
         
         // set embed test
         $("#example_text").val( this.current_embed_code + this.getLinkBack());
-        
         //reload iframe?
-        if(updateIframe && (old_iframe_src != this.current_iframe_src)){
+        if(updateIframe){
              // dump the old iframe
             $("#example_iframe").remove();
             // create a new one
