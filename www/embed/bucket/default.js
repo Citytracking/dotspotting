@@ -88,6 +88,23 @@ $(function() {
             bucketPrep = {},
             bucketCount = 0,
             bucketList = [];
+            
+        function normalizeRolloverMessage(msg){
+            var msgParts = msg.split(/(\${.+?\})/gi),
+            len = msgParts.length;
+            if(!len)return msg;
+            var newMsg = "";
+            for(i=0;i<len;i++){
+                if(msgParts[i].indexOf("$") == 0){
+                   msgParts[i] = msgParts[i].replace(/ /g, "_").toLowerCase();
+                }
+                newMsg += msgParts[i];
+            }
+            console.log(newMsg);
+            return newMsg;
+            
+            
+        }
         pot.makeDot = function(feature) {
             normalizeFeature(feature);
             var props = feature.properties,
@@ -99,17 +116,13 @@ $(function() {
             var coords = geom[0]['coordinates'];
             var pid = "dot_"+props.id;
             
-           
+            
             if(feature.properties.__rollover_message){
                 useTemplate = true;
-                feature.properties.__rollover_message = feature.properties.__rollover_message.replace(/\$\{(\S+)\s+(\S+)\}/gi,"${$1_$2}");
+                feature.properties.__rollover_message = normalizeRolloverMessage(feature.properties.__rollover_message);
                 if(!rollover_tmpl){
-                    //var re = new RegExp("\$\{(.*?)\}", "gi");
-                    //var tmplPrep = feature.properties.__rollover_message.match(/\$\{.*?\}/gi);
-                    rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
-                    
+                    rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";  
                    $.template( "rollover_tmpl", rollover_tmpl );
-                    
                 }
                 props.tipMessage = $.tmpl( "<span>"+feature.properties.__rollover_message+"</span>",props);
             }else if(rollover_tmpl){
