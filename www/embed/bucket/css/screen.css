@@ -131,11 +131,11 @@ h1 a {
     box-shadow: 0 0 2px #333;
 }
 
-#mm_tip #mm_tip_title{text-align: left;margin:0;font-weight:600;padding:10px 10px 10px;font-size:16px;}
+#mm_tip #mm_tip_title{text-align: left;margin:0;font-weight:600;padding:10px 10px 0px;font-size:16px;}
 
 #mm_tip #mm_tip_desc {
     margin: 0;
-    padding: 0 10px 10px;
+    padding: 10px 10px 10px;
     text-align: left;
     font-size:12px;
     font-weight:200;
@@ -177,18 +177,19 @@ h1 a {
         position:relative;
         border-bottom: 1px solid #ccc;
     }
-    #menu_wrapper h5 span{
+    #menu_wrapper h5 span#menu_wrapper_toggle{
         text-transform:none;
-        position:absolute;
-        right:10px;
-        top:5px;
+        position:relative;
+        /*right:10px;*/
+        top:-1px;
         font-size: 10px;
+        padding-left:10px;
     }
-    #menu_wrapper h5 span a{
+    #menu_wrapper h5 span#menu_wrapper_toggle a{
         color:#356A94;
         text-decoration:none;
     }
-    #menu_wrapper h5 span a:hover{
+    #menu_wrapper h5 span#menu_wrapper_toggle a:hover{
         text-decoration:underline;
     }
 li.altrow{
@@ -267,4 +268,44 @@ li.altrow{
     #tiptip_content{
         line-height:16px;
         background:#356A94 !important;
+    }
+/**/
+#info_panel{
+    position:absolute;
+    top: 0;
+    right: 0;
+    background: #DCE8EF;
+    background: rgba(220,232,239,.8);
+    width: 50%;
+    height: auto;
+    z-index: 2001;
+    padding:5px;
+    display:none;
+}
+    #info_panel p{
+        margin: 0;
+        padding: 0px;
+        font-size: 1.15em;
+        font-weight: bold;
+        float: left;
+        width: 93%;
+    }
+    #info_panel a{
+        display:block;
+        float:left;
+        cursor: pointer;
+        text-decoration:none;
+    }
+    
+    #info_panel a span{
+        position:relative;
+        padding:0 10px 0 4px;
+        
+        top: 40%;
+        font-size: 1.5em;
+        color: red;
+        
+    }
+    #info_panel a:hover span{
+        color:#000;
     }

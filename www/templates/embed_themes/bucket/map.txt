@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/tipTip.css">
         <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
+        <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/d3.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>
@@ -46,8 +47,13 @@
         </div>
 	</div>
 	<div id="menu_wrapper">
-           <h5>Categories <span><a href="" id="ct_show_all">Show All</a> | <a href="" id="ct_hide_all">Hide All</a></span></h5>
+           <h5><span id="menu_wrapper_title">Categories </span><span id="menu_wrapper_toggle"><a href="" id="ct_show_all">Show All</a> | <a href="" id="ct_hide_all">Hide All</a></span></h5>
            <ul id="menu_types"></ul>
+    </div>
+    <div id="info_panel">
+        <a href=""><span>&raquo;</span></a>
+        <p></p>
+       
     </div>
     
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/bucket/default.js" defer="defer"></script>

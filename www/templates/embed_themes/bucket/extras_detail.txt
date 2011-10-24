@@ -1,0 +1,3 @@
+<h1>COLOR SCHEMES:</h1>
+<p>Copy the letter code of the color scheme you would like to use into the "Color Scheme" field above: <span style="font-size:small;color:#356A94;">Colors by <a style="font-size:small;color:#356A94;" href="http://colorbrewer.org/">Cynthia Brewer</a></p>
+<div id="dotpotting_extras"></div>

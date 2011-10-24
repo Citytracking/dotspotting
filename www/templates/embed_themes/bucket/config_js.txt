@@ -1,3 +1,26 @@
+<script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/colorbrewer.js"></script>
+<style type="text/css">
+{literal}
+#dotpotting_extras{
+    
+}
+#dotpotting_extras p{
+    padding:2px 0;
+    line-height:20px
+}
+
+#dotpotting_extras p span{
+    float:left;
+    display:block;
+}
+#dotpotting_extras p span.colors{
+    width:20px;height:20px;
+}
+#dotpotting_extras p span.colorName{
+    width:70px;
+}
+{/literal}
+</style>
 {literal}
 <script>
     var ds_config;
@@ -20,11 +43,18 @@
             'helper': 'Column to be used as the title for tooltip'
         },
         {
-            'label': 'Tooltip Message:',
+            'label': 'Tooltip Msg:',
             'type': 'select',
             'id': 'tm',
             'default': '',
             'helper': 'Column to be used as the body for tooltip'
+        },
+        {
+            'label': 'Color Scheme:',
+            'type': 'text',
+            'id': 'cs',
+            'default': '',
+            'helper': 'Copy name of scheme from list below'
         }
     ];
     
@@ -61,6 +91,26 @@
             $("#config_opt_bucket").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
         }
     }
+    
+    // colors
+    var colordiv = $("#dotpotting_extras");
+    var colorList = $("<select/>");
+    if(colorbrewer){
+        for(var color in colorbrewer){
+            var colorRow = $("<p/>");
+           
+            for(var i = 0;i<colorbrewer[color][3].length;i++){
+                var colorBlock = $("<span/>");
+                colorBlock.css("background-color",colorbrewer[color][3][i]).addClass("colors");
+                colorRow.append(colorBlock);
+            }
+            colorRow.prepend("<span class='colorName'>"+color+"</span>");
+            colorRow.addClass("clearfix");
+
+            colordiv.append(colorRow);
+        }
+    }
+    //colordiv.append(colorList);
 
    });
 

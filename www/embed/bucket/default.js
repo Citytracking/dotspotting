@@ -23,18 +23,14 @@ $(function() {
     try{
         mdict = {};
         backdict = {};
-        colors = d3.scale.category10();
-        
-        // see colorbrewer.js for more info
-        //colors = d3.scale.ordinal().range(colorbrewer.Spectral[9]);
         
         $("#map").css("height","100%");
 
         var mm = com.modestmaps,
         ds_tooltip = null;
-
-
+        
         params = parseQueryString(location.search);
+        
         if (!params.baseURL) params.baseURL = baseURL;
         
         if(params.provider)params.base = params.provider;
@@ -57,6 +53,9 @@ $(function() {
             }
             var pos = ($("#title").length > 0) ? $("#title").innerHeight() : 0;
             $("#menu_wrapper").css("top",pos+"px");
+            if(bucketColumn){
+                $("#menu_wrapper_title").html(bucketColumn);
+            }
         }else{
             $("#menu_wrapper").remove();
         }
@@ -83,7 +82,12 @@ $(function() {
             //pot.map.setZoom(pot.map.getZoom());
         }
 
-         
+        var rollover_tmpl,
+            useTemplate=false,
+            infoPanelText = null,
+            bucketPrep = {},
+            bucketCount = 0,
+            bucketList = [];
         pot.makeDot = function(feature) {
             normalizeFeature(feature);
             var props = feature.properties,
@@ -94,6 +98,22 @@ $(function() {
             props.__active = true;
             var coords = geom[0]['coordinates'];
             var pid = "dot_"+props.id;
+            
+            if(feature.properties.__rollover_message){
+                useTemplate = true;
+                if(!rollover_tmpl){
+                    rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
+                    $.template( "rollover_tmpl", rollover_tmpl );
+                }
+                props.tipMessage = $.tmpl( "<span>"+feature.properties.__rollover_message+"</span>",props);
+            }else if(rollover_tmpl){
+                props.tipMessage = $.tmpl( "rollover_tmpl",props);
+            }
+            
+            if(!infoPanelText){
+                if(feature.properties.__description_panel && feature.properties.__description_panel.length > 1) infoPanelText = feature.properties.__description_panel;
+            }
+            
             var more_front = {
                style: over_style,
                id:pid,
@@ -115,23 +135,54 @@ $(function() {
             var marker = more_front;
             
             // Dots.Potting class only takes one marker, 
-               // will manually add this one, for now, until I write a Kirby Dot markerLayer
-               var c = pot.dotsLayer.addMarker(more_back,loc);
-               c.toBack();
-               backdict[pid] = c;
-
-            if (typeSelector) {
-               var label = typeSelector.addLabel(props);
+            // will manually add this one, for now, until a Kirby Dot markerLayer exsists
+            var c = pot.dotsLayer.addMarker(more_back,loc);
+            c.toBack();
+            backdict[pid] = c;
+            
+            if(!bucketPrep[bucket_type]){
+               bucketCount++; 
+               bucketPrep[bucket_type] = props;
             }
+            bucketList.push(props);
+ 
 
             return marker;
         };
-
+        
+        var infoPanelContentElm,infoPanelElm,infoPanelCloseElm,infoPanelCloseTxtElm;
         //load markers and do things when done
         var req = pot.load(null,function(){
+            // create tooltip
+            // pass it the selector to listen for...
+            // pulls rest of params from pot object
+            // uses jQuery live
+            ds_tooltip = new DotToolTip(".dott",useTemplate);
+            
             if (typeSelector) {
                 
-               typeSelector.selectorComplete();
+                if(params.cs && colorbrewer){
+                    if(colorbrewer[params.cs]){
+                        if(bucketCount <= 3){
+                            colors = d3.scale.ordinal().range(colorbrewer[params.cs][3]); 
+                        }else if(bucketCount >= 9){
+                            colors = d3.scale.ordinal().range(colorbrewer[params.cs][9]); 
+                        }else{
+                            colors = d3.scale.ordinal().range(colorbrewer[params.cs][bucketCount]);
+                        }
+                    }
+                }
+                if(!colors)colors = d3.scale.category10();
+                
+                for(i=0;i<bucketList.length;i++){
+                    var label = typeSelector.addLabel(bucketList[i]);
+                }
+                bucketPrep = {};
+                bucketList = [];
+            
+                
+                typeSelector.selectorComplete();
+               
                 var markers = pot.dotsLayer.markers,
                 len = markers.length,
                 co = typeSelector.colorScheme;
@@ -147,16 +198,59 @@ $(function() {
 
                 
             }
+            
+            if(infoPanelText){
+                infoPanelContentElm = $("#info_panel p"),
+                infoPanelElm = $("#info_panel"),
+                infoPanelCloseElm = $("#info_panel a"),
+                infoPanelCloseTxtElm = $("#info_panel a span");
+                
+                var pos = ($("#title").length > 0) ? $("#title").innerHeight() : 0;
+                
+                infoPanelElm.css("top",pos+"px").show();
+                infoPanelContentElm.html( infoPanelText );
+                infoPanelCloseElm.css("height",infoPanelElm.innerHeight() + "px");
+                var infopos = (infoPanelElm.length > 0) ? infoPanelElm.offset().top + infoPanelElm.innerHeight() + 20 : 0;
+                
+                $("#menu_wrapper").css("top",infopos+"px");
+                
+                infoPanelCloseElm.click(function(e){
+                    e.preventDefault();
+                    if(infoPanelContentElm.is(':visible')){
+                        infoPanelContentElm.hide();
+                        infoPanelCloseTxtElm.html("&laquo;");
+                        infoPanelElm.css("width",$(this).innerWidth()+"px");
+                    }else{
+                        infoPanelContentElm.show();
+                        infoPanelCloseTxtElm.html("&raquo;");
+                        infoPanelElm.css("width","50%");
+                        adjustPanelSizes();
+                    }
+                    
+                });
+                
+                $(window).resize(function(e){
+                    adjustPanelSizes();
+                });
+                
+                function adjustPanelSizes(){
+                    infoPanelCloseElm.css("height", "auto");
+                    var newsize = infoPanelElm.innerHeight() + "px";
+                    infoPanelCloseElm.css("height", newsize);
+                    
+                    infopos = (infoPanelElm.length > 0) ? infoPanelElm.offset().top + infoPanelElm.innerHeight() + 20 : 0;
+                    $("#menu_wrapper").css("top",infopos+"px");
+                }
+            }else{
+                $("#info_panel").remove();
+            }
+            
             doCluster();
             
          
         });
         
-        // create tooltip
-        // pass it the selector to listen for...
-        // pulls rest of params from pot object
-        // uses jQuery live
-        ds_tooltip = new DotToolTip(".dott");
+        
         
         ////////////////////////////
         // ARE WE IN CONFIG MODE ////////////
@@ -575,7 +669,7 @@ MenuSelector.prototype = {
 //////////////////////////
 /////////////////////////
 
-function DotToolTip(selector) {
+function DotToolTip(selector,useTemplate) {
     if(!pot){
         console.log("Needs a dotspotting pot object....");
         return;
@@ -592,6 +686,8 @@ function DotToolTip(selector) {
         pot.error("ERROR: map DOM element seems to be missing.");
         return;
     }
+    
+    if(useTemplate != null || useTemplate != undefined)this.useTemplate = useTemplate;
     
     this.map = pot.map;
     this.listenFrom = selector;
@@ -617,6 +713,7 @@ DotToolTip.prototype = {
     tip_desc: null,
     tip_sentence:null,
     active:false,
+    useTemplate:false,
     
     createTip: function(){
         if(this.checkParams()){
@@ -676,21 +773,28 @@ DotToolTip.prototype = {
     
     showTip: function(){
         if(!this.currentProp)return;
-        var _title = this.getTipTitle();
-        var _desc = this.getTipDesc();
-        if(!_title.length && !_desc.length)return;
-        if(_title){
-            this.tt_title.css("display","block");
-            this.tt_title.html(_title);
-        }else{
-            this.tt_title.css("display","none");
-        }
-        if(_desc){
+        if(this.currentProp.tipMessage){
             this.tt_desc.css("display","block");
-            this.tt_desc.html(_desc);
+            this.tt_desc.html(this.currentProp.tipMessage);
+            this.tt_title.css("display","none");
         }else{
-            this.tt_desc.css("display","none");
+            var _title = this.getTipTitle();
+            var _desc = this.getTipDesc();
+            if(!_title.length && !_desc.length)return;
+            if(_title){
+                this.tt_title.css("display","block");
+                this.tt_title.html(_title);
+            }else{
+                this.tt_title.css("display","none");
+            }
+            if(_desc){
+                this.tt_desc.css("display","block");
+                this.tt_desc.html(_desc);
+            }else{
+                this.tt_desc.css("display","none");
+            }
         }
+       
 
         dotAddClass(this.currentDot,"over_hover");
         this.initialTipPosition();
@@ -729,6 +833,7 @@ DotToolTip.prototype = {
     },
     
     updateSize: function(){
+        this.container = this.container ||  $(pot.selectors.map);
         this.cont_offset = this.container.offset();
         this.cont_width = this.container.width();
         this.cont_height = this.container.height();
@@ -756,6 +861,7 @@ DotToolTip.prototype = {
     },
     
     checkParams: function(){
+        if(this.useTemplate)return true;
         // look for tooltip parameters
         if(!params.tt && !params.tm){
           isTip = false;
