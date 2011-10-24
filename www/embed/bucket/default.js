@@ -99,11 +99,17 @@ $(function() {
             var coords = geom[0]['coordinates'];
             var pid = "dot_"+props.id;
             
+           
             if(feature.properties.__rollover_message){
                 useTemplate = true;
+                feature.properties.__rollover_message = feature.properties.__rollover_message.replace(/\$\{(\S+)\s+(\S+)\}/gi,"${$1_$2}");
                 if(!rollover_tmpl){
+                    //var re = new RegExp("\$\{(.*?)\}", "gi");
+                    //var tmplPrep = feature.properties.__rollover_message.match(/\$\{.*?\}/gi);
                     rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
-                    $.template( "rollover_tmpl", rollover_tmpl );
+                    
+                   $.template( "rollover_tmpl", rollover_tmpl );
+                    
                 }
                 props.tipMessage = $.tmpl( "<span>"+feature.properties.__rollover_message+"</span>",props);
             }else if(rollover_tmpl){
