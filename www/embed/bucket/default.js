@@ -100,7 +100,7 @@ $(function() {
                 }
                 newMsg += msgParts[i];
             }
-            console.log(newMsg);
+            
             return newMsg;
             
             
