@@ -278,10 +278,110 @@ function std_utils_polymaps_assign_dot_properties(e){
 	
 }
 
+function clusterMarkers(markers) {
+
+    // Quantize a number by a divisor
+    function quantize(n, q) {
+        return Math.round(n / q) * q;
+    }
+
+    
+    //el.setAttribute('id', 'dot_' + id);
+	//clone.setAttribute('id', 'dot_u_' + id);
+	
+    /**
+     * Quantize the location of the marker to determine its "corner".
+     * Note: we should probably avoid offsetting markers with
+     * more explicit locations.
+     */
+    function getCorner(marker) {
+        var loc = marker.location,
+            prec = .001,
+            x = Number(loc.lon),
+            y = Number(loc.lat);
+            
+        try {
+            return quantize(x, prec)+ "," + quantize(y, prec);
+        } catch (e) {
+            return "bad";
+        }
+    }
+
+    var corners = {},
+        len = markers.length;
+    for (var i = 0; i < len; i++) {
+        var marker = markers[i];
+        
+        var marker = markers[i],
+            loc = marker.location,
+            corner = getCorner(marker);
+        if (loc.lat != 0 && loc.lon != 0) {
+            
+            marker._coord = marker.coord.copy();
+            
+            if (corner in corners) {
+                corners[corner].push(marker);
+            } else {
+                corners[corner] = [marker];
+            }
+        }
+    }
+    
+
+    for (var corner in corners) {
+        var m = corners[corner];
+        if (m.length > 1) {
+            //.0000004,
+            var r = .0000004,
+                // TODO: use the center instead?
+                c = m[0]._coord,
+                a = Math.PI / 40,
+                step = Math.PI * 2 / m.length;
+            for (var i = 0; i < m.length; i++) {
+                var mark = m[i],
+                    offset = {
+                        row: Math.cos(a) * r,
+                        col: Math.sin(a) * r
+                    };
+            
+                mark.coord.row += offset.row;
+                mark.coord.column += offset.col;
+                a += step;
+            }
+        }
+    }
+}
+
+
+
 // kirby enabled
 function utils_polymaps_assign_dot_properties(e){
+    
+    // Quantize a number by a divisor
+    function quantize(n, q) {
+        return Math.round(n / q) * q;
+    }
+    
+    /**
+     * Quantize the location of the marker to determine its "corner".
+     * Note: we should probably avoid offsetting markers with
+     * more explicit locations.
+     */
+    function getCorner(marker,loc) {
+        var prec = .001,
+            x = Number(loc[0]),
+            y = Number(loc[1]);
+            
+        try {
+            return quantize(x, prec)+ "," + quantize(y, prec);
+        } catch (e) {
+            return "bad";
+        }
+    }
+    
 
-	var count = e.features.length;
+	var count = e.features.length,
+	    corners = {};
 
 	if (! count){
 		return;
@@ -296,6 +396,7 @@ function utils_polymaps_assign_dot_properties(e){
 	var g2 = org.polymaps.svg("g");
 	master.appendChild(g1);
 	master.appendChild(g2);
+	
     
 	for (var i=0; i < count; i++){
 		
@@ -310,6 +411,9 @@ function utils_polymaps_assign_dot_properties(e){
 		
 		// Okay! Go!!
 		var count_process = to_process.length;
+		
+		
+		
 		
 		for (var k = 0; k < count_process; k ++){
             
@@ -328,11 +432,25 @@ function utils_polymaps_assign_dot_properties(e){
 			if(props && props.is_page_dot){
 				classes.push('over_hover');
 			}
-					
-		
+			
+
 			if (props && props.id){
         		
-        		    utils_kirby_me(props.id,el,g1,g2,classes);
+        		   var thedots =  utils_kirby_me(props.id,el,g1,g2,classes);
+        		   
+        		   var loc = f.data.geometry.coordinates,
+       			    corner = getCorner(f,loc);
+
+
+           			if(loc[0] != 0 && loc[1] !=0){
+
+           			    if (corner in corners) {
+                               corners[corner].push([el,{row:f.data.geometry.coordinates.x,col:f.data.geometry.coordinates.y},thedots[1]]);
+                           } else {
+                               corners[corner] = [[el,{row:f.data.geometry.coordinates.x,col:f.data.geometry.coordinates.y},thedots[1]]];
+                           }
+
+           			}
 					
 					utils_svg_title(el,props.id);
 					
@@ -349,6 +467,39 @@ function utils_polymaps_assign_dot_properties(e){
 
 		}
 	}
+	
+
+	for (var corner in corners) {
+        var m = corners[corner];
+     
+        if (m.length > 1) {
+            //.0000004,
+            var r = 6,
+                // TODO: use the center instead?
+                c = m[0][1];
+                a = Math.PI / 40,
+                step = Math.PI * 2 / m.length;
+            for (var i = 0; i < m.length; i++) {
+                var mark = m[i],
+                    offset = {
+                        row: Math.cos(a) * r,
+                        col: Math.sin(a) * r
+                    };
+
+                mark[1].row += offset.row;
+                mark[1].col += offset.col;
+                
+                mark[0].setAttributeNS(null,"transform","translate("+mark[1].row+","+mark[1].col+")");
+                mark[2].setAttributeNS(null,"transform","translate("+mark[1].row+","+mark[1].col+")");
+                a += step;
+            }
+        }
+        
+    }
+    
+    
+    
+    
 	
 }
 
@@ -369,6 +520,8 @@ function utils_kirby_me(id,el,g1,g2,classes){
 	//g.setAttribute('class', classes.join(' '));
 	el.setAttribute('id', 'dot_' + id);
 	clone.setAttribute('id', 'dot_u_' + id);
+	
+	return [el,clone];
 }
 
 

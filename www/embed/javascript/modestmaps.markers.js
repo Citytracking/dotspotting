@@ -265,6 +265,9 @@ if (!com.modestmaps) {
 
     MM.extend(MM.MarkerLayer, MM.Layer);
 
+    /**
+        Uses Raphael to draw dots
+    **/
     MM.DotMarkerLayer = function(map, provider, parent) {
         MM.MarkerLayer.call(this, map, provider, parent);
        
@@ -280,6 +283,8 @@ if (!com.modestmaps) {
         canvas: null,
         dotRadius: 6,
         dotAttrs: null,
+        frontMarkers:{},
+        backMarkers:{},
         
         clear: function() {
            this.canvas.clear();
@@ -316,6 +321,12 @@ if (!com.modestmaps) {
             // set its initial position
             this.repositionMarker(dot);
             this.markers.push(dot);
+            
+            if(dot.attrs['_kirbyPos'] == "back"){
+                this.backMarkers[dot.attrs.id] = dot;
+            }else{
+                this.frontMarkers[dot.attrs.id] = dot;
+            }
             
             return dot;
         },
@@ -379,7 +390,79 @@ if (!com.modestmaps) {
             for (var i = 0; i < len; i++) {
                 this.repositionMarker(this.markers[i]);
             }
+        },
+        
+        cluster: function(){
+            // Quantize a number by a divisor
+            function quantize(n, q) {
+                return Math.round(n / q) * q;
+            }
+
+            /**
+             * Quantize the location of the marker to determine its "corner".
+             * Note: we should probably avoid offsetting markers with
+             * more explicit locations.
+             */
+            function getCorner(marker,loc) {
+                var prec = .001,
+                    x = Number(loc.lon),
+                    y = Number(loc.lat);
+
+                try {
+                    return quantize(x, prec)+ "," + quantize(y, prec);
+                } catch (e) {
+                    return "bad";
+                }
+            }
+            
+            
+            var corners = {};
+            
+            for (mark in this.frontMarkers) {
+                var marker = this.frontMarkers[mark],
+                    loc = marker.location,
+                    corner = getCorner(marker,loc);
+                
+                if(loc.lat != 0 && loc.lon !=0){
+                    if (corner in corners) {
+                        corners[corner].push(marker);
+                    } else {
+                        corners[corner] = [marker];
+                    }
+                }
+            }
+            
+            for (var corner in corners) {
+                var m = corners[corner];
+                if (m.length > 1) {
+                    //.0000004,
+                    var r = .0000004,
+                        a = Math.PI / 40,
+                        step = Math.PI * 2 / m.length;
+                    for (var i = 0; i < m.length; i++) {
+                        var mark = m[i],
+                            offset = {
+                                row: Math.cos(a) * r,
+                                col: Math.sin(a) * r
+                            };
+                        
+                       
+                        mark.coord.row += offset.row;
+                        mark.coord.column += offset.col;
+                        this.repositionMarker(mark);
+                        
+                        if(this.backMarkers[mark.attrs.id]){
+                            this.backMarkers[mark.attrs.id].coord.row = mark.coord.row;
+                            this.backMarkers[mark.attrs.id].coord.column = mark.coord.column;
+                            this.repositionMarker(this.backMarkers[mark.attrs.id]);
+                        }
+                        
+                        a += step;
+                    }
+                }
+            }
         }
+        
     };
     
     MM.extend(MM.DotMarkerLayer, MM.MarkerLayer);

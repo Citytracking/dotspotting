@@ -139,12 +139,15 @@ $(function() {
                radius:6,
                dotClass:"dott",
                type:bucket_type,
-               props:props
+               props:props,
+               _kirbyPos:"front"
             };
             
             var more_back = {
                    style: under_style,
-                   radius:12
+                   radius:12,
+                   _kirbyPos:"back",
+                   id:pid
                };
 
 
@@ -167,7 +170,8 @@ $(function() {
  
 
             return marker;
-        };
+        };        
+        
         
         var infoPanelContentElm,infoPanelElm,infoPanelCloseElm,infoPanelCloseTxtElm;
         //load markers and do things when done
@@ -176,22 +180,28 @@ $(function() {
             // pass it the selector to listen for...
             // pulls rest of params from pot object
             // uses jQuery live
+            
+            
             ds_tooltip = new DotToolTip(".dott",useTemplate);
             
             if (typeSelector) {
                 
                 if(params.cs && colorbrewer){
                     if(colorbrewer[params.cs]){
-                        if(bucketCount <= 3){
-                            colors = d3.scale.ordinal().range(colorbrewer[params.cs][3]); 
-                        }else if(bucketCount >= 9){
-                            colors = d3.scale.ordinal().range(colorbrewer[params.cs][9]); 
-                        }else{
+                        if(bucketCount > 3 && bucketCount <= 9 ){
                             colors = d3.scale.ordinal().range(colorbrewer[params.cs][bucketCount]);
+                        }else{
+                            colors = d3.scale.ordinal().domain([0,bucketCount-1]).range([colorbrewer[params.cs][9][0],colorbrewer[params.cs][9][colorbrewer[params.cs][9].length-1]]); 
                         }
                     }
                 }
-                if(!colors)colors = d3.scale.category10();
+                if(!colors){
+                    if(bucketCount <= 10){
+                        colors = d3.scale.category10();
+                    }else{
+                        colors = d3.scale.category20();
+                    }
+                }
                 
                 for(i=0;i<bucketList.length;i++){
                     var label = typeSelector.addLabel(bucketList[i]);
@@ -214,9 +224,10 @@ $(function() {
                         }
                     }
                 }
-
-                
             }
+            
+            // cluster markers
+            pot.dotsLayer.cluster();
             
             if(infoPanelText){
                 infoPanelContentElm = $("#info_panel p"),
@@ -264,7 +275,7 @@ $(function() {
                 $("#info_panel").remove();
             }
             
-            doCluster();
+            //doCluster();
             
          
         });

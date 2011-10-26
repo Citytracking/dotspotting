@@ -284,7 +284,8 @@ $(function() {
              
             
 
-            //doCluster();
+            // cluster markers
+            pot.dotsLayer.cluster();
             
          
         });
