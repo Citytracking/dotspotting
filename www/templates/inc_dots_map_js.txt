@@ -55,14 +55,21 @@ function dot_onclick(dotid,lon,lat){
 	*/
 }
 
+var isOver;
 // dot onmouseover handler
-function dot_onmouseover(dotid,isDot){
+function dot_onmouseover(dotid,isDot,rvml){
+    
+    if(isOver)return;
+    
+    isOver = true;    
 	
 	var dot = dot_getinfo_json(dotid);
 	
 	if (! dot['id']){
 		return;
 	}
+	
+    
 	
 	// move dataTable row into view
 	var dot_table_id = "dotslist_dot_"+dotid;
@@ -76,6 +83,8 @@ function dot_onmouseover(dotid,isDot){
 	for (var i = 0; i < tlen; i++){
 		clearTimeout(_dotspotting.dots_list_mouseout_timers.pop());
 	}
+	
+	
 	
 	var element;
 	if (_dotspotting.use_polymaps){	
@@ -91,22 +100,28 @@ function dot_onmouseover(dotid,isDot){
     	element.parentNode.appendChild(element);
 	}
 	
+	
+	
 	if(_dotspotting.selected_dot != dotid && element){
 	
-		/* Add dot hover class, because appendChild breaks ':hover' in FF */
-		dotAddClass(element ,'over_hover');		
+		// Add dot hover class, because appendChild breaks ':hover' in FF 
+		dotAddClass(element ,'over_hover',rvml);		
 	}
 	
 	dot_highlight_tr(dotid);
+
 }
 
 
 // dot onmouseout handler
-function dot_onmouseout(dotid){
+function dot_onmouseout(dotid,rvml){
+    isOver = false;
+    
 	if(_dotspotting.selected_dot != dotid){
-		dot_unselect(dotid);
+		dot_unselect(dotid,rvml);
 	}
 	
+
 	var tid = setTimeout(function(){
 
 		dot_restore_tr();
@@ -114,6 +129,7 @@ function dot_onmouseout(dotid){
 	}, 8000);
 
 	_dotspotting.dots_list_mouseout_timers.push(tid);
+	
 }
 
 // resets map bounds
@@ -152,7 +168,8 @@ function dotSetDotClassName(element,$class){
 }
 
 
-function dotAddClass(element, $class) {
+function dotAddClass(element, $class, rvml) {
+    
 	if(!element)return;
 	
     var i,newClass;
@@ -171,12 +188,18 @@ function dotAddClass(element, $class) {
 			newClass = dotGetDotClassName(element);
             newClass += (!newClass.length) ? $class : " " + $class;
 		    dotSetDotClassName(element,newClass);
+		    
+		    if(!_dotspotting.use_polymaps){
+		        if(Raphael && Raphael.vml && rvml){ 
+		            rvml.attr(rvml['rhover']);
+		        }
+	        }
         }
     }
     return element;
 }
 
-function dotRemoveClass (element, $class) {
+function dotRemoveClass (element, $class, rvml) {
 	if(!element)return;
     var pattern = new RegExp("(^| )" + $class + "( |$)");
     var i,newClass;
@@ -196,24 +219,42 @@ function dotRemoveClass (element, $class) {
             newClass = newClass.replace(pattern, "$1");
             newClass = newClass.replace(/ $/, ""); 
 		    dotSetDotClassName(element,newClass);
+		    if(!_dotspotting.use_polymaps){
+    		    if(Raphael && Raphael.vml && rvml){ 
+    		        rvml.attr(rvml['rnormal']);
+    		    }
+    		    
+		    }
+ 
 	    }
 	    
     }
+    
     return element;
 }
 
 
 // it does as the name says it does
 function unselectAllDots(){
-	$(".dot").each(function(){
-		dotRemoveClass($(this)[0],'over_hover');
-	});
+	if(!_dotspotting.use_polymaps && _dotspotting['markers']){
+	    
+        for(mark in _dotspotting['markers']['raphaelObjects']){
+           var raphObj = _dotspotting['markers']['raphaelObjects'][mark];
+           dotRemoveClass(raphObj.node,'over_hover',raphObj);
+        }
+
+    }else{
+        $(".dot").each(function(){
+    		dotRemoveClass($(this)[0],'over_hover',null);
+    	}); 
+    }
+
 }
 
 // generic function to reset dot styles
-function dot_unselect(dotid){
+function dot_unselect(dotid,rvml){
 	$("#"+"dot_"+dotid).each(function(){
-		dotRemoveClass($(this)[0],'over_hover');
+		dotRemoveClass($(this)[0],'over_hover',rvml);
 	});
 }
 
@@ -647,13 +688,13 @@ function draw_map_modestmaps(dots,update_from_search){
 	}
 
 	// writing dot colors set in config file
-	// 0 = attrs , 1 = attrs_hover
+	// 0 = attrs , 1 = attrs_back, 2 = attrs_hover
 	var attr_array = get_mm_dot_styles();
-
 
 	var more = {
 		'attrs' : attr_array[0],
 		'attrs_back' : attr_array[1],
+		'attrs_hover' : attr_array[2],
 		'radius' : 6,
 
 		// just inline the function mostly so that we don't
@@ -663,20 +704,21 @@ function draw_map_modestmaps(dots,update_from_search){
 		'onload' : function(el, props){
 
 			el.mouseover(function (evt) {
-				dot_onmouseover(props.id,true);
+				dot_onmouseover(props.id,true,this);
 			});
 			
 			el.mouseout(function (evt) {
-				dot_onmouseout(props.id);
+				dot_onmouseout(props.id,this);
 			});
 
 			el.click(function(evt){
-				dot_onclick(props.id);
+				dot_onclick(props.id,this);
 			});
 		}
 	};
 	
 	var markers = new mm.Markers(map);
+	_dotspotting.markers = markers;
     markers.drawKirbys(dots['features'], more);
 
 	// not really doing anything right now because we have our own controls.
@@ -693,18 +735,27 @@ function draw_map_modestmaps(dots,update_from_search){
     
     
     function handleMapChanges(){
-        if(_dotspotting.selected_dot && _dotspotting.selected_dot !== null){
-		    unselectAllDots();
+	    unselectAllDots();
+		
+		// now add highlight class back to a dot that is selected
+		if(_dotspotting.selected_dot && _dotspotting.selected_dot !== null){
+		    var dotid = "dot_"+ _dotspotting.selected_dot;
+
+		    var element = document.getElementById(dotid);
+			var rmvl = null;
+			if(!_dotspotting.use_polymaps && _dotspotting['markers']){
+        	    if(Raphael && Raphael.vml){ 
+        	        rmvl = _dotspotting['markers']['raphaelObjects'][dotid];
+        	        element = rmvl.node;
+        	    }
+            }
 			
-			// now add highlight class back to a dot that is selected
-			if(_dotspotting.selected_dot && _dotspotting.selected_dot !== null){
-				var element = document.getElementById("dot_"+ _dotspotting.selected_dot);
-				dotAddClass(element,'over_hover');
-			}
-        }
+			if(element)dotAddClass(element,'over_hover',rmvl);
+		}
+        
     }
     
-    map.addCallback("drawn", handleMapChanges);
+    map.addCallback("drawn", defer(handleMapChanges,50));
 	
 	return;
 }

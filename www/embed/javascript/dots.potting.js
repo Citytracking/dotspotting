@@ -5,6 +5,7 @@
 
 if (typeof Dots === "undefined") Dots = {};
 Dots.Potting = function(params, selectors) {
+    if(!Dots)Dots = {};
     this.params = $.extend(Dots.Potting.defaultParams, this.parseParams(params));
     this.selectors = $.extend(this.selectors, selectors);
 
@@ -103,9 +104,11 @@ Dots.Potting.prototype = {
 
     createMap: function() {
         var provider = this.getMapProvider(this.params.base);
+        
         var handlers = [];
         
         if(typeof touchSupport == 'undefined')touchSupport = false;
+        
     	if(touchSupport){
     	    handlers.push(	new com.modestmaps.TouchHandler() );
     	    
@@ -133,11 +136,14 @@ Dots.Potting.prototype = {
         if (provider.copyright) {
             this.addCopyright(provider.copyright);
         }
+        
 
         this.mapHash = new MapHash(this.map);
+        
         if (location.hash.length > 1) {
             this.alreadyCentered = this.mapHash.read(location.hash);
         }
+        
         this.mapHash.start();
 
         return this.map;
@@ -150,6 +156,7 @@ Dots.Potting.prototype = {
 
     setTitle: function(title) {
         if (typeof title === "undefined") title = this.params.title;
+        
         if (title) {
             $(this.selectors.title).text(title);
         } else {
@@ -204,6 +211,7 @@ Dots.Potting.prototype = {
 
     load: function(url, success, error) {
         if (!url) url = this.getDotsURL();
+        
         if (url) {
             var that = this;
             return $.ajax(url, {
@@ -236,9 +244,11 @@ Dots.Potting.prototype = {
         var len = features.length,
             locations = updateExtent ? [] : null,
             added = [];
+            
         for (var i = 0; i < len; i++) {
             var feature = features[i],
                 dot = this.makeDot(feature);
+                
             if (dot) {
                 var marker = this.dotsLayer.addMarker(dot, feature);
                 if (updateExtent && marker.location && marker.location.lat && marker.location.lon) {
@@ -250,6 +260,7 @@ Dots.Potting.prototype = {
         if (updateExtent && locations.length > 0) {
             this.map.setExtent(locations);
         }
+        
         return added;
     },
 

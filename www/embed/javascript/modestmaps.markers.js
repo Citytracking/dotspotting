@@ -301,8 +301,10 @@ if (!com.modestmaps) {
             if (attrs.id) {
                 dot.node.id = attrs.id;
             }
+            
+            // does not work when Raphael uses VML...
             if(attrs.dotClass){
-                dot.node.setAttribute('class', attrs.dotClass);
+                //dot.node.setAttribute('class', attrs.dotClass);
             }
 
 
@@ -310,22 +312,28 @@ if (!com.modestmaps) {
         },
         
         addMarker: function(attrs, location) {
+            
             // if only location is provided, ignore attrs
             if (arguments.length == 1) location = arguments[0];
             // create a dot with the provided attrs
             var dot = this.buildMarker(attrs);
+            
+            
             dot.location = this.getLocation(location);
             // stash the projected coordinate for later use
             dot.coord = this.map.provider.locationCoordinate(dot.location);
-            dot.attrs = attrs;
+            dot.myAttrs = attrs;
+            
+            
             // set its initial position
             this.repositionMarker(dot);
             this.markers.push(dot);
             
+            
             if(dot.attrs['_kirbyPos'] == "back"){
-                this.backMarkers[dot.attrs.id] = dot;
+                this.backMarkers[dot.myAttrs.id] = dot;
             }else{
-                this.frontMarkers[dot.attrs.id] = dot;
+                this.frontMarkers[dot.myAttrs.id] = dot;
             }
             
             return dot;
@@ -351,11 +359,22 @@ if (!com.modestmaps) {
         
         repositionMarker: function(marker) {
             if (marker.coord) {
-                var pos = this.map.coordinatePoint(marker.coord);
-                // TODO: check to see if this works in IE
                 
-                marker.attr("cx", pos.x - this.position.x);
-                marker.attr("cy", pos.y - this.position.y);
+                var pos = this.map.coordinatePoint(marker.coord);
+                
+                // TODO: check to see if this works in IE
+                if(marker.attr('cx') >= 0){
+                    
+                    marker.attr("cx", pos.x - this.position.x);
+                    marker.attr("cy", pos.y - this.position.y);
+                    
+                    /*
+                    var att = marker.attr();
+                    for(a in att){
+                        console.log(a,att[a]);
+                    }
+                    */
+                }
             }
         },
         
@@ -451,10 +470,10 @@ if (!com.modestmaps) {
                         mark.coord.column += offset.col;
                         this.repositionMarker(mark);
                         
-                        if(this.backMarkers[mark.attrs.id]){
-                            this.backMarkers[mark.attrs.id].coord.row = mark.coord.row;
-                            this.backMarkers[mark.attrs.id].coord.column = mark.coord.column;
-                            this.repositionMarker(this.backMarkers[mark.attrs.id]);
+                        if(this.backMarkers[mark.myAttrs.id]){
+                            this.backMarkers[mark.myAttrs.id].coord.row = mark.coord.row;
+                            this.backMarkers[mark.myAttrs.id].coord.column = mark.coord.column;
+                            this.repositionMarker(this.backMarkers[mark.myAttrs.id]);
                         }
                         
                         a += step;

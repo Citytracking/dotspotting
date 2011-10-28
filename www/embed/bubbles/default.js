@@ -1,5 +1,5 @@
 //define globals
-var pot,params,colors,bucketColumn,mdict,ds_tooltip,backdict;
+var pot,params,colors,bucketColumn,mdict,ds_tooltip,backdict,masterNode,ds_user_opts={};
 
 // style objects for dot
 var over_style = {
@@ -10,10 +10,23 @@ var over_style = {
 	'stroke-opacity':1
 }; 
 
+var hover_style = {
+    'fill' : 'rgb(255,255,255)',
+	'fill-opacity' : .8,
+	'stroke' : '#666666',
+	'stroke-width' : 2,
+	'stroke-opacity':1
+};
+var masterNode_style = {
+    'fill' : '#FFFF00'
+}
+
 
 
 // go on then	
 $(function() {
+   
+    
     try{
         mdict = {};
         backdict = {};
@@ -28,6 +41,7 @@ $(function() {
 
         var mm = com.modestmaps,
         ds_tooltip = null;
+        
 
 
         params = parseQueryString(location.search);
@@ -40,8 +54,11 @@ $(function() {
 
 
         pot = new Dots.Potting(params);
+        
         pot.setTitle();
+         
         pot.dotsLayer = new mm.DotMarkerLayer(pot.map);
+         
         
         // adjust controls if title
         if (params.title) {
@@ -64,11 +81,6 @@ $(function() {
         });
 
         
-        function doCluster(){
-            //clusterMarkers(pot.dotsLayer.markers);
-            //pot.map.setZoom(pot.map.getZoom());
-        }
-        
         var bubbleSizeColumn = (params.valcol) ? params.valcol : "id";
         var maxSize = (params.max) ? parseFloat(params.max) : 50,
             minSize = (params.min) ? parseFloat(params.min) : 6,
@@ -85,13 +97,26 @@ $(function() {
         
         }
         
-
-        
         pot.makeDot = function(feature) {
             normalizeFeature(feature);
             var props = feature.properties,
             markerVal = (feature.properties[bubbleSizeColumn]) ? feature.properties[bubbleSizeColumn] : 0,
             geom = (feature.geometry.type == 'GeometryCollection') ? feature.geometry.geometries : [ feature.geometry ];
+            
+            if(props['__tooltip_config'] && !ds_user_opts['tooltip']){
+                ds_user_opts['tooltip'] = props['__tooltip_config'];
+            }
+            
+            if(props['__dot_style'] && !ds_user_opts['over_style']){
+                ds_user_opts['over_style'] = parseJSON(props['__dot_style']);
+                over_style = ds_user_opts['over_style'];
+            }
+            
+            if(props['__dot_hover_style'] && !ds_user_opts['hover_style']){
+                ds_user_opts['hover_style'] = parseJSON(props['__dot_hover_style']);
+                hover_style = ds_user_opts['hover_style'];
+            }
+            
             coords = geom[0]['coordinates'],
             pid = "dot_"+props.id;
             
@@ -99,7 +124,7 @@ $(function() {
             props.__active = true,
             updateValues(markerVal);
             
-            
+           
             if(feature.properties.__rollover_message){
                 if(!rollover_tmpl){
                     rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
@@ -110,8 +135,7 @@ $(function() {
                 props.tipMessage = $.tmpl( "rollover_tmpl",props);
             }
             
-            
-            
+
             if(!infoPanelText){
                 if(feature.properties.__description_panel) infoPanelText = feature.properties.__description_panel;
             }
@@ -132,14 +156,15 @@ $(function() {
             props.__dt_coords = loc;
 
             var marker = more_front;
-
+            
+           
             return marker;
         };
         
                 
         function getMasterNode(prop,val,markers,len){
             for(i=0;i<len;i++){
-               if(markers[i].attrs.props[prop] == val){
+               if(markers[i].myAttrs.props[prop] == val){
                    return markers[i];
                } 
             }
@@ -148,12 +173,12 @@ $(function() {
         function getChildrenNodes(val,markers,len){
             var results = [];
             for(i=0;i<len;i++){
-                var node_props = markers[i].attrs.props.nodes.split(":");
+                var node_props = markers[i].myAttrs.props.nodes.split(":");
                if(node_props[1] == val){
                    results.push(markers[i]);
                } 
             }
-            return results
+            return results;
         }
         
         function gatherNodes(markers,len){
@@ -161,17 +186,18 @@ $(function() {
             // get masters
             
             for(i=0;i<len;i++){
-                if(markers[i].attrs.props.nodes){
-                    var node_props = markers[i].attrs.props.nodes.split(":");
+                if(markers[i].myAttrs.props.nodes){
+                    var node_props = markers[i].myAttrs.props.nodes.split(":");
                     
                     var nn = getMasterNode($.trim(node_props[0]),node_props[1],markers,len);
                     if(nn){
+                        markers[i]['master']= true;
                         if(!node_list[node_props[1]]){
                             node_list[node_props[1]] = {
                                 col: $.trim(node_props[0]),
                                 master:nn,
                                 children:[]
-                            }
+                            };
                         }
                     }
                 }
@@ -179,7 +205,7 @@ $(function() {
             
             
             for(obj in node_list){
-                node_list[obj].children = getChildrenNodes(obj,markers,len)
+                node_list[obj].children = getChildrenNodes(obj,markers,len);
             }
             
         }
@@ -199,13 +225,17 @@ $(function() {
             var markers = pot.dotsLayer.markers,
             len = markers.length;
             var canvas = pot.dotsLayer.canvas;
+
             if(!node_list){
                 gatherNodes(markers,len);
             }
             
+         
+            
             for(obj in node_list){
                 var pt1 = {x:node_list[obj].master.attrs.cx,y:node_list[obj].master.attrs.cy};                 
-                dotAddClass(node_list[obj].master.node,"node_master");
+                node_list[obj].master.attr(masterNode_style);
+                
                 
                 if(node_list[obj].children){
                     var len = node_list[obj].children.length;
@@ -240,13 +270,15 @@ $(function() {
         }
         
         //load markers and do things when done
+        
         var req = pot.load(null,function(){
-            
+  
             // create tooltip
             // pass it the selector to listen for...
             // pulls rest of params from pot object
             // uses jQuery live
-            ds_tooltip = new DotToolTip(".dott");
+            // because we are using Raphael we need to use the id as the selector
+            ds_tooltip = new DotToolTip("[id*='dot_']");
             
             
             var markers = pot.dotsLayer.markers,
@@ -254,13 +286,21 @@ $(function() {
             //var canvas = pot.dotsLayer.canvas;
 
             for(i=0;i<len;i++){
-                if(markers[i].attrs._kirbyPos == "front"){
+                if(markers[i].myAttrs._kirbyPos == "front"){
                     //var max = (markers[i].attrs.markerSize) ? (markers[i].attrs.markerSize / maxValue) * maxSize : minSize;
-                    var size = (markers[i].attrs.markerSize) ? (markers[i].attrs.markerSize) : minSize;
-                    var radius =  (((Math.sqrt(Math.abs(size))) / Math.sqrt(maxValue))) * maxSize;
+                    
+                    var size = (markers[i].myAttrs.markerSize) ? (markers[i].myAttrs.markerSize) : minSize;
+                    //var radius =  (((Math.sqrt(size)) / Math.sqrt(maxValue))) * maxSize;
+                
+                    
+                    //http://blog.thematicmapping.org/2008/06/proportional-symbols-in-three.html
+                    //var radius = (size / maxValue) * maxSize;
+                    var radius = Math.pow(size/maxValue, 1/2) * maxSize;
+                    
                     if(radius < minSize)radius = minSize;
+                    
                     markers[i].attr("r",radius);
-                    if(!mdict[markers[i].attrs.id])mdict[markers[i].attrs.id] = markers[i];
+                    if(!mdict[markers[i].myAttrs.id])mdict[markers[i].myAttrs.id] = markers[i];
                     
                     
                     /*
@@ -272,33 +312,29 @@ $(function() {
             }
             
             sortMarkers(markers,"desc");
-            if(renderAsNodes)createLines();
+
+            if(renderAsNodes){
+                createLines();
+                pot.map.addCallback("panned", repositionMisc);
+                pot.map.addCallback("zoomed", repositionMisc);
+                pot.map.addCallback("extentset", repositionMisc);
+                pot.map.addCallback("resized", repositionMisc);
+            }
         
-            
             
             if(infoPanelText){
                 $("#info_panel").html("<p>" + infoPanelText + "</p>");
             }
             
-            
-             
-            
-
             // cluster markers
             pot.dotsLayer.cluster();
             
          
         });
-        if(renderAsNodes){
-            pot.map.addCallback("panned", repositionMisc);
-            pot.map.addCallback("zoomed", repositionMisc);
-            pot.map.addCallback("extentset", repositionMisc);
-            pot.map.addCallback("resized", repositionMisc);
-        }
+
        // this.map.addCallback("resized", defer(that.updateSize,100));
         
-        
-        
+
         ////////////////////////////
         // ARE WE IN CONFIG MODE ////////////
         // SHould we do this .. this way?? //
@@ -331,8 +367,8 @@ function sortMarkers(markers,dir){
     }
 
     function sortee(a, b) {
-        var x = parseFloat(a.attrs.markerSize);
-        var y = parseFloat(b.attrs.markerSize);
+        var x = parseFloat(a.myAttrs.markerSize);
+        var y = parseFloat(b.myAttrs.markerSize);
         return (dir == "asc") ? x - y : y - x;
     }
     var markers = markers || pot.dotsLayer.markers,
@@ -340,7 +376,7 @@ function sortMarkers(markers,dir){
     markers.sort(sortee);
     var len = markers.length;
     for(i=0;i<len;i++){
-        mdict[markers[i].attrs.id].toFront();
+        mdict[markers[i].myAttrs.id].toFront();
     }
 }
 
@@ -354,60 +390,20 @@ function normalizeFeature(feature) {
     }
 }
 
-function dotHasClass(element, $class) {
-    if(!element.className.baseVal)return false;
-    var pattern = new RegExp("(^| )" + $class + "( |$)");
-    return pattern.test(element.className.baseVal) ? true : false;
-};
-
-function dotAddClass(element, $class) {
-	if(!element)return;
-    var i,newClass;
-    //is the element array-like?
-    if(element.length) {
-        for (i = 0; i < element.length; i++) {
-
-            if (!this.dotHasClass(element[i], $class)) {
-				newClass = element[i].className.baseVal;
-                newClass += element[i].className.baseVal === "" ? 
-                $class : " "+$class;
-				element.setAttribute('class', newClass);
+function parseJSON(str){ 
+    var jData = JSON.parse(str, function (key, value) { 
+        if(value){
+            
+            if (typeof value === 'string') {
+                return String(value);  
+            }else if(typeof value === 'number'){
+                return Number(value);
             }
         }
-    }
-    else { //not array-like
-        if (!this.dotHasClass(element, $class)) {
-			newClass = element.className.baseVal;
-            newClass += (element.className.baseVal === "") ? $class : " "+$class;
-			element.setAttribute('class', newClass);
-        }
-    }
-    return element;
-};
-
-function dotRemoveClass(element, $class) {
-	if(!element)return;
-
-    var pattern = new RegExp("(^| )" + $class + "( |$)");
-    var i,newClass;
-
-    //is element array-like?
-    if(element.length) {
-        for (i = 0; i < element.length; i++) {
-			newClass = element[i].className.baseVal;
-            newClass = newClass.replace(pattern, "$1");
-            newClass = newClass.replace(/ $/, "");  
-			element.setAttribute('class', newClass);          
-        }
-    }
-    else { //nope
-		newClass = element.className.baseVal;
-        newClass = newClass.replace(pattern, "$1");
-        newClass = newClass.replace(/ $/, ""); 
-		element.setAttribute('class', newClass); 
-    }
-    return element;
-};
+        return value;
+    });
+    return jData;
+}
 
 
 
@@ -460,8 +456,10 @@ DotToolTip.prototype = {
     tip_desc: null,
     tip_sentence:null,
     active:false,
+    currentRalfObj:null,
     
     createTip: function(){
+        
         if(this.checkParams()){
             this.active = true;
             this.addHandlers();
@@ -477,24 +475,36 @@ DotToolTip.prototype = {
                 var id = String($(this).attr('id'));
                 if(!id)return;
                 if(!mdict[id])return;
-                if(!mdict[id].attrs.props['__active'])return;
+                if(!mdict[id].myAttrs.props['__active'])return;
+                if(mdict[id] == that.currentRalfObj)return;
                
-                mdict[id].attrs.props["__dt_coords"] = mdict[id].coord;
+                mdict[id].myAttrs.props["__dt_coords"] = mdict[id].coord;
+                that.currentRalfObj = mdict[id];
                 /// proceed
                 that.currentDot = this;
-                that.currentProp = mdict[id].attrs.props;
-                this.parentNode.appendChild(this);
+                that.currentProp = mdict[id].myAttrs.props;
+                
+                //this.parentNode.appendChild(this);
+                //that.currentProp.toFront();
+                
                 that.showTip();
             } else {
                 //that.currentDot = that.currentProp = null
-                var id = String($(this).attr('id'));
-                if(!id)return;
-                if(!mdict[id])return;
+                if(!that.currentRalfObj)return;
                 
-                //mdict[id].toBack();
-                dotRemoveClass(that.currentDot,"over_hover");
+                if(that.currentRalfObj['master']){
+                    that.currentRalfObj.attr(masterNode_style);
+                }else{
+                   that.currentRalfObj.attr(over_style); 
+                }
+                
+                //that.currentRalfObj.toBack();
+                
+                that.currentRalfObj = null;
+                
+                
                 that.hideTip();
-                sortMarkers(pot.dotsLayer.markers);//
+                sortMarkers(pot.dotsLayer.markers,"desc");//
             }
             return false;
         });
@@ -548,14 +558,13 @@ DotToolTip.prototype = {
                 this.tt_desc.css("display","none");
             }
         }
-        
-        dotAddClass(this.currentDot,"over_hover");
+        this.currentRalfObj.attr(hover_style);
         this.initialTipPosition();
     },
     
     initialTipPosition: function(){
         
-        this.tt.css("left","-9999px")
+        this.tt.css("left","-9999px");
         this.tt.css("width","auto");
         var _w = (this.tt.width() < this.TT_WIDTH) ? this.tt.width() : this.TT_WIDTH;
         if(_w < 70)_w = 70;
@@ -564,18 +573,14 @@ DotToolTip.prototype = {
         //
         var _point = this.map.coordinatePoint(this.currentProp.__dt_coords);
         var _h = this.tt.height();
-        var _radius = parseFloat(this.currentDot.getAttribute('r'));
-        var _circleHeight = this.currentDot.getBBox().height;
+        var _radius = parseFloat(this.currentRalfObj.attr('r'));
+        var _circleHeight = this.currentRalfObj.getBBox().height;
         var _x = parseFloat(_point.x - 10);
 
      
         // y = Marker location - (tip box height + nub height + radius + border size)
         var _y = _point.y - (_h + 10 + _radius + 6); // 22
 
-        /*
-        if(_tc.left < 0 )_tc.left = 1;
-        if(_tc.left > cont_width)_tc.left = cont_width-1;
-        */
 
         var pos_pct = (_point.x / this.cont_width);
 
@@ -598,10 +603,12 @@ DotToolTip.prototype = {
     },
     
     unselectAllDots: function(){
-        this.currentDot = this.currentProp = null;
-    	$(this.listenFrom).each(function(){
-    		dotRemoveClass($(this)[0],'over_hover');
-    	});
+        this.currentDot = this.currentProp = this.currentRalfObj = null;
+        
+        for(o in mdict){
+            mdict[o].attr(over_style);
+        }
+
     },
     
     getTipTitle: function(){
@@ -619,6 +626,41 @@ DotToolTip.prototype = {
     },
     
     checkParams: function(){
+        // user tip styles
+        
+        if(ds_user_opts['tooltip']){
+
+            var userTipObj = parseJSON(ds_user_opts['tooltip']);
+            
+
+            if(userTipObj){
+                for(prop in userTipObj){
+                    
+                    
+                    switch(prop){
+                        case "background":
+                            this.tt.css("background-color",userTipObj[prop]);
+                            this.tt_nub.css("border-top-color",userTipObj[prop] );
+                        break;
+                        case "font-color":
+                            this.tt.css("color",userTipObj[prop]);
+                        break;
+                        case "font-size":
+                            this.tt_title.css("fontSize",userTipObj[prop]);
+                        break;
+                        case "font-family":
+                            this.tt_title.css("fontFamily",userTipObj[prop]);
+                        break;
+                        case "font-weight":
+                            this.tt_title.css("fontWeight",userTipObj[prop]);
+                        break;
+                    }
+                    
+                    
+                }
+            }
+            
+        }
         // look for tooltip parameters
         if(!params.tt && !params.tm){
           isTip = false;
@@ -653,5 +695,3 @@ DotToolTip.prototype = {
         return isTip;
     }
 }
-
-

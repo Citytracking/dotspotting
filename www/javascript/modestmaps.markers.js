@@ -9,6 +9,7 @@ if (!com.modestmaps){
 com.modestmaps.Markers = function(mm){
 
 	this.drawn = new Array();
+	this.raphaelObjects = {};
 
 	this.modestmap = mm;
 	this.container = mm.parent;
@@ -45,7 +46,7 @@ com.modestmaps.Markers = function(mm){
 */
 com.modestmaps.Markers.prototype.forceAresize = function(){
 	this.canvas.setSize(this.container.offsetWidth,this.container.offsetHeight);
-	this._redrawMarkers();
+	this.purgeMarkers();
 };
 
 com.modestmaps.Markers.prototype.drawPoints = function(latlons, more){
@@ -232,8 +233,10 @@ com.modestmaps.Markers.prototype.drawKirbys = function(features, more){
 		}
 
 		_more['properties'] = f['properties'];
+		_more['class'] = "dot";
         bottom_more['properties'] = f['properties'];
         bottom_more['attrs'] = more['attrs_back'];
+        //bottom_more['attrs_hover'] = more['attrs_hover'];
         bottom_more['radius'] = 12;
         bottom_more['back'] = true;
         
@@ -256,13 +259,16 @@ com.modestmaps.Markers.prototype.drawKirbys = function(features, more){
 				}
 				
 				_more['id'] = "dot_"+f['properties'].id;
+				bottom_more['id'] = "dot_u_"+f['properties'].id;
 
 				var d = this.drawPoints(coords, _more);
 				drawn.push(d);
 				
 				// clone me???
+				// bottom
 				var c = this.drawPoints(coords, bottom_more);
 				drawn.push(c);
+				
 
 			}
 
@@ -306,6 +312,8 @@ com.modestmaps.Markers.prototype.purgeMarkers = function(to_preserve){
 	else {
 		this.drawn = new Array();
 	}
+	
+	this.raphaelObjects = {};
 
 	this._redrawMarkers();
 };
@@ -672,9 +680,10 @@ com.modestmaps.Markers.prototype._circle = function(coords, more){
 	    c.toBack();   
     }
     
-    if ((more) && (more['id'])){
+    if ((more) && (!more['back'])){
 	    c.node.id=more['id'];   
     }
+  
     
 	return this._decorate(c, more);
 };
@@ -687,6 +696,18 @@ com.modestmaps.Markers.prototype._decorate = function(el, more){
 		// http://raphaeljs.com/reference.html#attr
 		el.attr(more['attrs']);
 	}
+	
+	if( (more) && (more['class'])){
+           //el.node.className = more['class'];// setAttribute('className',more['class']);
+           //console.log(el.node.getAttribute('class'));
+     }
+     
+     el.rnormal = more['attrs'];
+     el.rhover = more['attrs_hover'];
+     
+     if(more['id']){
+         this.raphaelObjects[more['id']] = el;
+     }
 
 	if ((more) && (more['onload'])){
 		more['onload'](el, more['properties']);
