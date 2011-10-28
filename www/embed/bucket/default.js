@@ -184,7 +184,6 @@ $(function() {
      
         //load markers and do things when done
         var req = pot.load(null,function(){
-            
             if (typeSelector) {
                 
                 if(params.cs && colorbrewer){
@@ -325,6 +324,7 @@ function MenuSelector(wrapper,selector, layer) {
     this.colorScheme = {};
     this.labelStates = {};
     this.labelCounts = {};
+    this.pools = {};
 }
 
 MenuSelector.prototype = {
@@ -341,6 +341,7 @@ MenuSelector.prototype = {
     defaultTypeSelected: true,
     menuWidth:200,
     menuHeight:200,
+    pools:null,
     wrapper:null,
     show_all:$("#ct_show_all"),
     hide_all:$("#ct_hide_all"),
@@ -488,7 +489,6 @@ MenuSelector.prototype = {
             that.labelStates[id] = state;
         }
         btn.node.onmouseover = function(e){
-            
             var id = $(this).attr("id");
             id = id.slice(2);
             btn.attr("fill-opacity",.3);
@@ -539,15 +539,19 @@ MenuSelector.prototype = {
  
     highlightMarkers: function(t){
         if (this.unAllReal.timeout) clearTimeout(this.unAllReal.timeout);
+        
+        
         var markers = this.layer.markers,
         len = markers.length;
+        
+        var start = new Date().getTime();
         for(i=0;i<len;i++){
             if(markers[i].myAttrs.id){
                 if(t == markers[i].myAttrs['type']){
-                    //if(!dotHasClass(markers[i].node,"over_hover"))dotAddClass(markers[i].node,"over_hover");
                     markers[i].toFront();
                     backdict[markers[i].myAttrs.id].attr("opacity",1);
                     markers[i].attr("opacity",1);
+                    //this.pools[t].push(markers[i]);
                 }else{
                     if( markers[i].myAttrs['props']['__active']){
                         backdict[markers[i].myAttrs.id].attr("opacity",.2);
@@ -557,14 +561,17 @@ MenuSelector.prototype = {
             }
 
         }
+        var end = new Date().getTime();
+        var time = end - start;    
     },
+    
     unhighlightMarkers: function(t){
         var markers = this.layer.markers,
         len = markers.length;
         for(i=0;i<len;i++){
             if(markers[i].myAttrs.id){
                 if(t == markers[i].myAttrs['type']){
-                    //dotRemoveClass(markers[i].node,"over_hover");
+                    
                 }else{
                     //backdict[markers[i].attrs.id].attr("opacity",1);
                     //markers[i].attr("opacity",1);
@@ -572,6 +579,7 @@ MenuSelector.prototype = {
             }
         }
     },
+    
     hideMarkers: function(t){
         var markers = this.layer.markers,
         len = markers.length;
@@ -581,7 +589,6 @@ MenuSelector.prototype = {
                     markers[i].myAttrs['props']['__active'] = false;
                     markers[i].attr("fill-opacity",0);
                     backdict[markers[i].myAttrs.id].attr("opacity",0);
-                    //if(dotHasClass(markers[i].node,"over_hover"))dotRemoveClass(markers[i].node,"over_hover");
                 }
             }
         }
@@ -606,10 +613,10 @@ MenuSelector.prototype = {
            for(i=0;i<len;i++){
                if(markers[i].myAttrs.id){
                   if( markers[i].myAttrs['props']['__active']){
-                      //backdict[markers[i].attrs.id].attr("opacity",1);
-                      //markers[i].attr("opacity",1);
-                      this.animate(backdict[markers[i].myAttrs.id],1,200);
-                      this.animate(markers[i],1,200);
+                      backdict[markers[i].myAttrs.id].attr("opacity",1);
+                      markers[i].attr("opacity",1);
+                      //this.animate(backdict[markers[i].myAttrs.id],1,200);
+                      //this.animate(markers[i],1,200);
                   }
 
                }
