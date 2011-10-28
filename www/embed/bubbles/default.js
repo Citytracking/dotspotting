@@ -128,9 +128,11 @@ $(function() {
             if(feature.properties.__rollover_message){
                 if(!rollover_tmpl){
                     rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
-                    $.template( "rollover_tmpl", rollover_tmpl );
+                    $.template( "rollover_tmpl", rollover_tmpl);
+                    
                 }
-                props.tipMessage = $.tmpl( "<span>"+feature.properties.__rollover_message+"</span>",props);
+                //props.tipMessage = $.tmpl( "<span>"+feature.properties.__rollover_message+"</span>",props);
+                props.tipMessage = $.tmpl( "rollover_tmpl",props);
             }else if(rollover_tmpl){
                 props.tipMessage = $.tmpl( "rollover_tmpl",props);
             }
@@ -323,7 +325,12 @@ $(function() {
         
             
             if(infoPanelText){
-                $("#info_panel").html("<p>" + infoPanelText + "</p>");
+                $("#info_panel p").html(infoPanelText);
+                 //$("#info_panel a").html("hide description");
+                 $("#info_panel a").remove();
+                $("#info_panel").show();
+            }else{
+                $("#info_panel").remove();
             }
             
             // cluster markers

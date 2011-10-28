@@ -37,6 +37,19 @@ function pluralize(word,num,plural){
     return (num == 1)? word : plural || word+"s";
 }
 
+function addCommas(nStr)
+{
+	nStr += '';
+	x = nStr.split('.');
+	x1 = x[0];
+	x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return x1 + x2;
+}
+
 function capitalizeWord(word) {
     return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
 }

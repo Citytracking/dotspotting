@@ -47,7 +47,8 @@
         </div>
 	</div>
 	<div id="info_panel">
-           
+           <a href="/"></a>
+           <p></p>
     </div>
     
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/bubbles/default.js" defer="defer"></script>

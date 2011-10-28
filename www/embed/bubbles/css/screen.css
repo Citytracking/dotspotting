@@ -168,8 +168,14 @@ h1 a {
     height: auto;
     z-index: 2001;
     padding:0 5px 5px;
+	display:none;
+}
+#info_panel a{
+	display:block;
+	float:right;
 }
     #info_panel p{
+		display:block;
         margin:0;padding:.5em;
         font-size:1.15em;
         font-weight:bold;
