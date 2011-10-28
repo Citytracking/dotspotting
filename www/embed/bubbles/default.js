@@ -326,9 +326,25 @@ $(function() {
             
             if(infoPanelText){
                 $("#info_panel p").html(infoPanelText);
-                 //$("#info_panel a").html("hide description");
-                 $("#info_panel a").remove();
+                $("#info_panel a").html("hide description");
+                
+                $("#info_panel a").click(function(e){
+                    e.preventDefault();
+                    if($("#info_panel p").is(":visible")){
+                        $("#info_panel p").hide();
+                         $(this).html("show description");
+                    }else{
+                        $(this).html("hide description");
+                        var btnWidth = $(this).outerWidth() + 2;
+                        $("#info_panel p").css('margin-right',btnWidth+"px");
+                        $("#info_panel p").show();
+                        
+                        
+                    }
+                });
+                
                 $("#info_panel").show();
+                $("#info_panel a").trigger('click');
             }else{
                 $("#info_panel").remove();
             }
