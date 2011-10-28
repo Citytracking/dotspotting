@@ -183,7 +183,10 @@ h1 a {
         /*right:10px;*/
         top:-1px;
         font-size: 10px;
-        padding-left:10px;
+        padding-left:0px;
+		padding-top:5px;
+		display:block;
+		
     }
     #menu_wrapper h5 span#menu_wrapper_toggle a{
         color:#356A94;

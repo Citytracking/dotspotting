@@ -52,7 +52,7 @@ $(function() {
         
         params.ui = "1";
         if (params.ui == "1") {
-            var typeSelector = new MenuSelector("#menu_types_wrapper","#menu_types", pot.dotsLayer);
+            
             
             if (params.types) {
                // typeSelector.defaultTypeSelected = false;
@@ -63,6 +63,8 @@ $(function() {
             if(bucketColumn){
                 $("#menu_wrapper_title").html(bucketColumn);
             }
+            
+            var typeSelector = new MenuSelector("#menu_types_wrapper","#menu_types", pot.dotsLayer,$("#menu_wrapper").innerWidth() + 10);
         }else{
             $("#menu_wrapper").remove();
         }
@@ -248,12 +250,18 @@ $(function() {
                     }
                 });
                 
-                var pos;
+                
                 $("#info_panel").show();
                 if($("#title").is(":visible")){
                     $("#info_panel").css("top",(($("#title").length > 0) ? $("#title").innerHeight() : 0)+"px");
                 }
                 $("#menu_wrapper").css("top",($("#info_panel a").innerHeight() + $("#info_panel").offset().top + 5)+"px");
+                if(typeSelector){
+                    if($("#info_panel a").width() > typeSelector.menuWidth){
+                        typeSelector.canvas.setSize($("#info_panel a").width(),typeSelector.menuHeight);
+                    }
+                }
+                
                 
                 //$("#info_panel a").trigger('click');
                 
@@ -313,9 +321,11 @@ function normalizeFeature(feature) {
 
 
 // borough
-function MenuSelector(wrapper,selector, layer) {
+function MenuSelector(wrapper,selector, layer, initWidth) {
     this.wrapper = $(wrapper);
     this.container = $(selector);
+    if(initWidth !== "undefined" || initWidth !== null)this.menuWidth = initWidth;
+    
     this.canvas = Raphael("menu_types", this.menuWidth, this.menuHeight);
     this.layer = layer;
     this.labelsByType = {};
@@ -339,7 +349,7 @@ MenuSelector.prototype = {
     selectedTypes: null,
     colorScheme: null,
     defaultTypeSelected: true,
-    menuWidth:200,
+    menuWidth:20,
     menuHeight:200,
     pools:null,
     wrapper:null,
@@ -512,7 +522,7 @@ MenuSelector.prototype = {
         
         // adjust menu container
         // todo: check for container height
-        this.menuWidth = Math.max(this.menuWidth,(txt.node.clientWidth+50));
+        this.menuWidth = Math.max(this.menuWidth,(txt.node.clientWidth+30));
         this.menuHeight = Math.max(this.menuHeight,yPos+20);
         this.canvas.setSize(this.menuWidth,this.menuHeight);
         
