@@ -407,10 +407,13 @@ MenuSelector.prototype = {
         this.sortLabels(s);
         
         // show all dots after mouse leaves container
+        
+        /*
         $(this.container).mouseleave(function(){
             if (that.unAllReal.timeout) clearTimeout(that.unAllReal.timeout);
             that.unAll(10);
         });
+        */
         
         this.show_all.click(function(e){
                e.preventDefault();
