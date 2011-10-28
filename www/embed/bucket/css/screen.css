@@ -269,43 +269,50 @@ li.altrow{
         line-height:16px;
         background:#356A94 !important;
     }
+
 /**/
 #info_panel{
     position:absolute;
     top: 0;
     right: 0;
-    background: #DCE8EF;
-    background: rgba(220,232,239,.8);
-    width: 50%;
+    background: transparent;
+    width: 100%;
     height: auto;
     z-index: 2001;
-    padding:5px;
-    display:none;
+    padding:0 5px 5px;
+	display:none;
+}
+#info_panel a{
+	display: block;
+	background: #333;
+	background: rgba(33,33,33,.8);
+	text-decoration: none;
+	font-weight: 500;
+	color: #0BBDFF;
+	padding: 3px 5px 4px;
+	width: auto;
+	position: absolute;
+	right: 0;
+	z-index: 1000;
+	line-height: 20px;
+	z-index: 9999;
 }
     #info_panel p{
-        margin: 0;
-        padding: 0px;
-        font-size: 1.15em;
-        font-weight: bold;
-        float: left;
-        width: 93%;
-    }
-    #info_panel a{
-        display:block;
-        float:left;
-        cursor: pointer;
-        text-decoration:none;
-    }
-    
-    #info_panel a span{
-        position:relative;
-        padding:0 10px 0 4px;
-        
-        top: 40%;
-        font-size: 1.5em;
-        color: red;
-        
-    }
-    #info_panel a:hover span{
-        color:#000;
+		display: none;
+		margin: 0;
+		padding: .5em;
+		font-size: 1.15em;
+		font-weight: bold;
+		background: #333;
+		background: rgba(33,33,33,.8);
+		color: white;
+		width: auto;
+		position: absolute;
+		right: 0;
+		z-index: 9999;
+		top: 0;
+		margin-left: 80px;
+		margin-right: 125px;
+
+        /*text-align: justify;text-justify: newspaper;*/
     }

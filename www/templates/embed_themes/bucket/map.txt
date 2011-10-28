@@ -51,9 +51,8 @@
            <ul id="menu_types"></ul>
     </div>
     <div id="info_panel">
-        <a href=""><span>&raquo;</span></a>
-        <p></p>
-       
+           <a href="/"></a>
+           <p></p>
     </div>
     
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/bucket/default.js" defer="defer"></script>

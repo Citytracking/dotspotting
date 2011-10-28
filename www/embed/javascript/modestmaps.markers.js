@@ -330,7 +330,7 @@ if (!com.modestmaps) {
             this.markers.push(dot);
             
             
-            if(dot.attrs['_kirbyPos'] == "back"){
+            if(dot.myAttrs['_kirbyPos'] == "back"){
                 this.backMarkers[dot.myAttrs.id] = dot;
             }else{
                 this.frontMarkers[dot.myAttrs.id] = dot;

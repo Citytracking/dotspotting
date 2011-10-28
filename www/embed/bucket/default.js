@@ -1,5 +1,5 @@
 //define globals
-var pot,params,colors,bucketColumn,mdict,ds_tooltip,backdict;
+var pot,params,colors,bucketColumn,mdict,ds_tooltip,backdict,ds_user_opts={};
 
 // style objects for dot
 var over_style = {
@@ -15,7 +15,14 @@ var under_style = {
 	'fill-opacity' : .8,
 	'stroke' : 'rgb(66,66,66)',
 	'stroke-width' : 1
-};  	
+};  
+var hover_style = {
+    'fill' : 'rgb(255,255,255)',
+	'fill-opacity' : .8,
+	'stroke' : '#666666',
+	'stroke-width' : 2,
+	'stroke-opacity':1
+};	
 
 
 // go on then	
@@ -134,7 +141,7 @@ $(function() {
             }
             
             var more_front = {
-               style: over_style,
+               style: jQuery.extend({}, over_style),
                id:pid,
                radius:6,
                dotClass:"dott",
@@ -144,9 +151,10 @@ $(function() {
             };
             
             var more_back = {
-                   style: under_style,
+                   style: jQuery.extend({}, under_style),
                    radius:12,
                    _kirbyPos:"back",
+                   props:props,
                    id:pid
                };
 
@@ -173,16 +181,9 @@ $(function() {
         };        
         
         
-        var infoPanelContentElm,infoPanelElm,infoPanelCloseElm,infoPanelCloseTxtElm;
+     
         //load markers and do things when done
         var req = pot.load(null,function(){
-            // create tooltip
-            // pass it the selector to listen for...
-            // pulls rest of params from pot object
-            // uses jQuery live
-            
-            
-            ds_tooltip = new DotToolTip(".dott",useTemplate);
             
             if (typeSelector) {
                 
@@ -217,10 +218,10 @@ $(function() {
                 co = typeSelector.colorScheme;
                 for(c in co){
                     for(i=0;i<len;i++){
-                        if(c == markers[i].attrs['type']){
+                        if(c == markers[i].myAttrs['type']){
                             markers[i].attr("fill",co[c]);
-                            //markers[i].attr("fill-opacity",1);
-                            if(!mdict[markers[i].attrs.id])mdict[markers[i].attrs.id] = markers[i];
+                            markers[i].myAttrs['style']['fill'] = co[c];
+                            if(!mdict[markers[i].myAttrs.id])mdict[markers[i].myAttrs.id] = markers[i];
                         }
                     }
                 }
@@ -230,52 +231,44 @@ $(function() {
             pot.dotsLayer.cluster();
             
             if(infoPanelText){
-                infoPanelContentElm = $("#info_panel p"),
-                infoPanelElm = $("#info_panel"),
-                infoPanelCloseElm = $("#info_panel a"),
-                infoPanelCloseTxtElm = $("#info_panel a span");
+                $("#info_panel p").html(infoPanelText);
+                $("#info_panel a").html("show description");
                 
-                var pos = ($("#title").length > 0) ? $("#title").innerHeight() : 0;
-                
-                infoPanelElm.css("top",pos+"px").show();
-                infoPanelContentElm.html( infoPanelText );
-                infoPanelCloseElm.css("height",infoPanelElm.innerHeight() + "px");
-                var infopos = (infoPanelElm.length > 0) ? infoPanelElm.offset().top + infoPanelElm.innerHeight() + 20 : 0;
-                
-                $("#menu_wrapper").css("top",infopos+"px");
-                
-                infoPanelCloseElm.click(function(e){
+                $("#info_panel a").click(function(e){
                     e.preventDefault();
-                    if(infoPanelContentElm.is(':visible')){
-                        infoPanelContentElm.hide();
-                        infoPanelCloseTxtElm.html("&laquo;");
-                        infoPanelElm.css("width",$(this).innerWidth()+"px");
+                    if($("#info_panel p").is(":visible")){
+                        $("#info_panel p").hide();
+                         $(this).html("show description");
                     }else{
-                        infoPanelContentElm.show();
-                        infoPanelCloseTxtElm.html("&raquo;");
-                        infoPanelElm.css("width","50%");
-                        adjustPanelSizes();
+                        $(this).html("hide description");
+                        var btnWidth = $(this).outerWidth() + 2;
+                        $("#info_panel p").css('margin-right',btnWidth+"px");
+                        $("#info_panel p").show();
+                        
+                        
                     }
-                    
                 });
                 
-                $(window).resize(function(e){
-                    adjustPanelSizes();
-                });
-                
-                function adjustPanelSizes(){
-                    infoPanelCloseElm.css("height", "auto");
-                    var newsize = infoPanelElm.innerHeight() + "px";
-                    infoPanelCloseElm.css("height", newsize);
-                    
-                    infopos = (infoPanelElm.length > 0) ? infoPanelElm.offset().top + infoPanelElm.innerHeight() + 20 : 0;
-                    $("#menu_wrapper").css("top",infopos+"px");
+                var pos;
+                $("#info_panel").show();
+                if($("#title").is(":visible")){
+                    $("#info_panel").css("top",(($("#title").length > 0) ? $("#title").innerHeight() : 0)+"px");
                 }
+                $("#menu_wrapper").css("top",($("#info_panel a").innerHeight() + $("#info_panel").offset().top + 5)+"px");
+                
+                //$("#info_panel a").trigger('click');
+                
             }else{
                 $("#info_panel").remove();
             }
             
-            //doCluster();
+            // create tooltip
+            // pass it the selector to listen for...
+            // pulls rest of params from pot object
+            // uses jQuery live
+            // because we are using Raphael we need to use the id as the selector
+            
+            ds_tooltip = new DotToolTip("[id*='dot_']");
             
          
         });
@@ -318,62 +311,6 @@ function normalizeFeature(feature) {
         }
     }
 }
-
-function dotHasClass(element, $class) {
-    if(!element.className.baseVal)return false;
-    var pattern = new RegExp("(^| )" + $class + "( |$)");
-    return pattern.test(element.className.baseVal) ? true : false;
-};
-
-function dotAddClass(element, $class) {
-	if(!element)return;
-    var i,newClass;
-    //is the element array-like?
-    if(element.length) {
-        for (i = 0; i < element.length; i++) {
-
-            if (!this.dotHasClass(element[i], $class)) {
-				newClass = element[i].className.baseVal;
-                newClass += element[i].className.baseVal === "" ? 
-                $class : " "+$class;
-				element.setAttribute('class', newClass);
-            }
-        }
-    }
-    else { //not array-like
-        if (!this.dotHasClass(element, $class)) {
-			newClass = element.className.baseVal;
-            newClass += (element.className.baseVal === "") ? $class : " "+$class;
-			element.setAttribute('class', newClass);
-        }
-    }
-    return element;
-};
-
-function dotRemoveClass(element, $class) {
-	if(!element)return;
-
-    var pattern = new RegExp("(^| )" + $class + "( |$)");
-    var i,newClass;
-
-    //is element array-like?
-    if(element.length) {
-        for (i = 0; i < element.length; i++) {
-			newClass = element[i].className.baseVal;
-            newClass = newClass.replace(pattern, "$1");
-            newClass = newClass.replace(/ $/, "");  
-			element.setAttribute('class', newClass);          
-        }
-    }
-    else { //nope
-		newClass = element.className.baseVal;
-        newClass = newClass.replace(pattern, "$1");
-        newClass = newClass.replace(/ $/, ""); 
-		element.setAttribute('class', newClass); 
-    }
-    return element;
-};
-
 
 
 // borough
@@ -605,15 +542,15 @@ MenuSelector.prototype = {
         var markers = this.layer.markers,
         len = markers.length;
         for(i=0;i<len;i++){
-            if(markers[i].attrs.id){
-                if(t == markers[i].attrs['type']){
+            if(markers[i].myAttrs.id){
+                if(t == markers[i].myAttrs['type']){
                     //if(!dotHasClass(markers[i].node,"over_hover"))dotAddClass(markers[i].node,"over_hover");
                     markers[i].toFront();
-                    backdict[markers[i].attrs.id].attr("opacity",1);
+                    backdict[markers[i].myAttrs.id].attr("opacity",1);
                     markers[i].attr("opacity",1);
                 }else{
-                    if( markers[i].attrs['props']['__active']){
-                        backdict[markers[i].attrs.id].attr("opacity",.2);
+                    if( markers[i].myAttrs['props']['__active']){
+                        backdict[markers[i].myAttrs.id].attr("opacity",.2);
                         markers[i].attr("opacity",0);
                     }
                 }
@@ -625,8 +562,8 @@ MenuSelector.prototype = {
         var markers = this.layer.markers,
         len = markers.length;
         for(i=0;i<len;i++){
-            if(markers[i].attrs.id){
-                if(t == markers[i].attrs['type']){
+            if(markers[i].myAttrs.id){
+                if(t == markers[i].myAttrs['type']){
                     //dotRemoveClass(markers[i].node,"over_hover");
                 }else{
                     //backdict[markers[i].attrs.id].attr("opacity",1);
@@ -639,11 +576,11 @@ MenuSelector.prototype = {
         var markers = this.layer.markers,
         len = markers.length;
         for(i=0;i<len;i++){
-            if(markers[i].attrs.id){
-                if(t == markers[i].attrs['type']){
-                    markers[i].attrs['props']['__active'] = false;
+            if(markers[i].myAttrs.id){
+                if(t == markers[i].myAttrs['type']){
+                    markers[i].myAttrs['props']['__active'] = false;
                     markers[i].attr("fill-opacity",0);
-                    backdict[markers[i].attrs.id].attr("opacity",0);
+                    backdict[markers[i].myAttrs.id].attr("opacity",0);
                     //if(dotHasClass(markers[i].node,"over_hover"))dotRemoveClass(markers[i].node,"over_hover");
                 }
             }
@@ -653,11 +590,11 @@ MenuSelector.prototype = {
         var markers = this.layer.markers,
         len = markers.length;
         for(i=0;i<len;i++){
-            if(markers[i].attrs.id){
-                if(t == markers[i].attrs['type']){
-                    markers[i].attrs['props']['__active'] = true;
+            if(markers[i].myAttrs.id){
+                if(t == markers[i].myAttrs['type']){
+                    markers[i].myAttrs['props']['__active'] = true;
                     markers[i].attr("fill-opacity",1);
-                    backdict[markers[i].attrs.id].attr("opacity",1);
+                    backdict[markers[i].myAttrs.id].attr("opacity",1);
                 }
             }
         }
@@ -667,11 +604,11 @@ MenuSelector.prototype = {
            var markers = this.layer.markers,
            len = markers.length;
            for(i=0;i<len;i++){
-               if(markers[i].attrs.id){
-                  if( markers[i].attrs['props']['__active']){
+               if(markers[i].myAttrs.id){
+                  if( markers[i].myAttrs['props']['__active']){
                       //backdict[markers[i].attrs.id].attr("opacity",1);
                       //markers[i].attr("opacity",1);
-                      this.animate(backdict[markers[i].attrs.id],1,200);
+                      this.animate(backdict[markers[i].myAttrs.id],1,200);
                       this.animate(markers[i],1,200);
                   }
 
@@ -699,7 +636,7 @@ MenuSelector.prototype = {
 //////////////////////////
 /////////////////////////
 
-function DotToolTip(selector,useTemplate) {
+function DotToolTip(selector) {
     if(!pot){
         console.log("Needs a dotspotting pot object....");
         return;
@@ -711,13 +648,12 @@ function DotToolTip(selector,useTemplate) {
     }
     
     this.container = $(pot.selectors.map);
+ 
     
     if(!this.container[0]){
         pot.error("ERROR: map DOM element seems to be missing.");
         return;
     }
-    
-    if(useTemplate != null || useTemplate != undefined)this.useTemplate = useTemplate;
     
     this.map = pot.map;
     this.listenFrom = selector;
@@ -725,6 +661,7 @@ function DotToolTip(selector,useTemplate) {
     this.updateSize();
     this.createTip();
 }
+
 DotToolTip.prototype = {
     container: null,
     map: null,
@@ -743,13 +680,14 @@ DotToolTip.prototype = {
     tip_desc: null,
     tip_sentence:null,
     active:false,
-    useTemplate:false,
+    currentRalfObj:null,
     
     createTip: function(){
         if(this.checkParams()){
             this.active = true;
             this.addHandlers();
         }
+        
     },
     addHandlers: function(){
         var that = this;
@@ -759,18 +697,35 @@ DotToolTip.prototype = {
             if ( event.type == "mouseover" ) {
                 
                 var id = String($(this).attr('id'));
+                
                 if(!id)return;
                 if(!mdict[id])return;
-                if(!mdict[id].attrs.props['__active'])return;
+                if(!mdict[id].myAttrs.props['__active'])return;
+                if(mdict[id] == that.currentRalfObj)return;
                
-                mdict[id].attrs.props["__dt_coords"] = mdict[id].coord;
+                mdict[id].myAttrs.props["__dt_coords"] = mdict[id].coord;
+               
+                that.currentRalfObj = mdict[id];
                 /// proceed
                 that.currentDot = this;
-                that.currentProp = mdict[id].attrs.props;
-                this.parentNode.appendChild(this);
+                that.currentProp = mdict[id].myAttrs.props;
+                
+                //this.parentNode.appendChild(this);
+                //that.currentProp.toFront();
+                
                 that.showTip();
             } else {
-                dotRemoveClass(that.currentDot,"over_hover");
+                //that.currentDot = that.currentProp = null
+                if(!that.currentRalfObj)return;
+            
+                //that.currentRalfObj.attr(over_style); 
+                that.currentRalfObj.attr(that.currentRalfObj.myAttrs['style']);
+                
+                //that.currentRalfObj.toBack();
+                
+                that.currentRalfObj = null;
+                
+                
                 that.hideTip();
             }
             return false;
@@ -803,10 +758,11 @@ DotToolTip.prototype = {
     
     showTip: function(){
         if(!this.currentProp)return;
+        
         if(this.currentProp.tipMessage){
-            this.tt_desc.css("display","block");
-            this.tt_desc.html(this.currentProp.tipMessage);
             this.tt_title.css("display","none");
+            this.tt_desc.css("display","block")
+            this.tt_desc.html(this.currentProp.tipMessage);
         }else{
             var _title = this.getTipTitle();
             var _desc = this.getTipDesc();
@@ -824,15 +780,14 @@ DotToolTip.prototype = {
                 this.tt_desc.css("display","none");
             }
         }
-       
-
-        dotAddClass(this.currentDot,"over_hover");
+        this.currentRalfObj.attr(hover_style);
+        
         this.initialTipPosition();
     },
     
     initialTipPosition: function(){
         
-        this.tt.css("left","-9999px")
+        this.tt.css("left","-9999px");
         this.tt.css("width","auto");
         var _w = (this.tt.width() < this.TT_WIDTH) ? this.tt.width() : this.TT_WIDTH;
         if(_w < 70)_w = 70;
@@ -841,25 +796,26 @@ DotToolTip.prototype = {
         //
         var _point = this.map.coordinatePoint(this.currentProp.__dt_coords);
         var _h = this.tt.height();
-        var _radius = this.currentDot.getAttribute('r');
+        var _radius = parseFloat(this.currentRalfObj.attr('r'));
+        var _circleHeight = this.currentRalfObj.getBBox().height;
         var _x = parseFloat(_point.x - 10);
-        var _y = _point.y - (22+_h);
 
-        /*
-        if(_tc.left < 0 )_tc.left = 1;
-        if(_tc.left > cont_width)_tc.left = cont_width-1;
-        */
+     
+        // y = Marker location - (tip box height + nub height + radius + border size)
+        var _y = _point.y - (_h + 10 + _radius + 6); // 22
+
 
         var pos_pct = (_point.x / this.cont_width);
 
         var nub_pos = ((_w-20) * pos_pct);
         if(nub_pos<6)nub_pos = 6;
+        
 
         this.tt_nub.css("left",nub_pos+"px");
         this.tt.css("margin-left", "-"+nub_pos+"px");
             
         this.tt.show();
-        this.tt.css("left", _x).css("top", _y);    
+        this.tt.css("left", _x).css("top", _y); 
     },
     
     updateSize: function(){
@@ -870,14 +826,16 @@ DotToolTip.prototype = {
     },
     
     unselectAllDots: function(){
-        this.currentDot = this.currentProp = null;
-    	$(this.listenFrom).each(function(){
-    		dotRemoveClass($(this)[0],'over_hover');
-    	});
+        this.currentDot = this.currentProp = this.currentRalfObj = null;
+        
+        for(o in mdict){
+            mdict[o].attr(over_style);
+        }
+
     },
     
     getTipTitle: function(){
-        return (this.tip_title.length && this.currentProp[this.tip_title]) ? this.currentProp[this.tip_title] : "";
+        return (this.tip_title && this.tip_title.length && this.currentProp[this.tip_title]) ? this.currentProp[this.tip_title] : "";
     },
 
     getTipDesc: function(){
@@ -886,12 +844,46 @@ DotToolTip.prototype = {
             var txt = this.tip_sentence.struct;
             return txt.replace(this.tip_sentence.parts[0],this.currentProp[this.tip_sentence.parts[1]]);
         }else{
-            return (this.tip_title.length && this.currentProp[this.tip_desc]) ? this.currentProp[this.tip_desc] : "";
+            return (this.tip_title && this.tip_title.length && this.currentProp[this.tip_desc]) ? this.currentProp[this.tip_desc] : "";
         }
     },
     
     checkParams: function(){
-        if(this.useTemplate)return true;
+        // user tip styles
+        
+        if(ds_user_opts['tooltip']){
+
+            var userTipObj = parseJSON(ds_user_opts['tooltip']);
+            
+
+            if(userTipObj){
+                for(prop in userTipObj){
+                    
+                    
+                    switch(prop){
+                        case "background":
+                            this.tt.css("background-color",userTipObj[prop]);
+                            this.tt_nub.css("border-top-color",userTipObj[prop] );
+                        break;
+                        case "font-color":
+                            this.tt.css("color",userTipObj[prop]);
+                        break;
+                        case "font-size":
+                            this.tt_title.css("fontSize",userTipObj[prop]);
+                        break;
+                        case "font-family":
+                            this.tt_title.css("fontFamily",userTipObj[prop]);
+                        break;
+                        case "font-weight":
+                            this.tt_title.css("fontWeight",userTipObj[prop]);
+                        break;
+                    }
+                    
+                    
+                }
+            }
+            
+        }
         // look for tooltip parameters
         if(!params.tt && !params.tm){
           isTip = false;
@@ -921,6 +913,8 @@ DotToolTip.prototype = {
               this.tip_desc = "";
           }
         }
+        isTip = true;
+        //this.tip_title = "id";
         return isTip;
     }
 }
