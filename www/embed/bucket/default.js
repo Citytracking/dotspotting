@@ -1,5 +1,5 @@
 //define globals
-var pot,params,colors,bucketColumn,mdict,ds_tooltip,backdict,ds_user_opts={};
+var pot,params,colors,bucketColumn,mdict,ds_tooltip,backdict,ds_user_opts={},ds_kirby = false;
 
 // style objects for dot
 var over_style = {
@@ -23,7 +23,6 @@ var hover_style = {
 	'stroke-width' : 2,
 	'stroke-opacity':1
 };	
-
 
 // go on then	
 $(function() {
@@ -97,24 +96,12 @@ $(function() {
             bucketPrep = {},
             bucketCount = 0,
             bucketList = [];
+        
+        
             
-        function normalizeRolloverMessage(msg){
-            var msgParts = msg.split(/(\${.+?\})/gi),
-            len = msgParts.length;
-            if(!len)return msg;
-            var newMsg = "";
-            for(i=0;i<len;i++){
-                if(msgParts[i].indexOf("$") == 0){
-                   msgParts[i] = msgParts[i].replace(/ /g, "_").toLowerCase();
-                }
-                newMsg += msgParts[i];
-            }
-            
-            return newMsg;
-            
-            
-        }
+        
         pot.makeDot = function(feature) {
+            
             normalizeFeature(feature);
             var props = feature.properties,
             bucket_type = getBucketType(props),
@@ -131,9 +118,10 @@ $(function() {
                 feature.properties.__rollover_message = normalizeRolloverMessage(feature.properties.__rollover_message);
                 if(!rollover_tmpl){
                     rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";  
-                   $.template( "rollover_tmpl", rollover_tmpl );
+                    $.template( "rollover_tmpl", rollover_tmpl );
                 }
-                props.tipMessage = $.tmpl( "<span>"+feature.properties.__rollover_message+"</span>",props);
+
+                props.tipMessage = $.tmpl( "rollover_tmpl",props);
             }else if(rollover_tmpl){
                 props.tipMessage = $.tmpl( "rollover_tmpl",props);
             }
@@ -141,6 +129,9 @@ $(function() {
             if(!infoPanelText){
                 if(feature.properties.__description_panel && feature.properties.__description_panel.length > 1) infoPanelText = feature.properties.__description_panel;
             }
+            
+            var loc = new mm.Location(coords[1],coords[0]);
+            props.__dt_coords = loc;
             
             var more_front = {
                style: jQuery.extend({}, over_style),
@@ -152,25 +143,27 @@ $(function() {
                _kirbyPos:"front"
             };
             
-            var more_back = {
-                   style: jQuery.extend({}, under_style),
-                   radius:12,
-                   _kirbyPos:"back",
-                   props:props,
-                   id:pid
-               };
-
-
-            var loc = new mm.Location(coords[1],coords[0]);
-            props.__dt_coords = loc;
-
             var marker = more_front;
             
-            // Dots.Potting class only takes one marker, 
-            // will manually add this one, for now, until a Kirby Dot markerLayer exsists
-            var c = pot.dotsLayer.addMarker(more_back,loc);
-            c.toBack();
-            backdict[pid] = c;
+            
+            // add a background dot ????
+            if(ds_kirby){
+                var more_back = {
+                       style: jQuery.extend({}, under_style),
+                       radius:12,
+                       _kirbyPos:"back",
+                       props:props,
+                       id:pid
+                   };
+                   
+                // Dots.Potting class only takes one marker, 
+                // will manually add this one, for now, until a Kirby Dot markerLayer exsists
+                var c = pot.dotsLayer.addMarker(more_back,loc);
+                c.toBack();
+                backdict[pid] = c;
+            }
+            
+            
             
             if(!bucketPrep[bucket_type]){
                bucketCount++; 
@@ -274,7 +267,6 @@ $(function() {
             // pulls rest of params from pot object
             // uses jQuery live
             // because we are using Raphael we need to use the id as the selector
-            
             ds_tooltip = new DotToolTip("[id*='dot_']");
             
          
@@ -424,14 +416,15 @@ MenuSelector.prototype = {
                }
 
            });
-           this.hide_all.click(function(e){
-               e.preventDefault();
-               for(t in that.labelStates){
-                   that.labelStates[t] = false;
-                   that.selectButtons(t);
-                   that.hideMarkers(t);
-               }
-           });
+           
+       this.hide_all.click(function(e){
+           e.preventDefault();
+           for(t in that.labelStates){
+               that.labelStates[t] = false;
+               that.selectButtons(t);
+               that.hideMarkers(t);
+           }
+       });
            
     },
     
@@ -481,7 +474,7 @@ MenuSelector.prototype = {
             "cursor":"pointer",
             "fill":"#000000",
             "fill-opacity":0,
-            "stroke-width":0
+            "stroke-opacity":0
         });
         
         // events
@@ -562,12 +555,12 @@ MenuSelector.prototype = {
             if(markers[i].myAttrs.id){
                 if(t == markers[i].myAttrs['type']){
                     markers[i].toFront();
-                    backdict[markers[i].myAttrs.id].attr("opacity",1);
+                    if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity",1);
                     markers[i].attr("opacity",1);
                     //this.pools[t].push(markers[i]);
                 }else{
                     if( markers[i].myAttrs['props']['__active']){
-                        backdict[markers[i].myAttrs.id].attr("opacity",.2);
+                        if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity",.2);
                         markers[i].attr("opacity",0);
                     }
                 }
@@ -601,7 +594,7 @@ MenuSelector.prototype = {
                 if(t == markers[i].myAttrs['type']){
                     markers[i].myAttrs['props']['__active'] = false;
                     markers[i].attr("fill-opacity",0);
-                    backdict[markers[i].myAttrs.id].attr("opacity",0);
+                    if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity",0);
                 }
             }
         }
@@ -614,7 +607,7 @@ MenuSelector.prototype = {
                 if(t == markers[i].myAttrs['type']){
                     markers[i].myAttrs['props']['__active'] = true;
                     markers[i].attr("fill-opacity",1);
-                    backdict[markers[i].myAttrs.id].attr("opacity",1);
+                    if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity",1);
                 }
             }
         }
@@ -626,7 +619,7 @@ MenuSelector.prototype = {
            for(i=0;i<len;i++){
                if(markers[i].myAttrs.id){
                   if( markers[i].myAttrs['props']['__active']){
-                      backdict[markers[i].myAttrs.id].attr("opacity",1);
+                      if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity",1);
                       markers[i].attr("opacity",1);
                       //this.animate(backdict[markers[i].myAttrs.id],1,200);
                       //this.animate(markers[i],1,200);

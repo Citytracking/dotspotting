@@ -224,7 +224,6 @@ Dots.Config.prototype = {
         });
         
         $(".autoUpdate").change(function(e){
-            console.log(typeof(this));
              e.preventDefault();
              if(!that.isUpdating){
                  that.isUpdating = true;

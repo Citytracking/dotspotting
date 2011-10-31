@@ -97,6 +97,7 @@ $(function() {
         
         }
         
+        
         pot.makeDot = function(feature) {
             normalizeFeature(feature);
             var props = feature.properties,
@@ -126,6 +127,8 @@ $(function() {
             
            
             if(feature.properties.__rollover_message){
+                
+                feature.properties.__rollover_message = normalizeRolloverMessage(feature.properties.__rollover_message);
                 if(!rollover_tmpl){
                     rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
                     $.template( "rollover_tmpl", rollover_tmpl);

@@ -211,7 +211,7 @@ Dots.Potting.prototype = {
 
     load: function(url, success, error) {
         if (!url) url = this.getDotsURL();
-        
+         
         if (url) {
             var that = this;
             return $.ajax(url, {

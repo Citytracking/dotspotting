@@ -6,26 +6,27 @@
 	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	
-        <link rel="stylesheet" href="{$cfg.abs_root_url}embed/bucket/css/screen.css">
-        <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/tipTip.css">
-        <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
-        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
-        <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
-        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/d3.min.js"></script>
-        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
-        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>
-        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/raphael-min.js"></script>
-        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/utils.js"></script>
-        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/dots.potting.js"></script>
-        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tipTip.minified.js"></script>
-        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/colorbrewer.js"></script>
-        <script type="text/javascript">
-            var _dotspotting = {literal}{{/literal}
-                'abs_root_url' : '{$cfg.abs_root_url}'
-                {literal}}{/literal};
-            var baseURL = '{$cfg.abs_root_url}';
-            var touchSupport = Modernizr.touch;
-        </script>
+	
+    <link rel="stylesheet" href="{$cfg.abs_root_url}embed/bucket/css/screen.css">
+    <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/tipTip.css">
+    <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
+    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/d3.min.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/raphael-min.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/utils.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/dots.potting.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tipTip.minified.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/colorbrewer.js"></script>
+    <script type="text/javascript">
+        var _dotspotting = {literal}{{/literal}
+            'abs_root_url' : '{$cfg.abs_root_url}'
+            {literal}}{/literal};
+        var baseURL = '{$cfg.abs_root_url}';
+        var touchSupport = Modernizr.touch;
+    </script>
         
         
 </head>
