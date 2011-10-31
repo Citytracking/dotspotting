@@ -5,9 +5,9 @@ var pot,params,colors,bucketColumn,mdict,ds_tooltip,backdict,ds_user_opts={},ds_
 var over_style = {
 	'fill' : 'rgb(11,189,255)',
 	'fill-opacity' : 1,
-	'stroke' : '#666666',
+	'stroke' : '#333333',
 	'stroke-width' : 1,
-	'stroke-opacity':0
+	'stroke-opacity':1
 }; 
 
 var under_style = {
@@ -449,13 +449,9 @@ MenuSelector.prototype = {
         
         // draw circle
         var label = this.canvas.circle(10, yPos, 8);
-        label.attr({
-            "fill":clr,
-            "fill-opacity":1,
-            'stroke' : '#666666',
-        	'stroke-width' : 1,
-        	'stroke-opacity':1
-            });
+        
+        label.attr(over_style);
+        label.attr("fill",clr);
         label.node.id = "c_"+type;
         
         // make text
