@@ -173,7 +173,7 @@
 				'id' => $dot['id'],
 				'geometry' => array(
 					'type' => 'Point',
-					'coordinates' => array($dot['longitude'], $dot['latitude']),
+					'coordinates' => array((float)$dot['longitude'], (float)$dot['latitude']),
 				),
 				'properties' => array(),
 			);
