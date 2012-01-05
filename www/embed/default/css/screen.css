@@ -130,7 +130,7 @@ h1 a {
     box-shadow: 0 0 2px #333;
 }
 
-#mm_tip #mm_tip_title{text-align: left;margin:0;font-weight:600;padding:10px 10px 10px;font-size:16px;}
+#mm_tip #mm_tip_title{text-align: left;margin:0;font-weight:600;padding:10px;font-size:16px;}
 
 #mm_tip #mm_tip_desc {
     margin: 0;

@@ -322,6 +322,8 @@ if (!com.modestmaps) {
             dot.location = this.getLocation(location);
             // stash the projected coordinate for later use
             dot.coord = this.map.provider.locationCoordinate(dot.location);
+            
+            
             dot.myAttrs = attrs;
             
             
@@ -360,10 +362,14 @@ if (!com.modestmaps) {
         repositionMarker: function(marker) {
             if (marker.coord) {
                 
+                
                 var pos = this.map.coordinatePoint(marker.coord);
+                
+               
                 
                 // TODO: check to see if this works in IE
                 if(marker.attr('cx') >= 0){
+                    
                     
                     marker.attr("cx", pos.x - this.position.x);
                     marker.attr("cy", pos.y - this.position.y);
@@ -412,6 +418,7 @@ if (!com.modestmaps) {
         },
         
         cluster: function(){
+            
             // Quantize a number by a divisor
             function quantize(n, q) {
                 return Math.round(n / q) * q;
@@ -487,6 +494,7 @@ if (!com.modestmaps) {
     MM.extend(MM.DotMarkerLayer, MM.MarkerLayer);
     
     /* NOT WORKING */
+    /*
     MM.GeoJsonLayer = function(map, provider, parent) {
         MM.DotMarkerLayer.call(this, map, provider, parent);
     };
@@ -556,5 +564,6 @@ if (!com.modestmaps) {
     };
     
     MM.extend(MM.GeoJsonLayer, MM.DotMarkerLayer);
+    */
 
 })(com.modestmaps);

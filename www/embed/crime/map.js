@@ -78,7 +78,10 @@ try {
     var monthsAPShort = ["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."];
     
     var dotTemplate = $("#dot").template();
-    var tipTemplate = $.template("tipTemplate", "<span>${description || crime_type}</span>${time}<br/>${date_formatted}");
+    //var tipTemplate = $.template("tipTemplate", "<span>${description || crime_type}</span>${time}<br/>${date_formatted}");
+    
+    // properties for this, come from data object generated in makeDot function
+    var tipTemplate = $.template("tipTemplate", "<span>${desc || type}</span>${time}<br/>${crime_date}");
     pot.makeDot = function(feature) {
         normalizeFeature(feature);
         var crime_type = getCrimeType(feature.properties),
@@ -88,7 +91,8 @@ try {
                 group: crime_group, 
                 label: abbreviate(crime_type),
                 desc: getCrimeDesc(feature.properties),
-                props: feature.properties
+                props: feature.properties,
+                crime_date: "?"
             },
             marker = $.tmpl(dotTemplate, data);
             //feature.properties['crime_type'] = crime_type
@@ -109,10 +113,11 @@ try {
                 data.props.date_formatted = data.props.date;
             }
         }else{
-            data.props.date_formatted = "";
+            data.props.date_formatted = "?";
         }
+        data.crime_date = data.props.date_formatted;
         
-        feature.properties['tip_str'] = $.tmpl(tipTemplate, data.props);
+        feature.properties['tip_str'] = $.tmpl(tipTemplate, data);
         //tooltip
         /*
 	    marker.tipTip({
@@ -139,10 +144,19 @@ try {
     	});
     	*/
         
+        // Marker Events
     	marker.click(function(e) {
             dot_onclick(e,$(this));
             e.preventDefault();
         });
+        marker.mouseout(function(e){
+            $(this).removeClass("marker_over"); /* slightly bounces marker */
+        });
+        marker.mouseover(function(e){
+            $(this).addClass("marker_over");
+        });
+        
+      
      
    
 
@@ -586,7 +600,6 @@ function utils_add_map_tooltip(map,mapel,map_type){
 	
 	$("#map").unbind('markerclick');
 	$("#map").bind('markerclick', function(e,elm) {
-		
     if(mapel.length == 0) return;
     var f = $(elm).data('feature');
     if(!f)return;

@@ -1,4 +1,4 @@
-var pot,params,marker_props;   	
+var pot,params,marker_props;
 var THUMB_MAX_WIDTH = 100,
     THUMB_MAX_HEIGHT = 70,
     THUMB_PADDING = null;
@@ -10,8 +10,7 @@ $(function() {
     try{
         $("#map").css("height","100%");
 
-        var mm = com.modestmaps,
-        
+        var mm = com.modestmaps;
         marker_props = {};
 
         params = parseQueryString(location.search);
@@ -65,7 +64,7 @@ $(function() {
             var pid = "dot_"+props.id;
             var loc = new mm.Location(coords[1],coords[0]);
             props.__dt_coords = loc;
-
+            props.__active = true;
 
             var data = {
                   photo_id: pid
@@ -133,7 +132,6 @@ $(function() {
        
             
         },null);
-
         
         /////////////////////////////
         // ARE WE IN CONFIG MODE ////////////

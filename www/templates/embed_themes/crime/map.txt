@@ -11,11 +11,11 @@
     <link rel="stylesheet" href="{$cfg.abs_root_url}embed/crime/css/screen.css">
     <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/tipTip.css">
     <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
-    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tmpl.min.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/utils.js"></script>
-    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/dots.potting.js"></script>
      <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tipTip.minified.js"></script>
     <script type="text/javascript" defer="defer">
@@ -30,8 +30,8 @@
             <h1 id="title"></h1>
         </div>
         <div class="controls">
-                <label>Zoom:</label> <a class="zoom-in" href="#zoom-in"><img alt="in" src="images/zoom-in.png"/></a>
-        		<a class="zoom-out" href="#zoom-out"><img alt="out" src="images/zoom-out.png"/></a>
+                <label>Zoom:</label> <a class="zoom-in" href="#zoom-in"><img alt="in" src="{$cfg.abs_root_url}embed/images/zoom-in.png"/></a>
+        		<a class="zoom-out" href="#zoom-out"><img alt="out" src="{$cfg.abs_root_url}embed/images/zoom-out.png"/></a>
         </div>
         
         <p id="copyright">Map data &copy;<a href="https://www.openstreetmap.org/" title="OpenStreetMap site">OpenStreetMap</a> contributors, CC-BY-SA; designed by <a href="http://www.stamen.com/" title="stamen site">Stamen</a> &amp; <a href="http://www.geoiq.com/">GeoIQ</a></p>

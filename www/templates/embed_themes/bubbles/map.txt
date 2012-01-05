@@ -9,8 +9,8 @@
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/bubbles/css/screen.css">
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/tipTip.css">
         <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
-        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
-        <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tmpl.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/d3.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>

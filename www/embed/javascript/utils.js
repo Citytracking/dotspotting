@@ -567,3 +567,293 @@ cbSplit._nativeSplit = String.prototype.split;
 String.prototype.split = function (separator, limit) {
     return cbSplit(this, separator, limit);
 };
+
+/**
+    Tooltip for Dots
+    has alot of dependencies like:
+        - requires access to pot & mdict object
+        - expecting tooltip markup in a certain way
+        - use at your own risk...
+**/
+function DotToolTip(selector) {
+    if(!pot){
+        console.log("Needs a dotspotting pot object....");
+        return;
+    }
+    
+    if(!selector){
+        pot.error("ERROR: needs a selector for DOM element(s) to listen for...");
+        return;
+    }
+    
+    this.container = $(pot.selectors.map);
+ 
+    
+    if(!this.container[0]){
+        pot.error("ERROR: map DOM element seems to be missing.");
+        return;
+    }
+    
+    this.map = pot.map;
+    this.listenFrom = selector;
+
+    this.updateSize();
+    this.createTip();
+}
+
+DotToolTip.prototype = {
+    container: null,
+    map: null,
+    listenFrom:null,
+    currentDot: null,
+    currenProp:null,
+    tt: null,
+    tt_title: null,
+    tt_desc: null,
+    tt_nub: null,
+    TT_WIDTH: 300,
+    cont_offset: null,
+    cont_width: null,
+    cont_height: null,
+    tip_title: null,
+    tip_desc: null,
+    tip_sentence:null,
+    active:false,
+    currentRalfObj:null,
+    
+    createTip: function(){
+        
+        if(this.checkParams()){
+            this.tt = $("#mm_tip"),
+            this.tt_title = $("#mm_tip_title"),
+            this.tt_desc = $("#mm_tip_desc"),
+            this.tt_nub = $("#mm_tip_nub"),
+            this.active = true;
+            
+            this.addHandlers();
+        }
+        
+    },
+    addHandlers: function(){
+        var that = this;
+        that.removeHandlers();
+        $(this.container).delegate(this.listenFrom, 'mouseover mouseout', function(event) { 
+            
+            event.preventDefault();
+            if ( event.type == "mouseover" ) {
+                
+                var id = String($(this).attr('id'));
+                if(!id)return;
+                if(!mdict[id])return;
+                if(!mdict[id].myAttrs.props['__active'])return;
+                if(mdict[id] == that.currentRalfObj)return;
+               
+                mdict[id].myAttrs.props["__dt_coords"] = mdict[id].coord;
+               
+                that.currentRalfObj = mdict[id];
+                /// proceed
+                that.currentDot = this;
+                that.currentProp = mdict[id].myAttrs.props;
+                
+                that.showTip();
+            } else {
+                
+                //that.currentDot = that.currentProp = null
+                if(!that.currentRalfObj)return;
+            
+                //that.currentRalfObj.attr(over_style); 
+                that.currentRalfObj.attr(that.currentRalfObj.myAttrs['style']);
+                
+                //that.currentRalfObj.toBack();
+                
+                that.currentRalfObj = null;
+                
+                that.hideTip();
+            }
+            return false;
+        });
+        this.map.addCallback("resized", defer(that.updateSize,100));
+    },
+    
+    removeHandlers: function(){
+        this.map.removeCallback("resized");
+        $(this.container).undelegate(this.listenFrom, "mouseover mouseout");
+    },
+    
+    destroy: function(){
+        this.removeHandlers();
+        this.hideTip();
+        this.currentDot = null;
+        this.currentProp = null;
+        this.container = null;
+        this.map = null;
+        this.tt = null;
+        this.tt_title = null;
+        this.tt_desc = null;
+        this.tt_nub = null;
+    },
+    
+    hideTip: function(){
+        if(this.tt)this.tt.hide();
+    },
+    
+    showTip: function(){
+        if(!this.currentProp)return;
+        
+        if(this.currentProp.tipMessage){
+            this.tt_title.css("display","none");
+            this.tt_desc.css("display","block")
+            this.tt_desc.html(this.currentProp.tipMessage);
+        }else{
+            var _title = this.getTipTitle();
+            var _desc = this.getTipDesc();
+            if(!_title.length && !_desc.length)return;
+            if(_title){
+                this.tt_title.css("display","block");
+                this.tt_title.html(_title);
+            }else{
+                this.tt_title.css("display","none");
+            }
+            if(_desc){
+                this.tt_desc.css("display","block");
+                this.tt_desc.html(_desc);
+            }else{
+                this.tt_desc.css("display","none");
+            }
+        }
+        
+        this.currentRalfObj.attr(hover_style);
+        this.initialTipPosition();
+    },
+    
+    initialTipPosition: function(){
+        
+        this.tt.css("left","-9999px");
+        this.tt.css("width","auto");
+        var _w = (this.tt.width() < this.TT_WIDTH) ? this.tt.width() : this.TT_WIDTH;
+        if(_w < 70)_w = 70;
+        this.tt.css("width",_w+"px");
+        this.tt.width(_w);
+        //
+        var _point = this.map.coordinatePoint(this.currentProp.__dt_coords);
+        var _h = this.tt.height();
+        var _radius = parseFloat(this.currentRalfObj.attr('r'));
+        var _circleHeight = this.currentRalfObj.getBBox().height;
+        var _x = parseFloat(_point.x - 10);
+
+     
+        // y = Marker location - (tip box height + nub height + radius + border size)
+        var _y = _point.y - (_h + 10 + _radius + 6); // 22
+
+
+        var pos_pct = (_point.x / this.cont_width);
+
+        var nub_pos = ((_w-20) * pos_pct);
+        if(nub_pos<6)nub_pos = 6;
+        
+        this.tt_nub.css("left",nub_pos+"px");
+        this.tt.css("margin-left", "-"+nub_pos+"px");
+            
+        this.tt.show();
+        this.tt.css("left", _x).css("top", _y); 
+    },
+    
+    updateSize: function(){
+        this.container = this.container ||  $(pot.selectors.map);
+        this.cont_offset = this.container.offset();
+        this.cont_width = this.container.width();
+        this.cont_height = this.container.height();
+    },
+    
+    unselectAllDots: function(){
+        this.currentDot = this.currentProp = this.currentRalfObj = null;
+        
+        for(o in mdict){
+            mdict[o].attr(over_style);
+        }
+
+    },
+    
+    getTipTitle: function(){
+        return (this.tip_title && this.tip_title.length && this.currentProp[this.tip_title]) ? this.currentProp[this.tip_title] : "";
+    },
+
+    getTipDesc: function(){
+        if(this.tip_sentence){
+            var txt = this.tip_sentence.struct;
+            return txt.replace(this.tip_sentence.parts[0],this.currentProp[this.tip_sentence.parts[1]]);
+        }else{
+            return (this.tip_title && this.tip_title.length && this.currentProp[this.tip_desc]) ? this.currentProp[this.tip_desc] : "";
+        }
+    },
+    
+    checkParams: function(){
+        // user tip styles
+        
+        if(ds_user_opts['tooltip']){
+
+            var userTipObj = parseJSON(ds_user_opts['tooltip']);
+            
+
+            if(userTipObj){
+                for(prop in userTipObj){
+                    
+                    
+                    switch(prop){
+                        case "background":
+                            this.tt.css("background-color",userTipObj[prop]);
+                            this.tt_nub.css("border-top-color",userTipObj[prop] );
+                        break;
+                        case "font-color":
+                            this.tt.css("color",userTipObj[prop]);
+                        break;
+                        case "font-size":
+                            this.tt_title.css("fontSize",userTipObj[prop]);
+                        break;
+                        case "font-family":
+                            this.tt_title.css("fontFamily",userTipObj[prop]);
+                        break;
+                        case "font-weight":
+                            this.tt_title.css("fontWeight",userTipObj[prop]);
+                        break;
+                    }
+                    
+                    
+                }
+            }
+            
+        }
+        // look for tooltip parameters
+        if(!params.tt && !params.tm){
+          isTip = false;
+        }else{
+          isTip = true;
+          if(params.tt){
+              this.tip_title = params.tt;
+          }else{
+              this.tip_title = "id";
+          }
+
+          if(params.tm){
+
+          //var re= new RegExp (/{(.*)}/gi);
+          var re= new RegExp (/{([\w:]*)?\s?(.*?)}/gi);
+
+          var m=re.exec(params.tm);
+
+          if(m && m[1]){
+              this.tip_sentence = {
+                  "struct":params.tm,
+                  "parts":m
+              };
+          }
+              this.tip_desc = params.tm;
+          }else{
+              this.tip_desc = "";
+          }
+        }
+        isTip = true;
+        //this.tip_title = "id";
+        return isTip;
+    }
+}

@@ -136,7 +136,7 @@ h1 a {
     -moz-opacity: .8;
     -khtml-opacity: .8; 
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=80)";  
-    filter: alpha(opacity=80);
+	filter:alpha(opacity=80) !important; /* For IE8 and earlier */
 }
 
 .report .desc {
@@ -175,6 +175,11 @@ h1 a {
 /* icon above the description */
 .report:hover .group {
     z-index: 1002;
+}
+
+/* adds a slight bump to markers, when rolled over */
+.marker_over{
+    margin:1px 0 0 1px;
 }
 
 

@@ -406,8 +406,10 @@ if (!com) {
         },
 
         locationCoordinate: function(location) {
+            
             var point = new MM.Point(Math.PI * location.lon / 180.0,
                                      Math.PI * location.lat / 180.0);
+            
             point = this.project(point);
             return new MM.Coordinate(point.y, point.x, this.zoom);
         },
@@ -2136,6 +2138,7 @@ if (!com) {
         // zooming
         
         zoomBy: function(zoomOffset) {
+     
             this.coordinate = this.coordinate.zoomBy(zoomOffset);
             this.draw();
             this.dispatchCallback('zoomed', zoomOffset);
@@ -2234,8 +2237,9 @@ if (!com) {
             var centerZoom = TL.zoom;
             
             this.coordinate = new MM.Coordinate(centerRow, centerColumn, centerZoom).zoomTo(initZoom);
+            
             this.draw();
-    
+            
             this.dispatchCallback('extentset', locations);
             return this;
         },
@@ -2265,8 +2269,10 @@ if (!com) {
 
             // distance from the center of the map
             var point = new MM.Point(this.dimensions.x/2, this.dimensions.y/2);
+            
             point.x += this.provider.tileWidth * (coord.column - this.coordinate.column);
             point.y += this.provider.tileHeight * (coord.row - this.coordinate.row);
+            
             
             return point;
         },
