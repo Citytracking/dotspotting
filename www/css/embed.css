@@ -95,7 +95,7 @@ h2,h3,h4,h5{color:#000;}
 
 
 #config-extras .grid_3{margin-bottom:10px;}
-#config-extras .bumpDown10{margin-top:15px;}
+#config-extras .label{display:block;}
 /*
 	Variable Grid System.
 	Learn more ~ http://www.spry-soft.com/grids/
