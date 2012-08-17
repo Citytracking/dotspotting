@@ -1,3 +1,5 @@
+/* Bubbles Theme */
+
 //define globals
 var pot,params,colors,bucketColumn,mdict,ds_tooltip,backdict,masterNode,ds_user_opts={};
 
@@ -54,7 +56,7 @@ $(function() {
 
 
         pot = new Dots.Potting(params);
-        
+  
         pot.setTitle();
          
         pot.dotsLayer = new mm.DotMarkerLayer(pot.map);
@@ -124,21 +126,31 @@ $(function() {
             
             props.__active = true,
             updateValues(markerVal);
+
+          
+          // tooltip message config 
+          if((params.tm && params.tm.length) || (params.tt && params.tt.length)){
+             //...  tooltip will take care of message
+         }else{
+                      
+              if(feature.properties.__rollover_message){
+
+                  feature.properties.__rollover_message = normalizeRolloverMessage(feature.properties.__rollover_message);
+
+                  if(!rollover_tmpl){
+                      rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
+                      $.template( "rollover_tmpl", rollover_tmpl);
+
+                  }
+                  //props.tipMessage = $.tmpl( "<span>"+feature.properties.__rollover_message+"</span>",props);
+                  props.tipMessage = $.tmpl( "rollover_tmpl",props);
+              }else if(rollover_tmpl){
+                  props.tipMessage = $.tmpl( "rollover_tmpl",props);
+              }
+              
+          }
+          
             
-           
-            if(feature.properties.__rollover_message){
-                
-                feature.properties.__rollover_message = normalizeRolloverMessage(feature.properties.__rollover_message);
-                if(!rollover_tmpl){
-                    rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
-                    $.template( "rollover_tmpl", rollover_tmpl);
-                    
-                }
-                //props.tipMessage = $.tmpl( "<span>"+feature.properties.__rollover_message+"</span>",props);
-                props.tipMessage = $.tmpl( "rollover_tmpl",props);
-            }else if(rollover_tmpl){
-                props.tipMessage = $.tmpl( "rollover_tmpl",props);
-            }
             
 
             if(!infoPanelText){

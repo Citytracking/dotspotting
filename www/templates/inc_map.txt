@@ -32,9 +32,10 @@
         	        <span class="txt_small">Theme Styles:</span>
         	        <select id="ds_theme_options">
                         <option value="default">Default</option>
-                        <option value="photo">Photo</option>
-                        <option value="crime">Crime</option>
+                        <option value="bubbles">Bubbles</option>
                         <option value="bucket">Bucket</option>
+                        <option value="crime">Crime</option>
+                        <option value="photo">Photo</option>
                     </select>
                     <a href="{$cfg.abs_root_url}embed/default?oid={$owner.id}&amp;sid={$sheet.id}" class="txt_small blue_links" id="theme_more_config">more config options</a>
                 </div>

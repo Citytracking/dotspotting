@@ -1,3 +1,5 @@
+/* Default Theme */
+
 var pot,params,marker_props,ds_user_opts={},ds_kirby = false,mdict,ds_tooltip,backdict;
 
 // style objects for dot layers
@@ -58,13 +60,52 @@ $(function() {
         pot.makeDot = function(feature) {
            var props = feature.properties,
            geom = (feature.geometry.type == 'GeometryCollection') ? feature.geometry.geometries : [ feature.geometry ];
-
+           
+           
+           if(props['__tooltip_config'] && !ds_user_opts['tooltip']){
+               ds_user_opts['tooltip'] = props['__tooltip_config'];
+           }
+           
+           if(props['__dot_style'] && !ds_user_opts['over_style']){
+               ds_user_opts['over_style'] = parseJSON(props['__dot_style']);
+               over_style = ds_user_opts['over_style'];
+           }
+           
+           if(props['__dot_hover_style'] && !ds_user_opts['hover_style']){
+               ds_user_opts['hover_style'] = parseJSON(props['__dot_hover_style']);
+               hover_style = ds_user_opts['hover_style'];
+           }
+           
            var coords = geom[0]['coordinates'],
            pid = "dot_"+props.id;
            
            var loc = new mm.Location(coords[1],coords[0]);
        	   props.__dt_coords = loc;
        	   props.__active = true;
+       	   
+       	   
+       	   // tooltip message config 
+             if((params.tm && params.tm.length) || (params.tt && params.tt.length)){
+                //...  tooltip will take care of message
+            }else{
+
+                 if(feature.properties.__rollover_message){
+
+                     feature.properties.__rollover_message = normalizeRolloverMessage(feature.properties.__rollover_message);
+
+                     if(!rollover_tmpl){
+                         rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
+                         $.template( "rollover_tmpl", rollover_tmpl);
+
+                     }
+                     //props.tipMessage = $.tmpl( "<span>"+feature.properties.__rollover_message+"</span>",props);
+                     props.tipMessage = $.tmpl( "rollover_tmpl",props);
+                 }else if(rollover_tmpl){
+                     props.tipMessage = $.tmpl( "rollover_tmpl",props);
+                 }
+
+             }
+             
        	   
            var more_front = {
                style: jQuery.extend({}, over_style),

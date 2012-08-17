@@ -27,6 +27,20 @@
             'helper': 'Min. size of bubble.'
         },
         {
+            'label': 'Tooltip Title:',
+            'type': 'select',
+            'id': 'tt',
+            'default': '',
+            'helper': 'Column to be used as the title for tooltip'
+        },
+        {
+            'label': 'Tooltip Msg:',
+            'type': 'select',
+            'id': 'tm',
+            'default': '',
+            'helper': 'Column to be used as the body for tooltip'
+        },
+        {
             'label': 'Nodes?:',
             'type': 'checkbox',
             'id': 'nodes',
@@ -60,8 +74,12 @@
     function setSelects(){
         var _fields = ds_config.sheet_columns;
         if(!_fields)return;
+        $("#config_opt_tm").append('<option value=""></option>');
+        $("#config_opt_tt").append('<option value=""></option>');
         $("#config_opt_valcol").append('<option value=""></option>');
         for(f in _fields){
+            $("#config_opt_tm").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
+            $("#config_opt_tt").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
             $("#config_opt_valcol").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
         }
     }

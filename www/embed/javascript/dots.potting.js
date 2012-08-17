@@ -127,11 +127,12 @@ Dots.Potting.prototype = {
 	    }else{
 	        handlers.push( new com.modestmaps.MouseHandler() );
 	    }
-	    
-	    
-	    //handlers.push( new com.modestmaps.MouseHandler() );
+
         this.map = new com.modestmaps.Map(this.mapContainer[0], provider,null,handlers);
-   
+        
+        // remove mouse wheel handler
+        if(handlers && handlers[0].mouseWheelHandler)
+            com.modestmaps.removeEvent(this.map.parent,'mousewheel',handlers[0].mouseWheelHandler)
             
         if (provider.copyright) {
             this.addCopyright(provider.copyright);

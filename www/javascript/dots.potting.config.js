@@ -85,11 +85,11 @@ Dots.Config.prototype = {
             }else{
                 _insert = "<span class='label'>"+item.label+"</span>";
                 if (item.type == "text"){
-                    _insert += "<input id='config_opt_"+item.id+"' value='"+item['default']+"' class='autoUpdate'/>";
+                    _insert += "<input id='config_opt_"+item.id+"' value='"+item['default']+"' class='autoUpdate bumpDown10'/>";
                 }else if (item.type == "select"){
                     _insert += "<select id='config_opt_"+item.id+"' class='autoUpdate'></select>";
                 }else if(item.type == "checkbox"){
-                    _insert += "<input type='checkbox' id='config_opt_"+item.id+"' class='autoUpdate'/>";
+                    _insert += "<input type='checkbox' id='config_opt_"+item.id+"' class='autoUpdate bumpDown10'/>";
                 }
                 
                 if (item.helper){

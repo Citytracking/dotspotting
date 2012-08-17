@@ -24,9 +24,10 @@ var incoming_sheet = '{$recent_sheet_url}';
        
             <select id="config_opt_theme">
                 <option value="default">Default</option>
-                <option value="photo">Photo</option>
-                <option value="crime">Crime</option>
                 <option value="bucket">Bucket</option>
+                <option value="bubbles">Bubbles</option>
+                <option value="crime">Crime</option>
+                <option value="photo">Photo</option>
             </select> 
        
             </div>
