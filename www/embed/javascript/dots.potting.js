@@ -31,7 +31,7 @@ Dots.Potting.sourceAliases = (function() {
         PRETTYMAPS_TM = OSM_TM;
 
     aliases.toner = {
-        template: "http://spaceclaw.stamen.com/toner/{Z}/{X}/{Y}.png",
+        template: "http://tile.stamen.com/toner/{Z}/{X}/{Y}.png",
         copyright: OSM_TM
     };
 
