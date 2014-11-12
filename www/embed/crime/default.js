@@ -1,7 +1,8 @@
+// crime styles
 var pot, params;
 var tip_selected_type = null,
     tip_selected_elm = null;
-    
+
 // custom icons
 var custom_icon_base = "";
 
@@ -9,33 +10,33 @@ var custom_icon_base = "";
 $(function() {
 try {
     var mm = com.modestmaps;
-    
+
     params = parseQueryString(location.search);
     if (!params.base) params.base = "pale_dawn";
     // TODO: uncomment me?
     if (!params.baseURL) params.baseURL = baseURL;
-    
-    
+
+
     // look for custom icon url base
     if(params.iconbase){
         custom_icon_base = params.iconbase;
         // wipe the angle brackets from a url
         custom_icon_base = custom_icon_base.replace(/[<>]/g,'');
     }
-    
+
     pot = new Dots.Potting(params);
     pot.setTitle();
-    
+
     // map controls
     $(".zoom-in").click(function(e){
       e.preventDefault();
-      pot.map.zoomIn(); 
+      pot.map.zoomIn();
     });
     $(".zoom-out").click(function(e){
       e.preventDefault();
-      pot.map.zoomOut(); 
+      pot.map.zoomOut();
     });
-    
+
     // adjust controls if title
     if (params.title) {
        $(".controls").css("top",($("#title").height()+20)+"px");
@@ -52,34 +53,34 @@ try {
 
         var pos = ($("#title").length > 0) ? $("#title").innerHeight() : 0;
         $("#crime_types_wrapper").css("top",pos+"px");
-        
+
     } else {
         $("#crime_types_wrapper").remove();
     }
 
     function dot_onclick(e,elm){
         if(!elm)return;
-        
+
         if(elm[0] == tip_selected_elm){
-            //console.log("YOU HAVE SELECTED THE SAME TIP");  
+            //console.log("YOU HAVE SELECTED THE SAME TIP");
         }else{
             $("#map").trigger('markerclick',elm);
         }
     }
-    
+
     // clustering
     function doCluster(){
         clusterMarkers(pot.dotsLayer.markers);
         pot.map.setZoom(pot.map.getZoom());
     }
-    
+
     var days_of_week = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     var monthsAPShort = ["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."];
-    
+
     var dotTemplate = $("#dot").template();
     //var tipTemplate = $.template("tipTemplate", "<span>${description || crime_type}</span>${time}<br/>${date_formatted}");
-    
+
     // properties for this, come from data object generated in makeDot function
     var tipTemplate = $.template("tipTemplate", "<span>${desc || type}</span>${time}<br/>${crime_date}");
     pot.makeDot = function(feature) {
@@ -87,8 +88,8 @@ try {
         var crime_type = getCrimeType(feature.properties),
             crime_group = getCrimeGroup(crime_type),
             data = {
-                type: crime_type, 
-                group: crime_group, 
+                type: crime_type,
+                group: crime_group,
                 label: abbreviate(crime_type),
                 desc: getCrimeDesc(feature.properties),
                 props: feature.properties,
@@ -96,14 +97,14 @@ try {
             },
             marker = $.tmpl(dotTemplate, data);
             //feature.properties['crime_type'] = crime_type
-            
+
         //look for custom icon
         checkCustomIcon(marker,data);
-        
+
         marker.data("feature", feature);
         marker.data("crime_type", crime_type);
         marker.data("crime_group", crime_group);
-        
+
         // format date
         if(data.props.date){
             var dt = new Date(data.props.date);
@@ -116,13 +117,13 @@ try {
             data.props.date_formatted = "?";
         }
         data.crime_date = data.props.date_formatted;
-        
+
         feature.properties['tip_str'] = $.tmpl(tipTemplate, data);
         //tooltip
         /*
 	    marker.tipTip({
 	        activation:"hover",
-    	    maxWidth: "300", 
+    	    maxWidth: "300",
     	    edgeOffset: 12,
     	    delay:200,
     	    content:tip_str,
@@ -132,7 +133,7 @@ try {
     	    manualClose:false,
     	    closeContent:"",
     	    //addTo:pot.dotsLayer.parent,
-    	    
+
     	    enter:function(e){
 	            //var that = marker;
 	            //pot.map.addCallback("drawn", function(){that.trigger('custom', ['Custom', 'Event'])} );
@@ -143,7 +144,7 @@ try {
             }
     	});
     	*/
-        
+
         // Marker Events
     	marker.click(function(e) {
             dot_onclick(e,$(this));
@@ -155,10 +156,10 @@ try {
         marker.mouseover(function(e){
             $(this).addClass("marker_over");
         });
-        
-      
-     
-   
+
+
+
+
 
         if (typeSelector) {
             var label = typeSelector.addLabel(data);
@@ -167,21 +168,21 @@ try {
             } else {
             }
         }
-        
-        
+
+
          defer(doCluster, 100)();
-         
+
         return marker[0];
     };
     // need a callback on load to resize menu
-    var req = pot.load(null, function(){   
+    var req = pot.load(null, function(){
         // map tooltip
     	utils_add_map_tooltip(pot.map,$("#map").parent(),"mm");
         if (typeSelector) {
             typeSelector.labelsAdded();
         }
     },null);
-    
+
     ////////////////////////////
     // ARE WE IN CONFIG MODE ////////////
     // SHould we do this .. this way?? //
@@ -205,20 +206,20 @@ try {
 }
 });
 
-/// Custom Icon 
+/// Custom Icon
 
 function checkCustomIcon(marker,data){
     if(data.props.custom_icon || custom_icon_base.length){
-        
+
         var url = (data.props.custom_icon) ? data.props.custom_icon.replace(/ /g, "_") : data.props.crime_type.replace(/ /g, "_");
-        
+
         var extension = url.substr( (url.lastIndexOf('.') +1) );
         url = custom_icon_base + url;
         if(extension != "png" || extension != "jpg" || extension != "gif") url += ".png";
-        
+
         var icon = $(marker).find(".group");
         var default_classes = ['violent','property','gol','unknown'];
-        
+
         // check if icon image is out there
         // probably need to see if this will work in all browsers
         $('<img/>').attr('src', url).load(function() {
@@ -232,7 +233,7 @@ function checkCustomIcon(marker,data){
             p.removeClass(default_classes.join(" "));
 
         });
-        
+
         // store icon url in marker, for future reference
         marker.data("custom_icon", url);
     }
@@ -260,7 +261,7 @@ CrimeTypeSelector.prototype = {
     show_all:$("#ct_show_all"),
     hide_all:$("#ct_hide_all"),
 
-    
+
     getSortKey: function(data) {
         var indexes = {"violent": 1, "qol": 2, "property": 3};
         return [indexes[data.group] || 9, data.label || data.type].join(":");
@@ -274,7 +275,7 @@ CrimeTypeSelector.prototype = {
             label.data("count", label.data("count") + 1);
             return  label;
         }
-        
+
 
         var label = $("<li/>")
             .data("type", type)
@@ -286,15 +287,15 @@ CrimeTypeSelector.prototype = {
                     .text(data.label))
             .append($('<span class="title"/>')
                 .text(data.title || data.type));
-                
+
         //look for custom icon
         checkCustomIcon(label,data);
-        
+
         var that = this;
         label.click(function(e) {
             e.preventDefault();
             that.onLabelClick($(this), e);
-            
+
         });
 
         this.container.append(label);
@@ -305,7 +306,7 @@ CrimeTypeSelector.prototype = {
         if (this.selectedTypes.hasOwnProperty(data.label)) {
             this.selectedTypes[type] = this.selectedTypes[data.label];
         }
-        
+
         var selected = this.selectedTypes[type];
         if (typeof selected == "undefined") {
             selected = this.selectedTypes[type] = this.defaultTypeSelected;
@@ -317,11 +318,11 @@ CrimeTypeSelector.prototype = {
             label.addClass("off");
             this.unselectType(type);
         }
-        
-        
+
+
         this.labels.push(label);
         return label;
-        
+
     },
 
     onLabelClick: function(label, e) {
@@ -339,13 +340,13 @@ CrimeTypeSelector.prototype = {
             }else{
                 selected = false;
                 l.data("selected", selected);
-                this.unselectType(type); 
+                this.unselectType(type);
             }
             l.toggleClass("off", !selected);
         }
         */
-        
-  
+
+
         var selected = !label.data("selected"),
             type = label.data("type");
         label.data("selected", selected);
@@ -355,7 +356,7 @@ CrimeTypeSelector.prototype = {
             this.unselectType(type);
         }
         label.toggleClass("off", !selected);
-       
+
     },
 
     selectType: function(type) {
@@ -420,8 +421,8 @@ CrimeTypeSelector.prototype = {
         for (var i = 0; i < len; i++) {
             labels[sortables[i]].appendTo(this.container);
         }
-        
-    }, 
+
+    },
     labelsAdded: function(){
         var that = this;
         var len = this.labels.length;
@@ -429,18 +430,18 @@ CrimeTypeSelector.prototype = {
         // add alternating rows and tooltips
         var _items = this.container.find("li");
         _items.each(function(i){
-    
+
             var label = $(this);
             if(i % 2 == 0){
                 $(label).addClass("altrow");
             }
-   
+
             var tip_str = $(label).find('.title').text() + "<br/>" + label.data('count') +" "+pluralize("report",label.data('count') );
-            
-            
-        
+
+
+
              label.tipTip({
-          	    maxWidth: "auto", 
+          	    maxWidth: "auto",
           	    edgeOffset: 0,
           	    delay:100,
           	    defaultPosition:"left",
@@ -449,13 +450,13 @@ CrimeTypeSelector.prototype = {
           	    enter:function(){},
                 exit:function(){}
           	});
-  	
-    
+
+
         });
-        
+
         // resize crime type selector widget
-        this.resize(); 
-        
+        this.resize();
+
         // add show all & hide all events
         this.show_all.click(function(e){
             e.preventDefault();
@@ -471,7 +472,7 @@ CrimeTypeSelector.prototype = {
         });
         this.hide_all.click(function(e){
             e.preventDefault();
-            
+
             for (var i = 0; i < len; i++) {
                 var label = that.labels[i];
                 var selected = false,
@@ -483,20 +484,20 @@ CrimeTypeSelector.prototype = {
 
         });
     },
-    
+
     resize: function(){
-   
+
         var _parent = this.wrapper.parent();
         var _container_offset = this.wrapper.offset();
 
         if(_container_offset.top + this.wrapper.height() > _parent.height()){
-           
+
             var _w = this.container.width();
             var _h = (_parent.height() - _container_offset.top) - 40;
             this.container.css("width",_w+25+"px").css("height",_h+"px").css("overflow","auto").css("padding-bottom","10px");
         }
     }
-    
+
 };
 
 function getCrimeDesc(props) {
@@ -583,21 +584,21 @@ function abbreviate(group) {
     } else {
         return group ? capitalizeWord(group.substr(0, 2)) : "?";
     }
-} 
+}
 abbreviate.stopWords = ["of", "the", "for", "and", "with", "-"];
 /*
 var tip_selected_type = null,
     tip_selected_elm = null;
-*/   
+*/
 
 function utils_add_map_tooltip(map,mapel,map_type){
 
     $(".maptip").each(function(){
     	$(this).remove();
     });
-	
-	
-	
+
+
+
 	$("#map").unbind('markerclick');
 	$("#map").bind('markerclick', function(e,elm) {
     if(mapel.length == 0) return;
@@ -615,7 +616,7 @@ function utils_add_map_tooltip(map,mapel,map_type){
     props.map = map,
     props.map_type = map_type,
     props.content = p['tip_str'];
-    
+
     // create tip
      mapel.maptip(this)
       .data(props)
@@ -626,38 +627,38 @@ function utils_add_map_tooltip(map,mapel,map_type){
       })
       .top(function(tip) {
         var point = tip.props.map.locationPoint(this.props.location);
-    
+
         return parseFloat(point.y);
       }).left(function(tip) {
-        var offset = 18, 
+        var offset = 18,
             point = tip.props.map.locationPoint(this.props.location);
 
         return parseFloat(point.x + offset);
       }).content(function(d) {
 
     	var _tip = null;
-	
+
         var self = this,
             props = d,
             cnt = $('<div/>'),
             bdy = $('<div id="maptip_bdy"/>'),
-		
+
             close = $('<span/>').addClass('close').html('x')
 
     		cnt.append(close);
-		
+
             bdy.html(props.content);
 
             cnt.append($('<div/>').addClass('nub'));
             cnt.append(bdy);
-            
-            
-            
-		
+
+
+
+
             close.unbind('click').bind('click',function() {
     			closeTip(self);
             });
-          
+
             $("#map").unbind("tip_close_tip").bind("tip_close_tip",function(e){
                 closeTip(self);
         	});
@@ -695,13 +696,13 @@ function utils_add_map_tooltip(map,mapel,map_type){
     this.el.append(this.cnt);
     this.props = {};
   }
-  
+
   MapTip.prototype = {
     data: function(d) {
         this.props.data = d;
         return this;
     },
-    
+
     map: function(el) {
         var self = this
         this.props.map = el;
@@ -711,7 +712,7 @@ function utils_add_map_tooltip(map,mapel,map_type){
 
         return this;
     },
-    
+
     classNames: function(fn) {
         if($.isFunction(fn)) {
             this.props.classNames = fn.call(this, this.props.data);
@@ -722,15 +723,15 @@ function utils_add_map_tooltip(map,mapel,map_type){
         this.el
             .addClass(this.defaultClassName)
             .addClass(this.props.classNames)
-        
+
         return this;
     },
-    
+
     location: function(latlon) {
         this.props.location = latlon;
         return this;
     },
-    
+
     left: function(fn) {
         if($.isFunction(fn)) {
             this.props.callbackLeft = fn;
@@ -741,7 +742,7 @@ function utils_add_map_tooltip(map,mapel,map_type){
 
         return this;
     },
-    
+
     top: function(fn) {
         if($.isFunction(fn)) {
             this.props.callbackTop = fn;
@@ -751,7 +752,7 @@ function utils_add_map_tooltip(map,mapel,map_type){
         }
         return this;
     },
-    
+
     content: function(fn) {
         if($.isFunction(fn)) {
             this.props.content = fn.call(this, this.props.data);
@@ -760,7 +761,7 @@ function utils_add_map_tooltip(map,mapel,map_type){
         this.props.content = fn;
         return this;
     },
-    
+
     className: function(fn) {
         if($.isFunction(fn)) {
             this.props.className = fn.call(this, this.props.data);
@@ -770,11 +771,11 @@ function utils_add_map_tooltip(map,mapel,map_type){
         this.props.className = fn;
         return this;
     },
-    
+
     page: function(fn) {
         return this;
     },
-    
+
     hide: function(fn) {
         this.props.map.removeCallback('drawn');
         this.props.map.removeCallback('resized');
@@ -783,7 +784,7 @@ function utils_add_map_tooltip(map,mapel,map_type){
             el.remove();
         });
     },
-    
+
     move: function(event) {
         this.left(this.props.callbackLeft).top(this.props.callbackTop)
         var size = {x:this.props.map.parent.offsetWidth,y:this.props.map.parent.offsetHeight};
@@ -794,19 +795,19 @@ function utils_add_map_tooltip(map,mapel,map_type){
         }else{
             this.el.css("visibility","hidden");
         }
-        
+
         return this;
     },
-    
+
     resize: function(event) {
         return this.move(event);
     },
-    
+
     render: function() {
         this.cnt.html('').append(this.props.content)
-        this.canvas.prepend(this.el)  
+        this.canvas.prepend(this.el)
         this.el.show();
-        
+
         // adjust width
         this.cnt.css("width","auto");
         if(this.cnt.width() > 200){
@@ -816,9 +817,9 @@ function utils_add_map_tooltip(map,mapel,map_type){
         }else{
             this.cnt.css("width",this.cnt.width()+"px");
         }
-        
+
         this.el.css({left: this.props.left + 'px', top: this.props.top + 'px'});
-            
+
         var that = this;
         var p1 = this.props.map.locationPoint(this.props.location);
         p1.x += (this.el.width() / 2);
@@ -826,7 +827,7 @@ function utils_add_map_tooltip(map,mapel,map_type){
 
         var panx = p2.x - p1.x;
         var pany = p2.y - p1.y;
-        
+
         // simple animater
         var step = 50;
         var that = this;
@@ -836,14 +837,14 @@ function utils_add_map_tooltip(map,mapel,map_type){
             setTimeout(function(){
               that.props.map.panBy(px,py);
             },5*(i+1));
-        
+
         }
-        
-        
+
+
     }
     //end
   }
-  
+
   $.fn.maptip = function(target) {
     var tip = $.data(this, 'maptip-callout');
     if(!tip) {
@@ -851,7 +852,7 @@ function utils_add_map_tooltip(map,mapel,map_type){
         $.data(this, 'maptip-callout', tip);
     }
 
-    return tip; 
+    return tip;
   }
 })(jQuery);
 

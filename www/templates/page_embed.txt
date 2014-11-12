@@ -22,6 +22,14 @@
         <dt><a href="{$cfg.abs_root_url}embed/photo/" title=""><img src="{$cfg.abs_root_url}embed/photo/thumbnail.png" width="200" height="200"/></a></dt>
         <dd>Photo</dd>
     </dl>
+    <dl>
+        <dt><a href="{$cfg.abs_root_url}embed/bucket/" title=""><img src="{$cfg.abs_root_url}embed/bucket/thumbnail.jpg" width="200" height="200"/></a></dt>
+        <dd>Bucket</dd>
+    </dl>
+    <dl>
+        <dt><a href="{$cfg.abs_root_url}embed/bubbles/" title=""><img src="{$cfg.abs_root_url}embed/bubbles/thumbnail.jpg" width="200" height="200"/></a></dt>
+        <dd>Bubbles</dd>
+    </dl>
     <div class="clear"></div>
 </div>
 {include file="inc_foot.txt"}

@@ -21,7 +21,7 @@ function sheet_onclick(sheetid){
 
 	var sheet = sheet_getinfo(sheetid);
 
-	if (sheet){		
+	if (sheet){
 		location.href = sheet.url;
 	}
 }
@@ -32,7 +32,7 @@ function sheet_onmouseover(sheetid){
 
 	if (! sheet['id']){
 		return;
-	}	
+	}
 
 	var tlen = _dotspotting.sheets_list_mouseout_timers.length;
 
@@ -124,9 +124,9 @@ function sheet_restore_tr(){
 
 function sheet_getinfo(sheetid){
 
-    if (_dotspotting.sheets_list_sheets[sheetid]){	
+    if (_dotspotting.sheets_list_sheets[sheetid]){
        return _dotspotting.sheets_list_sheets[sheetid];
-    }      
+    }
 
     var row = $("#sheetslist_sheet_" + sheetid);
     var sheet = row2sheet(row);
@@ -160,7 +160,7 @@ function row2sheet(row, headers){
 		var value = $(td).text();
 		value = value.replace(/^\s+/, '');
 		value = value.replace(/\s+$/, '');
-		
+
 		if (key == 'extent'){
 			var _extent = value.split(' ');
 			value = (_extent.length == 4) ? _extent : null;
@@ -266,12 +266,12 @@ function draw_map_modestmaps(sheets,update_from_search){
     // check to see if there incoming coordinates
     var qs = new Querystring();
 	if(_dotspotting)_dotspotting.hashobj = qs;
-	
+
 	var incomingState=false;
 	var _extent = null;
 	var map = utils_modestmap('map');
-	
-	
+
+
 	if(!update_from_search){
 		if(qs && qs.contains('c')){
 			var _mapstate = qs.get('c');
@@ -285,10 +285,10 @@ function draw_map_modestmaps(sheets,update_from_search){
 				//store original extent
 				_extent = map.getExtent();
 		   }
-	
+
 		}
 	}
-	
+
 	if(!incomingState){
 		_extent = utils_adjust_bbox(sheets['extent']);
 
@@ -303,7 +303,7 @@ function draw_map_modestmaps(sheets,update_from_search){
 	// writing dot colors set in config file
 	// 0 = attrs , 1 = attrs_hover
 	var attr_array = get_mm_sheet_styles();
-	
+
 
 	var more = {
 		'attrs' : attr_array[0],
@@ -323,7 +323,7 @@ function draw_map_modestmaps(sheets,update_from_search){
 				this.attr(attr_array[1]);
 				sheet_onmouseover(props.id);
 			});
-			
+
 			el.click(function(evt){
 				sheet_onclick(props.id);
 			});
@@ -334,13 +334,13 @@ function draw_map_modestmaps(sheets,update_from_search){
 	markers.drawGeoJson(sheets['features'], more);
 
 	utils_modestmaps_add_compass(map);
-	
+
 	// create controls
 	utils_add_map_controls(map,"mm",extent);
-	
+
 	// map toggle size button
 	utils_map_toggle_size(map,"mm",500,null);
-	
+
 	return;
 }
 
@@ -352,7 +352,7 @@ function draw_map_polymaps(sheets,update_from_search){
 	var incomingState=false;
 	var extent = null;
 	var map = utils_polymap('map');
-	
+
 
 	if(!update_from_search){
 		if(qs && qs.contains('c')){
@@ -367,12 +367,12 @@ function draw_map_polymaps(sheets,update_from_search){
 				//store original extent
 				extent = map.extent();
 		   }
-	
+
 		}
 	}
 	if(!incomingState){
 		extent = utils_adjust_bbox(sheets['extent']);
-	
+
 		map.extent(extent);
 		map.zoom(Math.floor(map.zoom()));
 	}
@@ -386,13 +386,13 @@ function draw_map_polymaps(sheets,update_from_search){
 	map.add(boxes);
 
 	utils_polymaps_add_compass(map);
-	
+
 	// create controls
 	utils_add_map_controls(map,"po",extent);
-	
+
 	// map toggle size button
 	utils_map_toggle_size(map,"po",500,null);
-	
+
 	return 1;
 }
 
@@ -402,14 +402,14 @@ function draw_map(update_from_search){
 
 	var sheets = collect_sheets();
 
-	if (_dotspotting.use_polymaps){	
+	if (_dotspotting.use_polymaps){
 		draw_map_polymaps(sheets,update_from_search);
 		return;
 	}
 
 	draw_map_modestmaps(sheets,update_from_search);
 }
-	
+
 utils_load_map();
 
 </script>

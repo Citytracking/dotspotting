@@ -11,33 +11,33 @@
 <div id="section_about" class="section_bunch_o_text">
 
     <div class="theme" id="default">
-    
-    
+
+
        <!-- include in description file -->
         <h2>Bubbles Theme</h2>
         <p>This is a general use theme to display your dots outside the dotspotting garden.</p>
         <p>To get started enter the URL to a Dotspotting sheet below.</p>
-        <p>You can then customize the map a bit, by using the fields under 'Options'.</p> 
+        <p>You can then customize the map a bit, by using the fields under 'Options'.</p>
         <p>Click the 'Update embed code' button, to apply changes.</p>
         <p>Once everything is to your liking, copy the embed code and paste it into your web page.</p>
         <p><i>Gifted users can skip down to 'Instructions'.</i></p>
-        
-        
-        
-        
+
+
+
+
         <!-- base config -->
         <h4 id="example_title"></h4>
         <div class="example">
-            
+
             <div id="configure">
                 <h5>Enter a <a href="{$cfg.abs_root_url}recent/sheets">sheet URL</a>:</h5>
-                <p> 
+                <p>
                     <input id="config_url" value="{$recent_sheet_url}" style="width:300px;"/>
                 </p>
                 <p id="config_url_error" class="error"></p>
                 <p><input id="startConfig" type="button" value="Generate embed code"/></p>
-                
-           
+
+
                 <div id="options_panel">
                     <h5>Options:</h5>
                     <p>
@@ -51,26 +51,26 @@
                         </select>
                         <span class="default">Default: Toner</span>
                     </p>
-                    
+
                     <p id="tileapi">
                         <span class="label">API Key:</span>
                         <input id="config_api" value=""/>
                     </p>
-                    
+
                     <hr/>
 
                     <p>
                         <span class="label">Title:</span>
                         <input id="config_title" value="" style="width:300px;"/>
                     </p>
-                
+
                     <p>
                         <span class="label">Coordinates:</span>
                         <input id="config_coords" value="" style="width:200px;"/>
                     </p>
-                
+
                      <hr/>
-                     
+
                      <p>
                         <span class="label">Set map dimensions:</span><input id="config_width" value="400" style="width:3em;"/>
                         <span style="font-size:12px;padding:0 3px 0 2px;"> x </span>
@@ -79,7 +79,7 @@
                      <a href="#" id="previewConfig">Preview map dimensions</a>
 
                      <hr/>
-                 
+
                     <p>
                         <span class="label">Tooltip Title:</span>
                         <select id="config_tt"></select>
@@ -91,7 +91,7 @@
                         <select id="config_tm"></select>
                         <span class="helper">Column to be used as the body for tooltip</span>
                     </p>
-                
+
                     </hr>
                     <p>
                     <input id="updateConfig" type="button" value="Update embed code"/>
@@ -101,24 +101,24 @@
 
 
             </div>
-            
+
             <div id="iframe_right">
                 <a id="close-preview-modal">[<span>&#215;</span>]</a>
-                
+
                 <iframe id="example_iframe" width="400" height="400" src=""></iframe>
                 <p><span class="label"></span><input value="" style="width:200px;"/><img id="location_copier" title="copy over to options" src="{$cfg.abs_root_url}images/embed_marker.png"/></p>
-            
-            
+
+
             </div>
             <div style="clear:both;"></div>
-            
+
             <div id="code_to_embed">
             <h3>Embed Code</h3>
             <textarea id="example_text"></textarea>
             </div>
-            
+
         </div>
-        
+
 
         <h3>Instructions</h3>
 
@@ -154,7 +154,7 @@
         and 17 (the minimum and maximum allowed zoom levels
         of the map), <tt>latitude</tt> is a decimal number
         between -85 and 85, and <tt>longitude</tt> is a
-        decimal number between -180 and 180. 
+        decimal number between -180 and 180.
         <a href="http://www.getlatlon.com/">Get Lat Lon</a>
         can help you find the zoom, latitude and longitude of
         most places.</p>
@@ -187,8 +187,8 @@ var defaults = {
 };
 var iframe_size = [400,400],
     init_coords = false;
-    
-    
+
+
 $(document).ready(function() {
      $('#previewConfig').click(function(e) {
           e.preventDefault();
@@ -203,7 +203,7 @@ $(document).ready(function() {
 
 function getViewPort(){
     /* from Andy Langton --> http://andylangton.co.uk/articles/javascript/get-viewport-size-javascript/ */
-    
+
     var viewportwidth;
     var viewportheight;
 
@@ -242,14 +242,14 @@ function doPreview(){
     var content_offset = $("#content").offset();
     var configure_offset = $("#configure").offset();
     var content_width = $("#content").width();
-    
+
     var map_width = parseInt($("#config_width").val());
     var map_height = parseInt($("#config_height").val());
 
     var _offset_left = (((vp[0]  - map_width) / 2) - content_offset.left) ;
     var _offset_top = (((vp[1]  - map_height) / 2) - content_offset.top) - 10;
-    
-    
+
+
     $("#configure").addClass('preview');
     $("#iframe_right").addClass('preview');
     $("#iframe_right").css("left",_offset_left + "px");
@@ -259,14 +259,14 @@ function doPreview(){
     $("#close-preview-modal").show();
 
     autoResize('example_iframe',map_width,map_height);
-    
+
     $('body').append('<div id="previewBackground"></div>');
     $("#previewBackground").show();
     $('#previewBackground').unbind('click').bind('click', function(e) {
         e.preventDefault();
         doClosePreview();
     });
-    
+
     $("#close-preview-modal").unbind('click').bind('click', function(e) {
         e.preventDefault();
        doClosePreview();
@@ -298,23 +298,23 @@ function autoResize(id,w,h){
 // utility function to read hash from map iframe
 function hashMe(x){
     if(!x)return;
-    
+
     // strip # from coords
     x = x.replace("#","");
-    
+
     // ok lazy coming...
     if(x == "0/0/0")return;
-    
+
     // show the coordinate display
     if(!isPreview)$("#iframe_right p").show();
-    
+
     //update coordinate box
     $("#iframe_right .label").html("Current Coordinates: ");
     $("#iframe_right input").val(x);
     if(!init_coords){
         $("#config_coords").val(x);
         defaults['coords'] = x;
-       
+
         $("#example_text").val( getEmbedCode(generateIframeSrc()) );
         init_coords = true;
     }
@@ -338,8 +338,8 @@ $("#startConfig").click(function(e){
     }else{
         $("#config_url_error").html("please enter a Dotspotting url").show();
     }
-    
-    
+
+
 });
 
 // update embed code handler
@@ -347,7 +347,7 @@ $("#updateConfig").click(function(e){
     e.preventDefault();
     grabConfigSettings();
     setEmbed();
-    
+
 });
 
 
@@ -402,7 +402,7 @@ function processTitle(x){
 }
 
 
-// 
+//
 function processFields(x){
     $("#config_tt").append('<option value=""></option>');
     $("#config_tm").append('<option value=""></option>');
@@ -410,7 +410,7 @@ function processFields(x){
         $("#config_tt").append('<option value="'+f+'">'+f+'</option>');
         $("#config_tm").append('<option value="'+f+'">'+f+'</option>');
     }
-    
+
 }
 
 function generateIframeSrc(){
@@ -436,7 +436,7 @@ function generateIframeSrc(){
 
 function getEmbedCode(x){
     var iframe_pre = '<iframe type="text/html" width="'+iframe_size[0]+'" height="'+iframe_size[1]+'" src="';
-     return iframe_pre + x + '"></iframe>';     
+     return iframe_pre + x + '"></iframe>';
 }
 
 
@@ -449,7 +449,7 @@ function setEmbed(){
     if(current_embed  != new_embed){
         $("#example_text").val( new_embed );
         $("#example_iframe").attr('src',out);
-        
+
     }
 }
 
@@ -471,26 +471,26 @@ function getParams(u){
 function getSheet(u){
     // check for things
     if(!root_url && !u)return;
-    
+
     // split on hash
     var _url = u.split("#");
-    
+
     // check for the existence of something
     if(!_url[0])return;
-   
+
     // chop trailing slash
     if(_url[0].slice(-1) == "/")_url[0] = _url[0].slice(0,-1);
-    
+
     // if there are coordinates in hash, store them in default object
     if(_url[1]){
         var params = getParams(_url[1]);
         if(params['c'])defaults['coords'] = params['c'];
     }
     init_coords = false;
-    
+
     // create url that fetches geojson for sheet
     var _export_url = _url[0]+"/export?format=json";
-    
+
     // get sheet geojson
     $.ajax({
       url: _export_url,

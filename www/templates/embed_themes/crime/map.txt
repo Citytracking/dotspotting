@@ -1,13 +1,13 @@
 {assign var="page_title" value="Crime Map"}
 
-{utf8_headers}<!DOCTYPE html> 
+{utf8_headers}<!DOCTYPE html>
 <html>
 <head>
 
     <title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+
     <link rel="stylesheet" href="{$cfg.abs_root_url}embed/crime/css/screen.css">
     <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/tipTip.css">
     <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
@@ -33,16 +33,16 @@
                 <label>Zoom:</label> <a class="zoom-in" href="#zoom-in"><img alt="in" src="{$cfg.abs_root_url}embed/images/zoom-in.png"/></a>
         		<a class="zoom-out" href="#zoom-out"><img alt="out" src="{$cfg.abs_root_url}embed/images/zoom-out.png"/></a>
         </div>
-        
+
         <p id="copyright">Map data &copy;<a href="https://www.openstreetmap.org/" title="OpenStreetMap site">OpenStreetMap</a> contributors, CC-BY-SA; designed by <a href="http://www.stamen.com/" title="stamen site">Stamen</a> &amp; <a href="http://www.geoiq.com/">GeoIQ</a></p>
-        
+
     </div>
     <div id="crime_types_wrapper">
         <h5>Crime Type <span><a href="" id="ct_show_all">Show All</a> | <a href="" id="ct_hide_all">Hide All</a></span></h5>
         <ul id="crime_types"></ul>
     </div>
- 
-    
+
+
 
 {literal}
 <script id="dot" type="text/jquery-template">
@@ -53,6 +53,6 @@
 </script>
 {/literal}
 
-<script type="text/javascript" src="{$cfg.abs_root_url}embed/crime/map.js" defer="defer"></script>
+<script type="text/javascript" src="{$cfg.abs_root_url}embed/crime/default.js" defer="defer"></script>
 </body>
 </html>

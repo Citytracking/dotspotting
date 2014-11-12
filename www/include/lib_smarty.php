@@ -6,7 +6,7 @@
 	$GLOBALS['timings']['smarty_comp_count'] = 0;
 	$GLOBALS['timings']['smarty_comp_time']	= 0;
 
-	include_once(DOTSPOTTING_INCLUDE_DIR . 'smarty_2.6.26/Smarty.class.php');
+	include_once(DOTSPOTTING_INCLUDE_DIR . 'smarty_2.6.28/Smarty.class.php');
 	$GLOBALS['smarty'] = new Smarty();
 
 	$GLOBALS['smarty']->template_dir = $GLOBALS['cfg']['smarty_template_dir'];

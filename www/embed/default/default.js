@@ -1,5 +1,4 @@
 /* Default Theme */
-
 var pot,params,marker_props,ds_user_opts={},ds_kirby = false,mdict,ds_tooltip,backdict;
 
 // style objects for dot layers
@@ -21,33 +20,35 @@ var hover_style = {
 	'stroke' : '#666666',
 	'stroke-width' : 2,
 	'stroke-opacity':1
-};  	
-   	
+};
+
 $(function() {
     try{
         $("#map").css("height","100%");
-        
+
         var mm = com.modestmaps;
-        
+
         mdict = {},
         backdict = {},
         ds_tooltip = null,
         marker_props = {};
-        
+
         params = parseQueryString(location.search);
         if (!params.baseURL) params.baseURL = baseURL;
 
         pot = new Dots.Potting(params);
         pot.setTitle();
 
+
+
         // map controls
         $(".zoom-in").click(function(e){
           e.preventDefault();
-          pot.map.zoomIn(); 
+          pot.map.zoomIn();
         });
         $(".zoom-out").click(function(e){
           e.preventDefault();
-          pot.map.zoomOut(); 
+          pot.map.zoomOut();
         });
 
         // adjust controls if title
@@ -60,31 +61,31 @@ $(function() {
         pot.makeDot = function(feature) {
            var props = feature.properties,
            geom = (feature.geometry.type == 'GeometryCollection') ? feature.geometry.geometries : [ feature.geometry ];
-           
-           
+
+
            if(props['__tooltip_config'] && !ds_user_opts['tooltip']){
                ds_user_opts['tooltip'] = props['__tooltip_config'];
            }
-           
+
            if(props['__dot_style'] && !ds_user_opts['over_style']){
                ds_user_opts['over_style'] = parseJSON(props['__dot_style']);
                over_style = ds_user_opts['over_style'];
            }
-           
+
            if(props['__dot_hover_style'] && !ds_user_opts['hover_style']){
                ds_user_opts['hover_style'] = parseJSON(props['__dot_hover_style']);
                hover_style = ds_user_opts['hover_style'];
            }
-           
+
            var coords = geom[0]['coordinates'],
            pid = "dot_"+props.id;
-           
+
            var loc = new mm.Location(coords[1],coords[0]);
        	   props.__dt_coords = loc;
        	   props.__active = true;
-       	   
-       	   
-       	   // tooltip message config 
+
+
+       	   // tooltip message config
              if((params.tm && params.tm.length) || (params.tt && params.tt.length)){
                 //...  tooltip will take care of message
             }else{
@@ -93,20 +94,20 @@ $(function() {
 
                      feature.properties.__rollover_message = normalizeRolloverMessage(feature.properties.__rollover_message);
 
-                     if(!rollover_tmpl){
+                     if( typeof rollover_tmpl === 'undefined' || !rollover_tmpl){
                          rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
                          $.template( "rollover_tmpl", rollover_tmpl);
 
                      }
                      //props.tipMessage = $.tmpl( "<span>"+feature.properties.__rollover_message+"</span>",props);
-                     props.tipMessage = $.tmpl( "rollover_tmpl",props);
-                 }else if(rollover_tmpl){
-                     props.tipMessage = $.tmpl( "rollover_tmpl",props);
+                     props.tipMessage = $.tmpl( "rollover_tmpl", props);
+                 }else if(typeof rollover_tmpl !== 'undefined' ){
+                     props.tipMessage = $.tmpl( "rollover_tmpl", props);
                  }
 
              }
-             
-       	   
+
+
            var more_front = {
                style: jQuery.extend({}, over_style),
                id:pid,
@@ -123,20 +124,20 @@ $(function() {
                radius:12
            };
 
-    	   
+
 
            var marker = more_front;
-   
-           // Dots.Potting class only takes one marker, 
+
+           // Dots.Potting class only takes one marker,
            // will manually add this one, for now, until I write a Kirby Dot markerLayer
            var c = pot.dotsLayer.addMarker(more_back,loc);
            c.toBack();
-           
+
            backdict[pid] = c;
-   
+
             // store props in key / value pairs
-           marker_props[String(pid)] = props;  
-  
+           marker_props[String(pid)] = props;
+
           return marker;
         };
 
@@ -145,20 +146,20 @@ $(function() {
             var markers = pot.dotsLayer.markers,
             len = markers.length;
             for(i=0;i<len;i++){
-                
+
                 if(markers[i].myAttrs['_kirbyPos'] == "front"){
                     var theID = markers[i].myAttrs.id;
                     if(!mdict[theID])mdict[theID] = markers[i];
                 }
             }
         });
-        
+
         // create tooltip
         // pass it the selector to listen for...
         // pulls rest of params from pot object
         // uses jQuery delegate
         if(typeof DotToolTip == 'function')ds_tooltip = new DotToolTip("[id*='dot_']");
-        
+
         ////////////////////////////
         // ARE WE IN CONFIG MODE ////////////
         // SHould we do this .. this way?? //
@@ -171,12 +172,12 @@ $(function() {
             if(ds_tooltip && ds_tooltip.active)ds_tooltip.updateSize();
             _inConfig(location.hash);
         }
-        
+
         if((_inConfig) && (typeof _inConfig == 'function')){
             pot.map.addCallback("drawn", defer(showhash, 100));
         }
-        ///////////////////////////////////////// 
-    
+        /////////////////////////////////////////
+
     }catch (e) {
         console.error("ERROR: ", e);
         pot.error("ERROR: " + e);

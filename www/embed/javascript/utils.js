@@ -3,14 +3,14 @@ if (typeof console == "undefined") console = {};
 if (typeof console.log == "undefined") console.log = function() {};
 
 function defer(fn, ms, context) {
-    
+
     if (!ms) ms = 10;
     return function() {
         var args = arguments, that = context || this;
         if (fn.timeout) clearTimeout(fn.timeout);
         return fn.timeout = setTimeout(function() {
             if (typeof fn === "function") {
-                
+
                 fn.apply(that, args);
             }
         }, ms);
@@ -291,7 +291,7 @@ function clusterMarkers(markers) {
             prec = .001,
             x = Number(loc.lon),
             y = Number(loc.lat);
-            
+
         try {
             return quantize(x, prec)+ "," + quantize(y, prec);
         } catch (e) {
@@ -306,9 +306,9 @@ function clusterMarkers(markers) {
             loc = marker.location,
             corner = getCorner(marker);
         if (loc.lat != 0 && loc.lon != 0) {
-            
+
             marker._coord = marker.coord.copy();
-            
+
             if (corner in corners) {
                 corners[corner].push(marker);
             } else {
@@ -316,7 +316,7 @@ function clusterMarkers(markers) {
             }
         }
     }
-    
+
 
     for (var corner in corners) {
         var m = corners[corner];
@@ -333,7 +333,7 @@ function clusterMarkers(markers) {
                         row: Math.cos(a) * r,
                         col: Math.sin(a) * r
                     };
-            
+
                 mark.coord.row += offset.row;
                 mark.coord.column += offset.col;
                 a += step;
@@ -433,7 +433,7 @@ if (!Array.prototype.map) {
 
     // 9. return A
     return A;
-  };      
+  };
 }
 
 if (!Array.prototype.indexOf) {
@@ -580,20 +580,20 @@ function DotToolTip(selector) {
         console.log("Needs a dotspotting pot object....");
         return;
     }
-    
+
     if(!selector){
         pot.error("ERROR: needs a selector for DOM element(s) to listen for...");
         return;
     }
-    
+
     this.container = $(pot.selectors.map);
- 
-    
+
+
     if(!this.container[0]){
         pot.error("ERROR: map DOM element seems to be missing.");
         return;
     }
-    
+
     this.map = pot.map;
     this.listenFrom = selector;
 
@@ -620,66 +620,66 @@ DotToolTip.prototype = {
     tip_sentence:null,
     active:false,
     currentRalfObj:null,
-    
+
     createTip: function(){
-        
+
         if(this.checkParams()){
             this.tt = $("#mm_tip"),
             this.tt_title = $("#mm_tip_title"),
             this.tt_desc = $("#mm_tip_desc"),
             this.tt_nub = $("#mm_tip_nub"),
             this.active = true;
-            
+
             this.addHandlers();
         }
-        
+
     },
     addHandlers: function(){
         var that = this;
         that.removeHandlers();
-        $(this.container).delegate(this.listenFrom, 'mouseover mouseout', function(event) { 
-            
+        $(this.container).delegate(this.listenFrom, 'mouseover mouseout', function(event) {
+
             event.preventDefault();
             if ( event.type == "mouseover" ) {
-                
+
                 var id = String($(this).attr('id'));
                 if(!id)return;
                 if(!mdict[id])return;
                 if(!mdict[id].myAttrs.props['__active'])return;
                 if(mdict[id] == that.currentRalfObj)return;
-               
+
                 mdict[id].myAttrs.props["__dt_coords"] = mdict[id].coord;
-               
+
                 that.currentRalfObj = mdict[id];
                 /// proceed
                 that.currentDot = this;
                 that.currentProp = mdict[id].myAttrs.props;
-                
+
                 that.showTip();
             } else {
-                
+
                 //that.currentDot = that.currentProp = null
                 if(!that.currentRalfObj)return;
-            
-                //that.currentRalfObj.attr(over_style); 
+
+                //that.currentRalfObj.attr(over_style);
                 that.currentRalfObj.attr(that.currentRalfObj.myAttrs['style']);
-                
+
                 //that.currentRalfObj.toBack();
-                
+
                 that.currentRalfObj = null;
-                
+
                 that.hideTip();
             }
             return false;
         });
         this.map.addCallback("resized", defer(that.updateSize,100));
     },
-    
+
     removeHandlers: function(){
         this.map.removeCallback("resized");
         $(this.container).undelegate(this.listenFrom, "mouseover mouseout");
     },
-    
+
     destroy: function(){
         this.removeHandlers();
         this.hideTip();
@@ -692,14 +692,14 @@ DotToolTip.prototype = {
         this.tt_desc = null;
         this.tt_nub = null;
     },
-    
+
     hideTip: function(){
         if(this.tt)this.tt.hide();
     },
-    
+
     showTip: function(){
         if(!this.currentProp)return;
-        
+
         if(this.currentProp.tipMessage){
             this.tt_title.css("display","none");
             this.tt_desc.css("display","block")
@@ -721,13 +721,13 @@ DotToolTip.prototype = {
                 this.tt_desc.css("display","none");
             }
         }
-        
+
         this.currentRalfObj.attr(hover_style);
         this.initialTipPosition();
     },
-    
+
     initialTipPosition: function(){
-        
+
         this.tt.css("left","-9999px");
         this.tt.css("width","auto");
         var _w = (this.tt.width() < this.TT_WIDTH) ? this.tt.width() : this.TT_WIDTH;
@@ -741,7 +741,7 @@ DotToolTip.prototype = {
         var _circleHeight = this.currentRalfObj.getBBox().height;
         var _x = parseFloat(_point.x - 10);
 
-     
+
         // y = Marker location - (tip box height + nub height + radius + border size)
         var _y = _point.y - (_h + 10 + _radius + 6); // 22
 
@@ -750,55 +750,71 @@ DotToolTip.prototype = {
 
         var nub_pos = ((_w-20) * pos_pct);
         if(nub_pos<6)nub_pos = 6;
-        
+
         this.tt_nub.css("left",nub_pos+"px");
         this.tt.css("margin-left", "-"+nub_pos+"px");
-            
+
         this.tt.show();
-        this.tt.css("left", _x).css("top", _y); 
+        this.tt.css("left", _x).css("top", _y);
     },
-    
+
     updateSize: function(){
         this.container = this.container ||  $(pot.selectors.map);
         this.cont_offset = this.container.offset();
         this.cont_width = this.container.width();
         this.cont_height = this.container.height();
     },
-    
+
     unselectAllDots: function(){
         this.currentDot = this.currentProp = this.currentRalfObj = null;
-        
+
         for(o in mdict){
             mdict[o].attr(over_style);
         }
 
     },
-    
+
     getTipTitle: function(){
-        return (this.tip_title && this.tip_title.length && this.currentProp[this.tip_title]) ? this.currentProp[this.tip_title] : "";
+        var t;
+        if (this.tip_title && this.tip_title.length && this.currentProp[this.tip_title]) {
+            t = this.currentProp[this.tip_title];
+            if (!isNaN(t)) t = addCommas(t);
+            return t;
+        }
+
+        return "";
     },
 
     getTipDesc: function(){
+        var t;
         if(this.tip_sentence){
             var txt = this.tip_sentence.struct;
-            return txt.replace(this.tip_sentence.parts[0],this.currentProp[this.tip_sentence.parts[1]]);
+            t = this.currentProp[this.tip_sentence.parts[1]];
+            if (!isNaN(t)) t = addCommas(t);
+            return txt.replace(this.tip_sentence.parts[0],t);
         }else{
-            return (this.tip_title && this.tip_title.length && this.currentProp[this.tip_desc]) ? this.currentProp[this.tip_desc] : "";
+            if (this.tip_title && this.tip_title.length && this.currentProp[this.tip_desc]) {
+                t = this.currentProp[this.tip_desc];
+                if (!isNaN(t)) t = addCommas(t);
+                return t;
+            }
         }
+
+        return "";
     },
-    
+
     checkParams: function(){
         // user tip styles
-        
+
         if(ds_user_opts['tooltip']){
 
             var userTipObj = parseJSON(ds_user_opts['tooltip']);
-            
+
 
             if(userTipObj){
                 for(prop in userTipObj){
-                    
-                    
+
+
                     switch(prop){
                         case "background":
                             this.tt.css("background-color",userTipObj[prop]);
@@ -817,11 +833,11 @@ DotToolTip.prototype = {
                             this.tt_title.css("fontWeight",userTipObj[prop]);
                         break;
                     }
-                    
-                    
+
+
                 }
             }
-            
+
         }
         // look for tooltip parameters
         if(!params.tt && !params.tm){

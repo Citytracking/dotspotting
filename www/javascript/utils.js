@@ -1,7 +1,7 @@
 // This is probably (hopefully?) just a temporary place-holder for
-// shared/common functions (20101101/straup) 
+// shared/common functions (20101101/straup)
 
-// a bare-bones helper function that assumes you've defined a 
+// a bare-bones helper function that assumes you've defined a
 // 'draw_map' function before you call it.
 
 function utils_load_map(args){
@@ -106,8 +106,8 @@ function ensure_valid_url_template_provider(p){
 
 		// stamen
 		'prettymaps' : { 'template' : 'http://prettymaps.stamen.com/201008/tiles/isola/{Z}/{X}/{Y}.png', 'hosts' : null, 'static' : 1 },
-		
-		// acetate 
+
+		// acetate
 		'acetate' : {'template': 'http://acetate.geoiq.com/tiles/acetate/{Z}/{X}/{Y}.png', 'hosts': null, 'static': 0},
 	};
 
@@ -137,12 +137,12 @@ function ensure_valid_url_template(t){
     var clean = [];
 
     for (i in path){
-	clean.push(encodeURIComponent(path[i])); 
+	clean.push(encodeURIComponent(path[i]));
     }
 
-    var template = 
-	uri.protocol + '://' + uri.host + 
-	clean.join('/') + 
+    var template =
+	uri.protocol + '://' + uri.host +
+	clean.join('/') +
 	'/{Z}/{X}/{Y}' +
 	'.' + ext;
 
@@ -158,8 +158,8 @@ function utils_polymap(map_id, more){
 
 	var map = org.polymaps.map();
 	map.container(svg);
-			
-		
+
+
  	if(more && more['justzoom']){
 		$('#pan_left').remove();
 		$('#pan_right').remove();
@@ -179,10 +179,10 @@ function utils_polymap(map_id, more){
 			var drag = org.polymaps.drag();
 			map.add(drag);
 
-			var dblclick = org.polymaps.dblclick();	
+			var dblclick = org.polymaps.dblclick();
 			map.add(dblclick);
 		}
-	
+
 		utils_hash(map,"po");
 
 	}
@@ -200,7 +200,7 @@ function utils_polymap(map_id, more){
 
 	map.add(tileset);
 
-	// we add the map compass on a case-by-case 
+	// we add the map compass on a case-by-case
 	return map;
 }
 
@@ -223,59 +223,59 @@ function std_utils_polymaps_assign_dot_properties(e){
 	}
 
 	for (var i=0; i < count; i++){
-		
+
 
 		var f = e.features[i];
-		
+
 		var data = f.data;
 
 		var to_process = new Array(
 			[ f.element, data.properties ]
 		);
-		
+
 		// Okay! Go!!
 		var count_process = to_process.length;
-		
+
 		for (var k = 0; k < count_process; k ++){
-            
+
 			var el = to_process[k][0];
 			var props = to_process[k][1];
-			
-			
+
+
 			var classes = ['dot'];
 
 			if (props && props.permissions){
 				classes.push('dot_' + props.permissions);
 			}
-			
+
 			//	just add the hover class for single dot pages
 			//	clicking on them doesn't do anything anyways
 			if(props && props.is_page_dot){
 				classes.push('dotHover');
 			}
-			
-			
+
+
 			el.setAttribute('class', classes.join(' '));
-			el.setAttribute('r', 8);			
-		
+			el.setAttribute('r', 8);
+
 			if (props && props.id){
 
 		    		el.setAttribute('id', 'dot_' + props.id);
 					utils_svg_title(el,props.id);
-				
+
 				if (props.is_interactive){
 		    			var enc_id = encodeURIComponent(props.id);
 	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ',true);return false');
 	    				el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
 						el.setAttribute('onclick', 'dot_onclick(' + enc_id + ','+f.data.geometry.coordinates[0]+','+f.data.geometry.coordinates[1]+');return false');
 
-					//	$(el).bind('click', {props: props, geo: f.data.geometry}, dot_onclick); 
+					//	$(el).bind('click', {props: props, geo: f.data.geometry}, dot_onclick);
 				}
 			}
 
 		}
 	}
-	
+
 }
 
 function clusterMarkers(markers) {
@@ -285,10 +285,10 @@ function clusterMarkers(markers) {
         return Math.round(n / q) * q;
     }
 
-    
+
     //el.setAttribute('id', 'dot_' + id);
 	//clone.setAttribute('id', 'dot_u_' + id);
-	
+
     /**
      * Quantize the location of the marker to determine its "corner".
      * Note: we should probably avoid offsetting markers with
@@ -299,7 +299,7 @@ function clusterMarkers(markers) {
             prec = .001,
             x = Number(loc.lon),
             y = Number(loc.lat);
-            
+
         try {
             return quantize(x, prec)+ "," + quantize(y, prec);
         } catch (e) {
@@ -311,14 +311,14 @@ function clusterMarkers(markers) {
         len = markers.length;
     for (var i = 0; i < len; i++) {
         var marker = markers[i];
-        
+
         var marker = markers[i],
             loc = marker.location,
             corner = getCorner(marker);
         if (loc.lat != 0 && loc.lon != 0) {
-            
+
             marker._coord = marker.coord.copy();
-            
+
             if (corner in corners) {
                 corners[corner].push(marker);
             } else {
@@ -326,7 +326,7 @@ function clusterMarkers(markers) {
             }
         }
     }
-    
+
 
     for (var corner in corners) {
         var m = corners[corner];
@@ -343,7 +343,7 @@ function clusterMarkers(markers) {
                         row: Math.cos(a) * r,
                         col: Math.sin(a) * r
                     };
-            
+
                 mark.coord.row += offset.row;
                 mark.coord.column += offset.col;
                 a += step;
@@ -356,12 +356,12 @@ function clusterMarkers(markers) {
 
 // kirby enabled
 function utils_polymaps_assign_dot_properties(e){
-    
+
     // Quantize a number by a divisor
     function quantize(n, q) {
         return Math.round(n / q) * q;
     }
-    
+
     /**
      * Quantize the location of the marker to determine its "corner".
      * Note: we should probably avoid offsetting markers with
@@ -371,14 +371,14 @@ function utils_polymaps_assign_dot_properties(e){
         var prec = .001,
             x = Number(loc[0]),
             y = Number(loc[1]);
-            
+
         try {
             return quantize(x, prec)+ "," + quantize(y, prec);
         } catch (e) {
             return "bad";
         }
     }
-    
+
 
 	var count = e.features.length,
 	    corners = {};
@@ -386,8 +386,8 @@ function utils_polymaps_assign_dot_properties(e){
 	if (! count){
 		return;
 	}
-    
-    
+
+
     //ugh, more nodes....
     // create 2 groups for kirby dots -- over & under
     if(!e.features[0].element)return;
@@ -396,27 +396,27 @@ function utils_polymaps_assign_dot_properties(e){
 	var g2 = org.polymaps.svg("g");
 	master.appendChild(g1);
 	master.appendChild(g2);
-	
-    
+
+
 	for (var i=0; i < count; i++){
-		
+
 
 		var f = e.features[i];
-		
+
 		var data = f.data;
 
 		var to_process = new Array(
 			[ f.element, data.properties ]
 		);
-		
+
 		// Okay! Go!!
 		var count_process = to_process.length;
-		
-		
-		
-		
+
+
+
+
 		for (var k = 0; k < count_process; k ++){
-            
+
 			var el = to_process[k][0];
 			var props = to_process[k][1];
 
@@ -426,18 +426,18 @@ function utils_polymaps_assign_dot_properties(e){
 			if (props && props.permissions){
 				classes.push('dot_' + props.permissions);
 			}
-			
+
 			//	just add the hover class for single dot pages
 			//	clicking on them doesn't do anything anyways
 			if(props && props.is_page_dot){
 				classes.push('over_hover');
 			}
-			
+
 
 			if (props && props.id){
-        		
+
         		   var thedots =  utils_kirby_me(props.id,el,g1,g2,classes);
-        		   
+
         		   var loc = f.data.geometry.coordinates,
        			    corner = getCorner(f,loc);
 
@@ -451,27 +451,27 @@ function utils_polymaps_assign_dot_properties(e){
                            }
 
            			}
-					
+
 					utils_svg_title(el,props.id);
-					
-				
+
+
 				if (props.is_interactive){
 		    			var enc_id = encodeURIComponent(props.id);
 	    				el.setAttribute('onmouseover', 'dot_onmouseover(' + enc_id + ',true);return false');
 	    				el.setAttribute('onmouseout', 'dot_onmouseout(' + enc_id + ');return false');
 						el.setAttribute('onclick', 'dot_onclick(' + enc_id + ','+f.data.geometry.coordinates[0]+','+f.data.geometry.coordinates[1]+');return false');
 
-					//	$(el).bind('click', {props: props, geo: f.data.geometry}, dot_onclick); 
+					//	$(el).bind('click', {props: props, geo: f.data.geometry}, dot_onclick);
 				}
 			}
 
 		}
 	}
-	
+
 
 	for (var corner in corners) {
         var m = corners[corner];
-     
+
         if (m.length > 1) {
             //.0000004,
             var r = 6,
@@ -488,22 +488,22 @@ function utils_polymaps_assign_dot_properties(e){
 
                 mark[1].row += offset.row;
                 mark[1].col += offset.col;
-                
+
                 mark[0].setAttributeNS(null,"transform","translate("+mark[1].row+","+mark[1].col+")");
                 mark[2].setAttributeNS(null,"transform","translate("+mark[1].row+","+mark[1].col+")");
                 a += step;
             }
         }
-        
+
     }
-    
-    
-    
-    
-	
+
+
+
+
+
 }
 
-// how a dot becomes Kirby, 
+// how a dot becomes Kirby,
 function utils_kirby_me(id,el,g1,g2,classes){
     var clone =  el.cloneNode(false);
 	//
@@ -515,12 +515,12 @@ function utils_kirby_me(id,el,g1,g2,classes){
 	//classes.push("over");
 	el.setAttribute('class', classes.join(' '));
 	el.setAttribute('r', 6);
-	
-	
+
+
 	//g.setAttribute('class', classes.join(' '));
 	el.setAttribute('id', 'dot_' + id);
 	clone.setAttribute('id', 'dot_u_' + id);
-	
+
 	return [el,clone];
 }
 
@@ -532,7 +532,7 @@ function utils_polymaps_assign_sheet_properties (e){
 	if (! count){
 		return;
 	}
-	
+
 	for (var i=0; i < count; i++){
 
 		var f = e.features[i];
@@ -541,7 +541,7 @@ function utils_polymaps_assign_sheet_properties (e){
 		var to_process = new Array(
 			[ f.element, data.properties ]
 		);
-	
+
 		// Okay! Go!!
 
 		var count_process = to_process.length;
@@ -550,11 +550,11 @@ function utils_polymaps_assign_sheet_properties (e){
 
 			var el = to_process[k][0];
 			var props = to_process[k][1];
-			
+
 			/* Move dot to bottom of group */
-			
+
 			el.parentNode.appendChild(el);
-			
+
 
 			el.setAttribute('class', 'sheet');
 
@@ -597,7 +597,7 @@ function utils_modestmap(map_id, more){
 	var tp = utils_tile_provider();
 
 	var provider = null;
-	
+
 
 	if (tp['static']){
 	    provider = new com.modestmaps.TileStacheStaticMapProvider(tp['template'], tp['hosts']);
@@ -614,7 +614,7 @@ function utils_modestmap(map_id, more){
 	];
 
 	var map = new com.modestmaps.Map(map_id, provider, dims, handlers);
-	
+
 	utils_hash(map,"mm");
 	return map;
 }
@@ -631,14 +631,14 @@ function utils_modestmaps_add_kirbydots(layer,features,more){
 	var drawn_back = new Array();
 
 	var count_features = features.length;
-	
+
 	for (var i = 0; i < count_features; i++){
 	    var f = features[i],
 	    props = f.properties,
 	    geom = (f.geometry.type == 'GeometryCollection') ? f.geometry.geometries : [ f.geometry ],
         coords = geom[0]['coordinates'],
         loc = new com.modestmaps.Location(coords[1],coords[0]);
-	
+
         var more_front = {
            style: more['attrs'],
            id: "dot_"+props.id,
@@ -648,16 +648,16 @@ function utils_modestmaps_add_kirbydots(layer,features,more){
               style: more['attrs_back'],
               radius:12
         };
-        
+
         var _front = layer.addMarker(more_front,loc);
 		var _back = layer.addMarker(more_back,loc);
         _back.toBack();
         drawn.push(_front);
-        
+
         //
         if(more['onload'])more['onload'](_front, props);
-        
-		
+
+
 	}
 	return drawn;
 }
@@ -689,22 +689,22 @@ function utils_adjust_bbox(bbox){
 
 	else {}
 
-	// not sure if there is good way of doing this while trying to achieve 
+	// not sure if there is good way of doing this while trying to achieve
 	// a max scale and integer zoom levels, at the same time.
 	offset = 0;
 	bbox[0]['lat'] -= offset;
 	bbox[0]['lon'] -= offset;
 	bbox[1]['lat'] += offset;
 	bbox[1]['lon'] += offset;
-	
-	
+
+
 	return bbox;
 }
 
 
 ////////////// seanc dumping ground //////////////////
 function get_mm_dot_styles(){
-    
+
     var over = {
    		'fill' : 'rgb(11,189,255)',
    		'fill-opacity' : 1,
@@ -769,7 +769,7 @@ function utils_set_embed_params(){
 
 // create handlers for map controls
 function utils_add_map_controls(map,map_type,extent){
-	
+
 	$('#map_controls').fadeIn();
 	$("#map_controls a").each(function(){
 		$(this).click(function(e){
@@ -824,12 +824,12 @@ function utils_add_map_controls(map,map_type,extent){
 							}
 
 						}
-						
+
 					break;
 					default:
 					//
 					break;
-				
+
 				}
 			}
 		})
@@ -845,13 +845,13 @@ function utils_add_map_controls(map,map_type,extent){
 // map toggle size button
 function utils_map_toggle_size(map,map_type,tallSize,markers){
 	var map_size = "small";
-	
+
 	$("#mapsizeToggler").click(function(e){
 		e.preventDefault();
 		var _this = $(this);
 		var _w = Math.round($("#map").width());
 		if(map_size == "small"){
-			map_size = "large";	
+			map_size = "large";
 			$("#map").animate({
 			    height: tallSize
 			  }, 100, function() {
@@ -864,7 +864,7 @@ function utils_map_toggle_size(map,map_type,tallSize,markers){
 				{
 					map.resize();
 				}
-			   
+
 			  });
 		}else{
 			map_size = "small";
@@ -885,7 +885,7 @@ function utils_map_toggle_size(map,map_type,tallSize,markers){
 	});
 }
 
-/* 
+/*
 	Add ToolTip & bind marker click event to #map
 	not activated on sheet views, only dots view
 
@@ -896,25 +896,25 @@ function utils_map_toggle_size(map,map_type,tallSize,markers){
 	@parem	map_type	either "mm" , "po"
 */
 function utils_add_map_tooltip(map,mapel,map_type){
-	
+
 	$(".maptip").each(function(){
 		$(this).remove();
 	});
-	
+
 	$("#map").unbind('markerclick');
 	$("#map").bind('markerclick', function(e,dotid) {
-		
+
 		if(mapel.length == 0) return;
-		
+
 		var dot = dot_getinfo_json(dotid);
 		if(!dot.latitude && !dot.longitude) return;
-		
+
 		var props = new Object();
 		props.location = (map_type == "mm") ? new com.modestmaps.Location(dot.latitude,dot.longitude) : {lat: dot.latitude, lon: dot.longitude};
 		props.map = map;
 		props.id = dotid;
 		props.map_type = map_type;
-	
+
 		 mapel.maptip(this)
 		  .data(props)
 	      .map(map)
@@ -935,32 +935,32 @@ function utils_add_map_tooltip(map,mapel,map_type){
 			var _timer,
 			_clickTime,
 			_tip = null;
-			
+
 	        var self = this,
 	            props = d,
 	            cnt = $('<div/>'),
 	            hdr = $('<h2/>'),
 	            bdy = $('<p/>'),
-				
+
 	            close = $('<span/>').addClass('close').html('<img src="'+_dotspotting.abs_root_url+'images/x.png"/>')
 		        hdr.html(dot_tip_header(props.id));
 		        //hdr.append(close);
-				
+
 				cnt.append(close);
-				
+
 		        bdy.html(dot_tip_body(props.id))
 
 		        cnt.append($('<div/>').addClass('nub'))
-		        cnt.append(hdr).append(bdy) 
-				
+		        cnt.append(hdr).append(bdy)
+
 		        close.click(function() {
 					closeTip(self);
-		        })   
-		
-				
+		        })
+
+
 				/* 	attempt to allow clicking anywhere on map as a way to close tooltip
 					seems to be working
-				*/	
+				*/
 				/*
 				// put a delay on creating handlers
 				_timer = setInterval(function(){
@@ -969,14 +969,14 @@ function utils_add_map_tooltip(map,mapel,map_type){
 					clearInterval(_timer);
 				}, 1000);
 				*/
-				
+
 				function setupMapCloseHandlers(){
 					_tip = self;
-					
-					
+
+
 					$('#map').unbind('mousedown');
 					$('#map').unbind('mouseup');
-					
+
 					 $("#map").mousedown(function () {
 						_clickTime = new Date();
 					});
@@ -985,23 +985,23 @@ function utils_add_map_tooltip(map,mapel,map_type){
 						// check to see if mouseup came from dot
 						// if so, don't execute
 						if(dotHasClass(e.target,"dot"))return;
-						
+
 						// no clickTime, no go
 						if(!_clickTime)return;
-						
+
 						//calculate time between mousedown & mouseup
 						var _endTime = new Date();
 						var _diff = _endTime.getTime() - _clickTime.getTime();
-						
+
 						// check to see if this is a click or drag
 						if(_tip && (_diff < 150) ){
 							closeTip(_tip);
 						}
 					});
 				}
-				
-				
-				
+
+
+
 				function closeTip(_tipRef){
 					if(!_tipRef)return;
 					if(_timer){
@@ -1011,24 +1011,24 @@ function utils_add_map_tooltip(map,mapel,map_type){
 					$('#map').unbind('mousedown');
 					$('#map').unbind('mouseup');
 					_tipRef.hide();
-				
+
 					dot_unselect(props.id);
 					_dotspotting.selected_dot = null;
 				}
-			
-				
-				
+
+
+
 	        	return cnt;
 	      }).render()
-	
+
 
 	});
-	
+
 	/* 	could do something like this if you wanted a selected dot to stay active during filtering
-		would also need to check if dot is bound box 
+		would also need to check if dot is bound box
 		and also not reset _dotspotting.selected_dot global to null during draw_map_... function
-		
-		
+
+
 	if(_dotspotting.selected_dot){
 		console.log("DOT ID: ",_dotspotting.selected_dot);
 		var _tmp = _dotspotting.selected_dot;
@@ -1051,25 +1051,25 @@ function utils_hash(map,type){
 		map.on("move", function() {
 			self.coords = self.hashCoordFormatter( map.center(), map.zoom());
 			self.doDrawn();
-		});		
-		
+		});
+
 	}else if(type == "mm"){
 		map.addCallback("drawn", function(){
 			self.coords = self.hashCoordFormatter( map.getCenter(), map.getZoom());
 			self.doDrawn();
 		});
 	}
-	
+
 	this.doDrawn = function(){
 		clearInterval(this.hashInterval);
 		this.hashInterval = setInterval(function(){self.updateHash();}, 100);
 	}
-	
+
 	this.updateHash = function(){
 		clearInterval(this.hashInterval);
 		//console.log(this.coords,this.search);
 		this.search = (!_dotspotting.datatables_query) ? '': _dotspotting.datatables_query;
-		
+
 		var newHash = '';
 		if(_dotspotting.fullscreen_flag){
 		    newHash += "ff=1";
@@ -1085,15 +1085,15 @@ function utils_hash(map,type){
 		if(this.currentHash != newHash && newHash.length){
 			window.location.hash = newHash;
 			this.currentHash = newHash;
-			
+
 			_dotspotting.embed_props.c = this.coords;
-			_dotspotting.embed_props.s = this.search; 
-			
+			_dotspotting.embed_props.s = this.search;
+
 			// set permalink
 			if(this.pm)this.pm.setAttribute('href', location.href);
 		}
 	}
-	
+
 	// formats coordinates for hash
 	this.hashCoordFormatter = function(center,zoom){
 		var precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
@@ -1101,31 +1101,31 @@ function utils_hash(map,type){
 	         + "/" + center.lat.toFixed(precision)
 	         + "/" + center.lon.toFixed(precision);
 	}
-	
+
 	this.setSearch = function(str){
 		this.search = str;
 		this.updateHash();
 	}
-	
+
 }
 
 /* Client-side access to querystring name=value pairs
 	Version 1.3
 	28 May 2008
-	
+
 	License (Simplified BSD):
 	http://adamv.com/dev/javascript/qslicense.txt
 */
 // we're smashing both the hash & search location properties together
 function Querystring() {
 	var params = {};
-	
+
 	var _hash = (window.location.hash != '') ? window.location.hash.substring(1) : '';
 	var _search = window.location.search.substring(1);
-	
+
 	if(_hash)parseIt(_hash);
 	if(_search)parseIt(_search);
-	
+
 	function parseIt(stuff){
 	    stuff = stuff.replace(/\+/g, ' ');
     	var args = stuff.split('&'); // parse out name/value pairs separated via &
@@ -1142,7 +1142,7 @@ function Querystring() {
     		params[name] = value;
     	}
 	}
-	
+
 	return {
 	    get: function(key, default_) {
     		var value = params[key];
@@ -1152,7 +1152,7 @@ function Querystring() {
     		var value = params[key];
     		return (value != null);
     	}
- 
+
 	}
 
 }
@@ -1161,7 +1161,7 @@ function Querystring() {
 function doHashSetup(){
     /*
 	qs = (window.location.hash != '') ? window.location.hash.substring(1) : window.location.search.substring(1);
-	
+
     if (qs){
 		qs = new Querystring(qs);
 	}else{

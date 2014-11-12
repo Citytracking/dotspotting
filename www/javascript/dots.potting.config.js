@@ -12,21 +12,21 @@ Dots.Config = function(more,theme,base) {
     if(base){
         Dots.Config.defaultParams['base']=base;
     }
-    
+
     this.setThemeSelection();
-    
+
     // add more options if needed
     if(more){
         this.addExtraOptions(more);
     }
-    
+
     // clone base config object
     this.defaults = jQuery.extend({}, Dots.Config.defaultParams);
-    
+
     // add handlers and dispatcher
     this.addHandlers();
-    
-        
+
+
     this.hasher = this.hashMe();
 }
 
@@ -68,11 +68,11 @@ Dots.Config.prototype = {
     isUpdating: false,
     current_iframe_src: "",
     current_embed_code: "",
-    
+
     setThemeSelection: function(){
         $(this.selectors.theme_selector).val(this.theme);
     },
-    
+
     addExtraOptions: function(more){
         if(!more && !more.length)return;
         var len = more.length;
@@ -91,32 +91,32 @@ Dots.Config.prototype = {
                 }else if(item.type == "checkbox"){
                     _insert += "<input type='checkbox' id='config_opt_"+item.id+"' class='autoUpdate'/>";
                 }
-                
+
                 if (item.helper){
                     _insert += "<span class='helper'>"+item.helper+"</span>";
                 }
-                
+
                 // add new options to base config object
                 if(!Dots.Config.defaultParams[item.id]){
                     Dots.Config.defaultParams[item.id] = item['default'];
                 }
             }
-     
+
             if(_insert){
                 _panel.append("<div class='grid_3'>"+_insert+"</div>");
             }
         }
          _panel.append("<div class='clear'>&nbsp;</div>");
-        
+
         // store more
         this.more = more;
     },
-    
+
     loadSheet: function(){
         if(!incoming_sheet)return;
         this.getSheet(incoming_sheet);
     },
-    
+
     // straight from Polymaps
     dispatch: function(that) {
 	  var types = {};
@@ -153,22 +153,22 @@ Dots.Config.prototype = {
 	    }
 	  };
 	},
-	
+
     addHandlers: function(){
         var that = this;
-   
+
         // preview handler
         $('#previewConfig').click(function(e) {
              e.preventDefault();
              that.doPreview();
         });
-        
+
         // used for location img button
         $("#location_copier").hover(
             function(e){$(this).css("opacity",.5)},
             function(e){$(this).css("opacity",1)}
         );
-        
+
         // copies location to input in config panel
         $("#location_copier").click(function(e){
              e.preventDefault();
@@ -177,7 +177,7 @@ Dots.Config.prototype = {
              that.defaults['coords'] = _new;
              that.setEmbed(false);
         });
-        
+
         $("#config_opt_mapsize").change(function(e){
             var val = $(this).val();
             if(val != "custom"){
@@ -190,7 +190,7 @@ Dots.Config.prototype = {
                 $("#custom_map_fields").css("display","block");
             }
         });
-        
+
         $("#config_opt_theme").change(function(e){
             var _val = $(this).val();
             if(ds_chosen_theme != _val){
@@ -222,7 +222,7 @@ Dots.Config.prototype = {
            $(this).focus();
            $(this).select();
         });
-        
+
         $(".autoUpdate").change(function(e){
              e.preventDefault();
              if(!that.isUpdating){
@@ -231,14 +231,14 @@ Dots.Config.prototype = {
                  that.setEmbed(true);
              }
         });
-        
+
         this.configEvent = this.dispatch(this);
-        
+
     },
     // utility function to read hash from map iframe
     hashMe: function(x){
         var that = this;
-        
+
         return function(x){
             if(!that.defaults)return;
             if(!x)return;
@@ -277,13 +277,13 @@ Dots.Config.prototype = {
                 if(this.defaults[i]=="1"){
                     elm.attr('checked','checked');
                 }else{
-                   // do nothing because this should only be called in beginning 
+                   // do nothing because this should only be called in beginning
                 }
             }else{
                 //console.log(this.defaults[i]);
                 elm.val(this.defaults[i]);
             }
-            
+
         };
 
         $("#config_opt_width").val(parseInt(this.iframe_size[0]));
@@ -300,7 +300,7 @@ Dots.Config.prototype = {
                 this.defaults[i] = elm.val();
             }
         };
-        
+
         this.iframe_size[0] = parseInt($("#config_opt_width").val());
         this.iframe_size[1] = parseInt($("#config_opt_height").val());
     },
@@ -332,14 +332,14 @@ Dots.Config.prototype = {
                 }
             }
         }
-        
+
         if(out.slice(-1) == "&"){
             out = out.slice(0,-1);
         }
         if(this.defaults['coords'])out += "#"+this.defaults['coords'];
         return out;
     },
-    
+
     getLinkBack: function(){
         var pre_out = "";
         if(this.defaults.user && this.defaults.sheet){
@@ -349,33 +349,33 @@ Dots.Config.prototype = {
         }else{
             pre_out = "This map is a product of "
         }
-         
-        return  "<p>"+pre_out + "<a href='"+_dotspotting.abs_root_url+"'>Dotspotting</a>"+"</p>"; 
-            
-       
+
+        return  "<p>"+pre_out + "<a href='"+_dotspotting.abs_root_url+"'>Dotspotting</a>"+"</p>";
+
+
     },
 
     getEmbedCode: function(){
         var iframe_val = '<iframe type="text/html" width="'+this.iframe_size[0]+'" height="'+this.iframe_size[1]+'" src="'+ this.current_iframe_src + '" frameborder="0"></iframe>';
-        return iframe_val;  
+        return iframe_val;
     },
-    
+
     updateIframeSize: function(){
         // resize iframe
         var map_width = parseInt($("#config_opt_width").val());
         var map_height = parseInt($("#config_opt_height").val());
         this.autoResize('example_iframe',map_width,map_height);
-        
+
         // reposition map
         var parent_width = $("#config-map").width();
         var parent_height = $("#config-map").height();
         var leftPos = (parent_width - map_width) / 2;
         var topPos = (parent_height - map_height) / 2;
         if(topPos < 0)topPos = 0;
-        
+
         $("#example_iframe").css("left",leftPos + "px");
         $("#example_iframe").css("top",topPos + "px");
-        
+
     },
 
     // set embed code textarea
@@ -384,10 +384,10 @@ Dots.Config.prototype = {
         if (updateIframe == undefined || updateIframe == null)updateIframe = false;
         var that = this;
         var old_iframe_src = this.current_iframe_src;
-        
+
         this.current_iframe_src = this.generateIframeSrc();
         this.current_embed_code = this.getEmbedCode();
-        
+
         // set embed test
         $("#example_text").val( this.current_embed_code + this.getLinkBack());
         //reload iframe?
@@ -399,12 +399,12 @@ Dots.Config.prototype = {
             _i.attr("id","example_iframe");
             _i.attr("width",this.iframe_size[0]);
             _i.attr("height",this.iframe_size[1]);
-            
+
             /* check for iframe load before allowing to update the iframe again*/
             _i.unbind('load').bind('load',function(e){
                         that.isUpdating = false;
             });
-            
+
             $("#config-map").append(_i); // append it to load it
             that.updateIframeSize(); // update iframe size
             this.isUpdating = false; //  i lie
@@ -431,7 +431,7 @@ Dots.Config.prototype = {
     getSheet: function(u){
         // check for things
         if(!_dotspotting.abs_root_url && !u)return;
-        
+
         // split on hash
         var _url = u.split("#");
 
@@ -450,11 +450,10 @@ Dots.Config.prototype = {
 
         // create url that fetches geojson for sheet
         var _export_url = _url[0]+"/export?format=json";
-                
+
         var that = this;
         this.configEvent({type: "json_loading_begin"});
-        
-        
+
         // get sheet geojson
         $.ajax({
           url: _export_url,
@@ -464,19 +463,21 @@ Dots.Config.prototype = {
             //that.wipeConfigSettings();
             that.defaults['title'] = d['dotspotting:title'];
             if(d.features[0]['properties']['user_id'] && d.features[0]['properties']['sheet_id']){
-                
                 that.processFields(d.features[0]['properties']);
-                that.defaults.user = parseInt(d.features[0]['properties']['user_id']);
-                that.defaults.sheet = parseInt(d.features[0]['properties']['sheet_id']);
+                that.defaults.user = parseInt(d.features[0]['properties']['user_id'], 10);
+                that.defaults.sheet = parseInt(d.features[0]['properties']['sheet_id'], 10);
                 that.setConfigSettings();
                 that.setEmbed(true);
                 $("#config_url_error").hide();
                 $("#config-options").show();
                 $("#config-message").html("<a href='"+incoming_sheet+"'>Sheet #"+that.defaults['sheet'] + "</a> is loaded.");
                 that.configEvent({type: "json_loading_success"});
+            } else {
+                that.configEvent({type: "json_loading_error"});
             }
           },
-          error:function(){
+          error:function(e){
+
             $("#config_url_error").html("ugh! check your URL and try again.").show();
             that.configEvent({type: "json_loading_error"});
           }

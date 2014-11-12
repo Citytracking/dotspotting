@@ -80,7 +80,7 @@ Dots.Potting.prototype = {
     dotsLayer: null,
     makeDot: function(feature) {
         throw "You must implement makeDot(feature)";
-    },    
+    },
 
     outputContainer: null,
 
@@ -104,14 +104,14 @@ Dots.Potting.prototype = {
 
     createMap: function() {
         var provider = this.getMapProvider(this.params.base);
-        
+
         var handlers = [];
-        
+
         if(typeof touchSupport == 'undefined')touchSupport = false;
-        
+
     	if(touchSupport){
     	    handlers.push(	new com.modestmaps.TouchHandler() );
-    	    
+
             /*
     	    $("body").bind('touchstart',function(e){
     	        e.preventDefault();
@@ -123,28 +123,28 @@ Dots.Potting.prototype = {
                   //CODE GOES HERE
             });
            */
-           
+
 	    }else{
 	        handlers.push( new com.modestmaps.MouseHandler() );
 	    }
 
         this.map = new com.modestmaps.Map(this.mapContainer[0], provider,null,handlers);
-        
+
         // remove mouse wheel handler
         if(handlers && handlers[0].mouseWheelHandler)
             com.modestmaps.removeEvent(this.map.parent,'mousewheel',handlers[0].mouseWheelHandler)
-            
+
         if (provider.copyright) {
             this.addCopyright(provider.copyright);
         }
-        
+
 
         this.mapHash = new MapHash(this.map);
-        
+
         if (location.hash.length > 1) {
             this.alreadyCentered = this.mapHash.read(location.hash);
         }
-        
+
         this.mapHash.start();
 
         return this.map;
@@ -157,7 +157,7 @@ Dots.Potting.prototype = {
 
     setTitle: function(title) {
         if (typeof title === "undefined") title = this.params.title;
-        
+
         if (title) {
             $(this.selectors.title).text(title);
         } else {
@@ -207,12 +207,13 @@ Dots.Potting.prototype = {
                 inline: 1
             };
         }
+
         return url + makeQueryString(query);
     },
 
     load: function(url, success, error) {
         if (!url) url = this.getDotsURL();
-         
+
         if (url) {
             var that = this;
             return $.ajax(url, {
@@ -231,6 +232,7 @@ Dots.Potting.prototype = {
 
     onDotsLoaded: function(collection) {
         if (this.dotsLayer) {
+
             this.addDots(collection.features, !this.alreadyCentered);
         }
     },
@@ -241,15 +243,16 @@ Dots.Potting.prototype = {
             this.error("We have no dots layer!");
             return false;
         }
-       
+
         var len = features.length,
             locations = updateExtent ? [] : null,
             added = [];
-            
+
+
         for (var i = 0; i < len; i++) {
             var feature = features[i],
                 dot = this.makeDot(feature);
-                
+
             if (dot) {
                 var marker = this.dotsLayer.addMarker(dot, feature);
                 if (updateExtent && marker.location && marker.location.lat && marker.location.lon) {
@@ -261,7 +264,7 @@ Dots.Potting.prototype = {
         if (updateExtent && locations.length > 0) {
             this.map.setExtent(locations);
         }
-        
+
         return added;
     },
 

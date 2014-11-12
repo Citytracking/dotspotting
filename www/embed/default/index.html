@@ -34,9 +34,9 @@
                 <p id="mm_tip_desc"></p>
             </div>
         </div>
-       
+
         <script type="text/javascript" defer="defer">
-        
+
         // problem w/ Safari not setting map height to 100%
         // not sure why, so this seems to fix problem for now...
         $("#map").css("height","100%");
@@ -53,7 +53,7 @@
                     params[part[0]] = decodeURIComponent(part[1]).replace(/\+/g, " ");
                 }
             }
-       
+
             var okay = true;
             function err(message) {
                 console.error("::", message);
@@ -72,14 +72,14 @@
             if (params.href) {
                 $("#overlay .title a").attr("href", params.title);
             }
-            
+
             //
             if(params.tt){
                 tip_title = params.tt;
             }else{
                 tip_title = "id";
             }
-            
+
             if(params.tm){
                 tip_desc = params.tm;
             }else{
@@ -164,7 +164,7 @@
                          * accordingly.
                          */
                         map.size(null);
-                       
+
                         /**
                          * Read the center and zoom (#zoom/lat/lon) from the
                          * fragment identifier, and keep reading it.
@@ -181,26 +181,26 @@
                                 .replace("{user_id}", props.user_id)
                                 .replace("{id}", id);
                         }
-                        
+
                         $(".zoom-in").click(function(e){
                            e.preventDefault();
-                           map.zoomIn(); 
+                           map.zoomIn();
                         });
                         $(".zoom-out").click(function(e){
                            e.preventDefault();
-                           map.zoomOut(); 
+                           map.zoomOut();
                         });
-                        
-                        
-                        
-                        
-                        
-                        
+
+
+
+
+
+
                         /* MARKER FUNCTIONS */
-                        
+
                         function TipController(){
                             var tip = {};
-                            
+
                             var tt = $("#mm_tip");
                             var tt_title = $("#mm_tip_title");
                             var tt_desc = $("#mm_tip_desc");
@@ -209,16 +209,16 @@
                             var cont_offset = container.offset();
                             var cont_width = container.width();
                             var cont_height = container.height();
-                            
+
                             var current_prop = null,
                                 current_marker,
                                 nub_class = "left";
-                            
+
                             // adjust tip for smaller displays
                             if(tt.width()/container.width() > .5){
                                 tt.width(container.width() * .5);
                             }
-                            
+
                             function getTipTitle(){
                                 return (tip_title.length && current_prop[tip_title]) ? current_prop[tip_title] : "";
                             }
@@ -226,70 +226,70 @@
                             function getTipDesc(){
                                 return (tip_title.length && current_prop[tip_desc]) ? current_prop[tip_desc] : "";
                             }
-                            
+
                             function initialTipPosition(){
                                 tt.css("left","-9999px")
                                 tt.css("width","auto");
                                 var _w = (tt.width() < TT_WIDTH) ? tt.width() : TT_WIDTH;
                                 tt.width(_w);
                                 //
-                                
+
                                 var _tc = $(current_marker).offset();
                                 var _h = tt.height();
                                 var _x = _tc.left;
                                 var _y = _tc.top - (14+_h);
-                                
+
                                 if(_tc.left < 0 )_tc.left = 1;
                                 if(_tc.left > cont_width)_tc.left = cont_width-1;
-                                
-                                
+
+
                                 var pos_pct = (_tc.left / cont_width);
-                                
+
                                 var nub_pos = ((_w-20) * pos_pct);
                                 if(nub_pos<6)nub_pos = 6;
-                                
+
                                 tt_nub.css("left",nub_pos+"px");
                                 tt.css("margin-left", "-"+nub_pos+"px");
-                                                                
-                                
+
+
                                 tt.show();
                                 tt.css("left", _x).css("top", _y);
-                                
-                               
+
+
                             }
- 
+
                             function showTip(){
                                 if(!current_prop)return;
-                                
+
                                 tt_title.html(getTipTitle());
                                 tt_desc.html(getTipDesc());
                                 initialTipPosition();
                             }
-                            
+
                             function hideTip(){
                                 if(tt)tt.hide();
                             }
-                            
+
                             tip.show = function(){
                                 var id = $(this).data("dot_id");
                                 if(!id)return;
                                 if(!marker_props[String(id)])return;
                                 current_marker = this;
                                 current_prop = marker_props[String(id)];
-                                showTip(); 
+                                showTip();
                             }
                             tip.hide = function(){
-                                hideTip(); 
+                                hideTip();
                             }
                             tip.destroy = function(){
                                 //
                             }
                             return tip;
-                            
+
                         }
-                        
+
                         ds_tooltip = new TipController();
-                       
+
 
                         function updateFinally() {
                             try {
@@ -311,18 +311,18 @@
                                     abbr = abbreviate(type),
                                     desc = props["request"] || props["description"] || "",
                                     href = getHref(props, feature.id);
-                                    
+
                                 // console.log([type, abbr, group, desc, href]);
                                 // create a link that breaks out of the frame
-                                
+
                                 var marker = $("<a/>").attr("target", "_top")
                                     .addClass("dot")
                                     .data("dot_id", feature.id)
                                     .append($("<span/>")
                                         .addClass("desc")
                                         .text(desc));
-                                    
-                                        
+
+
                                 if (href) {
                                     marker.attr("href", href);
                                 }
@@ -332,7 +332,7 @@
 
                                 // remember it for iteration later
                                 markers.push(marker[0]);
-                                
+
                                 marker_props[String(feature.id)] = props
                                 // defer a final update for a while so we can
                                 // cluster and set the initial map extent
@@ -340,14 +340,14 @@
 
                                 // prevent clicks if we dragged on this marker
                                 preventer.prevent(marker);
-                                
+
                                 return marker[0]; // return the actual DOM node
 
                             } catch (e) {
                                  if(console)console.warn("ERROR (marker):", e);
                                 return null;
                             }
-                            
+
                         });
 
                         // Quantize a number by a divisor
@@ -375,12 +375,12 @@
                                 map.extent(locations);
                             }
                         }
-                        
+
 
                     });
                 });
             }
-            
+
 
             function capitalize(word) {
                 return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
@@ -393,7 +393,7 @@
                 } else {
                     return group ? capitalize(group.substr(0, 2)) : "?";
                 }
-            } 
+            }
 
         </script>
     </body>

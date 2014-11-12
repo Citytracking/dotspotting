@@ -70,8 +70,8 @@ h2,h3,h4,h5{color:#000;}
     list-style: square;
 }
 .crime_extras ul li{padding:5px 0;}
-    
-    
+
+
 /* PREVIEW */
 #previewConfig{display:block;text-align:left;padding:0 15px 0 0;font-size:12px;}
 #close-preview-modal{margin-top:-5px;font-size:18px;font-weight:200;text-align:right;display:none;padding:0 10px 0 0;color:#ccc;text-decoration:none;}
@@ -88,13 +88,16 @@ h2,h3,h4,h5{color:#000;}
 
 /* embed index */
 #embed_grid{margin:20px 0 0;}
-#embed_grid dl{float:left;margin:0 20px 0 0;}
+#embed_grid dl{float:left;margin:0 20px 20px 0;}
 #embed_grid dl:hover{opacity:.8;}
 #embed_grid dl dt{}
 #embed_grid dl dd{font-size:16px;font-weight:600;}
 
 
-#config-extras .grid_3{margin-bottom:10px;}
+#config-extras .grid_3{
+    margin-bottom:10px;
+    min-height: 50px;
+}
 #config-extras .label{display:block;}
 /*
 	Variable Grid System.

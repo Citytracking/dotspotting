@@ -1,11 +1,12 @@
+// Photo theme
 var pot,params,marker_props;
 var THUMB_MAX_WIDTH = 100,
     THUMB_MAX_HEIGHT = 70,
     THUMB_PADDING = null;
-    
+
 var tip_params = {};
 tip_params.activate = true;
-    
+
 $(function() {
     try{
         $("#map").css("height","100%");
@@ -22,39 +23,39 @@ $(function() {
         // map controls
         $(".zoom-in").click(function(e){
           e.preventDefault();
-          pot.map.zoomIn(); 
+          pot.map.zoomIn();
         });
         $(".zoom-out").click(function(e){
           e.preventDefault();
-          pot.map.zoomOut(); 
+          pot.map.zoomOut();
         });
 
         // adjust controls if title
         if (params.title) {
            $(".controls").css("top",($("#title").height()+20)+"px");
         }
-        
+
         if (params.ph_w){
             THUMB_MAX_WIDTH = Math.floor(Number(params.ph_w));
         }
         if (params.ph_h){
             THUMB_MAX_HEIGHT = Math.floor(Number(params.ph_h));
         }
-        
+
         //checkForTooltipParams();
 
         pot.dotsLayer = new mm.MarkerLayer(pot.map);
 
         var dotTemplate = $("#dot").template();
-        
+
         // get padding for later
         // this may not stick
         var get_kirby_padding = $("<div class='kirby_bottom'></div>").hide().appendTo("body");
         THUMB_PADDING = ($(get_kirby_padding).css("padding-top")) ? parseInt($(get_kirby_padding).css("padding-top").replace("px", "")) : 8;
         get_kirby_padding.remove();
-        
-        
-        
+
+
+
         pot.makeDot = function(feature) {
             var props = feature.properties,
             geom = (feature.geometry.type == 'GeometryCollection') ? feature.geometry.geometries : [ feature.geometry ];
@@ -70,57 +71,57 @@ $(function() {
                   photo_id: pid
               },
             marker = $.tmpl(dotTemplate, data);
-            marker_props[String(pid)] = props;  
-        
+            marker_props[String(pid)] = props;
+
             // will look for flickr photo id or a 'photo_url' property
             if(props['flickr:id'] || props['photo_url']){
                 if(props['flickr:id']){
                     getFlickrImg(
                         (function(e){
-                     
+
                             return e;
                         })([props['flickr:id'],marker[0]])
-                
-                     ); 
+
+                     );
                  }else{
                      var __title = "";
                      if(tip_params.activate && props[tip_params.tip_title]){
                          __title = props[tip_params.tip_title];
-                         
+
                      }
-                     
+
                      loadTheImage(marker[0],props['photo_url'],__title,"");
                  }
- 
+
             }else{
                 var __title = "";
                  if(tip_params.activate && props[tip_params.tip_title]){
                      __title = props[tip_params.tip_title];
-                     
+
                  }
                  var photo_url = baseURL+"embed/photo/images/cameradot_30.png";
                  THUMB_MAX_WIDTH = 30;
                  THUMB_MAX_HEIGHT = 30;
                  loadTheImage(marker[0],photo_url,__title,"","photoNoNo");
             }
-        
+
      /*
             var _hit = $("<div class='hit'></div>");
             pot.dotsLayer.addMarker(_hit[0],feature);
      */
-               
+
           return marker[0];
         };
 
-       
+
         var req = pot.load(null,function(){
-        
+
             var markers = pot.dotsLayer.markers,
                 len = markers.length;
             function latitude(marker) {
                 return marker.location.lat;
             }
-            
+
             markers = markers.sort(function(a, b) {
                 var lata = latitude(a),
                     latb = latitude(b);
@@ -129,10 +130,10 @@ $(function() {
             for (var i = 0; i < len; i++) {
                 $(markers[i].parentNode).append(markers[i]);
             }
-       
-            
+
+
         },null);
-        
+
         /////////////////////////////
         // ARE WE IN CONFIG MODE ////////////
         // SHould we do this .. this way?? //
@@ -149,8 +150,8 @@ $(function() {
             pot.map.addCallback("drawn", defer(showhash, 100));
         }
         /////////////////////////////////////////
- 
-    
+
+
     }catch (e) {
         console.error("ERROR: ", e);
         pot.error("ERROR: " + e);
@@ -183,7 +184,7 @@ function checkForTooltipParams(){
               "parts":m
           };
       }
-            
+
           tip_params.tip_desc = params.tm;
       }else{
           tip_params.tip_desc = "";
@@ -210,15 +211,15 @@ function loadTheImage(elm,url,title,alt,ughClass){
 	//imgHolder.append(thisNub);
 	$(elm).append(imgHolder);
 	var img = new Image();
-	
+
 	var kirby = $(elm).find(".kirby_bottom");
-	
+
 
 	// img loader
 	$(img)
 		.load(function () {
 
-			// hide img by default    
+			// hide img by default
 			$(this).hide();
 
 			// insert img into link
@@ -231,7 +232,7 @@ function loadTheImage(elm,url,title,alt,ughClass){
 			var _width = $(this).width();    				// Current image width
 			var _height = $(this).height();  				// Current image height
             var _h=THUMB_MAX_HEIGHT,
-                _w=THUMB_MAX_WIDTH; 
+                _w=THUMB_MAX_WIDTH;
             // scale thumbnail
             if (_height > _width) {
                 _h = maxHeight;
@@ -240,15 +241,15 @@ function loadTheImage(elm,url,title,alt,ughClass){
                 _w = maxWidth;
                 _h = Math.ceil(_height / _width * maxWidth);
               }
-              
-             
+
+
              $(this).width(_w);
              $(this).height(_h);
 
 			// reposition parent to center on point
 			var elm_offset = $(elm).offset();
 			var padding = THUMB_PADDING;
-			
+
             // adding in padding
 			var new_elm_left = elm_offset.left - ((_w+(padding*2))/2);
 			var new_elm_top = elm_offset.top - ((_h+(padding*2))/2);
@@ -262,7 +263,7 @@ function loadTheImage(elm,url,title,alt,ughClass){
 		    if (hasBorderRadius() && !ughClass) {
 		        var imgSrc = $(this).attr("src");
 		        $(imgHolder).addClass("roundedCorners");
-        
+
 		        $(imgHolder)
                       .css("background-image", "url(" + imgSrc + ")")
                       .css("background-repeat","no-repeat")
@@ -277,16 +278,16 @@ function loadTheImage(elm,url,title,alt,ughClass){
    	            $(this).show();
 	        }
 	        */
-	        
+
             if(ughClass)$(imgHolder).addClass(ughClass);
             $(imgHolder).css("left",padding-1+"px") // adjust for padding
                         .css("top",padding-1+"px") // adjust for padding
                         .css("height", _h + "px")
                         .css("width", _w + "px");
 	        $(this).show();
-	        
-	        
-	        
+
+
+
 	        /* events */
         	$(elm).click(function(e){
         	    e.preventDefault();
@@ -295,13 +296,13 @@ function loadTheImage(elm,url,title,alt,ughClass){
         	        location.href = params.baseURL+"u/"+prop.user_id+"/dots/"+prop.id;
         	    }
         	});
-        	
+
         	if(tip_params.activate){
             	/* tooltip */
             	$(function(){
             	    var that = elm;
             	 $(elm).tipTip({
-                	    maxWidth: "auto", 
+                	    maxWidth: "auto",
                 	    edgeOffset: 1,
                 	    delay:100,
                 	    content:title,
@@ -310,7 +311,7 @@ function loadTheImage(elm,url,title,alt,ughClass){
                 	});
             	});
     	    }
-			
+
 		})
 
 		// error handler
@@ -332,7 +333,7 @@ function getFlickrImg(arr){
         if (rsp['stat'] != 'ok'){
 			return;
 		}
-		
+
 		var ph = rsp['photo'];
 
 		//set size...
@@ -350,15 +351,15 @@ function getFlickrImg(arr){
 			encodeURIComponent(ph['owner']['nsid']) +
 			'/' +
 			encodeURIComponent(ph['id']);
-			
+
 	    var ph_title = htmlspecialchars(ph['title']['_content']);
 		var ph_owner = htmlspecialchars(ph['owner']['username']);
-		
+
 		loadTheImage(elm,
 		            ph_url,
 		            ph_title + ' by ' + ph_owner,
 		            'flickr photo: '+ph_title + ' by ' + ph_owner)
-		
+
     });
 
 }

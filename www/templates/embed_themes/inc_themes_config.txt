@@ -1,10 +1,10 @@
 {assign var="page_title" value="$chosen_theme Theme"}
 {capture assign="extra_head"}
-<link rel="stylesheet" href="{$cfg.abs_root_url}css/embed.css">
-<script type="text/javascript">
-var ds_chosen_theme = '{$chosen_theme}';
-var incoming_sheet = '{$recent_sheet_url}';
-</script>
+    <link rel="stylesheet" href="{$cfg.abs_root_url}css/embed.css">
+    <script type="text/javascript">
+        var ds_chosen_theme = "{$chosen_theme}";
+        var incoming_sheet = "{$recent_sheet_url}";
+    </script>
 {/capture}
 
 {include file="inc_head.txt"}
@@ -14,35 +14,35 @@ var incoming_sheet = '{$recent_sheet_url}';
     <input id="config_opt_sheet" type="hidden"/>
     <input id="config_opt_hash" type="hidden"/>
     <input id="config_opt_coords" type="hidden"/>
-    
+
     {* header *}
     <div id="config-header">
         <h2 class='grid_8'>{$chosen_theme|capitalize} Theme</h2>
-    
-        <div class='grid_4 alignright' style="padding-top:5px;"> 
+
+        <div class='grid_4 alignright' style="padding-top:5px;">
             <span class="label">Available Themes:</span>
-       
+
             <select id="config_opt_theme">
                 <option value="default">Default</option>
                 <option value="bucket">Bucket</option>
                 <option value="bubbles">Bubbles</option>
                 <option value="crime">Crime</option>
                 <option value="photo">Photo</option>
-            </select> 
-       
+            </select>
+
             </div>
         <div class='clear'>&nbsp;</div>
     </div>
-    
+
     {* description *}
-    <div class='grid_12'> 
+    <div class='grid_12'>
     {include file="embed_themes/$chosen_theme/description.txt"}
     </div>
     <div class='clear'>&nbsp;</div>
-    
+
     {* sheet info & center *}
     <div id="config-message" class="grid_8">loading...</div>
-    <div class='grid_4 alignright'> 
+    <div class='grid_4 alignright'>
     <div id="config-center">
         <a href="" id="location_copier" title="copy map center to embed code">
         <span class="label">Set map center:</span>
@@ -51,13 +51,13 @@ var incoming_sheet = '{$recent_sheet_url}';
     </div>
     </div>
     <div class='clear'>&nbsp;</div>
-    
+
     {* map *}
     <div id="config-map" class="grid_12">
         <iframe id="example_iframe" src=""></iframe>
     </div>
     <div class='clear'>&nbsp;</div>
-    
+
     {* options *}
     <div id="config-options">
         <div class="grid_5">
@@ -83,28 +83,28 @@ var incoming_sheet = '{$recent_sheet_url}';
                 <option value="small">Small (400x300)</option>
                 <option value="custom">custom</option>
             </select>
-            
+
             <span id="custom_map_fields" class="hider">
             <input id="config_opt_width" value="" style="width:3em;" class="autoUpdate"/>
             <span style="font-size:12px;padding:0 3px 0 2px;"> x </span>
             <input id="config_opt_height" value="" style="width:3em;" class="autoUpdate"/>
             </span>
         </div>
-       
+
         <div class='clear'>&nbsp;</div>
-        
+
         <div id="config-extras"></div>
-        
+
         <div class='clear'>&nbsp;</div>
     </div>
-    
+
     {* embed *}
     <div id="code_to_embed" class='grid_12'>
     <h3>Embed Code <span id="embed_helper">paste the embed code below into your web page</h3>
     <textarea id="example_text"></textarea>
     </div>
     <div class='clear'>&nbsp;</div>
-    
+
     {* update *}
     {*
     <div class='grid_12'>
@@ -114,7 +114,7 @@ var incoming_sheet = '{$recent_sheet_url}';
     </div>
     <div class='clear'>&nbsp;</div>
     *}
-    
+
     {* extras *}
 
     <div class='grid_12'>
@@ -122,8 +122,8 @@ var incoming_sheet = '{$recent_sheet_url}';
     </div>
     <div class='clear'>&nbsp;</div>
 
-    
-    
+
+
  {* the end *}
 </div>
 

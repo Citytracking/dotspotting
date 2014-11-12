@@ -5,6 +5,7 @@
 	#
 
 	include("include/init.php");
+
 	if($_GET['type']=="crime"){
         $GLOBALS['smarty']->display('embed_themes/crime/map.txt');
 	}else if($_GET['type']=="default"){
@@ -18,5 +19,6 @@
 	}else{
 	    $GLOBALS['smarty']->display('page_embed.txt');
     }
+
 	exit();
 ?>

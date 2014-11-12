@@ -3,7 +3,7 @@
     var ds_config;
 
    $(document).ready(function() {
-   
+
     var $more = [
         {
             'label': 'Tooltip Title:',
@@ -20,30 +20,31 @@
             'helper': 'Column to be used as the body for tooltip'
         }
     ];
-    
-    
+
+
     // create the config object
     ds_config = new Dots.Config($more,"default","toner");
-    
+
     // register events before calling the loadSheet method...
     ds_config.on("json_loading_begin",function(){
-     //console.log("loading begin");
+     console.log("loading begin");
     });
     ds_config.on("json_loading_success",function(){
-     //console.log("loading success");
+     console.log("loading success");
      setSelects();
     });
     ds_config.on("json_loading_error",function(){
-     //console.log("loading error");
+     console.log("loading error", arguments);
     });
-    
-    
+
+
 
     ds_config.loadSheet();
-    
+
     // do stuff with our new options here...
     function setSelects(){
         var _fields = ds_config.sheet_columns;
+
         if(!_fields)return;
         $("#config_opt_tm").append('<option value=""></option>');
         $("#config_opt_tt").append('<option value=""></option>');

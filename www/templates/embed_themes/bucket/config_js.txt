@@ -2,7 +2,7 @@
 <style type="text/css">
 {literal}
 #dotpotting_extras{
-    
+
 }
 #dotpotting_extras p{
     padding:2px 0;
@@ -26,7 +26,7 @@
     var ds_config;
 
    $(document).ready(function() {
-   
+
     var $more = [
         {
             'label': 'Bucket Column:',
@@ -34,6 +34,27 @@
             'id': 'bucket',
             'default': '',
             'helper': 'Column to be used to bucket data'
+        },
+        {
+            'label': 'Size Column:',
+            'type': 'select',
+            'id': 'bucketsize',
+            'default': '',
+            'helper': 'Column to be used to size dots. Optional'
+        },
+        {
+            'label': 'Max Size:',
+            'type': 'text',
+            'id': 'max',
+            'default': '50',
+            'helper': 'Max. size of dot.'
+        },
+        {
+            'label': 'Min Size:',
+            'type': 'text',
+            'id': 'min',
+            'default': '6',
+            'helper': 'Min. size of dot.'
         },
         {
             'label': 'Tooltip Title:',
@@ -57,11 +78,11 @@
             'helper': 'Copy name of scheme from list below'
         }
     ];
-    
-    
+
+
     // create the config object
     ds_config = new Dots.Config($more,"bucket","acetate");
-    
+
     // register events before calling the loadSheet method...
     ds_config.on("json_loading_begin",function(){
      //console.log("loading begin");
@@ -73,11 +94,11 @@
     ds_config.on("json_loading_error",function(){
      //console.log("loading error");
     });
-    
-    
+
+
 
     ds_config.loadSheet();
-    
+
     // do stuff with our new options here...
     function setSelects(){
         var _fields = ds_config.sheet_columns;
@@ -85,20 +106,22 @@
         $("#config_opt_tm").append('<option value=""></option>');
         $("#config_opt_tt").append('<option value=""></option>');
         $("#config_opt_bucket").append('<option value=""></option>');
+        $("#config_opt_bucketsize").append('<option value=""></option>');
         for(f in _fields){
             $("#config_opt_tm").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
             $("#config_opt_tt").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
             $("#config_opt_bucket").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
+            $("#config_opt_bucketsize").append('<option value="'+_fields[f]+'">'+_fields[f]+'</option>');
         }
     }
-    
+
     // colors
     var colordiv = $("#dotpotting_extras");
     var colorList = $("<select/>");
     if(colorbrewer){
         for(var color in colorbrewer){
             var colorRow = $("<p/>");
-           
+
             for(var i = 0;i<colorbrewer[color][3].length;i++){
                 var colorBlock = $("<span/>");
                 colorBlock.css("background-color",colorbrewer[color][3][i]).addClass("colors");

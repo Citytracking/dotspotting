@@ -1,14 +1,16 @@
 {assign var="page_title" value="Default Map"}
 
-{utf8_headers}<!DOCTYPE html> 
+{utf8_headers}<!DOCTYPE html>
 <html>
 <head>
 	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	
+
         <link rel="stylesheet" href="{$cfg.abs_root_url}embed/default/css/screen.css">
         <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
+
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.5.min.js"></script>
+        <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tmpl.min.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/modestmaps.markers.js"></script>
         <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/raphael-min.js"></script>
@@ -21,8 +23,8 @@
             var baseURL = '{$cfg.abs_root_url}';
             var touchSupport = Modernizr.touch;
         </script>
-        
-        
+
+
 </head>
 <body>
 
@@ -41,8 +43,8 @@
             <p id="mm_tip_desc"></p>
         </div>
 	</div>
-    
+
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/default/default.js" defer="defer"></script>
- 
+
 </body>
 </html>

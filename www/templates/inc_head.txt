@@ -1,4 +1,4 @@
-{utf8_headers}<!DOCTYPE html> 
+{utf8_headers}<!DOCTYPE html>
 <html>
 <head>
 	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
@@ -13,7 +13,9 @@
 	{* See this: still no JS compression or other smushing *}
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/LAB.min.js"></script>
-	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery-1.4.3.min.js"></script>
+	<!--<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery-1.4.3.min.js"></script>-->
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/latlong.js"></script>
 	<script type="text/javascript" src="{$cfg.abs_root_url}javascript/geohash.js"></script>
@@ -39,14 +41,14 @@
 				'dot_color' : {$cfg.dot_color_scheme|@json_encode},
 				'sheet_color' : {$cfg.sheet_color_scheme|@json_encode},
 				'embed_props':{literal}{}{/literal}
-				
+
 		{literal}};{/literal}
-		
-		
+
+
 			{literal}
 				$LAB.setGlobalDefaults({AlwaysPreserveOrder:true});
 			    if (_dotspotting.use_polymaps){
-					
+
 					$LAB
 					.script(_dotspotting.abs_root_url + 'javascript/maptip.js')
 					.script(_dotspotting.abs_root_url + 'javascript/polymaps.min.js')
@@ -58,10 +60,10 @@
 						if($("div.map"))$("div.map").htmapl();
 						_dotspotting.js_loadlib = true;
 					});
-					
+
 			    }
 				else {
-					
+
 					$LAB
 					.script(_dotspotting.abs_root_url + 'javascript/raphael-min.js')
 					.script(_dotspotting.abs_root_url + 'javascript/maptip.js')
@@ -70,11 +72,11 @@
 					.script(_dotspotting.abs_root_url + 'javascript/modestmaps.compass.js')
 					.script(_dotspotting.abs_root_url + 'javascript/modestmaps.tilestache.js')
 					.wait(function(){
-						
+
 						_dotspotting.js_loadlib = true;
 					});
-					
-					
+
+
 			    }
 
 			    // display the map caveat for people who aren't using polymaps
@@ -83,8 +85,8 @@
 			    // with current versions of raphael... (20101202/straup)
 
 			    $(document).ready(function(){
-					if (! _dotspotting.use_polymaps){	
-						
+					if (! _dotspotting.use_polymaps){
+
 						$("#map_caveat").show();
 					}
 			    });
@@ -92,7 +94,7 @@
 		{/literal}
 	</script>
 	{$extra_head}
-	
+
 </head>
 <body>
 {if $cfg.show_header_message}

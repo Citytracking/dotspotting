@@ -5,9 +5,9 @@
 	#
 
 	include("include/init.php");
-	
+
 	$sheet_url= "";
-	
+
 	# if incoming owner id & sheet id
 	if( $_GET['oid'] && $_GET['sid'] ){
 	    $sheet = array(
@@ -17,7 +17,7 @@
 	    $sheet_url = urls_url_for_sheet( $sheet );
 	}else{ # pass random URL to seed example
     	$recent_sheets = sheets_recently_created($GLOBALS['cfg']['user_id']);
-        
+
         if($recent_sheets){
             $len = count($recent_sheets) - 1;
             if($len > 0){
@@ -26,8 +26,8 @@
             }
         }
     }
-	$chosen_theme = "default";	
-	
+	$chosen_theme = "default";
+
 	if($_GET['type']=="crime"){
 	    $chosen_theme = "crime";
 	}else if($_GET['type']=="photo"){
