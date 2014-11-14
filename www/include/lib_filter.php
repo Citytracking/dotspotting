@@ -161,10 +161,10 @@
 		#
 
 		function escape_comments($data){
-
+			$that = $this;
 			$data = preg_replace_callback("/<!--(.*?)-->/s",
-				function($matches){
-					return "'<!--'.HtmlSpecialChars($this->StripSingle($matches[1])).'-->'";
+				function($matches) use ($that) {
+					return "'<!--'.HtmlSpecialChars($that->StripSingle($matches[1])).'-->'";
 				}, $data);
 
 			return $data;
@@ -443,11 +443,11 @@
 			# like it's an entity (then validate it) or if it's not (then escape
 			# it).
 			#
-
+			$that = $this;
 			$data = preg_replace_callback(
 				'!&([^&;]*)(?=(;|&|$))!',
-				function ($matches){
-					return $this->check_entity($this->StripSingle($matches[1]), $this->StripSingle($matches[2]));
+				function ($matches) use ($that){
+					return $that->check_entity($that->StripSingle($matches[1]), $that->StripSingle($matches[2]));
 				},
 				$data
 			);
