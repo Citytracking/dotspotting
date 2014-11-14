@@ -113,9 +113,9 @@ otting?</h3>
 
 {/if}
 
-{* 
-look for the existance of $pre_process.needs_geocoding, 
-which kinda of a flag indicating the data addresses have been inspected 
+{*
+look for the existance of $pre_process.needs_geocoding,
+which kinda of a flag indicating the data addresses have been inspected
 *}
 
 {if $pre_process.data && isset($pre_process.needs_geocoding)}

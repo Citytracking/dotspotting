@@ -136,7 +136,7 @@ left:0;
 	// checks for dupes
 	function update_dots_index_field(){
 		var str = "";
-	
+
 		for(var i=1;i<=total_targets;i++){
 			var _current = $('#dots_index_on_'+i);
 			var _val = _current.val();
@@ -148,7 +148,7 @@ left:0;
 					$('#dots_index_on_'+i).val("");
 				}
 			}
-		}	
+		}
 
 		$("input[name='dots_index_on']").val(str);
 	}
@@ -181,16 +181,16 @@ left:0;
 	{$crumb_key|crumb_input}
 	<input type="hidden" name="data" value="" />
 	<input type="hidden" name="fingerprint" value="{$fingerprint|escape}" />
-	
+
 	<div {if $pre_process.needs_geocoding}class="geohide"{/if}>
 	{* name sheet *}
 	<p>
 	<label for="label">Give your upload a name:</label>
 	<input type="text" size="40" name="label" value="{$label|escape}" />
 	</p>
-	
+
 	<hr/>
-	
+
 	{* select a title  | off *}
 	{*
 	<p>
@@ -198,7 +198,7 @@ left:0;
 	<select id="dots_upload_title" onchange="update_dots_index_field();" name="title"></select><br/>
 	</p>
 	<p class="txt_helper">Values in this column will be used as the title for dots in both listings and individual <a href="{$cfg.abs_root_url}recent/dots" title="jump to recent dots">dot pages</a>. We suggest something short but descriptive.</p>
-	
+
 	<hr/>
 	*}
 
@@ -218,13 +218,13 @@ left:0;
 		<p class="txt_helper">The values of these columns will be indexed for searching both on sheets pages and in site-wide <a href="{$cfg.abs_root_url}search" title="jump to search page">search pages</a>. Street names, categorical columns, and tag or keyword lists are good candidates for search indexing. Note: The title column (above) is always searchable, so if a title is selected you will get one selection above</p>
 		<hr/>
 	{/if}
-	
+
 	{* private option *}
 	<p>
 	<label for="private">Make dots private</label>
 	<input type="checkbox" name="private"{if $private} checked="true"{/if}/>
 	</p>
-	
+
 	<hr/>
 	</div>
 	<span id="submitBtn" class="upload_submit"><input type="SUBMIT" value="Submit" /></span>
@@ -268,9 +268,9 @@ var mo,
 	_processedRows = {}
 	geocode_not_possible = false,
 	isDeleting = false;
-	
+
 $(document).ready(function(){
-	
+
 	// check repsonse from aaron to see if geocoding is necessary
 	 gc_ok = {/literal}
 	{if $pre_process.needs_geocoding}
@@ -279,13 +279,13 @@ $(document).ready(function(){
 	{literal}1{/literal}
 	{/if}
 	{literal};
-	
+
 	geocoder = new google.maps.Geocoder();
-	
-	
+
+
 	/*
 	//gc_ok = checkGC();
-	
+
 	if(!gc_ok){
 		enableGC();
 	}else{
@@ -298,7 +298,7 @@ $(document).ready(function(){
 
 // build data table
 YAHOO.util.Event.addListener(window, "load", function() {
-    
+
     /*
     $("#pre_process_container").css('visibility', 'visible');
     $("#loader_table").remove();
@@ -321,7 +321,7 @@ function buildDataTable(){
 	YT.sortRowId = function(a, b, desc) {
 		var $a = a.getData("row id").split(/^(\d+)/);
 		var $b = b.getData("row id").split(/^(\d+)/);
-	
+
 		if(desc){
 			return Number($a[1]) - Number($b[1]);
 		}else{
@@ -340,7 +340,7 @@ function buildDataTable(){
 			}else{
 				YT.keys.push( {key:title,sortable:true,minWidth:100} );
 			}
-	
+
 			YT.schema.push({key:title});
 		}
 	}
@@ -360,14 +360,14 @@ function buildDataTable(){
 			var data = res.results || [],
 	 		filtered = [],
 	 		i,l,j,regEx;
-	
-	
+
+
 		if (req) {
 		req = req.toLowerCase();
 		regEx =  new RegExp( YT.createRegex( req ) , "i" );
-	
+
 		for (i = 0, l = data.length; i < l; ++i) {
-		
+
 			for(j in data[i]){
 				if(j.length){
 					if ( regEx.test(data[i][j]) ) {
@@ -406,7 +406,7 @@ function buildDataTable(){
 				var target = $(this).find('div').eq(0);
 				var str = '';
 				str += '<a href="#" onclick="preprocess_delete_col('+i+');return false;"><img src="'+_dotspotting.abs_root_url+'images/x.png"/></a>';
-			
+
 				$(target).append(str);
 			}
 	 	});
@@ -421,24 +421,24 @@ function buildDataTable(){
     		$("#loader_table").remove();
     		$("#geoinstr").show();
     		$("#upload_file").show();
-    		
-		
+
+
     		YT.dataTable.unsubscribe('initEvent',YT.tableReady);
     		YT.preprocess_add_col_options();
-	
-    		if(typeof preprocess_create_index == 'function') { 
+
+    		if(typeof preprocess_create_index == 'function') {
     			preprocess_create_index();
     		}
-    	    
+
     	    preprocess_checkLatLon();
 
     	}else{
-    	
+
     	    var __msg = "Ugh! Something bad happened. Please visit the <a href='"+_dotspotting.abs_root_url+"contact'>contact page</a> to send us a note detailing what happened."
     	    $("#loader_table").html(__msg).css("left","0px").addClass("error");
     	    $("#upload_file").remove();
     	}
-	
+
 	}
 
 	YT.highlightEditableCell = function(oArgs) {
@@ -451,24 +451,24 @@ function buildDataTable(){
 	YT.rowDeleteHandler = function(oArgs){
 	    //console.log(oArgs);
 	    //console.log(YT.dataTable.getRecordSet());
-	
+
 	    var rset = YT.dataTable.getRecordSet();
 	    var records = rset._records;
 	    var len = records.length;
 	    for(i=0;i<len;i++){
 	        var newRowId = i+1;
 	        newRowId += '<a href="#" onclick="preprocess_delete_row('+i+'); return false;"><img src="'+_dotspotting.abs_root_url+'images/x.png"/></a>';
-	
-		  
+
+
 			YT.dataTable.updateCell(records[i],'row id',newRowId);
 	    }
-	    
+
 	    preprocess_checkLatLon();
 	    isDeleting =false;
-	    
+
 	    $(".deleting").remove();
-	    
-	    
+
+
 	/*
 		$(".yui-dt-data tr").map(function(i, row){
 
@@ -476,34 +476,34 @@ function buildDataTable(){
 			var newRowId = i+1;
 			var action = "preprocess_delete_row(" + i + "); return false;";
 			var delCol = $(row).find("td a").eq(0);
-		
+
 			newRowId += '<a href="#" onclick="preprocess_delete_row('+i+'); return false;"><img src="'+_dotspotting.abs_root_url+'images/x.png"/></a>';
-	
-		  
+
+
 			YT.dataTable.updateCell(oRecord,'row id',newRowId);
-		    
-	
+
+
 			if (delCol.length){
 				delete_col = delCol[0];
 				delete_col.setAttribute('onclick', action);
 			}
-		
-		
+
+
 		});
-		
+
 		//preprocess_checkLatLon();
 	*/
-	
+
 	};
 
 	YT.columnChangeHandler = function(oArgs){
 	    console.log("CHANGE HANDLER")
 		YT.preprocess_add_col_options();
 
-		if(typeof preprocess_create_index == 'function') { 
+		if(typeof preprocess_create_index == 'function') {
 			preprocess_create_index();
-		}	
-		
+		}
+
 		preprocess_checkLatLon();
 	}
 
@@ -561,28 +561,28 @@ $("#upload_file").submit(function(e){
 // TODO: do we want to auto determine title field?
 function preprocess_create_index(){
 	if(!total_targets && total_targets.length > 0)return;
-	
-	var headers = preprocess_collect_headers();	
-	
+
+	var headers = preprocess_collect_headers();
+
 	var _html = '<option value=""></option>';
 	for(i = 0;i<headers.length;i++){
 		if(headers[i] && headers[i] != "row id" && headers[i] != "title_internal"){
 			_html += "<option value='"+headers[i]+"'>"+headers[i]+"</option>";
 		}
 	}
-	
+
 	for(var i=1;i<=total_targets;i++){
 		var target_list = $('#dots_index_on_'+i);
 		target_list.html("").append(_html);
 	}
-	
+
 }
 
 function preprocess_collect_headers(){
 	var headers;
 	// is it pre yui markup
 	if( $(".yui-dt-hd thead").length ){
-	
+
 		headers = $(".yui-dt-hd thead tr").map(function(i, row){
 
 			var _headers = [];
@@ -637,8 +637,8 @@ function preprocess_checkLatLon(){
 		}else{
 			_processedRows[_id] = "bad";
 		}
-		
-		
+
+
 		///
 		if( !b || b == 0 ){
 		    result = 0;
@@ -650,10 +650,12 @@ function preprocess_checkLatLon(){
 		    }
 		}else{
 		    $("#"+r._sId).removeClass('needsGeocoding');
-		}		
+		}
 
 	});
-	
+
+
+
 	//
 	gc_ok = result;
 	if(geocode_not_possible){
@@ -675,23 +677,24 @@ function enableGC(){
 		if(!dt)return;
 		preprocess_geocode_col();
 	});
-	$("#submitBtn input").attr('disabled', 'disabled');
+	$("#submitBtn input").attr('disabled', true);
 	$("#submitBtn input").css('cursor','none');
 	$("#submitBtn").css('opacity',.3);
 }
 
 function disableGC(){
+	console.log("DISABLE")
     $("#geocodeBtn").hide();
 	$("#geocode_msg").hide();
 	$("#geocode_info h4").html("Dotspotting understands your data. Press \"submit\" to upload your dots and generate a map.");
 	$("#geocode_info p").hide();
 	 $("#geocode_info h4").removeClass("needsGeocoding");
-	
+
 	$("#submitBtn").show();
-	$("#submitBtn input").attr('disabled', '');
+	$("#submitBtn input").attr('disabled', false);
 	$("#submitBtn input").css('cursor','pointer');
 	$("#submitBtn").css('opacity',1);
-	
+
 }
 
 function gcNotPossible(){
@@ -707,48 +710,48 @@ function gcNotPossible(){
 
 function preprocess_collect_data(){
 	if(!dt.dataTable)return;
-	
+
 	/* legacy
 	var _title = "";
-	
+
 	if($("input[name='title']").is(':checked')) {
 		_title = $('#dots_index_on_1').val();
 	}
 	*/
-	
-	
+
+
 	var rows = [];
 	var headers = preprocess_collect_headers();
-	
+
 	$(".yui-dt-data tr").map(function(i, row){
 		var oRecord = dt.dataTable.getRecord(i);
-		
+
 		// strip link out of row id
 		//var $a = oRecord.getData("row id").split(/^(\d+)/);
 		//dt.dataTable.updateCell(oRecord,"row id",$a[1]);
-		
+
 		/* legacy
 		// add title
 		if(_title.length){
 			dt.dataTable.updateCell(oRecord,"title_internal","{"+_title+"}");
 		}
 		*/
-		
-		
+
+
 		// get rid of row id, because we created them in first place sucka
 		if(oRecord._oData['row id']){
 			delete oRecord._oData['row id'];
 		}
-		
-		
+
+
 		if(oRecord._oData['_has_latlon']){
 			delete oRecord._oData['_has_latlon'];
 		}
 		if(oRecord._oData['_address']){
 			delete oRecord._oData['_address'];
 		}
-		
-		rows.push(oRecord._oData);		
+
+		rows.push(oRecord._oData);
 	});
 
 	return rows;
@@ -760,17 +763,17 @@ function preprocess_delete_row(idx){
 	if(isDeleting)return;
 
 	var r = dt.dataTable.getRecord(idx);
-	
+
 	var prompt = "Are you sure you want to delete this row ?";
     $("#pre_process_container").append("<div class='deleting'><h3>Deleting row...</h3></div>");
-    
+
 	if (! confirm(prompt)){
 	    $(".deleting").remove();
 		return;
 	}
-	
+
 	isDeleting = true;
-	
+
 
 	dt.dataTable.deleteRow(r);
 
@@ -801,18 +804,18 @@ function preprocess_update_col(idx){
 
 function preprocess_delete_col(idx){
 	if(!dt.dataTable)return;
-	
+
 	var headers = preprocess_collect_headers();
 	var colname = headers[idx];
 
 	if (! confirm("Are you sure you want to delete the \"" + colname + "\" column from all rows?")){
 		return;
 	}
-	
+
 	// Remove Column
 	var col = dt.dataTable.getColumn(idx);
 	var myRemovedColumn = dt.dataTable.removeColumn(col);
-	
+
 	return;
 }
 
@@ -822,11 +825,11 @@ function checkHeaderExists(idx){
 
 function addExtraColumns(arr,idx){
 	if(!dt.dataTable)return;
-	
+
 	// need to insert new columns after hidden because of a bug in YUI DataTables
 	//var last = (dt.dataTable.getColumn("title_internal")) ? dt.dataTable.getColumn("title_internal") : dt.columnDefs.length-1;
 	var last =  dt.columnDefs.length-1;
-	
+
 	// insert now
 	for(i in arr){
 		if(!checkHeaderExists(arr[i])){
@@ -838,18 +841,18 @@ function addExtraColumns(arr,idx){
 			}, last._nKeyIndex+1);
 		}
 	}
-	
+
 }
 
 
 function preprocess_geocode_col(idx){
 	if(!dt || !dt.dataTable)return;
-	
+
 	var self = this;
-		
+
 	this.gc = function(q){
 		var _id = "r"+q._nCount;
-/*		
+/*
 ///////// testing ////////////
         console.log(q)
 		if(_processedRows[_id] && _processedRows[_id] == "good"){
@@ -865,84 +868,84 @@ function preprocess_geocode_col(idx){
 				_processedRows[_id] = "bad";
 			}
 			var addy = q['_oData']['_address'];
-			
+
 			// update status
 			//var out = "Processed: "+queueCounter+" of "+queueLength+"</br>";
 			var out = "Processing: "+addy;
 			$("#modal_status").html(out);
-			
+
 			var pct = (queueCounter/queueLength) * 100;
 			$(".meter > span").animate({width: pct + "%"}, 0);
-			
+
 		}
 		self.checkQueue(150);
 ///////// end testing ////////////
-*/		
+*/
 
-	
+
 ///////// for realizy ////////////
 		// don't process rows already with valid responses
 		if(_processedRows[_id] && _processedRows[_id] == "good"){
 			self.checkQueue(10);
 		}else{
 			if(q['_oData'] && q['_oData']['_address'] && q['_oData']['_address'].length > 2){
-			
+
 				var addy = q['_oData']['_address'];
 				if(!self.currentAddy){
 					self.currentAddy = addy;
 					self.currentAddyTries = 0;
 				}
-			
+
 				//this.intTimer = window.setTimeout(function(e) {self.closeModal()},4000);
-				
+
 				// update status
 				//var out = "Processed: "+queueCounter+" of "+queueLength;
 				var out = "Processing: "+addy;
 				$("#modal_status").html(out);
-				
+
 				// update loading bar
 				var pct = (queueCounter/queueLength) * 100;
 				$(".meter > span").css("width",pct+"%");
-				
-				
+
+
 
 				// geocode
 				geocoder.geocode( { 'address': addy}, function(results, status) {
-				
+
 					// we're good
 					// TODO: should we check for level of accuracy
 					if (status == google.maps.GeocoderStatus.OK) {
 						dt.dataTable.updateCell(q,"latitude",(results[0].geometry.location.lat()).toFixed(6));
 						dt.dataTable.updateCell(q,"longitude",(results[0].geometry.location.lng()).toFixed(6));
-					
+
 					//	if(window.console)console.log(results); //lng
-					
+
 						self.success.ct++;
 						self.success.addr.push(addy);
 						$("#"+q._sId).css("background-color","#EEE");
 						_processedRows[_id] = "good";
-						
+
 					} else {
-					
+
 						// if we get this error, set a delay and try again
 						if(status == "OVER_QUERY_LIMIT" && self.currentAddyTries < 3){
 							self.currentAddyTries++;
 							self.delayGC(q);
 							return;
 						}
-						
+
 						dt.dataTable.updateCell(q,"latitude","###");
 						dt.dataTable.updateCell(q,"longitude","###");
-						
+
 						//if(window.console)console.log("Geocode was not successful for the following reason: " + status);
-						
+
 						self.errors.ct++;
 						self.errors.addr.push(addy);
 						self.errors.err.push(status);
 						$("#"+q._sId).css("background-color","#FA5C5C");
 						_processedRows[_id] = "bad";
 					}
-					
+
 					self.queueBatch--;
 					if(self.queueBatch <= 0){
 						self.queueBatch = 5;
@@ -951,45 +954,45 @@ function preprocess_geocode_col(idx){
 						self.checkQueue(100);
 					}
 				});
-			
+
 			}else{
 				self.checkQueue(10);
 			}
 		}
-///////// end for realizy ////////////		
+///////// end for realizy ////////////
 
-		
-		
+
+
 	}
-	
-	
+
+
 	// delay some googling
 	this.delayGC = function(o){
 		setTimeout(function(){
 			self.gc(o);
 		}, 1500);
 	}
-	
+
 	this.checkQueue = function(wait){
 		// clear
 		self.currentAddy = undefined;
 		self.currentAddyTries = 0;
-		
+
 		queueCounter++;
 		if(queueCounter < queueLength){
 			setTimeout(function(){
 				self.gc(dt.dataTable.getRecord(queueCounter));
 			}, wait);
-			
-		}else{			
-			
+
+		}else{
+
 			var out_h4 = '';
 			var out_p = '';
 			if(self.success.ct == 0 && self.errors.ct == 0){
-			
+
 			// add faq. Please see the FAQ for more details.
 				out_h4 = 'Geocoding failure!';
-			
+
 				//out += '<img style="float: right;padding: 5px;" src="'+_dotspotting.abs_root_url+'images/funny_cat.gif" width="160"/>';
 				out_p = "<strong>Nothing geocoded. Are there addresses? Please fix problem in original source data.  <a href='"+_dotspotting.abs_root_url+"upload'>Then re-upload the file.</a></strong><br/>";
 				out_p += "For more details about uploading <a href='"+_dotspotting.abs_root_url+"faq'>please visit the FAQ page</a>";
@@ -1008,16 +1011,16 @@ function preprocess_geocode_col(idx){
 				out_p += "For more details about uploading <a href='"+_dotspotting.abs_root_url+"faq'>please visit the FAQ page</a>";
 				$("#geocode_info h4").css("background-color","#e9b8b8");
 			}
-			
-			
+
+
 			//geoinstr
 			$("#geocode_info h4").html(out_h4);
 			$("#geocode_info p").html(out_p);
 			mo.trigger("reveal:close");
 			//self.closeModal();
-			
-			
-			
+
+
+
 			/*
 			$("#modal_status").html("");
 			$("#modal_msg").html(out);
@@ -1025,27 +1028,27 @@ function preprocess_geocode_col(idx){
 			*/
 		}
 	}
-	
-	this.closeModal = function(){				
+
+	this.closeModal = function(){
 		queueBatch = 5;
 		if(self.errors.ct <= 0){
 			gc_ok = true;
-			
+
 			$("#geocodeBtn").hide();
 			//$("#geoinstr").hide();
 			$("#geoinstr p").remove();
 			$("div.geohide").removeClass("geohide");
 		//	$("#submitBtn").show();
-			$("#submitBtn input").attr('disabled', '');
+			$("#submitBtn input").attr('disabled', false);
 			$("#submitBtn input").css('cursor','pointer');
 			$("#submitBtn").css('opacity',1);
 		}else{
 			$("#geocodeBtn").hide();
 		}
-		
+
 	}
-	
-	
+
+
 	this.majorError = function(q){
 	    $("#geocode_info h4").html("Sorry there was an error processing your file.");
 	    var out_p = "<strong>Please go back to your original source data and check everything is valid.  <a href='"+_dotspotting.abs_root_url+"upload'>Then re-upload the file.</a></strong><br/>";
@@ -1054,59 +1057,59 @@ function preprocess_geocode_col(idx){
 	    $("#geocode_info h4").css("background-color","#e9b8b8");
 	    $("#geocodeBtn").hide();
 	}
-	
+
 	////////////////////////////////////////////////////
 	////////////////////////////////////////////////////
 	////////////////////////////////////////////////////
-	
+
 	this.intTimer = null;
-	
+
 	// check for an address column
 	if(! dt.dataTable.getColumn("_address") ){
 	    majorError();
 	    return;
 	}
 	this.addressColumn = dt.dataTable.getColumn("_address");
-	
+
 	// check if it has an index
 	if(! this.addressColumn._nKeyIndex ){
 	    majorError();
 	    return;
 	}
 	this.addressColumnID = this.addressColumn._nKeyIndex;
-	
-	
-	
+
+
+
 	this.errors = {'ct':0,'addr':[],'err':[]};
 	this.success = {'ct':0,'addr':[],'msgs':[]};
 	this.currentAddy = undefined;
 	this.currentAddyTries = undefined;
-	
+
 	var queueDone = false;
 	var queue = $(".yui-dt-data tr");
 	var queueLength = queue.length;
 	var queueCounter = 0;
-	
+
 	this.queueBatch = 5; // basic throttler for geocoder, also catching 'OVER_QUERY_LIMIT' response to help throttle requests
-	
+
 	$(".meter > span").animate({width: "0%"}, 0);
-	
-		
-	
+
+
+
 	mo = $('#myModal').reveal({closeonbackgroundclick: false,animation:'fade', closeCallback: self.closeModal});
 	addExtraColumns(['latitude','longitude'],idx);
 	dt.dataTable.render();
-	
-	
+
+
 	// start
 	if(queueLength > 0){
 		self.gc(dt.dataTable.getRecord(queueCounter));
 	}
-	
+
 	////////////////////////////////////////////////////
 	////////////////////////////////////////////////////
-	////////////////////////////////////////////////////	
-	
+	////////////////////////////////////////////////////
+
 }
 
 
