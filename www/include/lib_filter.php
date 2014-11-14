@@ -212,9 +212,9 @@
 		#####################################################################################
 
 		function check_tags($data){
-
+			$tt = $this;
 			$data = preg_replace_callback("/<(.*?)>/s", function($m){
-				return process_tag(StripSingle($m[1]));
+				return $tt->process_tag($tt->StripSingle($m[1]));
 				},	$data);
 
 			foreach(array_keys($this->tag_counts) as $tag){
