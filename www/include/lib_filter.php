@@ -214,7 +214,7 @@
 		function check_tags($data){
 
 			$data = preg_replace_callback("/<(.*?)>/s", function($m){
-				return $this->process_tag($this->StripSingle($m[1]));
+				return process_tag(StripSingle($m[1]));
 				},	$data);
 
 			foreach(array_keys($this->tag_counts) as $tag){
