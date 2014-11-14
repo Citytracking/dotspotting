@@ -212,8 +212,10 @@
 		#####################################################################################
 
 		function check_tags($data){
-			$data = preg_replace_callback("/<(.*?)>/s", function($m) use ($this) {
-				return $this->process_tag($this->StripSingle($m[1]));
+			$that = $this;
+
+			$data = preg_replace_callback("/<(.*?)>/s", function($m) use ($that) {
+				return $that->process_tag($that->StripSingle($m[1]));
 				},	$data);
 
 			foreach(array_keys($this->tag_counts) as $tag){
