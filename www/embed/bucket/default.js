@@ -39,10 +39,16 @@ $(function() {
 
         if (!params.baseURL) params.baseURL = baseURL;
 
+
         if(params.provider)params.base = params.provider;
         if (!params.base)params.base = "acetate";
-
         if(params.bucket)bucketColumn = params.bucket;
+
+        if (params.darktheme) {
+            $('body').addClass('dark-theme');
+        }
+
+        params.autofit = (params.autofit && parseInt(params.autofit, 10) === 1) ? true : false;
 
         var maxValue = 0,
             minValue = Infinity;
@@ -59,6 +65,7 @@ $(function() {
         pot.dotsLayer = new mm.DotMarkerLayer(pot.map);
 
         params.ui = "1";
+        var typeSelector;
         if (params.ui == "1") {
 
 
@@ -67,19 +74,30 @@ $(function() {
                // typeSelector.selectTypes(params.types.split(","));
             }
             var pos = ($("#title").length > 0) ? $("#title").innerHeight() : 0;
-            $("#menu_wrapper").css("top",pos+"px");
+            $("#menu_wrapper").css("top", pos+"px");
             if(bucketColumn){
                 $("#menu_wrapper_title").html(bucketColumn);
             }
 
-            var typeSelector = new MenuSelector("#menu_types_wrapper","#menu_types", pot.dotsLayer,$("#menu_wrapper").innerWidth() + 10);
+            typeSelector = new MenuSelector("#menu_types_wrapper","#menu_types", pot.dotsLayer,$("#menu_wrapper").innerWidth() + 10);
         }else{
             $("#menu_wrapper").remove();
         }
 
+        // make legend
+        var legend;
+        function makeLegend(){
+            if (!typeSelector) return;
+            typeSelector.makeLegend('#map', 'br', radiusMaker, bubbleSizeColumn);
+        }
+
+        var radiusMaker = d3.scale.sqrt();
+        radiusMaker.rangeRound([minSize, maxSize]);
+
+
         // adjust controls if title
         if (params.title) {
-           $(".controls").css("top",($("#title").height()+20)+"px");
+           $(".controls").css("top",($("#title").height() + 20) +"px");
         }
 
 
@@ -100,7 +118,7 @@ $(function() {
         }
 
         var rollover_tmpl,
-            useTemplate=false,
+            useTemplate = false,
             infoPanelText = null,
             bucketPrep = {},
             bucketCount = 0,
@@ -132,6 +150,7 @@ $(function() {
             var len = markers.length;
             for(i=0;i<len;i++){
                 mdict[markers[i].myAttrs.id].toFront();
+                markers[i].myAttrs.__zindex = i;
             }
         }
 
@@ -159,11 +178,11 @@ $(function() {
                 useTemplate = true;
                 feature.properties.__rollover_message = normalizeRolloverMessage(feature.properties.__rollover_message);
                 if(!rollover_tmpl){
-                    console.log(feature.properties.__rollover_message)
+                    //console.log(feature.properties.__rollover_message)
                     rollover_tmpl = "<span>"+feature.properties.__rollover_message+"</span>";
                     $.template( "rollover_tmpl", rollover_tmpl );
                 }
-                console.log(rollover_tmpl)
+                //console.log(rollover_tmpl)
                 props.tipMessage = $.tmpl("rollover_tmpl", props);
             }else if(rollover_tmpl){
 
@@ -269,7 +288,11 @@ $(function() {
                     }
                 }
 
+                radiusMaker.domain([minValue, maxValue]);
+                var locations = [];
+
                 for(i=0;i<len;i++){
+                    if (markers[i].hasOwnProperty('location'))locations.push(markers[i].location);
                     if(markers[i].myAttrs._kirbyPos == "front"){
                         //var max = (markers[i].attrs.markerSize) ? (markers[i].attrs.markerSize / maxValue) * maxSize : minSize;
 
@@ -278,9 +301,10 @@ $(function() {
 
                         //http://blog.thematicmapping.org/2008/06/proportional-symbols-in-three.html
                         //var radius = (size / maxValue) * maxSize;
-                        var radius = Math.pow(size/maxValue, 1/2) * maxSize;
+                        //var radius = Math.pow(size/maxValue, 1/2) * maxSize;
 
-                        if(radius < minSize)radius = minSize;
+                        var radius = radiusMaker(size);
+                        if(radius < minSize) radius = minSize;
 
                         markers[i].attr("r",radius);
                         if(!mdict[markers[i].myAttrs.id])mdict[markers[i].myAttrs.id] = markers[i];
@@ -296,6 +320,9 @@ $(function() {
 
                 sortMarkers(markers,"desc");
             }
+
+            // autofit
+            if (locations.length && params.autofit) pot.map.setExtent(locations);
 
             // cluster markers
             pot.dotsLayer.cluster();
@@ -338,6 +365,8 @@ $(function() {
                 $("#info_panel").remove();
             }
 
+            if (bubbleSizeColumn) makeLegend();
+
             // create tooltip
             // pass it the selector to listen for...
             // pulls rest of params from pot object
@@ -369,7 +398,7 @@ $(function() {
         /////////////////////////////////////////
 
     }catch (e) {
-        console.error("ERROR: ", e);
+        //console.error("ERROR: ", e);
         pot.error("ERROR: " + e);
     }
 });
@@ -389,7 +418,7 @@ function normalizeFeature(feature) {
 
 
 // borough
-function MenuSelector(wrapper,selector, layer, initWidth) {
+function MenuSelector(wrapper, selector, layer, initWidth) {
     this.wrapper = $(wrapper);
     this.container = $(selector);
     if(initWidth !== "undefined" || initWidth !== null)this.menuWidth = initWidth;
@@ -490,6 +519,7 @@ MenuSelector.prototype = {
                    that.unselectButtons(t);
                    that.showMarkers(t);
                }
+               that.resetZindex();
 
            });
 
@@ -502,6 +532,10 @@ MenuSelector.prototype = {
            }
        });
 
+    },
+
+    getID: function(selectorID) {
+        return selectorID.slice(2);
     },
 
     // adds button elements
@@ -551,8 +585,7 @@ MenuSelector.prototype = {
 
         // events
         btn.node.onclick = function(e){
-            var id = $(this).attr("id");
-            id = id.slice(2);
+            var id = that.getID(this.id);
 
             var state = !that.labelStates[id];
 
@@ -564,22 +597,24 @@ MenuSelector.prototype = {
                 that.selectButtons(id);
                 that.hideMarkers(id);
             }
-            that.labelStates[id] = state;
-        }
-        btn.node.onmouseover = function(e){
-            var id = $(this).attr("id");
-            id = id.slice(2);
-            btn.attr("fill-opacity",.3);
-            if(that.labelStates[id])that.highlightMarkers(id);
-        }
-        btn.node.onmouseout = function(e){
-            var id = $(this).attr("id");
-            id = id.slice(2);
-            btn.attr("fill-opacity",0);
-            //if(that.labelStates[id])that.unhighlightMarkers(id);
-            that.unAll(800);
 
-        }
+            that.labelStates[id] = state;
+        };
+
+        btn.node.onmouseover = function(e){
+            var id = that.getID(this.id);
+            btn.attr("fill-opacity", 0.3);
+            that.highlightMarkers(id);
+            //if(that.labelStates[id]) that.highlightMarkers(id);
+        };
+
+        btn.node.onmouseout = function(e){
+            var id = that.getID(this.id);
+            btn.attr("fill-opacity", 0);
+            //if(that.labelStates[id])that.unhighlightMarkers(id);
+            that.unAll(400);
+
+        };
 
         // housekeeping
         this.labelsByType[type] = label;
@@ -594,7 +629,7 @@ MenuSelector.prototype = {
         var txtWidth = txt.getBBox().width || txt.node.clientWidth;
 
         this.menuWidth = Math.max(this.menuWidth,(parseFloat(txtWidth) + 55));
-        this.menuHeight = Math.max(this.menuHeight,yPos+20);
+        this.menuHeight = Math.max(this.menuHeight, yPos + 20);
 
         this.canvas.setSize(this.menuWidth,this.menuHeight);
 
@@ -621,30 +656,34 @@ MenuSelector.prototype = {
 
     highlightMarkers: function(t){
         if (this.unAllReal.timeout) clearTimeout(this.unAllReal.timeout);
-
+        this.unAllReal.timeout = null;
 
         var markers = this.layer.markers,
         len = markers.length;
 
-        var start = new Date().getTime();
         for(i=0;i<len;i++){
             if(markers[i].myAttrs.id){
+                var op = markers[i].myAttrs['props']['__active'] ? 1 : 0.4;
                 if(t == markers[i].myAttrs['type']){
                     markers[i].toFront();
-                    if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity",1);
-                    markers[i].attr("opacity",1);
+                    if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity", 1);
+                    markers[i].attr("opacity", 1);
+                    markers[i].attr("stroke-opacity", op);
+                    markers[i].attr("fill-opacity", op);
                     //this.pools[t].push(markers[i]);
                 }else{
                     if( markers[i].myAttrs['props']['__active']){
                         if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity",.2);
                         markers[i].attr("opacity",0);
+
+                    } else {
+                        markers[i].attr("stroke-opacity", 0.4);
+                        markers[i].attr("fill-opacity", 0);
                     }
                 }
             }
 
         }
-        var end = new Date().getTime();
-        var time = end - start;
     },
 
     unhighlightMarkers: function(t){
@@ -669,12 +708,26 @@ MenuSelector.prototype = {
             if(markers[i].myAttrs.id){
                 if(t == markers[i].myAttrs['type']){
                     markers[i].myAttrs['props']['__active'] = false;
+                    markers[i].toBack();
                     markers[i].attr("fill-opacity",0);
+                    markers[i].attr("stroke-opacity",0.4);
                     if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity",0);
                 }
             }
         }
     },
+
+    resetZindex: function() {
+        var markers = this.layer.markers,
+        len = markers.length;
+        for(i=0;i<len;i++){
+            if (markers[i].myAttrs['props']['__active']) {
+                markers[i].toFront();
+            }
+
+        }
+    },
+
     showMarkers: function(t){
         var markers = this.layer.markers,
         len = markers.length;
@@ -683,6 +736,7 @@ MenuSelector.prototype = {
                 if(t == markers[i].myAttrs['type']){
                     markers[i].myAttrs['props']['__active'] = true;
                     markers[i].attr("fill-opacity",1);
+                    markers[i].attr("stroke-opacity",1);
                     if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity",1);
                 }
             }
@@ -690,6 +744,8 @@ MenuSelector.prototype = {
     },
     /// delay for unhighlighting markers ???
     unAllReal: function(){
+        this.unAllReal.timeout = null;
+
            var markers = this.layer.markers,
            len = markers.length;
            for(i=0;i<len;i++){
@@ -697,26 +753,46 @@ MenuSelector.prototype = {
                   if( markers[i].myAttrs['props']['__active']){
                       if(ds_kirby)backdict[markers[i].myAttrs.id].attr("opacity",1);
                       markers[i].attr("opacity",1);
+                      markers[i].attr("fill-opacity",1);
+                        markers[i].attr("stroke-opacity",1);
+
                       //this.animate(backdict[markers[i].myAttrs.id],1,200);
                       //this.animate(markers[i],1,200);
+                  } else {
+
+                    markers[i].attr("fill-opacity",0);
+                    markers[i].attr("stroke-opacity",0.4);
                   }
 
                }
            }
+           this.resetZindex();
        },
        unAll: function(ms){
-           if(!ms)ms = 400;
-           var that = this;
-           if (this.unAllReal.timeout) clearTimeout(this.unAllReal.timeout);
-           this.unAllReal.timeout = setTimeout(function() {
-               that.unAllReal.apply(that);
-           }, ms);
+            ms = ms || 400;
+            var that = this;
+            if (this.unAllReal.timeout) clearTimeout(this.unAllReal.timeout);
+            this.unAllReal.timeout = setTimeout(function() {
+                that.unAllReal.apply(that);
+            }, ms);
        },
        animate: function(elm,val,t){
            elm.animate({"opacity":val},t);
        },
        stageCheck: function(){
            /* write me */
+       },
+       makeLegend: function(appendTo, position, scale, titleString) {
+            var that = this;
+            var script = document.createElement("script");
+
+            script.onload = function() {
+                legend = DS.extras.CircleLegend('#menu_wrapper', position, scale, titleString);
+                document.body.style.minHeight = $('#menu_wrapper').height() + "px";
+            };
+            script.src = "../javascript/ds.legend.js";
+            script.type = "text/javascript";
+            document.getElementsByTagName("head")[0].appendChild(script);
        }
 
 

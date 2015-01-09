@@ -27,8 +27,9 @@ Dots.Potting.sourceAliases = (function() {
         CLOUDMADE_TM = '&copy;{Y} <a href="http://www.cloudmade.com/">CloudMade</a>, <a href="http://www.openstreetmap.org/">OpenStreetMap</a> <a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>',
         ACETATE_TM = 'Map data &copy;<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>; designed by <a href="http://www.stamen.com/">Stamen</a> &amp; <a href="http://www.geoiq.com/">GeoIQ</a>',
         // FIXME: update MS copyright for each extent?
-        MICROSOFT_TM = '&copy;{Y} Microsoft Corporation  &copy;2010 NAVTEQ';
-        PRETTYMAPS_TM = OSM_TM;
+        MICROSOFT_TM = '&copy;{Y} Microsoft Corporation  &copy;2010 NAVTEQ',
+        PRETTYMAPS_TM = OSM_TM,
+        CARTODB = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>';
 
     aliases.toner = {
         template: "http://tile.stamen.com/toner/{Z}/{X}/{Y}.png",
@@ -57,6 +58,10 @@ Dots.Potting.sourceAliases = (function() {
     aliases.prettymaps = {
         template: "http://tms.stamen.com/prettymaps/{Z}/{X}/{Y}.png",
         copyright: PRETTYMAPS_TM
+    };
+    aliases.darkmatter = {
+        template: "http://{S:1,2,3,4}.basemaps.cartocdn.com/dark_all/{Z}/{X}/{Y}.png",
+        copyright: CARTODB
     };
 
     return aliases;

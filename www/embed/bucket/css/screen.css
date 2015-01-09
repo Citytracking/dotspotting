@@ -1,19 +1,18 @@
 html, body {
     margin: 0;
     padding: 0;
-    position: absolute;
-    width: 100%;
     height: 100%;
-    overflow: hidden;
+    width: 100%;
 }
 
 body {
+    position: relative;
     font-family: "Helvetica Neue", Helvetica, Arial, clean, sans-serif;
     font-size: 15px;
     line-height: 20px;
-
     background: #fff;
     color: #000;
+    overflow: auto;
 }
 
 a:link,
@@ -99,7 +98,7 @@ h1 a {
 		color: #666;
 		display: none;
 	}
-	
+
 /* MARKER STYLES */
 .dot{fill:rgb(11,189,255);fill-opacity:1;cursor:pointer;z-index:100;}
 .under{fill:rgb(255,255,255);fill-opacity:.9;stroke:#ccc;stroke-opacity:1;cursor:pointer;z-index:200;}
@@ -122,7 +121,7 @@ h1 a {
     text-align: center;
     margin-left: 0;
     padding:0;
-    
+
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
@@ -186,7 +185,7 @@ h1 a {
         padding-left:0px;
 		padding-top:5px;
 		display:block;
-		
+
     }
     #menu_wrapper h5 span#menu_wrapper_toggle a{
         color:#356A94;
@@ -208,7 +207,7 @@ li.altrow{
     margin: 10px 0 0;
     padding: 0;
 }
-    
+
 
     #menu_types li {
         cursor: pointer;
@@ -246,12 +245,12 @@ li.altrow{
     #menu_types li.off .group {
         opacity: .2;
         -moz-opacity: .2;
-        -khtml-opacity: .2; 
-        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=20)";  
+        -khtml-opacity: .2;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=20)";
         filter: alpha(opacity=20);
         /*background-image: url(../images/icons/faded.png) !important;*/
     }
-    
+
     /* The UGH! using 2 different tooltips for now until I merge them into super tooltip */
 
     /* tooltip for menu type selector */

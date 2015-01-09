@@ -1,14 +1,15 @@
 {assign var="page_title" value="Bucket Map"}
 
-{utf8_headers}<!DOCTYPE html> 
+{utf8_headers}<!DOCTYPE html>
 <html>
 <head>
 	<title>Dotspotting{if $page_title} - {$page_title|escape}{/if}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	
-	
+
+    <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/common.css">
     <link rel="stylesheet" href="{$cfg.abs_root_url}embed/bucket/css/screen.css">
     <link rel="stylesheet" href="{$cfg.abs_root_url}embed/css/tipTip.css">
+
     <script type="text/javascript" src="{$cfg.abs_root_url}javascript/modernizr.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tmpl.min.js"></script>
@@ -20,7 +21,7 @@
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/dots.potting.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/jquery.tipTip.minified.js"></script>
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/javascript/colorbrewer.js"></script>
-    
+
     <script type="text/javascript">
         var _dotspotting = {literal}{{/literal}
             'abs_root_url' : '{$cfg.abs_root_url}'
@@ -28,8 +29,8 @@
         var baseURL = '{$cfg.abs_root_url}';
         var touchSupport = Modernizr.touch;
     </script>
-        
-        
+
+
 </head>
 <body>
 
@@ -56,8 +57,8 @@
            <a href="/"></a>
            <p></p>
     </div>
-    
+
     <script type="text/javascript" src="{$cfg.abs_root_url}embed/bucket/default.js" defer="defer"></script>
- 
+
 </body>
 </html>

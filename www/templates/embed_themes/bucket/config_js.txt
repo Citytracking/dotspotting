@@ -76,6 +76,13 @@
             'id': 'cs',
             'default': '',
             'helper': 'Copy name of scheme from list below'
+        },
+        {
+            'label': 'Autofit:',
+            'type': 'checkbox',
+            'id': 'autofit',
+            'default': '',
+            'helper': 'Zoom map to fit markers on load.'
         }
     ];
 
