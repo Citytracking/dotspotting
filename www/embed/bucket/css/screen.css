@@ -121,6 +121,7 @@ h1 a {
     text-align: center;
     margin-left: 0;
     padding:0;
+    min-width: 150px;
 
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;

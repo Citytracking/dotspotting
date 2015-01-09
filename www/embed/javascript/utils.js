@@ -853,9 +853,9 @@ DotToolTip.prototype = {
           if(params.tm){
 
           //var re= new RegExp (/{(.*)}/gi);
-          var re= new RegExp (/{([\w:]*)?\s?(.*?)}/gi);
-
-          var m=re.exec(params.tm);
+          //var re= new RegExp (/{([\w:]*)?\s?(.*?)}/gi);
+          var re = new RegExp(/\{?\{\s*(.*?)\s*\}\}?/g);
+          var m = re.exec(params.tm);
 
           if(m && m[1]){
               this.tip_sentence = {

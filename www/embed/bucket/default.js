@@ -50,11 +50,16 @@ $(function() {
 
         params.autofit = (params.autofit && parseInt(params.autofit, 10) === 1) ? true : false;
 
+        if (params.messagetmpl) params.tm = decodeURIComponent(params.messagetmpl);
+        //messagetmpl=%7Bsquare%20feet%7D%20sq%20ft
+
         var maxValue = 0,
             minValue = Infinity;
+
         var bubbleSizeColumn = (params['bucketsize']) ? params['bucketsize'] : null;
         var maxSize = 6,
             minSize = 6;
+
         if (bubbleSizeColumn) {
             maxSize = (params.max) ? parseFloat(params.max) : 50;
             minSize = (params.min) ? parseFloat(params.min) : 6;
@@ -126,10 +131,8 @@ $(function() {
 
 
         function updateValues(val){
-
             maxValue = Math.max(maxValue,val);
             minValue = Math.min(minValue,val);
-
         }
 
         function sortMarkers(markers,dir){
