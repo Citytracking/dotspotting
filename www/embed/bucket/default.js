@@ -620,6 +620,7 @@ MenuSelector.prototype = {
     },
 
     makeLabels: function() {
+        console.log(this.labelCounts);
         // sort buckets
         var arr = [];
         for (var type in this.buckets) {
@@ -710,7 +711,7 @@ MenuSelector.prototype = {
         this.labelsByType[type] = label;
         this.buttonSets[type] = [label,txt,btn];
         this.labelStates[type] = true;
-        this.labelCounts[type] = 1;
+        //this.labelCounts[type] = 1;
         this.buttonLength ++;
 
         // adjust menu container
